@@ -260,13 +260,13 @@ class CellJS {
         }
     }
 
-    submitForm(event, formId = "") {
+    submitForm(event) {
         if (!Comment.Browser.IE || Comment.Browser.IE11) {
             event.preventDefault();
             event.stopPropagation();
         }
         if (event.target.dataset.disabled == null || event.target.dataset.disabled === "false") {
-            let _formElement = $(formId);
+            let _formElement = $(event.target.dataset.formId);
             if (_formElement) {
                 new HttpClient(_formElement.action, {
                     method : _formElement.method,
@@ -595,25 +595,26 @@ class Render {
             element.clearChildNodes();
         }
 
-        let _childList = template.children, _length = _childList.length , i;
+        let _childList = template.childList(), _length = _childList.length , i;
         for (i = 0 ; i < _length ; i++) {
             if (_childList[i].hasAttribute("data-iterator")) {
                 let _dataName = _childList[i].getAttribute("data-iterator");
                 _dataName = _dataName.substring(1, _dataName.length - 1).trim();
                 jsonData[_dataName].forEach(jsonItem => {
-                    Render.processBasicElement(element,
-                        Render.processTemplate(_childList[i], jsonItem).outerHTML, false);
+                    let _childElement = Render.processTemplate(_childList[i], jsonItem);
+                    _childElement.removeAttribute("data-iterator");
+                    Render.processBasicElement(element, _childElement.render(), false);
                 });
             } else {
                 Render.processBasicElement(element,
-                    Render.processTemplate(_childList[i], jsonData).outerHTML, false);
+                    Render.processTemplate(_childList[i], jsonData).render(), false);
             }
         }
     }
 
     static cloneTemplate(template, jsonData) {
         let _node = template.cloneNode(false);
-        template.getAttributeNames().forEach(attrName => {
+        template.attrNames().forEach(attrName => {
             let _attrValue = template.getAttribute(attrName);
             if (_attrValue !== null) {
                 _attrValue = _attrValue.trim();
@@ -630,16 +631,16 @@ class Render {
 
     static processTemplate(template, jsonData) {
         let _node = Render.cloneTemplate(template, jsonData);
-        let _childList = template.children, _length = _childList.length , i;
+        let _childList = template.childList(), _length = _childList.length , i;
         if (_length > 0) {
             for (i = 0 ; i < _length ; i++) {
                 if (_childList[i].hasAttribute("data-iterator")) {
                     let _dataName = _childList[i].getAttribute("data-iterator");
-                    let _child = Render.cloneTemplate(_childList[i], jsonData);
                     jsonData[_dataName.substring(1, _dataName.length - 1).trim()].forEach(jsonItem => {
-                        _node.appendChild(Render.processTemplate(_childList[i], jsonItem, false));
+                        let _child = Render.processTemplate(_childList[i], jsonItem, false);
+                        _child.removeAttribute("data-iterator");
+                        _node.appendChild(_child);
                     });
-                    _node.appendChild(_child);
                 } else {
                     _node.appendChild(Render.processTemplate(_childList[i], jsonData));
                 }
@@ -660,7 +661,6 @@ class Render {
         } else {
             Render.processBasicElement(_node, jsonData, false);
         }
-
 
         return _node;
     }

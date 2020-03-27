@@ -654,7 +654,7 @@ class BigInteger {
         if (_index === s.length) {
             _result = new BigInteger();
         } else {
-            let _digitCount = s.length - i;
+            let _digitCount = s.length - _index;
             let _fgl = _digitCount % BigInteger.DPL10;
             if (_fgl === 0) {
                 _fgl = BigInteger.DPL10;

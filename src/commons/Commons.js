@@ -218,24 +218,28 @@ Object.extend(Element.prototype, {
 
     formData : function() {
         if (this.tagName.toLowerCase() === "form") {
-            let _formData = new FormData(this);
+            let _formData = new FormData();
             _formData.uploadFile = false;
-            this.querySelectorAll("input").forEach(input => {
-                switch (input.type.toLowerCase()) {
+            let _nodeList = this.querySelectorAll("input"), _length = _nodeList.length, _inputName, _inputValue;
+            for (let i = 0 ; i < _length ; i++) {
+                _inputName = _nodeList[i].name;
+                _inputValue = _nodeList[i].value;
+                switch (_nodeList[i].type.toLowerCase()) {
                     case "password":
-                        _formData.delete(input.name);
-                        _formData.append(input.name, Cell.encryptPassword(input.value));
+                        _inputValue = Cell.encryptPassword(_inputValue);
                         break;
                     case "date":
                     case "datetime-local":
-                        _formData.delete(input.name);
-                        _formData.append(input.name, Cell.convertDateTime(input.value));
+                        _inputValue = Cell.convertDateTime(_inputValue);
                         break;
                     case "file":
                         _formData.uploadFile = true;
                         break;
                 }
-            });
+                if (_inputValue != null) {
+                    _formData.append(_inputName, _inputValue);
+                }
+            }
             return _formData;
         }
     },
@@ -266,7 +270,7 @@ Object.extend(Element.prototype, {
         }
     },
 
-    sortChildrenBy : function(tagName, attributeName, _sortDesc = false) {
+    sortChildrenBy : function(tagName, attributeName, _sortDesc) {
         if (!attributeName || !tagName) {
             return;
         }
@@ -283,7 +287,7 @@ Object.extend(Element.prototype, {
                     sortValue = 1;
                 }
 
-                if (_sortDesc) {
+                if (_sortDesc != null && _sortDesc) {
                     sortValue *= -1;
                 }
 
@@ -309,6 +313,60 @@ Object.extend(Element.prototype, {
             while (sortNodes.length > 0) {
                 this.appendChild(sortNodes.shift());
             }
+        }
+    },
+
+    attrNames : function() {
+        if (Comment.Browser.IE || Comment.Browser.IE11) {
+            let _attrNames = [], _attrList = this.attributes, _length = _attrList.length, i;
+            for (i = 0 ; i < _length ; i++) {
+                _attrNames.push(_attrList[i].name);
+            }
+            return _attrNames;
+        } else {
+            return this.getAttributeNames();
+        }
+    },
+
+    childList : function() {
+        if (Comment.Browser.IE || Comment.Browser.IE11) {
+            let _children = [], _nodeList = this.childNodes, _length = _nodeList.length, i;
+            for (i = 0 ; i < _length ; i++) {
+                if (_nodeList[i].nodeType === 1) {
+                    _children.push(_nodeList[i]);
+                }
+            }
+            return _children;
+        } else {
+            return this.children;
+        }
+    },
+
+    render : function() {
+        if (Comment.Browser.IE || Comment.Browser.IE11) {
+            let _html = "<" + this.tagName;
+            let _attributes = this.attributes, _attrLength = _attributes.length, i;
+            for (i = 0 ; i < _attrLength ; i++) {
+                _html += (" " + _attributes[i].name + "=\"" + this.getAttribute(_attributes[i].name) + "\"");
+            }
+
+            if (this.tagName.toLowerCase() === "input") {
+                _html += "/>";
+            } else {
+                _html += ">";
+                let _childList = this.childList(), _childLength = _childList.length;
+                if (_childLength > 0) {
+                    for (i = 0 ; i < _childLength ; i++) {
+                        _html += _childList[i].render();
+                    }
+                } else if (this.innerHTML !== undefined) {
+                    _html += this.innerHTML;
+                }
+                _html += ("</" + this.tagName + ">");
+            }
+            return _html;
+        } else {
+            return this.outerHTML;
         }
     }
 });
@@ -385,21 +443,25 @@ Object.extend(String.prototype, {
     isHtml : function() {
         let _matchResult = this.isXml();
         if (_matchResult) {
-            this.match(RegexLibrary.HtmlTag).forEach(_tagName => {
-                _tagName = _tagName.substr(1, _tagName.length - 2);
-                if (_tagName.indexOf(" ") > 0) {
-                    _tagName = _tagName.substr(0, _tagName.indexOf(" "));
-                }
-                if (Comment.Html5) {
-                    if (Comment.Html5Tag.indexOf(_tagName) === -1) {
-                        _matchResult = false;
+            let _length = RegexLibrary.HtmlTag.length, _tagName;
+            for (let i = 0 ; i < _length ; i++) {
+                _tagName = this.match(RegexLibrary.HtmlTag[i]);
+                if (_tagName !== null) {
+                    _tagName = _tagName.substr(1, _tagName.length - 2);
+                    if (_tagName.indexOf(" ") > 0) {
+                        _tagName = _tagName.substr(0, _tagName.indexOf(" "));
                     }
-                } else {
-                    if (Comment.HtmlTag.indexOf(_tagName) === -1) {
-                        _matchResult = false;
+                    if (Comment.Html5) {
+                        if (Comment.Html5Tag.indexOf(_tagName) === -1) {
+                            _matchResult = false;
+                        }
+                    } else {
+                        if (Comment.HtmlTag.indexOf(_tagName) === -1) {
+                            _matchResult = false;
+                        }
                     }
                 }
-            });
+            }
         }
         return _matchResult;
     },
@@ -407,18 +469,23 @@ Object.extend(String.prototype, {
     parseXml : function() {
         let _xmlDoc = null;
         if (Comment.Browser.IE && !Comment.Browser.IE11) {
-            let _xmlDomVersions = ["MSXML.2.DOMDocument.6.0", "'MSXML.2.DOMDocument.3.0", "Microsoft.XMLDOM"];
-            _xmlDomVersions.forEach(name => {
-                if (_xmlDoc != null) {
-                    try {
-                        _xmlDoc = new ActiveXObject(name);
-                        _xmlDoc.async = false;
-                        _xmlDoc.loadXML(this);
-                    } catch (e) {
-                        _xmlDoc = null;
-                    }
+            let _xmlDomVersions = [
+                    "MSXML.2.DOMDocument.6.0",
+                    "MSXML.2.DOMDocument.3.0",
+                    "Microsoft.XMLDOM"
+                ],
+                _length = _xmlDomVersions.length;
+
+            for (let i = 0 ; i < _length ; i++) {
+                try {
+                    _xmlDoc = new ActiveXObject(_xmlDomVersions[i]);
+                    _xmlDoc.async = false;
+                    _xmlDoc.loadXML(this);
+                    break;
+                } catch (e) {
+                    _xmlDoc = null;
                 }
-            });
+            }
 
             if (_xmlDoc == null) {
                 console.log(Cell.message("Core", "Data.Invalid.XML"));
@@ -438,8 +505,8 @@ Object.extend(String.prototype, {
         return (this.match(RegexLibrary.Number) != null);
     },
 
-    parseInt : function(radix = 10) {
-        return parseInt(this, radix);
+    parseInt : function(radix) {
+        return parseInt(this, radix === null ? 10 : radix);
     },
 
     parseFloat : function() {
@@ -540,7 +607,7 @@ Object.extend(String.prototype, {
         return _result;
     },
 
-    getBytes : function(littleEndian = true) {
+    getBytes : function(littleEndian) {
         let _dataBytes = [];
         let _charCode, _cnt = 0, _intOffset;
         let _length = this.length * 8;
@@ -571,7 +638,7 @@ Object.extend(String.prototype, {
                 while (_dataBytes.length <= _intOffset) {
                     _dataBytes.push(0);
                 }
-                if (littleEndian) {
+                if (littleEndian === null || littleEndian) {
                     _dataBytes[_intOffset] |= _tmpBytes[j] << (24 - (8 * (_cnt % 4)));
                 } else {
                     _dataBytes[_intOffset] |= _tmpBytes[j] << (8 * (_cnt % 4));
@@ -584,9 +651,9 @@ Object.extend(String.prototype, {
 });
 
 Object.extend(Number.prototype, {
-    parseTime : function(utc = true) {
+    parseTime : function(utc) {
         let offset = 0;
-        if (utc) {
+        if (utc === null || utc) {
             offset = (new Date().getTimezoneOffset() * 60 * 1000);
         }
         let _date = new Date();
@@ -620,7 +687,7 @@ Object.extend(Number.prototype, {
 });
 
 Object.extend(Date.prototype, {
-    format : function(pattern = "MM/dd/yyyy") {
+    format : function(pattern) {
         let Pattern = {
             "y+" : this.getFullYear(),
             "M+" : this.getMonth() + 1,
@@ -631,6 +698,10 @@ Object.extend(Date.prototype, {
             "S+"  : this.getMilliseconds(),
             "q+" : Math.floor((this.getMonth() + 3) / 3)
         };
+
+        if (pattern === null) {
+            pattern = "MM/dd/yyyy";
+        }
 
         for (let regex in Pattern) {
             if (new RegExp("(" + regex + ")").test(pattern)) {
@@ -660,8 +731,9 @@ Object.extend(Date.prototype, {
      *                                                       Noon: noon UTC time,
      *                                                       data unit: milliseconds
      */
-    sunTime(posLon = -360, posLat = -180) {
-        if (posLon < -180 || posLon > 180 || posLat < -90 || posLat > 90) {
+    sunTime : function(posLon, posLat) {
+        if (posLon === null || posLon < -180 || posLon > 180
+            || posLat === null || posLat < -90 || posLat > 90) {
             throw new Error(Cell.message("Core", "Location.GPS.Unknown"));
         }
 
@@ -685,6 +757,7 @@ Object.extend(Date.prototype, {
 
         let Sun = {};
 
+        let UTC;
         if (SC < -1) {
             //  Polar Night
             Sun.Polar = "Night";
@@ -696,7 +769,7 @@ Object.extend(Date.prototype, {
             Sun.Polar = "Day";
             Sun.SunRise = -1;
             Sun.SunSet = -1;
-            let UTC = new Date(_currentUTC);
+            UTC = new Date(_currentUTC);
             UTC.setHours(12);
             UTC.setMinutes(0);
             Sun.Noon = UTC.getTime();
@@ -704,7 +777,7 @@ Object.extend(Date.prototype, {
             Sun.Polar = "Normal";
             let C3 = RD * Math.atan(SC / Math.sqrt(1 - Math.pow(SC, 2))), R1 = 6 - (posLon + C2 + C3) / 15,
                 HR = Math.floor(R1), MR = Math.floor((R1 - HR) * 60);
-            let UTC = new Date(_currentUTC);
+            UTC = new Date(_currentUTC);
             UTC.setHours(HR);
             UTC.setMinutes(MR);
             Sun.SunRise = UTC.getTime();
@@ -722,12 +795,12 @@ Object.extend(Date.prototype, {
 });
 
 Object.extend(Array.prototype, {
-    toHex : function(littleEndian = true) {
+    toHex : function(littleEndian) {
         let _result = "", _byte;
         for (let i = 0 ; i < this.length ; i++) {
             _byte = this[i];
             for (let j = 0 ; j < 4 ; j++) {
-                if (littleEndian) {
+                if (littleEndian === null || littleEndian) {
                     _result += BASE16[(_byte >> ((2 * j + 1) * 4)) & 0x0F] + BASE16[(_byte >> ((2 * j) * 4)) & 0x0F];
                 } else {
                     _result += BASE16[(_byte >> (28 - ((2 * j) * 4))) & 0x0F] + BASE16[(_byte >> (28 - ((2 * j + 1) * 4))) & 0x0F];
@@ -737,7 +810,7 @@ Object.extend(Array.prototype, {
         return _result;
     },
 
-    base64 : function(padding = null) {
+    base64 : function(padding) {
         let _result = "", _length = this.length, i;
         for (i = 0 ; i < _length ; i += 3) {
             _result += (BASE64[this[i] >> 2] + BASE64[((this[i] & 0x3) << 4) | (this[i + 1] >> 4)]);
