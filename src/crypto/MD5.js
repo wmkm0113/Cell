@@ -20,6 +20,8 @@
  */
 'use strict';
 
+import Crypto from "./Crypto.js";
+
 const HASH_INDEX_NORMAL = [
     [1, 2, 3, 1],
     [0, 1, 2, 0],
@@ -49,8 +51,9 @@ const RC_II = [
     0x6FA87E4F, 0xFE2CE6E0, 0xA3014314, 0x4E0811A1, 0xF7537E82, 0xBD3AF235, 0x2AD7D2BB, 0xEB86D391
 ];
 
-class MD5 {
+class MD5 extends Crypto {
     constructor(key = "") {
+        super();
         this.reset();
         if (key.length > 0) {
             this._inPad = [];
@@ -145,24 +148,24 @@ class MD5 {
     }
 
     static _rotateAndAdd(x = 0, y = 0, _count) {
-        return safeAdd(x.safeRotateLeft(_count), y);
+        return Crypto.safeAdd(x.safeRotateLeft(_count), y);
 
     }
 
     static _md5FF(i = 0, j = 0, k = 0, x = 0, y = 0) {
-        return safeAdd(((i & j | ~i & k)), x + y);
+        return Crypto.safeAdd(((i & j | ~i & k)), x + y);
     }
 
     static _md5GG(i = 0, j = 0, k = 0, x = 0, y = 0) {
-        return safeAdd(((i & k | j & ~k)), x + y);
+        return Crypto.safeAdd(((i & k | j & ~k)), x + y);
     }
 
     static _md5HH(i = 0, j = 0, k = 0, x = 0, y = 0) {
-        return safeAdd((i ^ j ^ k), x + y);
+        return Crypto.safeAdd((i ^ j ^ k), x + y);
     }
 
     static _md5II(i = 0, j = 0, k = 0, x = 0, y = 0) {
-        return safeAdd(((i ^ (j | ~k))), x + y);
+        return Crypto.safeAdd(((i ^ (j | ~k))), x + y);
     }
 
     _calculate(_tmp) {
@@ -173,10 +176,10 @@ class MD5 {
         this._md5Cycle(_tmp, 5, 3, MD5._md5HH, RC_HH, [4, 11, 16, 23]);
         this._md5Cycle(_tmp, 0, 7, MD5._md5II, RC_II, [6, 10, 15, 21], true);
 
-        this._hash[0] = safeAdd(_hash[0], this._hash[0]);
-        this._hash[1] = safeAdd(_hash[1], this._hash[1]);
-        this._hash[2] = safeAdd(_hash[2], this._hash[2]);
-        this._hash[3] = safeAdd(_hash[3], this._hash[3]);
+        this._hash[0] = Crypto.safeAdd(_hash[0], this._hash[0]);
+        this._hash[1] = Crypto.safeAdd(_hash[1], this._hash[1]);
+        this._hash[2] = Crypto.safeAdd(_hash[2], this._hash[2]);
+        this._hash[3] = Crypto.safeAdd(_hash[3], this._hash[3]);
     }
 
     _md5Cycle(tmp, begin, step, cycleFunc, rc, r, final = false) {
@@ -190,7 +193,7 @@ class MD5 {
             }
 
             this._hash[_index] = MD5._rotateAndAdd(
-                safeAdd(this._hash[_index],
+                Crypto.safeAdd(this._hash[_index],
                     cycleFunc.call(this, this._hash[hashIndex[_cnt][0]], this._hash[hashIndex[_cnt][1]],
                         this._hash[hashIndex[_cnt][2]], tmp[_tmpIndex], rc[i])),
                 this._hash[hashIndex[_cnt][3]], r[_cnt]);

@@ -22,6 +22,8 @@
  */
 'use strict';
 
+import Crypto from "./Crypto.js";
+
 class Int64 {
     constructor(high, low) {
         this._high = high;
@@ -163,11 +165,12 @@ const RC = [
     new Int64(0x00000000, 0x80000001), new Int64(0x80000000, 0x80008008)
 ];
 
-class SHA {
+class SHA extends Crypto{
     constructor(bit, outBit, delimiter, blockSize, blockLength, key = "") {
         if (typeof bit === "undefined" || typeof outBit === "undefined" || typeof blockSize === "undefined") {
             throw new Error("Invalid initialize arguments");
         }
+        super();
         this._bit = bit;
         this._outBit = outBit;
         this._delimiter = delimiter;
@@ -350,7 +353,7 @@ class SHA1 extends SHA {
                 _tmp[0] = _t;
             }
             for (let i = 0 ; i < this._hash.length ; i++) {
-                this._hash[i] = safeAdd(_tmp[i], this._hash[i]);
+                this._hash[i] = Crypto.safeAdd(_tmp[i], this._hash[i]);
             }
         }
     }
@@ -396,32 +399,32 @@ class SHA224 extends SHA {
                     this._words[j] = dataBytes[i + j] | 0;
                 } else {
                     this._words[j] =
-                        safeAdd(
-                            safeAdd(safeAdd(this._words[j - 2].safeRotateRight(17) ^ this._words[j - 2].safeRotateRight(19) ^ this._words[j - 2].rotateRight(10), this._words[j - 7]),
+                        Crypto.safeAdd(
+                            Crypto.safeAdd(Crypto.safeAdd(this._words[j - 2].safeRotateRight(17) ^ this._words[j - 2].safeRotateRight(19) ^ this._words[j - 2].rotateRight(10), this._words[j - 7]),
                                 this._words[j - 15].safeRotateRight(7) ^ this._words[j - 15].safeRotateRight(18) ^ this._words[j - 15].rotateRight(3)),
                             this._words[j - 16]);
                 }
 
-                _num[0] = safeAdd(
-                    safeAdd(
-                        safeAdd(safeAdd(_tmp[7], _tmp[4].safeRotateRight(6) ^ _tmp[4].safeRotateRight(11) ^ _tmp[4].safeRotateRight(25)),
+                _num[0] = Crypto.safeAdd(
+                    Crypto.safeAdd(
+                        Crypto.safeAdd(Crypto.safeAdd(_tmp[7], _tmp[4].safeRotateRight(6) ^ _tmp[4].safeRotateRight(11) ^ _tmp[4].safeRotateRight(25)),
                             ((_tmp[4] & _tmp[5]) ^ ((~_tmp[4]) & _tmp[6]))),
                         K[j]._high),
                     this._words[j]);
-                _num[1] = safeAdd(_tmp[0].safeRotateRight(2) ^ _tmp[0].safeRotateRight(13) ^ _tmp[0].safeRotateRight(22),
+                _num[1] = Crypto.safeAdd(_tmp[0].safeRotateRight(2) ^ _tmp[0].safeRotateRight(13) ^ _tmp[0].safeRotateRight(22),
                     ((_tmp[0] & _tmp[1]) ^ (_tmp[0] & _tmp[2]) ^ (_tmp[1] & _tmp[2])));
 
                 _tmp[7] = _tmp[6];
                 _tmp[6] = _tmp[5];
                 _tmp[5] = _tmp[4];
-                _tmp[4] = safeAdd(_tmp[3], _num[0]);
+                _tmp[4] = Crypto.safeAdd(_tmp[3], _num[0]);
                 _tmp[3] = _tmp[2];
                 _tmp[2] = _tmp[1];
                 _tmp[1] = _tmp[0];
-                _tmp[0] = safeAdd(_num[0], _num[1]);
+                _tmp[0] = Crypto.safeAdd(_num[0], _num[1]);
             }
             for (let i = 0 ; i < this._hash.length ; i++) {
-                this._hash[i] = safeAdd(_tmp[i], this._hash[i]);
+                this._hash[i] = Crypto.safeAdd(_tmp[i], this._hash[i]);
             }
         }
     }
