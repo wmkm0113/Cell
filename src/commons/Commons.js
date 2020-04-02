@@ -15,8 +15,13 @@
  * limitations under the License.
  */
 /*
+ *
+ * 1.0.1
+ * [New] Extend String for Verify CHN ID Card Code and CHN Social Credit Code
+ *
  * 1.0.0
  * [New] Extend Element/String/Number/Array/Date
+ *
  */
 'use strict';
 
@@ -30,8 +35,13 @@ const BASE64 = [
 
 const BASE16 = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
 
+const CHN_SOCIAL_CREDIT_CODE = [
+    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
+    'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'T', 'U', 'W', 'X', 'Y'
+];
+
 const Comment = {
-    Version:    "1.0.0",
+    Version:    "1.0.1",
     Language:   (navigator.language|| navigator.userLanguage).substring(0, 2),
     Html5:      !!window.applicationCache,
     MaxWidth :  Math.max(document.documentElement.scrollWidth, document.documentElement.clientWidth),
@@ -83,7 +93,7 @@ const Comment = {
 };
 
 const RegexLibrary = {
-    E_Mail : /[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+(?:[A-Z]{2}|asia|com|org|net|gov|mil|biz|info|mobi|name|aero|jobs|museum|travel)\b/g,
+    E_Mail : /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,4})$/i,
     UUID : /^([0-9a-f]{8}((-[0-9a-f]{4}){3})-[0-9a-f]{12})|([0-9a-f]{32})\b/g,
     TrimBlank : /(^\s*)|(\s*$)/g,
     BlankText : /[\s]+/ig,
@@ -91,7 +101,9 @@ const RegexLibrary = {
     Color : /^#[0-9A-F]{6}$/i,
     XML : /<[a-zA-Z0-9]+[^>]*>(?:.|[\r\n])*?<\/[a-zA-Z0-9]+>/ig,
     HtmlTag : /<[a-zA-Z0-9]+[^>]*>/ig,
-    Date: /^((((19|20)\d{2})-(0?(1|[3-9])|1[012])-(0?[1-9]|[12]\d|30))|(((19|20)\d{2})-(0?[13578]|1[02])-31)|(((19|20)\d{2})-0?2-(0?[1-9]|1\d|2[0-8]))|((((19|20)([13579][26]|[2468][048]|0[48]))|(2000))-0?2-29))$/ig
+    Date: /^((((19|20)\d{2})-(0?(1|[3-9])|1[012])-(0?[1-9]|[12]\d|30))|(((19|20)\d{2})-(0?[13578]|1[02])-31)|(((19|20)\d{2})-0?2-(0?[1-9]|1\d|2[0-8]))|((((19|20)([13579][26]|[2468][048]|0[48]))|(2000))-0?2-29))$/ig,
+    CHN_ID_Card : /^[1-9]([0-9]{17}|([0-9]{16}X))$/g,
+    CHN_Social_Credit : /^([1-9]|A|N|Y)[0-9A-Z]{17}$/g
 };
 
 Object.extend = function(destination, source) {
@@ -220,57 +232,74 @@ Object.extend(Element.prototype, {
         if (this.tagName.toLowerCase() === "form") {
             let _formData = new FormData();
             _formData.uploadFile = false;
-            let _nodeList = this.querySelectorAll("input"), _length = _nodeList.length, _inputName, _inputValue;
-            for (let i = 0 ; i < _length ; i++) {
-                _inputName = _nodeList[i].name;
-                _inputValue = _nodeList[i].value;
-                switch (_nodeList[i].type.toLowerCase()) {
-                    case "password":
-                        _inputValue = Cell.encryptPassword(_inputValue);
-                        break;
-                    case "date":
-                    case "datetime-local":
-                        _inputValue = Cell.convertDateTime(_inputValue);
-                        break;
-                    case "file":
-                        _formData.uploadFile = true;
-                        break;
+            let _inputName, _inputValue;
+            this.querySelectorAll("input, select, textarea").forEach(input => {
+                _inputName = input.name;
+                _inputValue = input.tagName.toLowerCase() === "textarea" ? input.innerHTML : input.value;
+                if (_inputValue !== null && _inputValue.length > 0) {
+                    if (input.tagName.toLowerCase() === "input") {
+                        switch (input.type.toLowerCase()) {
+                            case "password":
+                                _inputValue = Cell.encryptPassword(_inputValue);
+                                break;
+                            case "date":
+                            case "datetime-local":
+                                _inputValue = Cell.convertDateTime(_inputValue);
+                                break;
+                            case "file":
+                                _formData.uploadFile = true;
+                                break;
+                        }
+                        _formData.append(_inputName, _inputValue);
+                    } else if (input.tagName.toLowerCase() === "select") {
+                        _formData.append(_inputName, _inputValue);
+                    } else {
+                        _formData.append(_inputName, _inputValue.encodeByRegExp());
+                    }
                 }
-                if (_inputValue != null) {
-                    _formData.append(_inputName, _inputValue);
-                }
-            }
+            });
             return _formData;
         }
     },
 
     validate : function() {
-        if (this.tagName.toLowerCase() === "input"
-            || this.tagName.toLowerCase() === "select") {
-            let _result = true;
-            if (this.hasAttribute("value")) {
-                let _value = this.getAttribute("value");
+        let _result = true;
+        if (this.tagName.toLowerCase() === "form") {
+            this.querySelectorAll("input, select, textarea").forEach(input => {
+                _result = _result && input.validate();
+            });
+        } else if (this.dataset.validate === "true"
+            && (this.tagName.toLowerCase() === "input" || this.tagName.toLowerCase() === "select")) {
+            if (this.value.length > 0) {
+                let _value = this.value;
                 if (this.dataset.regex) {
-                    _result &= (_value.match(this.dataset.regex) !== null);
+                    _result = _result && (_value.match(this.dataset.regex) !== null);
                 }
                 if (this.dataset.minValue && this.dataset.minValue.isNum() && _value.isNum()) {
-                    _result &= (Number(this.dataset.minValue) <= Number(_value));
+                    _result = _result && (Number(this.dataset.minValue) <= Number(_value));
                 }
                 if (this.dataset.maxValue && this.dataset.maxValue.isNum() && _value.isNum()) {
-                    _result &= (Number(_value) <= Number(this.dataset.maxValue));
+                    _result = _result && (Number(_value) <= Number(this.dataset.maxValue));
                 }
                 if (this.dataset.email === "true") {
-                    _result &= _value.isEmail();
+                    _result = _result && _value.isEmail();
+                }
+                if (this.dataset.idCard === "true") {
+                    _result = _result && _value.isIDCardCode();
+                }
+                if (this.dataset.socialCredit === "true") {
+                    _result = _result && _value.isSocialCreditCode();
                 }
             } else {
-                _result = (this.dataset.notNull === "false");
+                _result = this.dataset.notNull === undefined || this.dataset.notNull === "false";
             }
 
-            this.dataset.validate = _result.toString();
+            this.dataset.verifyResult = _result.toString();
         }
+        return _result;
     },
 
-    sortChildrenBy : function(tagName, attributeName, _sortDesc) {
+    sortChildrenBy : function(tagName, attributeName, _sortDesc = false) {
         if (!attributeName || !tagName) {
             return;
         }
@@ -287,7 +316,7 @@ Object.extend(Element.prototype, {
                     sortValue = 1;
                 }
 
-                if (_sortDesc != null && _sortDesc) {
+                if (_sortDesc) {
                     sortValue *= -1;
                 }
 
@@ -372,7 +401,6 @@ Object.extend(Element.prototype, {
 });
 
 Object.extend(String.prototype, {
-
     trim : function() {
         return this.replace(RegexLibrary.TrimBlank, "");
     },
@@ -402,12 +430,41 @@ Object.extend(String.prototype, {
             || this.length === 0 || endString.length > this.length) {
             return false;
         }
-
         return this.substr(this.length - endString.length) === endString;
     },
 
     isEmail : function() {
-        return RegexLibrary.E_Mail.test(this);
+        return RegexLibrary.E_Mail.test(this.cleanBlank());
+    },
+
+    isIDCardCode : function() {
+        if (this.trim().search(RegexLibrary.CHN_ID_Card) !== -1) {
+            let _sigma = 0, _code, i;
+            for (i = 0 ; i < 17 ; i++) {
+                _code = this.charAt(i).parseInt();
+                if (_code !== 0) {
+                    _sigma += _code * (Math.pow(2, 17 - i) % 11);
+                }
+            }
+            let _authCode = (12 - (_sigma % 11)) % 11;
+            return (_authCode === 10) ? this.toUpperCase().endsWith("X") : (this.charAt(17).parseInt() === _authCode);
+        }
+        return false;
+    },
+
+    isSocialCreditCode : function() {
+        if (this.trim().search(RegexLibrary.CHN_Social_Credit) !== -1) {
+            let _sigma = 0, _validateCode = CHN_SOCIAL_CREDIT_CODE.indexOf(this.charAt(17)),_code, i;
+            for (i = 0 ; i < 17 ; i++) {
+                _code = CHN_SOCIAL_CREDIT_CODE.indexOf(this.charAt(i));
+                if (_code !== 0) {
+                    _sigma += _code * (Math.pow(3, i) % 31);
+                }
+            }
+            let _authCode = 31 - (_sigma % 31);
+            return (_authCode === 31) ? (_validateCode === 0) : (_authCode === _validateCode);
+        }
+        return false;
     },
 
     isJSON : function() {
@@ -417,27 +474,12 @@ Object.extend(String.prototype, {
         return /^[\],:{}\s]*$/.test(_string);
     },
 
-    parseJSON : function() {
-        if (!this.isJSON()) {
-            throw new Error(Cell.message("Core", "Data.Invalid.JSON"));
-        }
-        if (typeof JSON !== 'undefined') {
-            return JSON.parse(this);
-        }
-
-        if (Comment.Browser.Gecko) {
-            return new Function("return " + this)();
-        }
-
-        return eval('(' + this + ')');
-    },
-
     isColorCode : function() {
-        return RegexLibrary.Color.test(this);
+        return this.trim().search(RegexLibrary.Color) !== -1;
     },
 
     isXml : function() {
-        return RegexLibrary.XML.test(this.trim());
+        return this.trim().search(RegexLibrary.XML) !== -1;
     },
 
     isHtml : function() {
@@ -464,6 +506,21 @@ Object.extend(String.prototype, {
             }
         }
         return _matchResult;
+    },
+
+    parseJSON : function() {
+        if (!this.isJSON()) {
+            throw new Error(Cell.message("Core", "Data.Invalid.JSON"));
+        }
+        if (typeof JSON !== 'undefined') {
+            return JSON.parse(this);
+        }
+
+        if (Comment.Browser.Gecko) {
+            return new Function("return " + this)();
+        }
+
+        return eval('(' + this + ')');
     },
 
     parseXml : function() {
@@ -532,10 +589,7 @@ Object.extend(String.prototype, {
     },
 
     encodeBase64 : function() {
-        if (typeof btoa === "function") {
-            return btoa(unescape(encodeURIComponent(this)));
-        }
-        return this.toByteArray().base64();
+        return (typeof btoa === "function") ? btoa(unescape(encodeURIComponent(this))) : this.toByteArray().base64();
     },
 
     decodeBase64 : function() {

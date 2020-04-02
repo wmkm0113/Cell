@@ -64,6 +64,9 @@ class Int64 {
         return new Int64(~this._high, ~this._low);
     }
 
+    /**
+     * @return {Int64}
+     */
     static add() {
         let _a = 0, _b = 0, _c = 0, _d = 0;
         let _length = arguments.length;
@@ -272,26 +275,6 @@ class SHA extends Crypto{
             this._buffer = this._buffer.slice(this._blockLength);
         }
     }
-
-    _hmacTotal() {
-        //  TODO: Override for calculate hmac data length
-    }
-
-    _reset() {
-        //  TODO: Override for initialize words array
-    }
-
-    _initHash() {
-        //  TODO: Override for initialize hash
-    }
-
-    _array() {
-        //  TODO: Override for prepare hash data
-    }
-
-    _calculate(dataBytes) {
-        //  TODO: Override for calculate operate
-    }
 }
 
 class SHA1 extends SHA {
@@ -300,11 +283,7 @@ class SHA1 extends SHA {
         super(160, 160, 0x80, 64, 16, key);
     }
 
-    static newInstance() {
-        return new SHA1();
-    }
-
-    static HmacSHA1(key) {
+    static newInstance(key) {
         return new SHA1(key);
     }
 
@@ -440,11 +419,7 @@ class SHA256 extends SHA224 {
         super(outBit, key);
     }
 
-    static newInstance() {
-        return new SHA256(256);
-    }
-
-    static HmacSHA256(key) {
+    static newInstance(key) {
         return new SHA256(256, key);
     }
 
@@ -551,27 +526,15 @@ class SHA512 extends SHA384 {
         super(outBit, key);
     }
 
-    static newInstance() {
-        return new SHA512(512);
-    }
-
-    static SHA512_224() {
-        return new SHA512(224);
-    }
-
-    static SHA512_256() {
-        return new SHA512(256);
-    }
-
-    static HmacSHA512(key) {
+    static newInstance(key) {
         return new SHA512(512, key);
     }
 
-    static HmacSHA512_224(key) {
+    static SHA512_224(key) {
         return new SHA512(224, key);
     }
 
-    static HmacSHA512_256(key) {
+    static SHA512_256(key) {
         return new SHA512(256, key);
     }
 
@@ -733,11 +696,18 @@ class SHA3 extends SHA {
 
 (function () {
     if (typeof Cell !== "undefined") {
-        Cell.SHA1 = SHA1;
-        Cell.SHA224 = SHA224;
-        Cell.SHA256 = SHA256;
-        Cell.SHA384 = SHA384;
-        Cell.SHA512 = SHA512;
-        Cell.SHA3 = SHA3;
+        Cell.registerComponent("SHA1", SHA1);
+        Cell.registerComponent("SHA224", SHA224);
+        Cell.registerComponent("SHA256", SHA256);
+        Cell.registerComponent("SHA384", SHA384);
+        Cell.registerComponent("SHA512", SHA512);
+        Cell.registerComponent("SHA3", SHA3);
+    } else {
+        window.SHA1 = SHA1;
+        window.SHA224 = SHA224;
+        window.SHA256 = SHA256;
+        window.SHA384 = SHA384;
+        window.SHA512 = SHA512;
+        window.SHA3 = SHA3;
     }
 })();

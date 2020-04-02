@@ -76,11 +76,7 @@ class MD5 extends Crypto {
         this._hmac = key.length > 0;
     }
 
-    static newInstance() {
-        return new MD5();
-    }
-
-    static HmacMD5(key) {
+    static newInstance(key) {
         return new MD5(key);
     }
 
@@ -208,6 +204,8 @@ class MD5 extends Crypto {
 
 (function() {
     if (typeof Cell !== "undefined") {
-        Cell.MD5 = MD5;
+        Cell.registerComponent("MD5", MD5);
+    } else {
+        window.MD5 = MD5;
     }
 })();
