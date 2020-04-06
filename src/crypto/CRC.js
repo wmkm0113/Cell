@@ -19,133 +19,15 @@
  * [New] Define Standard CRC Algorithms
  * [New] CRC Support From CRC3 to CRC32
  */
-'use strict';
-
-const CRC_CONSTANT = {};
-
-export class CRC {
-    constructor(name) {
-        if (CRC_CONSTANT.hasOwnProperty(name)) {
-            let _config = CRC_CONSTANT[name];
-            this._bit = _config[0];
-            this._refIn = _config[4];
-            this._refOut = _config[5];
-            this._polynomial = this._refIn ? CRC._REVERSE_BIT(_config[1], this._bit) : (this._bit < 8 ? (_config[1] << (8 - this._bit)) : _config[1]);
-            this._init = this._refIn ? CRC._REVERSE_BIT(_config[2], this._bit) : (this._bit < 8 ? (_config[2] << (8 - this._bit)) : _config[2]);
-            this._crc = this._init;
-            this._xorOut = _config[3];
-            if (this._refIn) {
-                this._check = 0x1;
-            } else {
-                if (this._bit <= 8) {
-                    this._check = 0x80;
-                } else {
-                    this._check = Math.pow(2, this._bit - 1);
-                }
-            }
-            this._outLength = Math.floor(this._bit / 4);
-            if (this._bit % 4 !== 0) {
-                this._outLength++;
-            }
-            let _string = "";
-            for (let i = 0 ; i < this._bit ; i++) {
-                _string += "1";
-            }
-            this._mask = parseInt(_string, 2);
-        } else {
-            throw new Error(Cell.message("CRC", "CRC.ALGORITHMS", name));
-        }
-    }
-
-    static REGISTER(name, bit, polynomial, init = 0x00, xorOut = 0x00,
-                    refIn = false, refOut = false, override = false) {
-        if (CRC_CONSTANT.hasOwnProperty(name) && !override) {
-            console.log(Cell.message("CRC", "CRC.Exists", name));
-            return;
-        }
-        if (Cell.developmentMode()) {
-            console.log(Cell.message("CRC", "CRC.Register", name, bit, polynomial, init, xorOut, refIn, refOut));
-        }
-        CRC_CONSTANT[name] = [bit, polynomial, init, xorOut, refIn, refOut];
-    }
-
-    static REGISTERED_ALGORITHMS() {
-        let _array = [];
-        for (let name in CRC_CONSTANT) {
-            _array.push(name);
-        }
-        return _array.join(", ");
-    }
-
-    static _REVERSE_BIT(value = 0x00, bitWidth) {
-        let _result = 0;
-        for (let i = 0 ; i < bitWidth ; i++) {
-            if (value & 0x1) {
-                _result |= 1 << (bitWidth - 1 - i);
-            }
-            value >>= 1;
-        }
-        return _result >>> 0;
-    }
-
-    static newInstance(name) {
-        return new CRC(name);
-    }
-
-    append(string = "") {
-        this.appendBinary(string.toByteArray());
-    }
-
-    appendBinary(dataBytes) {
-        let _length = dataBytes.length, i, j;
-        for (i = 0 ; i < _length ; i++) {
-            if (this._bit > 8) {
-                this._crc ^= ((this._refIn ? dataBytes[i] : (dataBytes[i] << (this._bit - 8))) & this._mask);
-            } else {
-                this._crc ^= dataBytes[i];
-            }
-            for (j = 0 ; j < 8 ; j++) {
-                if ((this._crc & this._check) !== 0) {
-                    this._crc = (this._refIn ? (this._crc >>> 1) : (this._crc << 1)) ^ this._polynomial;
-                } else {
-                    this._crc = (this._refIn ? (this._crc >>> 1) : (this._crc << 1));
-                }
-            }
-        }
-        this._crc &= this._mask;
-    }
-
-    finish() {
-        if (this._bit < 8 && !this._refIn) {
-            this._crc >>= (8 - this._bit);
-        }
-        let _result;
-        if (this._refIn !== this._refOut && this._refOut) {
-            //  Just using for CRC-12/UMTS
-            _result = this._crc & this._mask;
-            _result = ((CRC._REVERSE_BIT(_result, _result.toString(2).length) ^ this._xorOut) >>> 0).toString(16);
-        } else {
-            _result = (((this._crc ^ this._xorOut) & this._mask) >>> 0).toString(16);
-        }
-        while (_result.length < this._outLength) {
-            _result = "0" + _result;
-        }
-        this.reset();
-        return "0x" + _result;
-    }
-
-    reset() {
-        this._crc = this._init;
-    }
-}
-
-(function() {
-    if (typeof Cell !== "undefined") {
-        Cell.registerComponent("CRC", CRC, true);
-    } else {
+(function (CRC) {
+    if (typeof window.Cell === "undefined") {
         window.CRC = CRC;
+    } else {
+        Cell.registerComponent("CRC", CRC, true);
+        if (Cell.developmentMode()) {
+            console.log(Cell.message("CRC", "CRC.SUPPORTED", CRC.REGISTERED_ALGORITHMS()));
+        }
     }
-
     CRC.REGISTER("CRC-3/GSM", 3, 0x3, 0x0, 0x7, false, false);
     CRC.REGISTER("CRC-3/ROHC", 3, 0x3, 0x7, 0x0, true, true);
     CRC.REGISTER("CRC-4/G-704", 4, 0x3, 0x0, 0x0, true, true);
@@ -247,8 +129,133 @@ export class CRC {
     CRC.REGISTER("CRC-32/JAMCRC", 32, 0x04C11DB7, 0xFFFFFFFF, 0x00000000, true, true);
     CRC.REGISTER("CRC-32/MPEG-2", 32, 0x04C11DB7, 0xFFFFFFFF, 0x00000000, false, false);
     CRC.REGISTER("CRC-32/XFER", 32, 0x000000AF, 0x00000000, 0x00000000, false, false);
+})(function () {
+    'use strict';
 
-    if (Cell && Cell.developmentMode()) {
-        console.log(Cell.message("CRC", "CRC.SUPPORTED", Cell.CRC.REGISTERED_ALGORITHMS()));
+    const CRC_CONSTANT = {};
+
+    class CRC {
+        constructor(name) {
+            if (CRC_CONSTANT.hasOwnProperty(name)) {
+                let _config = CRC_CONSTANT[name];
+                this._bit = _config[0];
+                this._refIn = _config[4];
+                this._refOut = _config[5];
+                this._polynomial = this._refIn ? CRC._REVERSE_BIT(_config[1], this._bit) : (this._bit < 8 ? (_config[1] << (8 - this._bit)) : _config[1]);
+                this._init = this._refIn ? CRC._REVERSE_BIT(_config[2], this._bit) : (this._bit < 8 ? (_config[2] << (8 - this._bit)) : _config[2]);
+                this._crc = this._init;
+                this._xorOut = _config[3];
+                if (this._refIn) {
+                    this._check = 0x1;
+                } else {
+                    if (this._bit <= 8) {
+                        this._check = 0x80;
+                    } else {
+                        this._check = Math.pow(2, this._bit - 1);
+                    }
+                }
+                this._outLength = Math.floor(this._bit / 4);
+                if (this._bit % 4 !== 0) {
+                    this._outLength++;
+                }
+                if (this._bit <= 8) {
+                    this._mask = 0xFF;
+                } else {
+                    let _string = "";
+                    for (let i = 0 ; i < this._bit ; i++) {
+                        _string += "1";
+                    }
+                    this._mask = parseInt(_string, 2);
+                }
+            } else {
+                throw new Error(Cell.message("CRC", "CRC.ALGORITHMS", name));
+            }
+        }
+
+        static REGISTER(name, bit, polynomial, init = 0x00, xorOut = 0x00,
+                        refIn = false, refOut = false, override = false) {
+            if (bit > 32) {
+                throw new Error(Cell.message("CRC", "CRC.Not.Support"));
+            }
+            if (CRC_CONSTANT.hasOwnProperty(name) && !override) {
+                console.log(Cell.message("CRC", "CRC.Exists", name));
+                return;
+            }
+            if (Cell.developmentMode()) {
+                console.log(Cell.message("CRC", "CRC.Register", name, bit, polynomial, init, xorOut, refIn, refOut));
+            }
+            CRC_CONSTANT[name] = [bit, polynomial, init, xorOut, refIn, refOut];
+        }
+
+        static REGISTERED_ALGORITHMS() {
+            let _array = [];
+            for (let name in CRC_CONSTANT) {
+                _array.push(name);
+            }
+            return _array.join(", ");
+        }
+
+        static _REVERSE_BIT(value = 0x00, bitWidth) {
+            let _result = 0;
+            for (let i = 0 ; i < bitWidth ; i++) {
+                if (value & 0x1) {
+                    _result |= 1 << (bitWidth - 1 - i);
+                }
+                value >>= 1;
+            }
+            return _result >>> 0;
+        }
+
+        static newInstance(name) {
+            return new CRC(name);
+        }
+
+        append(string = "") {
+            this.appendBinary(string.toByteArray());
+        }
+
+        appendBinary(dataBytes) {
+            let _length = dataBytes.length, i, j;
+            for (i = 0 ; i < _length ; i++) {
+                if (this._bit > 8) {
+                    this._crc ^= ((this._refIn ? dataBytes[i] : (dataBytes[i] << (this._bit - 8))) & this._mask);
+                } else {
+                    this._crc ^= dataBytes[i];
+                }
+                for (j = 0 ; j < 8 ; j++) {
+
+                    if ((this._crc & this._check) !== 0) {
+                        this._crc = (this._refIn ? (this._crc >>> 1) : (this._crc << 1)) ^ this._polynomial;
+                    } else {
+                        this._crc = (this._refIn ? (this._crc >>> 1) : (this._crc << 1));
+                    }
+                }
+            }
+            this._crc &= this._mask;
+        }
+
+        finish() {
+            if (this._bit < 8 && !this._refIn) {
+                this._crc >>= (8 - this._bit);
+            }
+            let _result;
+            if (this._refIn !== this._refOut && this._refOut) {
+                //  Just using for CRC-12/UMTS
+                _result = this._crc & this._mask;
+                _result = ((CRC._REVERSE_BIT(_result, _result.toString(2).length) ^ this._xorOut) >>> 0).toString(16);
+            } else {
+                _result = (((this._crc ^ this._xorOut) & this._mask) >>> 0).toString(16);
+            }
+            while (_result.length < this._outLength) {
+                _result = "0" + _result;
+            }
+            this.reset();
+            return "0x" + _result;
+        }
+
+        reset() {
+            this._crc = this._init;
+        }
     }
-})();
+    return CRC;
+}());

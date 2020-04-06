@@ -13,5 +13,6 @@
   "Template.Unknown" : "Type of template define list invalid.",
   "Template.Register" : "Register template, name: {0}，url address: {1}",
   "Template.Exists" : "Override exists template define, template name: {0}",
-  "Template.Not.Exists" : "Template define not found, template name: {0}"
+  "Template.Not.Exists" : "Template define not found, template name: {0}",
+  "UI.Registered.Processor" : "UI selectors : {0} was registered"
 }

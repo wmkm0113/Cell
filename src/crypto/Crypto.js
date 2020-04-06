@@ -18,19 +18,92 @@
  * 1.0.0
  * [New] Interface for MD5/SHA
  */
-export default class Crypto {
-
-    static safeAdd(x = 0, y = 0) {
-        let _low = (x & 0xFFFF) + (y & 0xFFFF);
-        let _high = (x >> 16) + (y >> 16) + (_low >> 16);
-        return (_high << 16) | (_low & 0xFFFF);
+class Int64 {
+    constructor(high, low) {
+        this._high = high;
+        this._low = low;
     }
 
-    append(string = "") {
-        //  TODO: Override for crypto append string data
+    clone() {
+        return new Int64(this._high, this._low);
     }
 
-    appendBinary(dataBytes = [], dataLength = 0) {
-        //  TODO: Override for crypto append binary data
+    safeRotateRight(bit) {
+        return new Int64(((this._high >>> bit) | (this._low << (32 - bit))),
+            ((this._low >>> bit) | (this._high << (32 - bit))));
+    }
+
+    safeRotateLeft(bit) {
+        if (bit > 32) {
+            return new Int64(((this._low << (bit - 32)) | (this._high >>> (64 - bit))),
+                ((this._high << (bit - 32)) | (this._low >>> (64 - bit))));
+        } else if (bit !== 0) {
+            return new Int64(((this._high << bit) | (this._low >>> (32 - bit))),
+                ((this._low << bit) | (this._high >>> (32 - bit))));
+        } else {
+            return new Int64(this._high, this._low);
+        }
+    }
+
+    reverseAndRotate(bit) {
+        return new Int64(((this._low >>> bit) | (this._high << (32 - bit))),
+            ((this._high >>> bit) | (this._low << (32 - bit))));
+    }
+
+    shiftRight(bit) {
+        return new Int64((this._high >>> bit), ((this._low >>> bit) | this._high << (32 - bit)));
+    }
+
+    NOT() {
+        return new Int64(~this._high, ~this._low);
+    }
+
+    static add(x, ...args) {
+        let _a = x._low & 0xFFFF, _b = x._low >>> 16, _c = x._high & 0xFFFF, _d = x._high >>> 16;
+        let _length = args.length;
+        for (let i = 0 ; i < _length ; i++) {
+            _a += (args[i]._low & 0xFFFF);
+            _b += (args[i]._low >>> 16);
+            _c += (args[i]._high & 0xFFFF);
+            _d += (args[i]._high >>> 16);
+        }
+        _b += (_a >>> 16);
+        _c += (_b >>> 16);
+        _d += (_c >>> 16);
+        return new Int64(((_c & 0xFFFF) | (_d << 16)), ((_a & 0xFFFF) | (_b << 16)));
+    }
+
+    static XOR(x, ...codes) {
+        let _high = x._high | 0, _low = x._low | 0;
+        let _length = codes.length;
+        for (let i = 0 ; i < _length ; i++) {
+            _high ^= codes[i]._high;
+            _low ^= codes[i]._low;
+        }
+        return new Int64(_high, _low);
+    }
+
+    static AND(x, ...codes) {
+        let _high = x._high | 0, _low = x._low | 0;
+        let _length = codes.length;
+        for (let i = 0 ; i < _length ; i++) {
+            _high &= codes[i]._high;
+            _low &= codes[i]._low;
+        }
+        return new Int64(_high, _low);
     }
 }
+
+class Crypto {
+    static safeAdd(x = 0, y = 0) {
+        if ((typeof x) === "Int64" && (typeof y) === "Int64") {
+            return Int64.add(x, y)
+        } else {
+            let _low = (x & 0xFFFF) + (y & 0xFFFF);
+            let _high = (x >> 16) + (y >> 16) + (_low >> 16);
+            return (_high << 16) | (_low & 0xFFFF);
+        }
+    }
+}
+
+export {Int64, Crypto}

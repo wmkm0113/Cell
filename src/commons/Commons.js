@@ -42,20 +42,21 @@ const CHN_SOCIAL_CREDIT_CODE = [
 
 const Comment = {
     Version:    "1.0.1",
-    Language:   (navigator.language|| navigator.userLanguage).substring(0, 2),
+    Language:   (navigator.language || navigator.userLanguage).substring(0, 2),
     Html5:      !!window.applicationCache,
     MaxWidth :  Math.max(document.documentElement.scrollWidth, document.documentElement.clientWidth),
     MaxHeight : Math.max(document.documentElement.scrollHeight, document.documentElement.clientHeight),
-    GPS : !!navigator.geolocation,
+    GPS :       !!navigator.geolocation,
     Browser: {
+        Version:	parseInt(navigator.appVersion),
         //	Internet Explorer
         IE:     	!!window.ActiveXObject || "ActiveXObject" in window,
         //	Internet Explorer Under Version 8
         IE8:		(parseInt(navigator.appVersion) >= 8),
         //	Internet Explorer 11
         IE11:		(!(navigator.userAgent.toUpperCase().indexOf('TRIDENT') > -1
-            && navigator.userAgent.toUpperCase().indexOf('RV:') > -1
-            && parseInt(navigator.appVersion) === 11)),
+                        && navigator.userAgent.toUpperCase().indexOf('RV:') > -1
+                        && parseInt(navigator.appVersion) === 11)),
         //	Microsoft Edge
         Edge:		navigator.userAgent.indexOf('Edge') > -1,
         //	Opera Explorer
@@ -69,23 +70,27 @@ const Comment = {
         //	Apple Safari and Google Chrome
         WebKit: 	navigator.userAgent.indexOf('AppleWebKit/') > -1,
         //	Mozilla Firefox, Apple Safari and Google Chrome
-        Gecko:  	navigator.userAgent.indexOf('Gecko') > -1 && navigator.userAgent.indexOf('KHTML') === -1,
-        Version:	parseInt(navigator.appVersion)
+        Gecko:  	navigator.userAgent.indexOf('Gecko') > -1 && navigator.userAgent.indexOf('KHTML') === -1
     },
     HtmlTag : [
-        "a", "abbr", "acronym", "address", "applet", "area", "b", "base", "bdo", "big", "blockquote", "body", "br", "button", "caption", "center", "cite",
-        "code", "col", "colgroup", "dd", "del", "div", "dfn", "dl", "dt", "em", "embed", "fieldset", "form", "frame", "frameset", "h1", "h2", "h3", "h4", "h5", "h6",
-        "head", "html", "i", "iframe", "img", "input", "ins", "kbd", "label", "legend", "li", "link", "map", "meta", "noframes", "noscript", "object", "ol",
-        "optgroup", "option", "p", "param", "pre", "q", "s", "samp", "script", "select", "small", "span", "strong", "style", "sub", "sup", "table", "tbody",
-        "td", "textarea", "tfoot", "th", "thead", "title", "tr", "tt", "ul", "var"
+        "a", "abbr", "acronym", "address", "applet", "area", "b", "base", "bdo", "big", "blockquote", "body", "br",
+        "button", "caption", "center", "cite", "code", "col", "colgroup", "dd", "del", "div", "dfn", "dl", "dt", "em",
+        "embed", "fieldset", "form", "frame", "frameset", "h1", "h2", "h3", "h4", "h5", "h6", "head", "html", "i",
+        "iframe", "img", "input", "ins", "kbd", "label", "legend", "li", "link", "map", "meta", "noframes", "noscript",
+        "object", "ol", "optgroup", "option", "p", "param", "pre", "q", "s", "samp", "script", "select", "small",
+        "span", "strong", "style", "sub", "sup", "table", "tbody", "td", "textarea", "tfoot", "th", "thead", "title",
+        "tr", "tt", "ul", "var"
     ],
     Html5Tag : [
-        "a", "abbr", "address", "area", "article", "aside", "audio", "b", "base", "bdi", "bdo", "big", "blockquote", "body", "br", "button", "canvas", "caption",
-        "center", "cite", "code", "col", "colgroup", "data", "datalist", "dd", "del", "details", "div", "dfn", "dialog", "dl", "dt", "em", "embed", "fieldset", "figcaption",
-        "figure", "footer", "form", "frame", "frameset", "h1", "h2", "h3", "h4", "h5", "h6", "head", "header", "hgroup", "html", "i", "iframe", "img", "input", "ins", "kbd",
-        "keygen", "label", "legend", "li", "link", "main", "map", "mark", "meta", "meter", "nav", "noframes", "noscript", "object", "ol", "optgroup", "option", "output", "p",
-        "param", "picture", "pre", "progress", "q", "rp", "rt", "ruby", "s", "samp", "script", "section", "select", "small", "source", "span", "strong", "style", "sub", "summary",
-        "sup", "table", "tbody", "td", "textarea", "template", "tfoot", "th", "thead", "time", "title", "tr", "track", "tt", "ul", "var", "video", "wbr"
+        "a", "abbr", "address", "area", "article", "aside", "audio", "b", "base", "bdi", "bdo", "big", "blockquote",
+        "body", "br", "button", "canvas", "caption", "center", "cite", "code", "col", "colgroup", "data", "datalist",
+        "dd", "del", "details", "div", "dfn", "dialog", "dl", "dt", "em", "embed", "fieldset", "figcaption", "figure",
+        "footer", "form", "frame", "frameset", "h1", "h2", "h3", "h4", "h5", "h6", "head", "header", "hgroup", "html",
+        "i", "iframe", "img", "input", "ins", "kbd", "keygen", "label", "legend", "li", "link", "main", "map", "mark",
+        "meta", "meter", "nav", "noframes", "noscript", "object", "ol", "optgroup", "option", "output", "p", "param",
+        "picture", "pre", "progress", "q", "rp", "rt", "ruby", "s", "samp", "script", "section", "select", "small",
+        "source", "span", "strong", "style", "sub", "summary", "sup", "table", "tbody", "td", "textarea", "template",
+        "tfoot", "th", "thead", "time", "title", "tr", "track", "tt", "ul", "var", "video", "wbr"
     ],
     Author: [
         {"Name":"Steven Wee", "EMail":"wmkm0113@Hotmail.com", "ORG":"Nervousync Studio"}
@@ -106,6 +111,61 @@ const RegexLibrary = {
     CHN_Social_Credit : /^([1-9]|A|N|Y)[0-9A-Z]{17}$/g
 };
 
+const Config = {
+    developmentMode: false,
+    templates : "",
+    components : "",
+    //  Internationalization
+    i18n : {
+        //  Current language
+        language : Comment.Language,
+        resPath : ""
+    },
+    //  Config the dark mode by sunrise and sunset
+    darkMode : {
+        enabled : false,
+        styleClass : "darkMode"
+    },
+    //  Config for form data
+    form : {
+        //  Encrypt value of input[type='password']
+        encryptPassword : true,
+        //  Encrypt method for input[type='password']
+        //  Options:    MD5/RSA/SHA1/SHA224/SHA256/SHA384/SHA512/SHA512_224/SHA512_256
+        //              SHA3_224/SHA3_256/SHA3_384/SHA3_512/SHAKE128/SHAKE256
+        //              Keccak224/Keccak256/Keccak384/Keccak512
+        encryptMethod : "MD5",
+        //  Convert date/time from 'yyyy-MM-dd [HH:mm]' to number of milliseconds between that date and midnight, January 1, 1970.
+        convertDateTime : false,
+        //  Convert value is UTC number of milliseconds between that date and midnight, January 1, 1970.
+        utcDateTime : false
+    },
+    security : {
+        //  RSA Key Config
+        RSA : {
+            //  Private Key using for encrypt send data and generate digital signature
+            PrivateKey : {
+                exponent : "",
+                modulus : "",
+                //  Exponent and modulus data radix, default is 16
+                radix : 16,
+                //  Private Key Size
+                keySize : 1024
+            },
+            //  Public Key using for decrypt receive data and verify digital signature
+            PublicKey : {
+                exponent : "",
+                modulus : "",
+                //  Exponent and modulus data radix, default is 16
+                radix : 16,
+                //  Public Key Size
+                keySize : 1024
+            },
+        }
+    }
+};
+Object.seal(Config);
+
 Object.extend = function(destination, source) {
     for (let _property in source) {
         if (source.hasOwnProperty(_property)
@@ -119,7 +179,7 @@ Object.extend = function(destination, source) {
 };
 
 Object.extend(Element.prototype, {
-    getClass : function() {
+    getClass() {
         let _className;
         if (Comment.Browser.IE && !Comment.Browser.IE11) {
             _className = this.getAttribute("className");
@@ -134,7 +194,10 @@ Object.extend(Element.prototype, {
         return _className;
     },
 
-    hasClass : function(_className) {
+    hasClass(_className = "") {
+        if (_className.length === 0) {
+            return true;
+        }
         if (Comment.Html5) {
             return this.classList.contains(_className);
         }
@@ -145,28 +208,32 @@ Object.extend(Element.prototype, {
         return false;
     },
 
-    appendClass : function(_className) {
-        if (Comment.Html5) {
-            this.classList.add(_className);
-        } else {
-            if (_className && !this.hasClass(_className)) {
-                this.setClass(this.getClass() + " " + _className);
+    appendClass(_className = "") {
+        if (_className.length > 0) {
+            if (Comment.Html5) {
+                this.classList.add(_className);
+            } else {
+                if (_className && !this.hasClass(_className)) {
+                    this.setClass(this.getClass() + " " + _className);
+                }
             }
         }
     },
 
-    removeClass : function(_className) {
-        if (Comment.Html5) {
-            this.classList.remove(_className);
-        } else {
-            if (_className && this.hasClass(_className)) {
-                this.setClass(this.getClass().replace(_className, ""));
+    removeClass(_className = "") {
+        if (_className.length > 0) {
+            if (Comment.Html5) {
+                this.classList.remove(_className);
+            } else {
+                if (_className && this.hasClass(_className)) {
+                    this.setClass(this.getClass().replace(_className, ""));
+                }
             }
         }
     },
 
-    setClass : function(_className) {
-        if (_className !== null) {
+    setClass(_className = "") {
+        if (_className.length > 0) {
             _className = _className.replace(RegexLibrary.BlankText, " ").trim();
             if (Comment.Browser.IE8) {
                 this.setAttribute("className", _className);
@@ -176,8 +243,8 @@ Object.extend(Element.prototype, {
         }
     },
 
-    setStyle : function(_cssText) {
-        if (_cssText) {
+    setStyle(_cssText = "") {
+        if (_cssText.length > 0) {
             if (Comment.Browser.IE8) {
                 this.setAttribute("cssText",
                     this.hasAttribute("cssText") ? this.getAttribute("cssText") + _cssText : _cssText);
@@ -188,7 +255,7 @@ Object.extend(Element.prototype, {
         }
     },
 
-    getStyle : function() {
+    getStyle() {
         if (Comment.Browser.IE8) {
             return this.hasAttribute("cssText") ? this.getAttribute("cssText") : "";
         } else {
@@ -196,7 +263,7 @@ Object.extend(Element.prototype, {
         }
     },
 
-    addEvent : function(_eventName, _operateFunc) {
+    addEvent(_eventName, _operateFunc) {
         if (Comment.Browser.IE && !Comment.Browser.IE11) {
             this.attachEvent("on" + _eventName, _operateFunc);
         } else {
@@ -204,7 +271,7 @@ Object.extend(Element.prototype, {
         }
     },
 
-    removeEvent : function(_eventName, _operateFunc) {
+    removeEvent(_eventName, _operateFunc) {
         if (Comment.Browser.IE && !Comment.Browser.IE11) {
             this.detachEvent("on" + _eventName, _operateFunc);
         } else {
@@ -212,7 +279,7 @@ Object.extend(Element.prototype, {
         }
     },
 
-    clearChildNodes : function() {
+    clearChildNodes() {
         let _childCount = this.childNodes.length;
         while (_childCount > 0) {
             this.removeChild(this.childNodes[0]);
@@ -220,15 +287,15 @@ Object.extend(Element.prototype, {
         }
     },
 
-    hide : function() {
+    hide() {
         this.appendClass("hidden");
     },
 
-    show : function() {
+    show() {
         this.removeClass("hidden");
     },
 
-    formData : function() {
+    formData() {
         if (this.tagName.toLowerCase() === "form") {
             let _formData = new FormData();
             _formData.uploadFile = false;
@@ -258,11 +325,14 @@ Object.extend(Element.prototype, {
                     }
                 }
             });
+            if (_formData.uploadFile && this.dataset.uploadProgress) {
+                _formData.uploadProgress = this.dataset.uploadProgress;
+            }
             return _formData;
         }
     },
 
-    validate : function() {
+    validate() {
         let _result = true;
         if (this.tagName.toLowerCase() === "form") {
             this.querySelectorAll("input, select, textarea").forEach(input => {
@@ -299,7 +369,7 @@ Object.extend(Element.prototype, {
         return _result;
     },
 
-    sortChildrenBy : function(tagName, attributeName, _sortDesc = false) {
+    sortChildrenBy(tagName = "", attributeName = "", _sortDesc = false) {
         if (!attributeName || !tagName) {
             return;
         }
@@ -345,7 +415,7 @@ Object.extend(Element.prototype, {
         }
     },
 
-    attrNames : function() {
+    attrNames() {
         if (Comment.Browser.IE || Comment.Browser.IE11) {
             let _attrNames = [], _attrList = this.attributes, _length = _attrList.length, i;
             for (i = 0 ; i < _length ; i++) {
@@ -357,7 +427,7 @@ Object.extend(Element.prototype, {
         }
     },
 
-    childList : function() {
+    childList() {
         if (Comment.Browser.IE || Comment.Browser.IE11) {
             let _children = [], _nodeList = this.childNodes, _length = _nodeList.length, i;
             for (i = 0 ; i < _length ; i++) {
@@ -371,7 +441,7 @@ Object.extend(Element.prototype, {
         }
     },
 
-    render : function() {
+    render() {
         if (Comment.Browser.IE || Comment.Browser.IE11) {
             let _html = "<" + this.tagName;
             let _attributes = this.attributes, _attrLength = _attributes.length, i;
@@ -401,23 +471,23 @@ Object.extend(Element.prototype, {
 });
 
 Object.extend(String.prototype, {
-    trim : function() {
+    trim() {
         return this.replace(RegexLibrary.TrimBlank, "");
     },
 
-    reverse : function() {
+    reverse() {
         return Array.from(this).reverse().join('');
     },
 
-    cleanBlank : function() {
+    cleanBlank() {
         return this.isEmpty() ? "" : this.replace(RegexLibrary.BlankText, "");
     },
 
-    isEmpty : function() {
+    isEmpty() {
         return this === "" || this.trim() === "";
     },
 
-    startsWith : function(startString) {
+    startsWith(startString) {
         if (startString == null || startString.length === 0
             || this.length === 0 || startString.length > this.length) {
             return false;
@@ -425,7 +495,7 @@ Object.extend(String.prototype, {
         return this.indexOf(startString) === 0;
     },
 
-    endsWith : function(endString) {
+    endsWith(endString) {
         if (endString == null || endString.length === 0
             || this.length === 0 || endString.length > this.length) {
             return false;
@@ -433,11 +503,11 @@ Object.extend(String.prototype, {
         return this.substr(this.length - endString.length) === endString;
     },
 
-    isEmail : function() {
+    isEmail() {
         return RegexLibrary.E_Mail.test(this.cleanBlank());
     },
 
-    isIDCardCode : function() {
+    isIDCardCode() {
         if (this.trim().search(RegexLibrary.CHN_ID_Card) !== -1) {
             let _sigma = 0, _code, i;
             for (i = 0 ; i < 17 ; i++) {
@@ -452,7 +522,7 @@ Object.extend(String.prototype, {
         return false;
     },
 
-    isSocialCreditCode : function() {
+    isSocialCreditCode() {
         if (this.trim().search(RegexLibrary.CHN_Social_Credit) !== -1) {
             let _sigma = 0, _validateCode = CHN_SOCIAL_CREDIT_CODE.indexOf(this.charAt(17)),_code, i;
             for (i = 0 ; i < 17 ; i++) {
@@ -467,22 +537,22 @@ Object.extend(String.prototype, {
         return false;
     },
 
-    isJSON : function() {
+    isJSON() {
         let _string = this.replace(/\\["\\\/bfnrtu]/g, '@');
         _string = _string.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']');
         _string = _string.replace(/(?:^|:|,)(?:\s*\[)+/g, '');
         return /^[\],:{}\s]*$/.test(_string);
     },
 
-    isColorCode : function() {
+    isColorCode() {
         return this.trim().search(RegexLibrary.Color) !== -1;
     },
 
-    isXml : function() {
+    isXml() {
         return this.trim().search(RegexLibrary.XML) !== -1;
     },
 
-    isHtml : function() {
+    isHtml() {
         let _matchResult = this.isXml();
         if (_matchResult) {
             let _length = RegexLibrary.HtmlTag.length, _tagName;
@@ -508,7 +578,7 @@ Object.extend(String.prototype, {
         return _matchResult;
     },
 
-    parseJSON : function() {
+    parseJSON() {
         if (!this.isJSON()) {
             throw new Error(Cell.message("Core", "Data.Invalid.JSON"));
         }
@@ -523,30 +593,24 @@ Object.extend(String.prototype, {
         return eval('(' + this + ')');
     },
 
-    parseXml : function() {
+    parseXml() {
         let _xmlDoc = null;
         if (Comment.Browser.IE && !Comment.Browser.IE11) {
-            let _xmlDomVersions = [
-                    "MSXML.2.DOMDocument.6.0",
-                    "MSXML.2.DOMDocument.3.0",
-                    "Microsoft.XMLDOM"
-                ],
-                _length = _xmlDomVersions.length;
-
-            for (let i = 0 ; i < _length ; i++) {
-                try {
-                    _xmlDoc = new ActiveXObject(_xmlDomVersions[i]);
-                    _xmlDoc.async = false;
-                    _xmlDoc.loadXML(this);
-                    break;
-                } catch (e) {
-                    _xmlDoc = null;
-                }
-            }
-
-            if (_xmlDoc == null) {
-                console.log(Cell.message("Core", "Data.Invalid.XML"));
-            }
+            ["MSXML.2.DOMDocument.6.0", "MSXML.2.DOMDocument.3.0", "Microsoft.XMLDOM"]
+                .forEach(_xmlDomVersion => {
+                    if (_xmlDoc == null) {
+                        try {
+                            _xmlDoc = new ActiveXObject(_xmlDomVersion);
+                            _xmlDoc.async = false;
+                            if (!_xmlDoc.loadXML(this)) {
+                                _xmlDoc = null;
+                            }
+                        } catch (e) {
+                            _xmlDoc = null;
+                            console.log(Cell.message("Core", "Data.Invalid.XML") + e);
+                        }
+                    }
+                });
         } else {
             try {
                 _xmlDoc = new DOMParser().parseFromString(this, "text/xml");
@@ -555,44 +619,44 @@ Object.extend(String.prototype, {
             }
         }
 
-        return _xmlDoc;
+        return _xmlDoc == null ? null : _xmlDoc.documentElement;
     },
 
-    isNum : function() {
+    isNum() {
         return (this.match(RegexLibrary.Number) != null);
     },
 
-    parseInt : function(radix) {
+    parseInt(radix) {
         return parseInt(this, radix === null ? 10 : radix);
     },
 
-    parseFloat : function() {
+    parseFloat() {
         return parseFloat(this);
     },
 
-    setTitle : function() {
+    setTitle() {
         document.title = this;
     },
 
-    setKeywords : function() {
+    setKeywords() {
         let _keyWords = document.querySelector("keywords");
         if (_keyWords) {
             _keyWords.setAttribute("content", this);
         }
     },
 
-    setDescription : function() {
+    setDescription() {
         let _description = document.querySelector("description");
         if (_description) {
             _description.setAttribute("content", this);
         }
     },
 
-    encodeBase64 : function() {
+    encodeBase64() {
         return (typeof btoa === "function") ? btoa(unescape(encodeURIComponent(this))) : this.toByteArray().base64();
     },
 
-    decodeBase64 : function() {
+    decodeBase64() {
         if (typeof atob === "function") {
             return decodeURIComponent(escape(atob(this)));
         }
@@ -612,7 +676,7 @@ Object.extend(String.prototype, {
         return _result;
     },
 
-    encodeByRegExp : function () {
+    encodeByRegExp () {
         let _result = "";
         if(this.length > 0) {
             _result = this.replace(/&/g,"&amp;");
@@ -625,7 +689,7 @@ Object.extend(String.prototype, {
         return _result;
     },
 
-    decodeByRegExp : function () {
+    decodeByRegExp () {
         let _result = "";
         if(this.length > 0) {
             _result = this.replace(/&amp;/g,"&");
@@ -638,11 +702,11 @@ Object.extend(String.prototype, {
         return _result;
     },
 
-    toUTF8 : function() {
+    toUTF8() {
         return /[\u0080-\uFFFF]/.test(this) ? unescape(encodeURIComponent(this)) : this;
     },
 
-    toByteArray : function() {
+    toByteArray() {
         let _array = this.split(''), _length = _array.length, _result = [], _tmp, i, j;
         for (i = 0 ; i < _length ; i++) {
             _tmp = encodeURI(_array[i]);
@@ -661,7 +725,7 @@ Object.extend(String.prototype, {
         return _result;
     },
 
-    getBytes : function(littleEndian) {
+    getBytes(littleEndian = true) {
         let _dataBytes = [];
         let _charCode, _cnt = 0, _intOffset;
         let _length = this.length * 8;
@@ -692,7 +756,7 @@ Object.extend(String.prototype, {
                 while (_dataBytes.length <= _intOffset) {
                     _dataBytes.push(0);
                 }
-                if (littleEndian === null || littleEndian) {
+                if (littleEndian) {
                     _dataBytes[_intOffset] |= _tmpBytes[j] << (24 - (8 * (_cnt % 4)));
                 } else {
                     _dataBytes[_intOffset] |= _tmpBytes[j] << (8 * (_cnt % 4));
@@ -705,9 +769,9 @@ Object.extend(String.prototype, {
 });
 
 Object.extend(Number.prototype, {
-    parseTime : function(utc) {
+    parseTime(utc = false) {
         let offset = 0;
-        if (utc === null || utc) {
+        if (utc) {
             offset = (new Date().getTimezoneOffset() * 60 * 1000);
         }
         let _date = new Date();
@@ -715,7 +779,7 @@ Object.extend(Number.prototype, {
         return _date;
     },
 
-    toHex : function () {
+    toHex () {
         if (this >= 48 && this <= 57) {
             return this - 48;
         } else if (this >= 65 && this <= 90) {
@@ -727,21 +791,21 @@ Object.extend(Number.prototype, {
         }
     },
 
-    safeRotateLeft : function(_count) {
+    safeRotateLeft(_count) {
         return (this << _count) | (this >>> (32 - _count));
     },
 
-    safeRotateRight : function(_count) {
+    safeRotateRight(_count) {
         return (this >>> _count) | (this << (32 - _count));
     },
 
-    rotateRight : function(_count) {
+    rotateRight(_count) {
         return this >>> _count;
     }
 });
 
 Object.extend(Date.prototype, {
-    format : function(pattern) {
+    format(pattern = "MM/dd/yyyy") {
         let Pattern = {
             "y+" : this.getFullYear(),
             "M+" : this.getMonth() + 1,
@@ -752,10 +816,6 @@ Object.extend(Date.prototype, {
             "S+"  : this.getMilliseconds(),
             "q+" : Math.floor((this.getMonth() + 3) / 3)
         };
-
-        if (pattern === null) {
-            pattern = "MM/dd/yyyy";
-        }
 
         for (let regex in Pattern) {
             if (new RegExp("(" + regex + ")").test(pattern)) {
@@ -785,7 +845,7 @@ Object.extend(Date.prototype, {
      *                                                       Noon: noon UTC time,
      *                                                       data unit: milliseconds
      */
-    sunTime : function(posLon, posLat) {
+    sunTime(posLon, posLat) {
         if (posLon === null || posLon < -180 || posLon > 180
             || posLat === null || posLat < -90 || posLat > 90) {
             throw new Error(Cell.message("Core", "Location.GPS.Unknown"));
@@ -849,12 +909,12 @@ Object.extend(Date.prototype, {
 });
 
 Object.extend(Array.prototype, {
-    toHex : function(littleEndian) {
+    toHex(littleEndian = true) {
         let _result = "", _byte;
         for (let i = 0 ; i < this.length ; i++) {
             _byte = this[i];
             for (let j = 0 ; j < 4 ; j++) {
-                if (littleEndian === null || littleEndian) {
+                if (littleEndian) {
                     _result += BASE16[(_byte >> ((2 * j + 1) * 4)) & 0x0F] + BASE16[(_byte >> ((2 * j) * 4)) & 0x0F];
                 } else {
                     _result += BASE16[(_byte >> (28 - ((2 * j) * 4))) & 0x0F] + BASE16[(_byte >> (28 - ((2 * j + 1) * 4))) & 0x0F];
@@ -864,7 +924,7 @@ Object.extend(Array.prototype, {
         return _result;
     },
 
-    base64 : function(padding) {
+    base64(padding = "") {
         let _result = "", _length = this.length, i;
         for (i = 0 ; i < _length ; i += 3) {
             _result += (BASE64[this[i] >> 2] + BASE64[((this[i] & 0x3) << 4) | (this[i + 1] >> 4)]);
@@ -876,13 +936,13 @@ Object.extend(Array.prototype, {
             }
         }
         while (_result.length % 4 !== 0) {
-            _result += ((padding !== null) ? padding : BASE64[64]);
+            _result += ((padding.length === 0) ? padding : BASE64[64]);
         }
 
         return _result;
     },
 
-    toString : function() {
+    toString() {
         let _result = "", i = 0, _length = this.length;
         while (i < _length) {
             if (this[i] < 0x80) {

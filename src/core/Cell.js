@@ -18,7 +18,7 @@
  *
  * 1.0.0
  * [New] Send Ajax Request
- * [New] Encode form data,
+ * [New] Encode form data
  * [New] Template Render
  * [New] Multilingual Support
  * [New] Core CellJS
@@ -26,224 +26,68 @@
  */
 'use strict';
 
-class HttpClient {
-    constructor(url, options) {
-        this._options = {
-            method : "get",
-            elementId : "",
-            userName : null,
-            passWord : null,
-            asynchronous : true,
-            onCreate : null,
-            onComplete : null,
-            onError : null,
-            onFinished : null
-        };
-        Object.extend(this._options, options || {});
-        this._request = HttpClient._initialize(url, this._options);
-    }
-
-    addHeader(headerName, headerValue) {
-        this._request.setRequestHeader(headerName, headerValue);
-    }
-
-    send(parameters = null) {
-        this.addHeader("cache-control", "no-cache");
-        this.addHeader("X-Requested-With", "XMLHttpRequest");
-        let _jwtToken = sessionStorage.getItem("JWTToken");
-        if (_jwtToken != null) {
-            this.addHeader("Authorization", _jwtToken);
-        }
-
-        if (parameters && parameters.uploadFile) {
-            let uploadEvent = Cell.uploadEvent();
-            if (uploadEvent.onProgress) {
-                this._request.upload.onprogress = uploadEvent.onProgress;
-            }
-            if (uploadEvent.onLoadStart) {
-                this._request.upload.onloadstart = uploadEvent.onLoadStart;
-            }
-            if (uploadEvent.onLoadEnd) {
-                this._request.upload.onloadend = uploadEvent.onLoadEnd;
-            }
-            if (uploadEvent.onError) {
-                this._request.upload.onerror = uploadEvent.onError;
-            }
-            if (uploadEvent.onAbort) {
-                this._request.upload.onabort = uploadEvent.onAbort;
-            }
-        }
-
-        this._request.send(parameters);
-
-        if (!this._options.asynchronous) {
-            return HttpClient._parseResponse(this._request, this._options);
-        }
-    }
-
-    static _parseResponse(_request, _options) {
-        if (_options.onFinished) {
-            _options.onFinished(_request);
-        }
-
-        if (_request.status === 200) {
-            if (_options.onComplete) {
-                return _options.onComplete(_request);
-            }
-
-            if (_options.elementId.length > 0) {
-                let _element = $(_options.elementId);
-                if (_element) {
-                    _element.data = _request.responseText;
-                }
-            }
-        } else if (_request.status === 301 || _request.status === 302 || _request.status === 307) {
-            let _redirectPath = _request.getResponseHeader("Location");
-            if (_redirectPath.length !== 0) {
-                let _newOption = {};
-                Object.extend(_newOption, _options || {});
-                _newOption.method = "GET";
-                new HttpClient(_redirectPath, _newOption).send();
-            }
-        } else {
-            if (_options.onError) {
-                return _options.onError(_request);
-            }
-        }
-    }
-
-    static _initialize(url, _options) {
-        let _request;
-        // If XMLHttpRequest is a javascript object in the local
-        if (window.XMLHttpRequest) {
-            _request = new XMLHttpRequest();
-        } else if (window.ActiveXObject) { // Support the ActiveX
-            try {
-                // Create XMLHttpRequest object by instance an ActiveXObject
-                _request = new ActiveXObject("Microsoft.XMLHTTP"); // higher than msxml3
-            } catch (e) {
-                try {
-                    // Create XMLHttpRequest object by instance an ActiveXObject
-                    _request = new ActiveXObject("Msxml2.XMLHTTP"); // lower than msxml3
-                } catch (e) {
-                    console.error(e.toString());
-                    throw e;
-                }
-            }
-        }
-
-        if (_options.asynchronous) {
-            _request.onreadystatechange = function() {
-                switch (this.readyState) {
-                    case 1:
-                        if (_options.onCreate) {
-                            _options.onCreate(this);
-                        }
-                        break;
-                    case 2:
-                        let _jwtToken = this.getResponseHeader("Authentication");
-                        if (_jwtToken !== null) {
-                            sessionStorage.setItem("JWTToken", _jwtToken);
-                        }
-                        break;
-                    case 4:
-                        HttpClient._parseResponse(this, _options);
-                        break;
-                }
-            };
-        }
-
-        if (_options.userName !== null && _options.passWord !== null) {
-            _request.open(_options.method, url, _options.asynchronous,
-                _options.userName, _options.passWord);
-        } else {
-            _request.open(_options.method, url, _options.asynchronous);
-        }
-
-        return _request;
-    }
-}
+import HttpClient from "../commons/HttpClient.js";
+import RenderProcessor from "../render/Render.js";
 
 class CellJS {
     constructor() {
         this._config = {
             developmentMode: false,
+            templates : "",
             //  Internationalization
             i18n : {
                 //  Current language
                 language : Comment.Language,
                 resPath : ""
             },
-            //  Template Config
-            templates : "",
+            //  Config the dark mode by sunrise and sunset
             darkMode : {
                 enabled : false,
                 styleClass : "darkMode"
             },
+            //  Config for form data
             form : {
+                //  Encrypt value of input[type='password']
                 encryptPassword : true,
-                //  Form password encrypt method
+                //  Encrypt method for input[type='password']
                 //  Options:    MD5/RSA/SHA1/SHA224/SHA256/SHA384/SHA512/SHA512_224/SHA512_256
                 //              SHA3_224/SHA3_256/SHA3_384/SHA3_512/SHAKE128/SHAKE256
                 //              Keccak224/Keccak256/Keccak384/Keccak512
                 encryptMethod : "MD5",
-                convertDateTime : false
+                //  Convert date/time from 'yyyy-MM-dd [HH:mm]' to number of milliseconds between that date and midnight, January 1, 1970.
+                convertDateTime : false,
+                //  Convert value is UTC number of milliseconds between that date and midnight, January 1, 1970.
+                utcDateTime : false
             },
             security : {
                 //  RSA Key Config
                 RSA : {
-                    exponent : "",
-                    modulus : "",
-                    radix : 16,
-                    keySize : 1024
+                    //  Private Key using for encrypt send data and generate digital signature
+                    PrivateKey : {
+                        exponent : "",
+                        modulus : "",
+                        //  Exponent and modulus data radix, default is 16
+                        radix : 16,
+                        //  Private Key Size
+                        keySize : 1024
+                    },
+                    //  Public Key using for decrypt receive data and verify digital signature
+                    PublicKey : {
+                        exponent : "",
+                        modulus : "",
+                        //  Exponent and modulus data radix, default is 16
+                        radix : 16,
+                        //  Public Key Size
+                        keySize : 1024
+                    },
                 }
-            },
-            uploadEvent : {
-                onProgress : null,
-                onLoadStart : null,
-                onLoadEnd : null,
-                onError : null,
-                onAbort : null
             }
         };
         Object.extend(this._config, (Config || {}));
-        if (this._config.security.RSA.exponent.length > 0
-            && this._config.security.RSA.modulus.length > 0 && Cell.hasOwnProperty("RSA")) {
-            this._rsa = new Cell.RSA(this._config.security.RSA.exponent, this._config.security.RSA.modulus,
-                this._config.security.RSA.radix, this._config.security.RSA.keySize);
-        }
+        //  Freeze config
+        Object.freeze(this._config);
         this._resources = {};
-        this._templates = {};
-        this._components = {"Core" : true};
-        this.language(this._config.i18n.language);
-        if (((typeof this._config.templates) === 'string') && this._config.templates.length > 0) {
-            new HttpClient(this._config.templates, {
-                onComplete : function(_request) {
-                    let _responseText = _request.responseText;
-                    if (_responseText.isXml()) {
-                        Array.from(_responseText.parseXml().documentElement.getElementsByTagName("template"))
-                            .forEach(template => {
-                                if (template.textContent && template.textContent.length > 0
-                                    && template.hasAttribute("name")) {
-                                    Cell.registerTemplate(template.getAttribute("name"),
-                                        template.textContent.decodeByRegExp());
-                                }
-                            });
-                    } else if (_responseText.isJSON()) {
-                        let _jsonObj = _responseText.parseJSON()["templates"];
-                        if (Array.isArray(_jsonObj)) {
-                            _jsonObj.forEach(_jsonItem => {
-                                if (_jsonItem.hasOwnProperty("name") && _jsonItem.hasOwnProperty("url")) {
-                                    Cell.registerTemplate(_jsonItem["name"], _jsonItem["url"]);
-                                }
-                            });
-                        }
-                    } else {
-                        console.log(Cell.message("Core", "Template.Unknown"));
-                    }
-                }
-            }).send();
-        }
+        this._components = {};
 
         if (this._config.darkMode.enabled && Comment.GPS) {
             navigator.geolocation.getCurrentPosition(function (position) {
@@ -251,6 +95,22 @@ class CellJS {
             });
         }
         this._darkMode = false;
+        this._rsaPrivate = null;
+        this._rsaPublic = null;
+    }
+
+    init() {
+        this.Render = new RenderProcessor();
+        this.Render.init(this._config.templates);
+        this.language(this._config.i18n.language);
+        if (this._config.security.RSA.PrivateKey.exponent.length > 0
+            && this._config.security.RSA.PrivateKey.modulus.length > 0) {
+            this._rsaPrivate = new Cell.RSA(this._config.security.RSA.PrivateKey);
+        }
+        if (this._config.security.RSA.PublicKey.exponent.length > 0
+            && this._config.security.RSA.PublicKey.modulus.length > 0) {
+            this._rsaPublic = new Cell.RSA(this._config.security.RSA.PublicKey);
+        }
     }
 
     developmentMode() {
@@ -284,15 +144,11 @@ class CellJS {
                 new HttpClient(_formElement.action, {
                     method : _formElement.method,
                     elementId : _formElement.dataset.elementId,
-                    onCreate: Cell.coverWindow,
-                    onFinished: Cell.closeCover
+                    onCreate: openCover,
+                    onFinished: closeCover
                 }).send(_formElement.formData());
             }
         }
-    }
-
-    uploadEvent() {
-        return this._config.uploadEvent;
     }
 
     registerDarkMode(posLon, posLat) {
@@ -321,57 +177,10 @@ class CellJS {
         }
     }
 
-    registerComponent(bundle, component, loadResource = false) {
-        if (!this._components.hasOwnProperty(bundle)) {
-            this[bundle] = component;
-            if (loadResource) {
-                this.loadResource(bundle);
-            }
-            this._components[bundle] = loadResource;
-        }
-    }
-
-    registerTemplate(name, urlAddress) {
-        if (Cell.developmentMode()) {
-            console.log(Cell.message("Core", "Template.Register", name, urlAddress));
-        }
-        let _template = {
-            urlAddress : urlAddress,
-            content : null};
-        if (this._templates.hasOwnProperty(name)) {
-            console.log(Cell.message("Core", "Template.Exists", name));
-        }
-        this._templates[name] = _template;
-    }
-
-    coverWindow() {
-        let _processed = false;
-        document.querySelectorAll("div[data-cover-window='true']")
-            .forEach(element => {
-                if (element.getStyle().length === 0) {
-                    let _cssText = "width: 100%; height: 100%; position: absolute; top: 0; left: 0;";
-                    _cssText += ("background-color: " + element.dataset.backgroundColor + "; ");
-                    _cssText += ("opacity: " + element.dataset.opacity + "; ");
-                    _cssText += ("z-index: " + element.dataset.zIndex + ";");
-                    element.setStyle(_cssText);
-                }
-                element.show();
-                _processed = true;
-            });
-        if (_processed) {
-            document.body.style.overflow = "hidden";
-        }
-    }
-
-    closeCover() {
-        document.querySelectorAll("div[data-cover-window='true']").forEach(element => element.hide());
-        document.body.style.overflow = "auto";
-    }
-
     loadResource(bundle = "") {
-        let _url = this._config.i18n.resPath
-        + this._config.i18n.resPath.endsWith("/") ? "" : "/"
-            + bundle + "/" + this._config.i18n.language + ".json";
+        let _url = this._config.i18n.resPath;
+        _url += this._config.i18n.resPath.endsWith("/") ? "" : "/";
+        _url += bundle + "/" + this._language + ".json";
         this._resources[bundle] = new HttpClient(_url, {
             asynchronous: false,
             onComplete : function (_request) {
@@ -401,10 +210,28 @@ class CellJS {
     }
 
     language(language) {
-        this._config.i18n.language = language;
+        if (this._language === language) {
+            return;
+        }
+        this._language = language;
         this._resources = {};
+        //  Load Core Resource
+        this.loadResource("Core");
         for (let bundle in this._components) {
-            if (this._components[bundle]) {
+            if (this._components.hasOwnProperty(bundle) && this._components[bundle]) {
+                this.loadResource(bundle)
+            }
+        }
+    }
+
+    registerComponent(bundle, component, loadResource = false) {
+        if (Object.hasOwnProperty(bundle)) {
+            return;
+        }
+        this[bundle] = component;
+        if (!this._components.hasOwnProperty(bundle)) {
+            this._components[bundle] = loadResource;
+            if (loadResource) {
                 this.loadResource(bundle);
             }
         }
@@ -414,8 +241,8 @@ class CellJS {
         if (!this._config.form.encryptPassword) {
             return password;
         }
-        if (this._config.form.encryptMethod === "RSA" && this._rsa !== null) {
-            return this._rsa.encrypt(password);
+        if (this._config.form.encryptMethod === "RSA" && this._rsaPrivate !== null) {
+            return this._rsaPrivate.encrypt(password);
         }
         return this.calculateData(this._config.form.encryptMethod, password);
     }
@@ -430,55 +257,55 @@ class CellJS {
                     encryptor = Cell.MD5.newInstance(key);
                     break;
                 case "SHA1":
-                    encryptor = Cell.SHA1.newInstance(key);
+                    encryptor = Cell.SHA.SHA1(key);
                     break;
                 case "SHA224":
-                    encryptor = Cell.SHA224.newInstance(key);
+                    encryptor = Cell.SHA.SHA224(key);
                     break;
                 case "SHA256":
-                    encryptor = Cell.SHA256.newInstance(key);
+                    encryptor = Cell.SHA.SHA256(key);
                     break;
                 case "SHA384":
-                    encryptor = Cell.SHA384.newInstance(key);
+                    encryptor = Cell.SHA.SHA384(key);
                     break;
                 case "SHA512":
-                    encryptor = Cell.SHA512.newInstance(key);
+                    encryptor = Cell.SHA.SHA512(key);
                     break;
                 case "SHA512_224":
-                    encryptor = Cell.SHA512.SHA512_224(key);
+                    encryptor = Cell.SHA.SHA512_224(key);
                     break;
                 case "SHA512_256":
-                    encryptor = Cell.SHA512.SHA512_256(key);
+                    encryptor = Cell.SHA.SHA512_256(key);
                     break;
                 case "SHA3_224":
-                    encryptor = Cell.SHA3.SHA3_224(key);
+                    encryptor = Cell.SHA.SHA3_224(key);
                     break;
                 case "SHA3_256":
-                    encryptor = Cell.SHA3.SHA3_256(key);
+                    encryptor = Cell.SHA.SHA3_256(key);
                     break;
                 case "SHA3_384":
-                    encryptor = Cell.SHA3.SHA3_384(key);
+                    encryptor = Cell.SHA.SHA3_384(key);
                     break;
                 case "SHA3_512":
-                    encryptor = Cell.SHA3.SHA3_512(key);
+                    encryptor = Cell.SHA.SHA3_512(key);
                     break;
                 case "SHAKE128":
-                    encryptor = Cell.SHA3.SHAKE128();
+                    encryptor = Cell.SHA.SHAKE128();
                     break;
                 case "SHAKE256":
-                    encryptor = Cell.SHA3.SHAKE256();
+                    encryptor = Cell.SHA.SHAKE256();
                     break;
                 case "Keccak224":
-                    encryptor = Cell.SHA3.Keccak224(key);
+                    encryptor = Cell.SHA.Keccak224(key);
                     break;
                 case "Keccak256":
-                    encryptor = Cell.SHA3.Keccak256(key);
+                    encryptor = Cell.SHA.Keccak256(key);
                     break;
                 case "Keccak384":
-                    encryptor = Cell.SHA3.Keccak384(key);
+                    encryptor = Cell.SHA.Keccak384(key);
                     break;
                 case "Keccak512":
-                    encryptor = Cell.SHA3.Keccak512(key);
+                    encryptor = Cell.SHA.Keccak512(key);
                     break;
                 default:
                     return data;
@@ -489,118 +316,44 @@ class CellJS {
     }
 
     convertDateTime(value = "") {
-        return this._config.form.convertDateTime ? Date.parse(value) : value;
+        if (this._config.form.convertDateTime) {
+            let milliseconds = Date.parse(value);
+            if (this._config.form.utcDateTime) {
+                milliseconds += (new Date().getTimezoneOffset() * 60 * 1000);
+            }
+            return milliseconds;
+        }
+        return value;
     }
 
-    processOnload() {
-        document.querySelectorAll("*[data-bind-updater]").forEach(element => {
-            if (element.dataset.bindProcessed !== "true" && element.id && element.id.length > 0) {
-                let name = element.dataset.template || "", override = (element.dataset.override === "true");
-                if (name.length > 0 && !Cell._templates.hasOwnProperty(name)) {
-                    throw new Error(Cell.message("Core", "Template.Not.Exists", name));
-                }
-                Object.defineProperty(element, "data", {
-                    set(data) {
-                        if (!data.isJSON()) {
-                            throw new Error(Cell.message("Core", "Data.Invalid.JSON"));
-                        }
-
-                        let _jsonData = data.parseJSON();
-                        if (element.tagName.toLowerCase() === "form") {
-                            element.querySelectorAll("input")
-                                .forEach(input => {
-                                    let _name = input.getAttribute("name");
-                                    if (_name && _jsonData.hasOwnProperty(_name)) {
-                                        Render.processInput(_jsonData[_name], input);
-                                    }
-                                });
-                            element.querySelectorAll("select, datalist")
-                                .forEach(select => {
-                                    let _name = select.getAttribute("name");
-                                    if (_name && _jsonData.hasOwnProperty(_name)) {
-                                        select.setAttribute("value", _jsonData[_name]);
-                                    }
-                                    if (select.hasAttribute("data-iterator")) {
-                                        let _paramName = select.getAttribute("data-iterator");
-                                        if (_jsonData.hasOwnProperty(_paramName)) {
-                                            select.clearChildNodes();
-                                            Render.appendOptions(select, _jsonData[_paramName]);
-                                        }
-                                    }
-                                });
-                        } else {
-                            let _template = Cell._templates[name];
-                            if (_template.content === null) {
-                                new HttpClient(_template.urlAddress, {
-                                    onComplete: function (_request) {
-                                        let content = _request.responseText;
-                                        if (content && content.isHtml()) {
-                                            _template.content = content.parseXml().documentElement;
-                                            Cell._templates[name] = _template;
-                                        }
-                                        if (_template.content === null) {
-                                            throw new Error(Cell.message("Core", "Template.Not.Exists", name));
-                                        }
-                                        Render.processRender(element, _jsonData, override, _template.content);
-                                    }
-                                }).send();
-                            } else {
-                                Render.processRender(element, _jsonData, override, _template.content);
-                            }
-                        }
-                        Cell.processOnload();
-                        if (_jsonData["title"] !== null) {
-                            _jsonData["title"].setTitle();
-                        }
-                        if (_jsonData["keywords"] !== null) {
-                            _jsonData["keywords"].setKeywords();
-                        }
-                        if (_jsonData["description"] !== null) {
-                            _jsonData["description"].setDescription();
-                        }
-                        if (element.dataset.floatWindow) {
-                            Cell.coverWindow();
-                            element.show();
-                            if (_jsonData["timeout"] && _jsonData["timeout"].isNum()) {
-                                setTimeout(function() {
-                                    element.hide();
-                                    Cell.closeCover();
-                                }, parseInt(_jsonData["timeout"]));
-                            }
-                        }
-                    }
-                });
-                element.dataset.bindProcessed = "true";
+    enableElement(element) {
+        return function() {
+            element.dataset.disabled = "false";
+            if (Comment.Browser.IE) {
+                document.body.style.overflow = "hidden";
+                document.body.style.overflow = "auto";
             }
-        });
-        document.querySelectorAll("*[data-float-window='true'], *[data-disabled='true'], *[href][data-element-id], a[data-form-id], button[data-form-id], input[data-validate='true']")
+        }
+    }
+
+    static openCover() {
+        document.querySelectorAll("div[data-cover-window='true']")
             .forEach(element => {
-                let tagName = element.tagName.toLowerCase();
-                if (element.dataset.floatWindow === "true") {
-                    element.hide();
+                if (element.getStyle().length === 0) {
+                    let _cssText = "width: 100%; height: 100%; position: absolute; top: 0; left: 0;";
+                    _cssText += ("background-color: " + element.dataset.backgroundColor + "; ");
+                    _cssText += ("opacity: " + element.dataset.opacity + "; ");
+                    _cssText += ("z-index: " + element.dataset.zIndex + ";");
+                    element.setStyle(_cssText);
                 }
-                if (element.dataset.disabled === "true" && element.dataset.activeDelay
-                    && element.dataset.activeDelay.isNum()) {
-                    setTimeout(function() {
-                        element.dataset.disabled = "false";
-                    }, element.dataset.activeDelay.parseInt());
-                }
-                if (element.dataset.elementId !== null && element.hasAttribute("href")) {
-                    element.addEvent("click", function(event) {
-                        Cell.sendRequest(event);
-                    })
-                }
-                if ((tagName === "a" || tagName === "button") && element.dataset.formId !== null) {
-                    element.addEvent("click", function(event) {
-                        Cell.submitForm(event);
-                    })
-                }
-                if ((tagName === "input" || tagName === "select") && element.dataset.validate === "true") {
-                    element.addEvent("blur", function(event) {
-                        event.target.validate();
-                    })
-                }
+                element.show();
+                document.body.style.overflow = "hidden";
             });
+    }
+
+    static closeCover() {
+        document.querySelectorAll("div[data-cover-window='true']").forEach(element => element.hide());
+        document.body.style.overflow = "auto";
     }
 
     static $() {
@@ -626,227 +379,122 @@ class CellJS {
     }
 }
 
-(function() {
-    if (typeof window.Cell === "undefined") {
-        window.Cell = new CellJS();
-        window.$ = CellJS.$;
-    }
-    let _onload = window.onload;
-    if (_onload) {
-        window.onload = function () {
-            _onload.apply(this);
-            Cell.processOnload();
-        }
-    } else {
-        window.onload = Cell.processOnload;
-    }
-})();
-
-class Render {
-    constructor() {
-    }
-
-    static processRender(element, jsonData, override = true, template) {
-        if (template == null) {
-            return;
-        }
-        if (override) {
-            element.clearChildNodes();
-        }
-
-        let _childList = template.childList(), _length = _childList.length , i;
-        for (i = 0 ; i < _length ; i++) {
-            if (_childList[i].hasAttribute("data-iterator")) {
-                let _dataName = _childList[i].getAttribute("data-iterator");
-                _dataName = _dataName.substring(1, _dataName.length - 1).trim();
-                jsonData[_dataName].forEach(jsonItem => {
-                    let _childElement = Render.processTemplate(_childList[i], jsonItem);
-                    _childElement.removeAttribute("data-iterator");
-                    Render.processBasicElement(element, _childElement.render(), false);
-                });
-            } else {
-                Render.processBasicElement(element,
-                    Render.processTemplate(_childList[i], jsonData).render(), false);
+const DEFAULT_PROCESSORS = {
+    "*[data-bind-updater]" : function (element) {
+        if (element.id && element.id.length > 0) {
+            let name = element.dataset.template || "", override = (element.dataset.override === "true");
+            if (name.length > 0 && !Cell.Render.hasTemplate(name)) {
+                throw new Error(Cell.message("Core", "Template.Not.Exists", name));
             }
-        }
-    }
+            Object.defineProperty(element, "data", {
+                set(data) {
+                    if (!data.isJSON()) {
+                        throw new Error(Cell.message("Core", "Data.Invalid.JSON"));
+                    }
 
-    static cloneTemplate(template, jsonData) {
-        let _node = template.cloneNode(false);
-        template.attrNames().forEach(attrName => {
-            let _attrValue = template.getAttribute(attrName);
-            if (_attrValue !== null) {
-                _attrValue = _attrValue.trim();
-                let paramName;
-                while ((paramName = Render.match(_attrValue)) !== null) {
-                    _attrValue = _attrValue.replace(paramName,
-                        jsonData[paramName.substring(1, paramName.length - 1).trim()] || "");
-                }
-                _node.setAttribute(attrName, _attrValue);
-            }
-        });
-        return _node;
-    }
-
-    static processTemplate(template, jsonData) {
-        let _node = Render.cloneTemplate(template, jsonData);
-        let _childList = template.childList(), _length = _childList.length , i;
-        if (_length > 0) {
-            for (i = 0 ; i < _length ; i++) {
-                if (_childList[i].hasAttribute("data-iterator")) {
-                    let _dataName = _childList[i].getAttribute("data-iterator");
-                    jsonData[_dataName.substring(1, _dataName.length - 1).trim()].forEach(jsonItem => {
-                        let _child = Render.processTemplate(_childList[i], jsonItem, false);
-                        _child.removeAttribute("data-iterator");
-                        _node.appendChild(_child);
-                    });
-                } else {
-                    _node.appendChild(Render.processTemplate(_childList[i], jsonData));
-                }
-            }
-        } else if (template.textContent.length > 0) {
-            let _content = template.textContent.trim(), paramName;
-            if (_content.length > 0) {
-                while ((paramName = Render.match(_content)) !== null) {
-                    _content = _content.replace(paramName,
-                        jsonData[paramName.substring(1, paramName.length - 1).trim()] || "");
-                }
-                Render.processBasicElement(_node, _content, true);
-            }
-        } else if (Array.isArray(jsonData)) {
-            jsonData.forEach(jsonItem => {
-                Render.processBasicElement(_node, jsonItem, false);
-            });
-        } else {
-            Render.processBasicElement(_node, jsonData, false);
-        }
-
-        return _node;
-    }
-
-    static processInput(data, element) {
-        if (element.getAttribute("type") === null) {
-            return;
-        }
-
-        let _type = element.getAttribute("type").toLowerCase();
-        switch (_type) {
-            case "checkbox":
-            case "radio":
-                let _name = element.getAttribute("name");
-                document.querySelectorAll("input[type='" + _type + "'][name='" + _name + "']")
-                    .forEach(_element => {
-                        let _value = _element.getAttribute("value");
-                        if (Array.isArray(data)) {
-                            _element.checked = (data.indexOf(_value) !== -1);
-                        } else {
-                            _element.checked = (_value === data);
+                    let _jsonData = data.parseJSON();
+                    if (element.tagName.toLowerCase() === "form") {
+                        element.querySelectorAll("input")
+                            .forEach(input => {
+                                let _name = input.getAttribute("name");
+                                if (_name && _jsonData.hasOwnProperty(_name)) {
+                                    Cell.Render.processInput(_jsonData[_name], input);
+                                }
+                            });
+                        element.querySelectorAll("select, datalist")
+                            .forEach(select => {
+                                let _name = select.getAttribute("name");
+                                if (_name && _jsonData.hasOwnProperty(_name)) {
+                                    select.setAttribute("value", _jsonData[_name]);
+                                }
+                                if (select.hasAttribute("data-iterator")) {
+                                    let _paramName = select.getAttribute("data-iterator");
+                                    if (_jsonData.hasOwnProperty(_paramName)) {
+                                        select.clearChildNodes();
+                                        Cell.Render.appendOptions(select, _jsonData[_paramName]);
+                                    }
+                                }
+                            });
+                    } else {
+                        Cell.renderTemplate(element, _jsonData, override);
+                    }
+                    Cell.Render.processOnload();
+                    if (_jsonData.hasOwnProperty("title")) {
+                        _jsonData["title"].setTitle();
+                    }
+                    if (_jsonData.hasOwnProperty("keywords")) {
+                        _jsonData["keywords"].setKeywords();
+                    }
+                    if (_jsonData.hasOwnProperty("description")) {
+                        _jsonData["description"].setDescription();
+                    }
+                    if (element.dataset.floatWindow) {
+                        openCover();
+                        element.show();
+                        if (_jsonData.hasOwnProperty("timeout") && _jsonData["timeout"].isNum()) {
+                            setTimeout(function() {
+                                element.hide();
+                                closeCover();
+                            }, _jsonData["timeout"].parseInt());
                         }
-                    });
-                break;
-            case "color":
-                if (((typeof data) === "string") && data.isColorCode()) {
-                    element.value = data;
-                    // element.setAttribute("value", data);
-                }
-                break;
-            case "email":
-                if (((typeof data) === "string") && data.isEmail()) {
-                    element.value = data;
-                    // element.setAttribute("value", data);
-                }
-                break;
-            case "image":
-                element.src = data;
-                break;
-            case "date":
-                if (((typeof data) === "string") && data.isNum()) {
-                    element.value = data.parseInt().parseTime().format("yyyy-MM-dd");
-                    // element.setAttribute("value", data.parseInt().parseTime().format("yyyy-MM-dd"));
-                } else {
-                    element.value = data;
-                    // element.setAttribute("value", data);
-                }
-                break;
-            case "time":
-                if (((typeof data) === "string") && data.isNum()) {
-                    element.value = data.parseInt().parseTime().format("HH:mm");
-                    // element.setAttribute("value", data.parseInt().parseTime().format("HH:mm"));
-                } else {
-                    element.value = data;
-                    // element.setAttribute("value", data);
-                }
-                break;
-            case "datetime-local":
-                if (((typeof data) === "string") && data.isNum()) {
-                    element.value = data.parseInt().parseTime().format("yyyy-MM-ddTHH:mm");
-                    // element.setAttribute("value", data.parseInt().parseTime().format("yyyy-MM-ddTHH:mm"));
-                } else {
-                    element.value = data;
-                    // element.setAttribute("value", data);
-                }
-                break;
-            case "file":
-            case "password":
-                //  Ignore for data bind
-                break;
-            default:
-                element.value = data;
-                break;
-
-        }
-    }
-
-    static appendOptions(element, dataList) {
-        let _currentValue = element.hasAttribute("value") ? element.getAttribute("value") : "";
-        dataList.forEach(dataItem => {
-            let _option = document.createElement("option");
-            _option.value = dataItem["value"];
-            _option.text = dataItem["text"];
-            _option.selected = _currentValue === _option.value;
-            element.options.add(_option);
-        });
-    }
-
-    static match(content) {
-        let startIndex = content.indexOf('{'), endIndex = content.indexOf('}');
-        if (startIndex === -1 || endIndex === -1 || startIndex > endIndex) {
-            return null;
-        }
-        return content.substring(startIndex, endIndex + 1);
-    }
-
-    static processBasicElement(element, data, override) {
-        if (element.hasAttribute("data-pattern") && data.isNum()) {
-            let _date = data.parseInt().parseTime(element.hasAttribute("data-utc"));
-            data = _date.format(element.getAttribute("data-pattern"));
-        }
-        switch (element.tagName.toLowerCase()) {
-            case "select":
-            case "datalist":
-                if (element.hasAttribute("data-iterator")) {
-                    let _dataName = element.getAttribute("data-iterator");
-                    _dataName = _dataName.substring(1, _dataName.length - 1).trim();
-                    if (data.hasOwnProperty(_dataName)) {
-                        if (override) {
-                            element.clearChildNodes();
-                        }
-                        Render.appendOptions(element, data[_dataName]);
                     }
                 }
-                break;
-            case "input":
-                let _value = element.getAttribute("value");
-                if ((_value == null || _value.length === 0) && element.hasAttribute("name")) {
-                    _value = data[element.getAttribute("name")];
-                }
-                Render.processInput(_value, element);
-                break;
-            default:
-                if ((typeof data) === "string") {
-                    element.innerHTML = override ? data : (element.innerHTML + data);
-                }
-                break;
+            });
         }
+    },
+    "*[data-float-window='true'" : function (element) {
+        element.hide();
+    },
+    "*[href][data-element-id]" : function (element) {
+        if (element.dataset.elementId !== null && element.hasAttribute("href")) {
+            element.addEvent("click", function(event) {
+                Cell.sendRequest(event);
+            });
+        }
+        if (element.dataset.disabled === "true" && element.dataset.activeDelay
+            && element.dataset.activeDelay.isNum()) {
+            setTimeout(Cell.enableElement(element), element.dataset.activeDelay.parseInt());
+        }
+    },
+    "*[data-sort-child='true']" : function (element) {
+        if (element.dataset.tagName && element.dataset.elementId && element.dataset.sortItem) {
+            element.addEvent("click", function(event) {
+                let _sortDesc = event.target.dataset.sortType === undefined ? false
+                    : event.target.dataset.sortType.toLowerCase() === "true";
+                $(event.target.dataset.elementId).sortChildrenBy(event.target.dataset.tagName,
+                    event.target.dataset.sortItem, _sortDesc);
+            });
+        }
+    },
+    "a[data-form-id], button[data-form-id]" : function (element) {
+        if (element.dataset.formId !== null) {
+            element.addEvent("click", function(event) {
+                Cell.submitForm(event);
+            });
+        }
+    },
+    "input[data-validate='true'], select[data-validate='true'], textarea[data-validate='true']" : function (element) {
+        element.addEvent("blur", function(event) {
+            event.target.validate();
+        });
     }
-}
+};
+
+(function() {
+    if (typeof window.Cell === "undefined") {
+        window.$ = CellJS.$;
+        window.openCover = CellJS.openCover;
+        window.closeCover = CellJS.closeCover;
+        window.Cell = new CellJS();
+        window.Cell.init();
+    }
+
+    let _onload = window.onload;
+    window.onload = function () {
+        Cell.Render.registerUIProcessors(DEFAULT_PROCESSORS);
+        if (_onload) {
+            _onload.apply(this);
+        }
+        Cell.Render.processOnload();
+    };
+})();
