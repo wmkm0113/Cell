@@ -7,6 +7,7 @@
   "Data.Invalid.JSON" : "解析JSON字符串错误，这不是一个正确的JSON字符串",
   "Data.Invalid.XML" : "解析XML字符串错误，不是一个正确的XML字符串",
   "Location.GPS.Unknown" : "GPS数据错误",
+  "HttpClient.TimeOut" : "响应超时，请求地址：{0}",
   "HttpClient.Status.Code" : "请求状态代码为：{0}",
   "HttpClient.Redirect" : "请求跳转地址为：{0}",
   "HttpClient.Request" : "无法生成XMLHttpRequest对象",

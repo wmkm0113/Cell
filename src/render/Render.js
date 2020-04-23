@@ -22,8 +22,6 @@
  */
 'use strict';
 
-import HttpClient from "../commons/HttpClient.js";
-
 export default class RenderProcessor {
     constructor() {
         this._templates = {};
@@ -32,32 +30,33 @@ export default class RenderProcessor {
 
     init(defineUrl = "") {
         if (defineUrl.length > 0) {
-            new HttpClient(defineUrl, {
-                onComplete : function(_request) {
-                    let _responseText = _request.responseText;
-                    if (_responseText.isXml()) {
-                        Array.from(_responseText.parseXml().getElementsByTagName("template"))
-                            .forEach(template => {
-                                if (template.textContent && template.textContent.length > 0
-                                    && template.hasAttribute("name")) {
-                                    Cell.Render.registerTemplate(template.getAttribute("name"),
-                                        template.textContent.decodeByRegExp());
-                                }
-                            });
-                    } else if (_responseText.isJSON()) {
-                        let _jsonObj = _responseText.parseJSON()["templates"];
-                        if (Array.isArray(_jsonObj)) {
-                            _jsonObj.forEach(_jsonItem => {
-                                if (_jsonItem.hasOwnProperty("name") && _jsonItem.hasOwnProperty("url")) {
-                                    Cell.Render.registerTemplate(_jsonItem["name"], _jsonItem["url"]);
-                                }
-                            });
-                        }
-                    } else {
-                        console.log(Cell.message("Core", "Template.Unknown"));
+            Cell.Ajax(defineUrl, {}).then(responseText => {
+                if (responseText.isXml()) {
+                    Array.from(responseText.parseXml().getElementsByTagName("template"))
+                        .forEach(template => {
+                            if (template.textContent && template.textContent.length > 0
+                                && template.hasAttribute("name")) {
+                                this.registerTemplate(template.getAttribute("name"),
+                                    template.textContent.decodeByRegExp());
+                            }
+                        });
+                } else if (responseText.isJSON()) {
+                    let _jsonObj = responseText.parseJSON()["templates"];
+                    if (Array.isArray(_jsonObj)) {
+                        _jsonObj.forEach(_jsonItem => {
+                            if (_jsonItem.hasOwnProperty("name") && _jsonItem.hasOwnProperty("url")) {
+                                this.registerTemplate(_jsonItem["name"], _jsonItem["url"]);
+                            }
+                        });
                     }
+                } else {
+                    console.log(Cell.message("Core", "Template.Unknown"));
                 }
-            }).send();
+                this.registerUIProcessors(DEFAULT_PROCESSORS);
+                this.processOnload();
+            }).catch(errorMsg => {
+                console.log(errorMsg);
+            });
         }
     }
 
@@ -111,23 +110,26 @@ export default class RenderProcessor {
     }
 
     renderTemplate(element, jsonData, override) {
-        let _template = Cell._templates[element.dataset.template];
+        let _template = this._templates[element.dataset.template];
         if (_template.content === null) {
-            new HttpClient(_template.urlAddress, {
-                onComplete: function (_request) {
-                    let content = _request.responseText;
-                    if (content && content.isHtml()) {
-                        _template.content = content.parseXml();
+            Cell.Ajax(_template.urlAddress)
+                .then(responseText => {
+                    if (responseText && responseText.isHtml()) {
+                        _template.content = responseText.parseXml();
                         Cell.Render._templates[element.dataset.template] = _template;
                     }
                     if (_template.content === null) {
                         throw new Error(Cell.message("Core", "Template.Not.Exists", name));
                     }
-                    Cell.Render.processRender(element, jsonData, override, _template.content);
-                }
-            }).send();
+                    this.processRender(element, jsonData, override, _template.content);
+                })
+                .catch(errorMsg => {
+                    if (Cell.developmentMode()) {
+                        console.log(errorMsg);
+                    }
+                });
         } else {
-            Cell.Render.processRender(element, jsonData, override, _template.content);
+            this.processRender(element, jsonData, override, _template.content);
         }
     }
 
@@ -329,3 +331,104 @@ export default class RenderProcessor {
         }
     }
 }
+
+const DEFAULT_PROCESSORS = {
+    "*[data-bind-updater]" : function (element) {
+        if (element.id && element.id.length > 0) {
+            let name = element.dataset.template || "", override = (element.dataset.override === "true");
+            if (name.length > 0 && !Cell.Render.hasTemplate(name)) {
+                throw new Error(Cell.message("Core", "Template.Not.Exists", name));
+            }
+            Object.defineProperty(element, "data", {
+                set(data) {
+                    if (!data.isJSON()) {
+                        throw new Error(Cell.message("Core", "Data.Invalid.JSON"));
+                    }
+
+                    let _jsonData = data.parseJSON();
+                    if (element.tagName.toLowerCase() === "form") {
+                        element.querySelectorAll("input")
+                            .forEach(input => {
+                                let _name = input.getAttribute("name");
+                                if (_name && _jsonData.hasOwnProperty(_name)) {
+                                    Cell.Render.processInput(_jsonData[_name], input);
+                                }
+                            });
+                        element.querySelectorAll("select, datalist")
+                            .forEach(select => {
+                                let _name = select.getAttribute("name");
+                                if (_name && _jsonData.hasOwnProperty(_name)) {
+                                    select.setAttribute("value", _jsonData[_name]);
+                                }
+                                if (select.hasAttribute("data-iterator")) {
+                                    let _paramName = select.getAttribute("data-iterator");
+                                    if (_jsonData.hasOwnProperty(_paramName)) {
+                                        select.clearChildNodes();
+                                        Cell.Render.appendOptions(select, _jsonData[_paramName]);
+                                    }
+                                }
+                            });
+                    } else {
+                        Cell.Render.renderTemplate(element, _jsonData, override);
+                    }
+                    Cell.Render.processOnload();
+                    if (_jsonData.hasOwnProperty("title")) {
+                        _jsonData["title"].setTitle();
+                    }
+                    if (_jsonData.hasOwnProperty("keywords")) {
+                        _jsonData["keywords"].setKeywords();
+                    }
+                    if (_jsonData.hasOwnProperty("description")) {
+                        _jsonData["description"].setDescription();
+                    }
+                    if (element.dataset.floatWindow) {
+                        openCover();
+                        element.show();
+                        if (_jsonData.hasOwnProperty("timeout") && _jsonData["timeout"].isNum()) {
+                            setTimeout(function() {
+                                element.hide();
+                                closeCover();
+                            }, _jsonData["timeout"].parseInt());
+                        }
+                    }
+                }
+            });
+        }
+    },
+    "*[data-float-window='true'" : function (element) {
+        element.hide();
+    },
+    "*[href][data-element-id]" : function (element) {
+        if (element.dataset.elementId !== null && element.hasAttribute("href")) {
+            element.bindEvent("click", function(event) {
+                Cell.sendRequest(event);
+            });
+        }
+        if (element.dataset.disabled === "true" && element.dataset.activeDelay
+            && element.dataset.activeDelay.isNum()) {
+            setTimeout(Cell.enableElement(element), element.dataset.activeDelay.parseInt());
+        }
+    },
+    "*[data-sort-child='true']" : function (element) {
+        if (element.dataset.tagName && element.dataset.elementId && element.dataset.sortItem) {
+            element.bindEvent("click", function(event) {
+                let _sortDesc = event.target.dataset.sortType === undefined ? false
+                    : event.target.dataset.sortType.toLowerCase() === "true";
+                $(event.target.dataset.elementId).sortChildrenBy(event.target.dataset.tagName,
+                    event.target.dataset.sortItem, _sortDesc);
+            });
+        }
+    },
+    "a[data-form-id], button[data-form-id]" : function (element) {
+        if (element.dataset.formId !== null) {
+            element.bindEvent("click", function(event) {
+                Cell.submitForm(event);
+            });
+        }
+    },
+    "input[data-validate='true'], select[data-validate='true'], textarea[data-validate='true']" : function (element) {
+        element.bindEvent("blur", function(event) {
+            event.target.validate();
+        });
+    }
+};

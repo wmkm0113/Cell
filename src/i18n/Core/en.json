@@ -7,6 +7,7 @@
   "Data.Invalid.JSON" : "Parse JSON error，given string was not a valid JSON string",
   "Data.Invalid.XML" : "Parse XML error, given string was not a valid XML string",
   "Location.GPS.Unknown" : "GPS Data Invalid",
+  "HttpClient.TimeOut" : "Timeout for waiting response，request url：{0}",
   "HttpClient.Status.Code" : "Response Status Code：{0}",
   "HttpClient.Redirect" : "Redirect Path：{0}",
   "HttpClient.Request" : "Generate XMLHttpRequest Instance Failed",

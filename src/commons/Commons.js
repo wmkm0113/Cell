@@ -165,6 +165,7 @@ const Config = {
     }
 };
 Object.seal(Config);
+export {Comment, Config};
 
 Object.extend = function(destination, source) {
     for (let _property in source) {
@@ -263,7 +264,7 @@ Object.extend(Element.prototype, {
         }
     },
 
-    addEvent(_eventName, _operateFunc) {
+    bindEvent(_eventName, _operateFunc) {
         if (Comment.Browser.IE && !Comment.Browser.IE11) {
             this.attachEvent("on" + _eventName, _operateFunc);
         } else {
@@ -702,7 +703,7 @@ Object.extend(String.prototype, {
         return _result;
     },
 
-    toUTF8() {
+    toUTF8 : function() {
         return /[\u0080-\uFFFF]/.test(this) ? unescape(encodeURIComponent(this)) : this;
     },
 
@@ -777,18 +778,6 @@ Object.extend(Number.prototype, {
         let _date = new Date();
         _date.setTime(this - offset);
         return _date;
-    },
-
-    toHex () {
-        if (this >= 48 && this <= 57) {
-            return this - 48;
-        } else if (this >= 65 && this <= 90) {
-            return 10 + this - 65;
-        } else if (this >= 97 && this <= 122) {
-            return 10 + this - 97;
-        } else {
-            return 0;
-        }
     },
 
     safeRotateLeft(_count) {

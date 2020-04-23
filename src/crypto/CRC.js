@@ -19,15 +19,7 @@
  * [New] Define Standard CRC Algorithms
  * [New] CRC Support From CRC3 to CRC32
  */
-(function (CRC) {
-    if (typeof window.Cell === "undefined") {
-        window.CRC = CRC;
-    } else {
-        Cell.registerComponent("CRC", CRC, true);
-        if (Cell.developmentMode()) {
-            console.log(Cell.message("CRC", "CRC.SUPPORTED", CRC.REGISTERED_ALGORITHMS()));
-        }
-    }
+function init(CRC) {
     CRC.REGISTER("CRC-3/GSM", 3, 0x3, 0x0, 0x7, false, false);
     CRC.REGISTER("CRC-3/ROHC", 3, 0x3, 0x7, 0x0, true, true);
     CRC.REGISTER("CRC-4/G-704", 4, 0x3, 0x0, 0x0, true, true);
@@ -129,6 +121,19 @@
     CRC.REGISTER("CRC-32/JAMCRC", 32, 0x04C11DB7, 0xFFFFFFFF, 0x00000000, true, true);
     CRC.REGISTER("CRC-32/MPEG-2", 32, 0x04C11DB7, 0xFFFFFFFF, 0x00000000, false, false);
     CRC.REGISTER("CRC-32/XFER", 32, 0x000000AF, 0x00000000, 0x00000000, false, false);
+}
+(function (CRC) {
+    if (typeof window.Cell === "undefined") {
+        window.CRC = CRC;
+        init(CRC);
+    } else {
+        Cell.registerComponent("CRC", CRC, true, function () {
+            init(CRC);
+            if (Cell.developmentMode()) {
+                console.log(Cell.message("CRC", "CRC.SUPPORTED", CRC.REGISTERED_ALGORITHMS()));
+            }
+        });
+    }
 })(function () {
     'use strict';
 
@@ -141,32 +146,24 @@
                 this._bit = _config[0];
                 this._refIn = _config[4];
                 this._refOut = _config[5];
-                this._polynomial = this._refIn ? CRC._REVERSE_BIT(_config[1], this._bit) : (this._bit < 8 ? (_config[1] << (8 - this._bit)) : _config[1]);
-                this._init = this._refIn ? CRC._REVERSE_BIT(_config[2], this._bit) : (this._bit < 8 ? (_config[2] << (8 - this._bit)) : _config[2]);
+                this._polynomial = this._refIn
+                    ? CRC._REVERSE_BIT(_config[1], this._bit)
+                    : (this._bit < 8 ? (_config[1] << (8 - this._bit)) : _config[1]);
+                this._init = this._refIn
+                    ? CRC._REVERSE_BIT(_config[2], this._bit)
+                    : (this._bit < 8 ? (_config[2] << (8 - this._bit)) : _config[2]);
                 this._crc = this._init;
                 this._xorOut = _config[3];
                 if (this._refIn) {
                     this._check = 0x1;
                 } else {
-                    if (this._bit <= 8) {
-                        this._check = 0x80;
-                    } else {
-                        this._check = Math.pow(2, this._bit - 1);
-                    }
+                    this._check = Math.pow(2, this._bit <= 8 ? 7 : this._bit - 1);
                 }
                 this._outLength = Math.floor(this._bit / 4);
                 if (this._bit % 4 !== 0) {
                     this._outLength++;
                 }
-                if (this._bit <= 8) {
-                    this._mask = 0xFF;
-                } else {
-                    let _string = "";
-                    for (let i = 0 ; i < this._bit ; i++) {
-                        _string += "1";
-                    }
-                    this._mask = parseInt(_string, 2);
-                }
+                this._mask = Math.pow(2, this._bit <= 8 ? 8 : this._bit) - 1;
             } else {
                 throw new Error(Cell.message("CRC", "CRC.ALGORITHMS", name));
             }

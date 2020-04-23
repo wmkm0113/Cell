@@ -87,8 +87,8 @@ import {Crypto} from "./Crypto.js";
             return new MD5(key);
         }
 
-        append(string) {
-            this.appendBinary(string.toUTF8().toByteArray(), string.toUTF8().length);
+        append(string = "") {
+            this.appendBinary(string.getBytes(false), string.toUTF8().length);
         }
 
         appendBinary(dataBytes, dataLength) {

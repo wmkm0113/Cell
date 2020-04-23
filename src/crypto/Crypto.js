@@ -96,12 +96,12 @@ class Int64 {
 
 class Crypto {
     static safeAdd(x = 0, y = 0) {
-        if ((typeof x) === "Int64" && (typeof y) === "Int64") {
-            return Int64.add(x, y)
-        } else {
+        if ((typeof x).toLowerCase() === "number" && (typeof y).toLowerCase() === "number") {
             let _low = (x & 0xFFFF) + (y & 0xFFFF);
             let _high = (x >> 16) + (y >> 16) + (_low >> 16);
             return (_high << 16) | (_low & 0xFFFF);
+        } else {
+            return Int64.add(x, y)
         }
     }
 }

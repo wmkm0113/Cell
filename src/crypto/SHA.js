@@ -134,7 +134,7 @@ import {Int64, Crypto} from "./Crypto.js";
             this._hmac = key.length > 0;
         }
 
-        append(string) {
+        append(string = "") {
             this.appendBinary(string.getBytes(this._bit !== 1600), string.toUTF8().length);
         }
 

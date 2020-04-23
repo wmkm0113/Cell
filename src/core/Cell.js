@@ -26,7 +26,7 @@
  */
 'use strict';
 
-import HttpClient from "../commons/HttpClient.js";
+import {Comment, Config} from "../commons/Commons.js";
 import RenderProcessor from "../render/Render.js";
 
 class CellJS {
@@ -83,6 +83,7 @@ class CellJS {
                 }
             }
         };
+
         Object.extend(this._config, (Config || {}));
         //  Freeze config
         Object.freeze(this._config);
@@ -90,9 +91,15 @@ class CellJS {
         this._components = {};
 
         if (this._config.darkMode.enabled && Comment.GPS) {
-            navigator.geolocation.getCurrentPosition(function (position) {
-                Cell.registerDarkMode(position.coords.longitude, position.coords.latitude);
-            });
+            try {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    Cell.registerDarkMode(position.coords.longitude, position.coords.latitude);
+                });
+            } catch (e) {
+                if (this._config.developmentMode) {
+                    console.log("Access geolocation failed! ");
+                }
+            }
         }
         this._darkMode = false;
         this._rsaPrivate = null;
@@ -100,8 +107,6 @@ class CellJS {
     }
 
     init() {
-        this.Render = new RenderProcessor();
-        this.Render.init(this._config.templates);
         this.language(this._config.i18n.language);
         if (this._config.security.RSA.PrivateKey.exponent.length > 0
             && this._config.security.RSA.PrivateKey.modulus.length > 0) {
@@ -111,6 +116,8 @@ class CellJS {
             && this._config.security.RSA.PublicKey.modulus.length > 0) {
             this._rsaPublic = new Cell.RSA(this._config.security.RSA.PublicKey);
         }
+        this.Render = new RenderProcessor();
+        this.Render.init(this._config.templates);
     }
 
     developmentMode() {
@@ -124,9 +131,16 @@ class CellJS {
         }
 
         if (event.target.dataset.disabled == null || event.target.dataset.disabled === "false") {
-            new HttpClient(event.target.getAttribute("href"), {
-                elementId: event.target.dataset.elementId
-            }).send();
+            Cell.Ajax(event.target.getAttribute("href"), {})
+                .then(responseText => {
+                    let _element = $(event.target.dataset.elementId);
+                    if (_element) {
+                        _element.data = responseText;
+                    }
+                })
+                .catch(errorMsg => {
+                    console.error(errorMsg);
+                });
         }
         if (event.target.tagName.toLowerCase() === "a" && Comment.Browser.IE && !Comment.Browser.IE11) {
             return false;
@@ -141,12 +155,20 @@ class CellJS {
         if (event.target.dataset.disabled == null || event.target.dataset.disabled === "false") {
             let _formElement = $(event.target.dataset.formId);
             if (_formElement && _formElement.validate()) {
-                new HttpClient(_formElement.action, {
+                openCover();
+                Cell.Ajax(_formElement.action, {
                     method : _formElement.method,
-                    elementId : _formElement.dataset.elementId,
-                    onCreate: openCover,
-                    onFinished: closeCover
-                }).send(_formElement.formData());
+                    parameters : _formElement.formData()
+                }).then(responseText => {
+                    closeCover();
+                    let _element = $(_formElement.dataset.elementId);
+                    if (_element) {
+                        _element.data = responseText;
+                    }
+                }).catch(errorMsg => {
+                    closeCover();
+                    console.error(errorMsg);
+                });
             }
         }
     }
@@ -177,20 +199,19 @@ class CellJS {
         }
     }
 
-    loadResource(bundle = "") {
+    loadResource(bundle = "", initFunc = null) {
         let _url = this._config.i18n.resPath;
         _url += this._config.i18n.resPath.endsWith("/") ? "" : "/";
         _url += bundle + "/" + this._language + ".json";
-        this._resources[bundle] = new HttpClient(_url, {
-            asynchronous: false,
-            onComplete : function (_request) {
-                let _responseText = _request.responseText;
-                return _responseText.isJSON ? _responseText.parseJSON() : {};
-            },
-            onError : function (_request) {
-                return {};
+        Cell.Ajax(_url, {}).then(responseText => {
+            this._resources[bundle] = responseText.isJSON() ? responseText.parseJSON() : {};
+            if (initFunc != null) {
+                initFunc.apply(this);
             }
-        }).send();
+        }).catch(errorMsg => {
+            console.log(errorMsg);
+            this._resources[bundle] = {};
+        });
     }
 
     message(bundle = "", key = "", ...args) {
@@ -224,15 +245,18 @@ class CellJS {
         }
     }
 
-    registerComponent(bundle, component, loadResource = false) {
+    registerComponent(bundle, component, loadResource = false, initFunc = null) {
         if (Object.hasOwnProperty(bundle)) {
+            if (initFunc != null) {
+                initFunc.apply(this);
+            }
             return;
         }
         this[bundle] = component;
         if (!this._components.hasOwnProperty(bundle)) {
             this._components[bundle] = loadResource;
             if (loadResource) {
-                this.loadResource(bundle);
+                this.loadResource(bundle, initFunc);
             }
         }
     }
@@ -377,108 +401,92 @@ class CellJS {
             }
         }
     }
-}
 
-const DEFAULT_PROCESSORS = {
-    "*[data-bind-updater]" : function (element) {
-        if (element.id && element.id.length > 0) {
-            let name = element.dataset.template || "", override = (element.dataset.override === "true");
-            if (name.length > 0 && !Cell.Render.hasTemplate(name)) {
-                throw new Error(Cell.message("Core", "Template.Not.Exists", name));
-            }
-            Object.defineProperty(element, "data", {
-                set(data) {
-                    if (!data.isJSON()) {
-                        throw new Error(Cell.message("Core", "Data.Invalid.JSON"));
-                    }
-
-                    let _jsonData = data.parseJSON();
-                    if (element.tagName.toLowerCase() === "form") {
-                        element.querySelectorAll("input")
-                            .forEach(input => {
-                                let _name = input.getAttribute("name");
-                                if (_name && _jsonData.hasOwnProperty(_name)) {
-                                    Cell.Render.processInput(_jsonData[_name], input);
-                                }
-                            });
-                        element.querySelectorAll("select, datalist")
-                            .forEach(select => {
-                                let _name = select.getAttribute("name");
-                                if (_name && _jsonData.hasOwnProperty(_name)) {
-                                    select.setAttribute("value", _jsonData[_name]);
-                                }
-                                if (select.hasAttribute("data-iterator")) {
-                                    let _paramName = select.getAttribute("data-iterator");
-                                    if (_jsonData.hasOwnProperty(_paramName)) {
-                                        select.clearChildNodes();
-                                        Cell.Render.appendOptions(select, _jsonData[_paramName]);
-                                    }
-                                }
-                            });
-                    } else {
-                        Cell.renderTemplate(element, _jsonData, override);
-                    }
-                    Cell.Render.processOnload();
-                    if (_jsonData.hasOwnProperty("title")) {
-                        _jsonData["title"].setTitle();
-                    }
-                    if (_jsonData.hasOwnProperty("keywords")) {
-                        _jsonData["keywords"].setKeywords();
-                    }
-                    if (_jsonData.hasOwnProperty("description")) {
-                        _jsonData["description"].setDescription();
-                    }
-                    if (element.dataset.floatWindow) {
-                        openCover();
-                        element.show();
-                        if (_jsonData.hasOwnProperty("timeout") && _jsonData["timeout"].isNum()) {
-                            setTimeout(function() {
-                                element.hide();
-                                closeCover();
-                            }, _jsonData["timeout"].parseInt());
-                        }
+    Ajax(url, options = {}) {
+        return new Promise(function (resolve, reject) {
+            let _options = {
+                method : "get",
+                elementId : "",
+                userName : null,
+                passWord : null,
+                asynchronous : true,
+                parameters : null
+            };
+            Object.extend(_options, options);
+            let _request;
+            // If XMLHttpRequest is a javascript object in the local
+            if (window.XMLHttpRequest) {
+                _request = new XMLHttpRequest();
+            } else if (window.ActiveXObject) { // Support the ActiveX
+                try {
+                    // Create XMLHttpRequest object by instance an ActiveXObject
+                    _request = new ActiveXObject("Microsoft.XMLHTTP"); // higher than msxml3
+                } catch (e) {
+                    try {
+                        // Create XMLHttpRequest object by instance an ActiveXObject
+                        _request = new ActiveXObject("Msxml2.XMLHTTP"); // lower than msxml3
+                    } catch (e) {
+                        reject(e.toString());
+                        throw e;
                     }
                 }
-            });
-        }
-    },
-    "*[data-float-window='true'" : function (element) {
-        element.hide();
-    },
-    "*[href][data-element-id]" : function (element) {
-        if (element.dataset.elementId !== null && element.hasAttribute("href")) {
-            element.addEvent("click", function(event) {
-                Cell.sendRequest(event);
-            });
-        }
-        if (element.dataset.disabled === "true" && element.dataset.activeDelay
-            && element.dataset.activeDelay.isNum()) {
-            setTimeout(Cell.enableElement(element), element.dataset.activeDelay.parseInt());
-        }
-    },
-    "*[data-sort-child='true']" : function (element) {
-        if (element.dataset.tagName && element.dataset.elementId && element.dataset.sortItem) {
-            element.addEvent("click", function(event) {
-                let _sortDesc = event.target.dataset.sortType === undefined ? false
-                    : event.target.dataset.sortType.toLowerCase() === "true";
-                $(event.target.dataset.elementId).sortChildrenBy(event.target.dataset.tagName,
-                    event.target.dataset.sortItem, _sortDesc);
-            });
-        }
-    },
-    "a[data-form-id], button[data-form-id]" : function (element) {
-        if (element.dataset.formId !== null) {
-            element.addEvent("click", function(event) {
-                Cell.submitForm(event);
-            });
-        }
-    },
-    "input[data-validate='true'], select[data-validate='true'], textarea[data-validate='true']" : function (element) {
-        element.addEvent("blur", function(event) {
-            event.target.validate();
+            }
+
+            if (_options.asynchronous) {
+                _request.onreadystatechange = function() {
+                    if (this.readyState === 4) {
+                        let _jwtToken = this.getResponseHeader("Authentication");
+                        if (_jwtToken !== null) {
+                            sessionStorage.setItem("JWTToken", _jwtToken);
+                        }
+                        if (_request.status === 301 || _request.status === 302 || _request.status === 307) {
+                            let _redirectPath = this._request.getResponseHeader("Location");
+                            if (_redirectPath.length !== 0) {
+                                let _newOption = {};
+                                Object.extend(_newOption, this._options || {});
+                                _newOption.method = "GET";
+                                return Cell.Ajax(_redirectPath, _newOption);
+                            } else {
+                                reject(_request);
+                            }
+                        } else if (_request.status === 200) {
+                            resolve(_request.responseText);
+                        } else {
+                            reject(_request.status);
+                        }
+                    }
+                };
+            }
+
+            _request.ontimeout = function () {
+                console.log(Cell.message("Core", "HttpClient.TimeOut", url));
+                reject(_request);
+            };
+            if (_options.userName !== null && _options.passWord !== null) {
+                _request.open(_options.method, url, _options.asynchronous,
+                    _options.userName, _options.passWord);
+            } else {
+                _request.open(_options.method, url, _options.asynchronous);
+            }
+
+            _request.setRequestHeader("cache-control", "no-cache");
+            _request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+            let _jwtToken = sessionStorage.getItem("JWTToken");
+            if (_jwtToken != null) {
+                _request.setRequestHeader("Authorization", _jwtToken);
+            }
+
+            if (_options.parameters && _options.parameters.uploadFile
+                && _options.parameters.uploadProgress) {
+                _request.upload.onprogress = function(event) {
+                    $(_options.parameters.uploadProgress).setAttribute("value", (event.loaded / event.total).toString());
+                };
+            }
+
+            _request.send(_options.parameters);
         });
     }
-};
+}
 
 (function() {
     if (typeof window.Cell === "undefined") {
@@ -488,13 +496,4 @@ const DEFAULT_PROCESSORS = {
         window.Cell = new CellJS();
         window.Cell.init();
     }
-
-    let _onload = window.onload;
-    window.onload = function () {
-        Cell.Render.registerUIProcessors(DEFAULT_PROCESSORS);
-        if (_onload) {
-            _onload.apply(this);
-        }
-        Cell.Render.processOnload();
-    };
 })();

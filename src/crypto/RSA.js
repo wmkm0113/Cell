@@ -221,20 +221,16 @@
     }
 
     class BigInteger {
-        constructor(flag = false) {
+        constructor() {
             if (BigInteger._maxDigits == null) {
                 BigInteger.init(20);
             }
-            if (typeof flag === "boolean" && flag === true) {
-                this._digits = null;
-            } else {
-                this._digits = BigInteger._zeroArray.slice(0);
-            }
+            this._digits = BigInteger._zeroArray.slice(0);
             this._isNeg = false;
         }
 
         clone() {
-            let result = new BigInteger(true);
+            let result = new BigInteger();
             result._digits = this._digits.slice(0);
             result._isNeg = this._isNeg;
             return result;
