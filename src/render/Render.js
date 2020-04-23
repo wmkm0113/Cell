@@ -121,7 +121,7 @@ export default class RenderProcessor {
                     if (_template.content === null) {
                         throw new Error(Cell.message("Core", "Template.Not.Exists", name));
                     }
-                    this.processRender(element, jsonData, override, _template.content);
+                    Cell.Render.processRender(element, jsonData, override, _template.content);
                 })
                 .catch(errorMsg => {
                     if (Cell.developmentMode()) {
