@@ -367,7 +367,7 @@ class FloatWindow extends BaseElement {
     renderElement(data) {
         let pageElement = this.querySelector("float-page");
         if (pageElement !== null) {
-            pageElement.initData = JSON.stringify(data);
+            pageElement.data = JSON.stringify(data);
         }
     }
 
@@ -432,7 +432,7 @@ class FloatPage extends BaseElement {
     }
 
     renderElement(data) {
-        this.dataset.initData = JSON.stringify(data);
+        this.dataset.data = JSON.stringify(data);
         this.render();
     }
 
@@ -553,7 +553,7 @@ class FloatPage extends BaseElement {
             this._scrollBar.setAttribute("slot", "scroll");
             this.appendChild(this._scrollBar);
         }
-        if (this.dataset.initData === undefined) {
+        if (this.dataset.data === undefined) {
             this._divElement.appendClass("waitingData");
         } else {
             this.render();
@@ -562,9 +562,9 @@ class FloatPage extends BaseElement {
     }
 
     render() {
-        if (this.dataset.initData !== undefined && this.dataset.initData.isJSON()) {
+        if (this.dataset.data !== undefined && this.dataset.data.isJSON()) {
             this._divElement.removeClass("waitingData");
-            let jsonData = this.dataset.initData.parseJSON();
+            let jsonData = this.dataset.data.parseJSON();
             if (jsonData.hasOwnProperty("tagName") && jsonData.hasOwnProperty("data")) {
                 if (jsonData.hasOwnProperty("title")) {
                     jsonData.title.setTitle();
@@ -585,7 +585,7 @@ class FloatPage extends BaseElement {
                     this._childElement = document.createElement(jsonData.tagName);
                     this._divElement.appendChild(this._childElement);
                 }
-                this._childElement.initData = JSON.stringify(jsonData.data);
+                this._childElement.data = JSON.stringify(jsonData.data);
             }
         }
         this.resize();

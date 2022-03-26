@@ -16,6 +16,8 @@
  */
 "use strict";
 
+import {MockCheckBox, MockRadio, MockSwitch} from "./mock.js";
+
 class CustomElement extends HTMLElement {
     constructor() {
         super();
@@ -120,7 +122,7 @@ class AbstractElement extends BaseElement {
             this.appendChild(tipsButton);
         }
         if (this.dataset.tips !== undefined && this.dataset.tips.isJSON()) {
-            tipsButton.initData = this.dataset.tips;
+            tipsButton.data = this.dataset.tips;
         } else {
         }
     }
@@ -194,7 +196,20 @@ class GroupElement extends AbstractElement {
                 if (index < existsItems.length) {
                     itemElement = existsItems[index];
                 } else {
-                    itemElement = document.createElement(tagName);
+                    itemElement;
+                    switch (tagName) {
+                        case "mock-switch":
+                            itemElement = new MockSwitch();
+                            break;
+                        case "mock-radio":
+                            itemElement = new MockRadio();
+                            break;
+                        case "mock-checkbox":
+                            itemElement = new MockCheckBox();
+                            break;
+                        default:
+                            return;
+                    }
                     divElement.appendChild(itemElement);
                 }
                 itemElement.getAttributeNames().forEach(attributeName => {
@@ -214,7 +229,7 @@ class GroupElement extends AbstractElement {
                 }
                 itemInfo.name = itemName;
                 itemInfo.checked = (checkValue.indexOf(itemInfo.value) !== -1);
-                itemElement.initData = JSON.stringify(itemInfo);
+                itemElement.data = JSON.stringify(itemInfo);
             });
 
             if (jsonItems.length < existsItems.length) {

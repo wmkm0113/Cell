@@ -109,7 +109,7 @@ class FormItem extends BaseElement {
                 }
             }
 
-            this.inputElement.initData = JSON.stringify(itemData);
+            this.inputElement.data = JSON.stringify(itemData);
         }
     }
 }
@@ -205,10 +205,10 @@ class FormInfo extends BaseElement {
             let jsonItem = this.dataset.items.parseJSON();
             jsonItem.forEach((itemInfo, index) => {
                 if (existsItems.length > index) {
-                    existsItems[index].initData = JSON.stringify(itemInfo);
+                    existsItems[index].data = JSON.stringify(itemInfo);
                 } else {
                     let formItem = new FormItem();
-                    formItem.initData = JSON.stringify(itemInfo);
+                    formItem.data = JSON.stringify(itemInfo);
                     this.formElement.appendChild(formItem);
                 }
             });
