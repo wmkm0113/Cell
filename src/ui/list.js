@@ -339,12 +339,14 @@ class ListStatistics extends BaseElement {
  * Message List Title
  *
  * setting for title, import url, export url and display switch button(text-list, view-list, image-list)
+ * setting for default styleClass(text-list, view-list, image-list)
  *
  * Value of attribute named "data" is json string like:
  * {
  *      "title": "Message List Title",
  *      "importUrl": "Import data url",
- *      "exportUrl": "Export data url"
+ *      "disableSwitch": true/false,
+ *      "styleClass": "view-list"
  * }
  *
  */
@@ -419,6 +421,14 @@ class ListTitle extends BaseElement {
             this.btnGroup.hide();
         } else {
             this.btnGroup.show();
+        }
+        if (data.hasOwnProperty("styleClass")) {
+            this.btnGroup.querySelectorAll(":scope > button")
+                .forEach(buttonElement => {
+                    if (buttonElement.hasClass(data.styleClass)) {
+                        buttonElement.click();
+                    }
+                });
         }
     }
 }
