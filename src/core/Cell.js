@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,14 +26,17 @@
  */
 'use strict';
 
-import {Comment, Config} from "../commons/Commons.js";
-import RenderProcessor from "../render/Render.js";
+import {Comment, Config, $} from "../commons/Commons.js";
+import RSA from "../crypto/RSA.js";
+import UIRender from "../render/Render.js";
 
 class CellJS {
+
     constructor() {
         this._config = {
             developmentMode: false,
-            templates : "",
+            elements : [],
+            contextPath : "",
             //  Internationalization
             i18n : {
                 //  Current language
@@ -62,24 +65,13 @@ class CellJS {
             security : {
                 //  RSA Key Config
                 RSA : {
-                    //  Private Key using for encrypt send data and generate digital signature
-                    PrivateKey : {
-                        exponent : "",
-                        modulus : "",
-                        //  Exponent and modulus data radix, default is 16
-                        radix : 16,
-                        //  Private Key Size
-                        keySize : 1024
-                    },
-                    //  Public Key using for decrypt receive data and verify digital signature
-                    PublicKey : {
-                        exponent : "",
-                        modulus : "",
-                        //  Exponent and modulus data radix, default is 16
-                        radix : 16,
-                        //  Public Key Size
-                        keySize : 1024
-                    },
+                    //  Public Key data
+                    exponent : "",
+                    modulus : "",
+                    //  Exponent and modulus data radix, default is 16
+                    radix : 16,
+                    //  Public Key Size
+                    keySize : 1024
                 }
             }
         };
@@ -88,7 +80,7 @@ class CellJS {
         //  Freeze config
         Object.freeze(this._config);
         this._resources = {};
-        this._components = {};
+        this._modules = {};
 
         if (this._config.darkMode.enabled && Comment.GPS) {
             try {
@@ -102,26 +94,46 @@ class CellJS {
             }
         }
         this._darkMode = false;
-        this._rsaPrivate = null;
         this._rsaPublic = null;
     }
 
     init() {
         this.language(this._config.i18n.language);
-        if (this._config.security.RSA.PrivateKey.exponent.length > 0
-            && this._config.security.RSA.PrivateKey.modulus.length > 0) {
-            this._rsaPrivate = new Cell.RSA(this._config.security.RSA.PrivateKey);
+        if (this._config.security.RSA.exponent.length > 0 && this._config.security.RSA.modulus.length > 0) {
+            if (!Cell.hasOwnProperty("RSA")) {
+                Cell.registerModule("RSA", RSA);
+            }
+            this._rsaPublic = Cell["RSA"].newInstance(this._config.security.RSA);
         }
-        if (this._config.security.RSA.PublicKey.exponent.length > 0
-            && this._config.security.RSA.PublicKey.modulus.length > 0) {
-            this._rsaPublic = new Cell.RSA(this._config.security.RSA.PublicKey);
+        this.Render = new UIRender(this._config.elements);
+    }
+
+    alert(message = null) {
+        if (message === null || message === undefined) {
+            return;
         }
-        this.Render = new RenderProcessor();
-        this.Render.init(this._config.templates);
+        this.Render.message("alert", message);
+    }
+
+    confirm(message = null, confirmFunc = null) {
+        if (message === null || message === undefined) {
+            this.Render.message("confirm", message, confirmFunc);
+        }
+    }
+
+    notify(message = null) {
+        if (message === null || message === undefined) {
+            return;
+        }
+        this.Render.message("notify", message);
     }
 
     developmentMode() {
         return this._config.developmentMode;
+    }
+
+    contextPath() {
+        return this._config.contextPath;
     }
 
     sendRequest(event) {
@@ -130,47 +142,56 @@ class CellJS {
             event.stopPropagation();
         }
 
-        if (event.target.dataset.disabled == null || event.target.dataset.disabled === "false") {
-            Cell.Ajax(event.target.getAttribute("href"), {})
-                .then(responseText => {
-                    let _element = $(event.target.dataset.elementId);
-                    if (_element) {
-                        _element.data = responseText;
-                    }
-                })
-                .catch(errorMsg => {
-                    console.error(errorMsg);
-                });
+        let target = event.currentTarget;
+        if (target.dataset.disabled == null || target.dataset.disabled === "false") {
+            let linkAddress = target.tagName.toLowerCase() === "a"
+                ? target.getAttribute("href")
+                : target.dataset.link;
+            if (linkAddress !== undefined && linkAddress.length > 0 && linkAddress !== "#") {
+                if (target.dataset.elementId === undefined) {
+                    window.location = linkAddress;
+                } else {
+                    Cell.Ajax(linkAddress)
+                        .then(responseText => {
+                            let _element = $(target.dataset.elementId);
+                            if (_element) {
+                                if ((typeof responseText) === "string") {
+                                    _element.innerHTML = ("" + responseText);
+                                } else {
+                                    _element.data = responseText;
+                                }
+                            }
+                        })
+                        .catch(errorMsg => {
+                            console.error(errorMsg);
+                        });
+                }
+            }
         }
-        if (event.target.tagName.toLowerCase() === "a" && Comment.Browser.IE && !Comment.Browser.IE11) {
+        if (target.tagName.toLowerCase() === "a" && Comment.Browser.IE && !Comment.Browser.IE11) {
             return false;
         }
     }
 
-    submitForm(event) {
-        if (!Comment.Browser.IE || Comment.Browser.IE11) {
-            event.preventDefault();
-            event.stopPropagation();
-        }
-        if (event.target.dataset.disabled == null || event.target.dataset.disabled === "false") {
-            let _formElement = $(event.target.dataset.formId);
-            if (_formElement && _formElement.validate()) {
-                openCover();
-                Cell.Ajax(_formElement.action, {
-                    method : _formElement.method,
-                    parameters : _formElement.formData()
+    submitForm(formElement) {
+        if (formElement && !formElement.dataset.disabled && formElement.validate()) {
+            if (formElement.dataset.elementId === undefined) {
+                formElement.submit();
+            } else {
+                Cell.Ajax(formElement.action, {
+                    method : formElement.getAttribute("method"),
+                    parameters : formElement.formData()
                 }).then(responseText => {
-                    closeCover();
-                    let _element = $(_formElement.dataset.elementId);
+                    let _element = $(formElement.dataset.elementId);
                     if (_element) {
                         _element.data = responseText;
                     }
                 }).catch(errorMsg => {
-                    closeCover();
                     console.error(errorMsg);
                 });
             }
         }
+        return false;
     }
 
     registerDarkMode(posLon, posLat) {
@@ -200,11 +221,11 @@ class CellJS {
     }
 
     loadResource(bundle = "", initFunc = null) {
-        let _url = this._config.i18n.resPath;
+        let _url = this._config.contextPath + this._config.i18n.resPath;
         _url += this._config.i18n.resPath.endsWith("/") ? "" : "/";
         _url += bundle + "/" + this._language + ".json";
-        Cell.Ajax(_url, {}).then(responseText => {
-            this._resources[bundle] = responseText.isJSON() ? responseText.parseJSON() : {};
+        Cell.Ajax(_url).then(responseData => {
+            this._resources[bundle] = responseData.parseJSON();
             if (initFunc != null) {
                 initFunc.apply(this);
             }
@@ -238,23 +259,23 @@ class CellJS {
         this._resources = {};
         //  Load Core Resource
         this.loadResource("Core");
-        for (let bundle in this._components) {
-            if (this._components.hasOwnProperty(bundle) && this._components[bundle]) {
+        for (let bundle in this._modules) {
+            if (this._modules.hasOwnProperty(bundle) && this._modules[bundle]) {
                 this.loadResource(bundle)
             }
         }
     }
 
-    registerComponent(bundle, component, loadResource = false, initFunc = null) {
+    registerModule(bundle, module, loadResource = false, initFunc = null) {
         if (Object.hasOwnProperty(bundle)) {
             if (initFunc != null) {
                 initFunc.apply(this);
             }
             return;
         }
-        this[bundle] = component;
-        if (!this._components.hasOwnProperty(bundle)) {
-            this._components[bundle] = loadResource;
+        this[bundle] = module;
+        if (!this._modules.hasOwnProperty(bundle)) {
+            this._modules[bundle] = loadResource;
             if (loadResource) {
                 this.loadResource(bundle, initFunc);
             }
@@ -265,8 +286,8 @@ class CellJS {
         if (!this._config.form.encryptPassword) {
             return password;
         }
-        if (this._config.form.encryptMethod === "RSA" && this._rsaPrivate !== null) {
-            return this._rsaPrivate.encrypt(password);
+        if (this._config.form.encryptMethod === "RSA" && this._rsaPublic !== null) {
+            return this._rsaPublic.encrypt(password);
         }
         return this.calculateData(this._config.form.encryptMethod, password);
     }
@@ -274,62 +295,62 @@ class CellJS {
     calculateData(method, data, key = "") {
         let encryptor;
         if (method.startsWith("CRC")) {
-            encryptor = Cell.CRC.newInstance(method);
+            encryptor = Cell["CRC"].newInstance(method);
         } else {
             switch (method) {
                 case "MD5":
-                    encryptor = Cell.MD5.newInstance(key);
+                    encryptor = Cell["MD5"].newInstance(key);
                     break;
                 case "SHA1":
-                    encryptor = Cell.SHA.SHA1(key);
+                    encryptor = Cell["SHA"].SHA1(key);
                     break;
                 case "SHA224":
-                    encryptor = Cell.SHA.SHA224(key);
+                    encryptor = Cell["SHA"].SHA224(key);
                     break;
                 case "SHA256":
-                    encryptor = Cell.SHA.SHA256(key);
+                    encryptor = Cell["SHA"].SHA256(key);
                     break;
                 case "SHA384":
-                    encryptor = Cell.SHA.SHA384(key);
+                    encryptor = Cell["SHA"].SHA384(key);
                     break;
                 case "SHA512":
-                    encryptor = Cell.SHA.SHA512(key);
+                    encryptor = Cell["SHA"].SHA512(key);
                     break;
                 case "SHA512_224":
-                    encryptor = Cell.SHA.SHA512_224(key);
+                    encryptor = Cell["SHA"].SHA512_224(key);
                     break;
                 case "SHA512_256":
-                    encryptor = Cell.SHA.SHA512_256(key);
+                    encryptor = Cell["SHA"].SHA512_256(key);
                     break;
                 case "SHA3_224":
-                    encryptor = Cell.SHA.SHA3_224(key);
+                    encryptor = Cell["SHA"].SHA3_224(key);
                     break;
                 case "SHA3_256":
-                    encryptor = Cell.SHA.SHA3_256(key);
+                    encryptor = Cell["SHA"].SHA3_256(key);
                     break;
                 case "SHA3_384":
-                    encryptor = Cell.SHA.SHA3_384(key);
+                    encryptor = Cell["SHA"].SHA3_384(key);
                     break;
                 case "SHA3_512":
-                    encryptor = Cell.SHA.SHA3_512(key);
+                    encryptor = Cell["SHA"].SHA3_512(key);
                     break;
                 case "SHAKE128":
-                    encryptor = Cell.SHA.SHAKE128();
+                    encryptor = Cell["SHA"].SHAKE128();
                     break;
                 case "SHAKE256":
-                    encryptor = Cell.SHA.SHAKE256();
+                    encryptor = Cell["SHA"].SHAKE256();
                     break;
                 case "Keccak224":
-                    encryptor = Cell.SHA.Keccak224(key);
+                    encryptor = Cell["SHA"].Keccak224(key);
                     break;
                 case "Keccak256":
-                    encryptor = Cell.SHA.Keccak256(key);
+                    encryptor = Cell["SHA"].Keccak256(key);
                     break;
                 case "Keccak384":
-                    encryptor = Cell.SHA.Keccak384(key);
+                    encryptor = Cell["SHA"].Keccak384(key);
                     break;
                 case "Keccak512":
-                    encryptor = Cell.SHA.Keccak512(key);
+                    encryptor = Cell["SHA"].Keccak512(key);
                     break;
                 default:
                     return data;
@@ -350,67 +371,14 @@ class CellJS {
         return value;
     }
 
-    enableElement(element) {
-        return function() {
-            element.dataset.disabled = "false";
-            if (Comment.Browser.IE) {
-                document.body.style.overflow = "hidden";
-                document.body.style.overflow = "auto";
-            }
-        }
-    }
-
-    static openCover() {
-        document.querySelectorAll("div[data-cover-window='true']")
-            .forEach(element => {
-                if (element.getStyle().length === 0) {
-                    let _cssText = "width: 100%; height: 100%; position: absolute; top: 0; left: 0;";
-                    _cssText += ("background-color: " + element.dataset.backgroundColor + "; ");
-                    _cssText += ("opacity: " + element.dataset.opacity + "; ");
-                    _cssText += ("z-index: " + element.dataset.zIndex + ";");
-                    element.setStyle(_cssText);
-                }
-                element.show();
-                document.body.style.overflow = "hidden";
-            });
-    }
-
-    static closeCover() {
-        document.querySelectorAll("div[data-cover-window='true']").forEach(element => element.hide());
-        document.body.style.overflow = "auto";
-    }
-
-    static $() {
-        if (arguments.length <= 0) {
-            return [];
-        } else {
-            let argCount = arguments.length;
-            if (argCount === 1) {
-                return document.getElementById(arguments[0]);
-            } else {
-                let returnElements = [];
-                for (let i = 0 ; i < argCount ; i++) {
-                    let element = null;
-                    let elementId = arguments[i];
-                    if (typeof elementId === 'string') {
-                        element = document.getElementById(elementId);
-                    }
-                    returnElements.push(element);
-                }
-                return returnElements;
-            }
-        }
-    }
-
     Ajax(url, options = {}) {
         return new Promise(function (resolve, reject) {
             let _options = {
                 method : "get",
-                elementId : "",
                 userName : null,
                 passWord : null,
                 asynchronous : true,
-                parameters : null
+                parameters : []
             };
             Object.extend(_options, options);
             let _request;
@@ -439,8 +407,9 @@ class CellJS {
                         if (_jwtToken !== null) {
                             sessionStorage.setItem("JWTToken", _jwtToken);
                         }
+
                         if (_request.status === 301 || _request.status === 302 || _request.status === 307) {
-                            let _redirectPath = this._request.getResponseHeader("Location");
+                            let _redirectPath = _request.getResponseHeader("Location");
                             if (_redirectPath.length !== 0) {
                                 let _newOption = {};
                                 Object.extend(_newOption, this._options || {});
@@ -450,7 +419,21 @@ class CellJS {
                                 reject(_request);
                             }
                         } else if (_request.status === 200) {
-                            resolve(_request.responseText);
+                            let responseText = _request.responseText;
+                            if (responseText.isJSON()) {
+                                let respData = responseText.parseJSON();
+                                if (respData.status === 301 || respData.status === 302 || respData.status === 307) {
+                                    location.href = respData.location;
+                                } else {
+                                    if (respData.hasOwnProperty("data")) {
+                                        resolve(JSON.stringify(respData.data));
+                                    } else {
+                                        resolve(JSON.stringify(respData));
+                                    }
+                                }
+                            } else {
+                                resolve(responseText);
+                            }
                         } else {
                             reject(_request.status);
                         }
@@ -490,9 +473,7 @@ class CellJS {
 
 (function() {
     if (typeof window.Cell === "undefined") {
-        window.$ = CellJS.$;
-        window.openCover = CellJS.openCover;
-        window.closeCover = CellJS.closeCover;
+        window.$ = $;
         window.Cell = new CellJS();
         window.Cell.init();
     }

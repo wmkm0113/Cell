@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,53 +25,90 @@
  */
 'use strict';
 
-const BASE64 = [
-    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-    'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-    'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/', '='
-];
-
-const BASE16 = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
-
-const CHN_SOCIAL_CREDIT_CODE = [
-    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
-    'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'T', 'U', 'W', 'X', 'Y'
-];
-
 const Comment = {
     Version:    "1.0.1",
-    Language:   (navigator.language || navigator.userLanguage).substring(0, 2),
+    Language:   navigator.language,
     Html5:      !!window.applicationCache,
     MaxWidth :  Math.max(document.documentElement.scrollWidth, document.documentElement.clientWidth),
     MaxHeight : Math.max(document.documentElement.scrollHeight, document.documentElement.clientHeight),
     GPS :       !!navigator.geolocation,
+    BASE16 :    ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'],
+    BASE36 : [
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
+        'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
+    ],
+    BASE64 :    [
+        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+        'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+        'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/', '='
+    ],
+    SocialCreditCode : [
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
+        'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'T', 'U', 'W', 'X', 'Y'
+    ],
     Browser: {
-        Version:	parseInt(navigator.appVersion),
+        Version:	-1,
         //	Internet Explorer
         IE:     	!!window.ActiveXObject || "ActiveXObject" in window,
-        //	Internet Explorer Under Version 8
-        IE8:		(parseInt(navigator.appVersion) >= 8),
         //	Internet Explorer 11
         IE11:		(!(navigator.userAgent.toUpperCase().indexOf('TRIDENT') > -1
-                        && navigator.userAgent.toUpperCase().indexOf('RV:') > -1
-                        && parseInt(navigator.appVersion) === 11)),
+            && navigator.userAgent.toUpperCase().indexOf('RV:') > -1)),
         //	Microsoft Edge
-        Edge:		navigator.userAgent.indexOf('Edge') > -1,
+        Edge:		navigator.userAgent.toUpperCase().indexOf('EDGE') > -1,
         //	Opera Explorer
-        Opera:  	!!window.opera && navigator.userAgent.toUpperCase().indexOf('OPERA') > -1,
+        Opera:  	navigator.userAgent.toUpperCase().indexOf('OPERA') > -1,
         //	Firefox Explorer
-        Firefox: 	!!document.getBoxObjectFor && navigator.userAgent.toUpperCase().indexOf('FIREFOX') > -1,
+        Firefox: 	navigator.userAgent.toUpperCase().indexOf('FIREFOX') > -1,
         // 	Apple Safari Explorer
         Safari:		!!window.openDatabase && navigator.userAgent.toUpperCase().indexOf('SAFARI') > -1,
         //	Chrome Explorer
-        Chrome:		!!window.MessageEvent && !document.getBoxObjectFor,
+        Chrome:		!!window.MessageEvent && navigator.userAgent.toUpperCase().indexOf('CHROME') > -1,
         //	Apple Safari and Google Chrome
         WebKit: 	navigator.userAgent.indexOf('AppleWebKit/') > -1,
         //	Mozilla Firefox, Apple Safari and Google Chrome
-        Gecko:  	navigator.userAgent.indexOf('Gecko') > -1 && navigator.userAgent.indexOf('KHTML') === -1
+        Gecko:  	navigator.userAgent.indexOf('Gecko') > -1 && navigator.userAgent.indexOf('KHTML') === -1,
+        //  QQBrowser
+        QQBrowser:  /QQBROWSER/.test(navigator.userAgent.toUpperCase()),
+        //  WeiXinBrowser
+        WXBrowser:  /MICROMESSENGER/i.test(navigator.userAgent.toUpperCase())
     },
+    Author: [
+        {"Name":"Steven Wee", "EMail":"wmkm0113@gmail.com", "ORG":"Nervousync Studio"}
+    ]
+};
+Object.freeze(Comment);
+
+Comment.Browser.Version = () => {
+    let userAgent = navigator.userAgent.toUpperCase();
+    if (Comment.Browser.IE) {
+        return parseInt(userAgent.match(/(MSIE\s|TRIDENT.*RV:)([\w.]+)/)[2]);
+    } else if (Comment.Browser.IE11) {
+        let version = parseInt(userAgent.match(/(MSIE\s|TRIDENT.*RV:)([\w.]+)/)[2]);
+        if (version !== 11) {
+            Comment.Browser.IE = true;
+            Comment.Browser.IE11 = false;
+        }
+        return version;
+    } else if (Comment.Browser.Chrome) {
+        return parseInt(userAgent.match(/CHROME\/([\d.]+)/)[1]);
+    } else if (Comment.Browser.Firefox) {
+        return parseInt(userAgent.match(/FIREFOX\/([\d.]+)/)[1]);
+    } else if (Comment.Browser.Opera) {
+        return parseInt(userAgent.match(/OPERA\/([\d.]+)/)[1]);
+    } else if (Comment.Browser.Safari) {
+        return parseInt(userAgent.match(/VERSION\/([\d.]+)/)[1]);
+    } else if (Comment.Browser.Edge) {
+        return parseInt(userAgent.match(/EDGE\/([\d.]+)/)[1]);
+    } else if (Comment.Browser.QQBrowser) {
+        return parseInt(userAgent.match(/QQBROWSER\/([\d.]+)/)[1]);
+    } else if (Comment.Browser.WXBrowser) {
+        return parseInt(userAgent.match(/MICROMESSENGER\/([\d.]+)/)[1]);
+    }
+}
+
+const TagDefine = {
     HtmlTag : [
         "a", "abbr", "acronym", "address", "applet", "area", "b", "base", "bdo", "big", "blockquote", "body", "br",
         "button", "caption", "center", "cite", "code", "col", "colgroup", "dd", "del", "div", "dfn", "dl", "dt", "em",
@@ -92,10 +129,9 @@ const Comment = {
         "source", "span", "strong", "style", "sub", "summary", "sup", "table", "tbody", "td", "textarea", "template",
         "tfoot", "th", "thead", "time", "title", "tr", "track", "tt", "ul", "var", "video", "wbr"
     ],
-    Author: [
-        {"Name":"Steven Wee", "EMail":"wmkm0113@Hotmail.com", "ORG":"Nervousync Studio"}
-    ]
-};
+    CustomTag : []
+}
+Object.seal(TagDefine);
 
 const RegexLibrary = {
     E_Mail : /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,4})$/i,
@@ -106,20 +142,19 @@ const RegexLibrary = {
     Color : /^#[0-9A-F]{6}$/i,
     XML : /<[a-zA-Z0-9]+[^>]*>(?:.|[\r\n])*?<\/[a-zA-Z0-9]+>/ig,
     HtmlTag : /<[a-zA-Z0-9]+[^>]*>/ig,
-    Date: /^((((19|20)\d{2})-(0?(1|[3-9])|1[012])-(0?[1-9]|[12]\d|30))|(((19|20)\d{2})-(0?[13578]|1[02])-31)|(((19|20)\d{2})-0?2-(0?[1-9]|1\d|2[0-8]))|((((19|20)([13579][26]|[2468][048]|0[48]))|(2000))-0?2-29))$/ig,
     CHN_ID_Card : /^[1-9]([0-9]{17}|([0-9]{16}X))$/g,
     CHN_Social_Credit : /^([1-9]|A|N|Y)[0-9A-Z]{17}$/g
 };
 
 const Config = {
     developmentMode: false,
-    templates : "",
-    components : "",
+    elements : [],
+    contextPath : "",
     //  Internationalization
     i18n : {
         //  Current language
         language : Comment.Language,
-        resPath : ""
+        resPath : "./i18n"
     },
     //  Config the dark mode by sunrise and sunset
     darkMode : {
@@ -134,7 +169,7 @@ const Config = {
         //  Options:    MD5/RSA/SHA1/SHA224/SHA256/SHA384/SHA512/SHA512_224/SHA512_256
         //              SHA3_224/SHA3_256/SHA3_384/SHA3_512/SHAKE128/SHAKE256
         //              Keccak224/Keccak256/Keccak384/Keccak512
-        encryptMethod : "MD5",
+        encryptMethod : "SHA256",
         //  Convert date/time from 'yyyy-MM-dd [HH:mm]' to number of milliseconds between that date and midnight, January 1, 1970.
         convertDateTime : false,
         //  Convert value is UTC number of milliseconds between that date and midnight, January 1, 1970.
@@ -143,29 +178,40 @@ const Config = {
     security : {
         //  RSA Key Config
         RSA : {
-            //  Private Key using for encrypt send data and generate digital signature
-            PrivateKey : {
-                exponent : "",
-                modulus : "",
-                //  Exponent and modulus data radix, default is 16
-                radix : 16,
-                //  Private Key Size
-                keySize : 1024
-            },
-            //  Public Key using for decrypt receive data and verify digital signature
-            PublicKey : {
-                exponent : "",
-                modulus : "",
-                //  Exponent and modulus data radix, default is 16
-                radix : 16,
-                //  Public Key Size
-                keySize : 1024
-            },
+            exponent : "",
+            modulus : "",
+            //  Exponent and modulus data radix, default is 16
+            radix : 16,
+            //  Public Key Size
+            keySize : 1024
         }
     }
 };
 Object.seal(Config);
-export {Comment, Config};
+
+function $() {
+    if (arguments.length <= 0) {
+        return [];
+    } else {
+        let argCount = arguments.length;
+        if (argCount === 1) {
+            return document.getElementById(arguments[0]);
+        } else {
+            let returnElements = [];
+            for (let i = 0 ; i < argCount ; i++) {
+                let element = null;
+                let elementId = arguments[i];
+                if (typeof elementId === 'string') {
+                    element = document.getElementById(elementId);
+                }
+                returnElements.push(element);
+            }
+            return returnElements;
+        }
+    }
+}
+
+export {Comment, Config, $};
 
 Object.extend = function(destination, source) {
     for (let _property in source) {
@@ -235,49 +281,30 @@ Object.extend(Element.prototype, {
 
     setClass(_className = "") {
         if (_className.length > 0) {
-            _className = _className.replace(RegexLibrary.BlankText, " ").trim();
-            if (Comment.Browser.IE8) {
-                this.setAttribute("className", _className);
-            } else {
-                this.setAttribute("class", _className);
-            }
+            this.setAttribute("class", _className.replace(RegexLibrary.BlankText, " ").trim());
+        } else {
+            this.removeAttribute("class");
         }
     },
 
     setStyle(_cssText = "") {
         if (_cssText.length > 0) {
-            if (Comment.Browser.IE8) {
-                this.setAttribute("cssText",
-                    this.hasAttribute("cssText") ? this.getAttribute("cssText") + _cssText : _cssText);
-            } else {
-                this.setAttribute("style",
-                    this.hasAttribute("style") ? this.getAttribute("style") + _cssText : _cssText);
-            }
+            let _currentStyle = this.hasAttribute("style") ? this.getAttribute("style") : "";
+            this.setAttribute("style", _currentStyle + _cssText);
         }
     },
 
     getStyle() {
-        if (Comment.Browser.IE8) {
-            return this.hasAttribute("cssText") ? this.getAttribute("cssText") : "";
-        } else {
-            return this.hasAttribute("style") ? this.getAttribute("style") : "";
-        }
+        return this.hasAttribute("style") ? this.getAttribute("style") : "";
     },
 
     bindEvent(_eventName, _operateFunc) {
-        if (Comment.Browser.IE && !Comment.Browser.IE11) {
-            this.attachEvent("on" + _eventName, _operateFunc);
-        } else {
-            this.addEventListener(_eventName, _operateFunc, false);
-        }
+        this.removeEvent(_eventName, _operateFunc);
+        this.addEventListener(_eventName, _operateFunc, false);
     },
 
     removeEvent(_eventName, _operateFunc) {
-        if (Comment.Browser.IE && !Comment.Browser.IE11) {
-            this.detachEvent("on" + _eventName, _operateFunc);
-        } else {
-            this.removeEventListener(_eventName, _operateFunc, false);
-        }
+        this.removeEventListener(_eventName, _operateFunc, false);
     },
 
     clearChildNodes() {
@@ -288,12 +315,36 @@ Object.extend(Element.prototype, {
         }
     },
 
+    switchDisplay() {
+        if (this.hasClass("hidden")) {
+            this.show();
+        } else {
+            this.hide();
+        }
+    },
+
     hide() {
         this.appendClass("hidden");
     },
 
     show() {
         this.removeClass("hidden");
+    },
+
+    disable() {
+        this.setAttribute("disabled", "true");
+        this.dataset.disabled = "true";
+        if (this.tagName.toLowerCase() === "html" || this.tagName.toLowerCase() === "body") {
+            document.body.style.overflow = "hidden";
+        }
+    },
+
+    enable() {
+        this.removeAttribute("disabled");
+        this.dataset.disabled = "false";
+        if (this.tagName.toLowerCase() === "html" || this.tagName.toLowerCase() === "body") {
+            document.body.style.overflow = "auto";
+        }
     },
 
     formData() {
@@ -326,6 +377,12 @@ Object.extend(Element.prototype, {
                     }
                 }
             });
+            this.querySelectorAll("drag-upload").forEach(drawUpload => {
+                drawUpload.uploadFiles().forEach(fileItem => {
+                    _formData.append(drawUpload.getAttribute("name"), fileItem, fileItem.name);
+                    _formData.uploadFile = true;
+                })
+            });
             if (_formData.uploadFile && this.dataset.uploadProgress) {
                 _formData.uploadProgress = this.dataset.uploadProgress;
             }
@@ -335,22 +392,29 @@ Object.extend(Element.prototype, {
 
     validate() {
         let _result = true;
-        if (this.tagName.toLowerCase() === "form") {
+        let _tagName = this.tagName.toLowerCase();
+        if (_tagName === "form") {
             this.querySelectorAll("input, select, textarea").forEach(input => {
                 _result = _result && input.validate();
             });
         } else if (this.dataset.validate === "true"
-            && (this.tagName.toLowerCase() === "input" || this.tagName.toLowerCase() === "select")) {
+            && (_tagName === "input" || _tagName === "select" || _tagName === "textarea")) {
             if (this.value.length > 0) {
                 let _value = this.value;
                 if (this.dataset.regex) {
                     _result = _result && (_value.match(this.dataset.regex) !== null);
                 }
-                if (this.dataset.minValue && this.dataset.minValue.isNum() && _value.isNum()) {
-                    _result = _result && (Number(this.dataset.minValue) <= Number(_value));
+                if (this.dataset.minValue && this.dataset.minValue.isNum()) {
+                    _result = _result && _value.isNum() && (this.dataset.minValue.parseFloat() <= _value.parseFloat());
                 }
-                if (this.dataset.maxValue && this.dataset.maxValue.isNum() && _value.isNum()) {
-                    _result = _result && (Number(_value) <= Number(this.dataset.maxValue));
+                if (this.dataset.maxValue && this.dataset.maxValue.isNum()) {
+                    _result = _result && _value.isNum() && (_value.parseFloat() <= this.dataset.maxValue.parseFloat());
+                }
+                if (this.dataset.xml === "true") {
+                    _result = _result && _value.isXml();
+                }
+                if (this.dataset.html === "true") {
+                    _result = _result && _value.isHtml();
                 }
                 if (this.dataset.email === "true") {
                     _result = _result && _value.isEmail();
@@ -362,57 +426,33 @@ Object.extend(Element.prototype, {
                     _result = _result && _value.isSocialCreditCode();
                 }
             } else {
-                _result = this.dataset.notNull === undefined || this.dataset.notNull === "false";
+                _result = (this.dataset.notNull === undefined || this.dataset.notNull === "false");
             }
-
-            this.dataset.verifyResult = _result.toString();
         }
         return _result;
     },
 
-    sortChildrenBy(tagName = "", attributeName = "", _sortDesc = false) {
-        if (!attributeName || !tagName) {
+    sortChildrenBy(selectors = "", attributeName = "", _sortDesc = false) {
+        if (!attributeName || !selectors) {
             return;
         }
 
-        let _sortFunc = function(a, b) {
-            try {
-                let aValue = a.getAttribute(attributeName);
-                let bValue = b.getAttribute(attributeName);
-
-                let sortValue = 0;
-                if (aValue.toString().toLowerCase() < bValue.toString().toLowerCase()) {
-                    sortValue = -1;
-                } else if (aValue.toString().toLowerCase() > bValue.toString().toLowerCase()) {
-                    sortValue = 1;
-                }
-
-                if (_sortDesc) {
-                    sortValue *= -1;
-                }
-
-                return sortValue;
-            } catch (e) {
-                return 0;
-            }
-        };
-
         if (this.hasChildNodes()) {
-            let sortNodes = this.getElementsByTagName(tagName);
-            sortNodes = sortNodes.sort(_sortFunc);
+            let queryNodes = this.querySelectorAll(selectors);
+            let sortNodes = Array.from(queryNodes)
+                .sort((a, b) => {
+                    try {
+                        let aValue = a.getAttribute(attributeName);
+                        let bValue = b.getAttribute(attributeName);
 
-            let childNodes = this.childNodes;
-            tagName = tagName.toLowerCase();
+                        return  _sortDesc ? bValue.compare(aValue) : aValue.compare(bValue);
+                    } catch (e) {
+                        return 0;
+                    }
+                });
 
-            for (let i = 0 ; i < childNodes.length ; i++) {
-                if (childNodes[i].tagName && childNodes[i].tagName.toLowerCase() === tagName) {
-                    this.removeChild(childNodes[i]);
-                }
-            }
-
-            while (sortNodes.length > 0) {
-                this.appendChild(sortNodes.shift());
-            }
+            Array.from(queryNodes).forEach(childNode => this.removeChild(childNode));
+            Array.from(sortNodes).forEach(childNode => this.appendChild(childNode));
         }
     },
 
@@ -488,22 +528,6 @@ Object.extend(String.prototype, {
         return this === "" || this.trim() === "";
     },
 
-    startsWith(startString) {
-        if (startString == null || startString.length === 0
-            || this.length === 0 || startString.length > this.length) {
-            return false;
-        }
-        return this.indexOf(startString) === 0;
-    },
-
-    endsWith(endString) {
-        if (endString == null || endString.length === 0
-            || this.length === 0 || endString.length > this.length) {
-            return false;
-        }
-        return this.substr(this.length - endString.length) === endString;
-    },
-
     isEmail() {
         return RegexLibrary.E_Mail.test(this.cleanBlank());
     },
@@ -525,9 +549,9 @@ Object.extend(String.prototype, {
 
     isSocialCreditCode() {
         if (this.trim().search(RegexLibrary.CHN_Social_Credit) !== -1) {
-            let _sigma = 0, _validateCode = CHN_SOCIAL_CREDIT_CODE.indexOf(this.charAt(17)),_code, i;
+            let _sigma = 0, _validateCode = Comment.SocialCreditCode.indexOf(this.charAt(17)),_code, i;
             for (i = 0 ; i < 17 ; i++) {
-                _code = CHN_SOCIAL_CREDIT_CODE.indexOf(this.charAt(i));
+                _code = Comment.SocialCreditCode.indexOf(this.charAt(i));
                 if (_code !== 0) {
                     _sigma += _code * (Math.pow(3, i) % 31);
                 }
@@ -540,6 +564,7 @@ Object.extend(String.prototype, {
 
     isJSON() {
         let _string = this.replace(/\\["\\\/bfnrtu]/g, '@');
+        _string = _string.replace(/\\{\d+\\}/g, "");
         _string = _string.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']');
         _string = _string.replace(/(?:^|:|,)(?:\s*\[)+/g, '');
         return /^[\],:{}\s]*$/.test(_string);
@@ -564,15 +589,11 @@ Object.extend(String.prototype, {
                     if (_tagName.indexOf(" ") > 0) {
                         _tagName = _tagName.substr(0, _tagName.indexOf(" "));
                     }
-                    if (Comment.Html5) {
-                        if (Comment.Html5Tag.indexOf(_tagName) === -1) {
-                            _matchResult = false;
-                        }
-                    } else {
-                        if (Comment.HtmlTag.indexOf(_tagName) === -1) {
-                            _matchResult = false;
-                        }
-                    }
+
+                    _matchResult = Comment.Html5
+                        ? TagDefine.Html5Tag.indexOf(_tagName) !== -1
+                        : TagDefine.HtmlTag.indexOf(_tagName) !== -1;
+                    _matchResult |= (TagDefine.CustomTag.indexOf(_tagName) !== -1);
                 }
             }
         }
@@ -583,15 +604,16 @@ Object.extend(String.prototype, {
         if (!this.isJSON()) {
             throw new Error(Cell.message("Core", "Data.Invalid.JSON"));
         }
+        let _string = this.replace(/'/g, '"');
         if (typeof JSON !== 'undefined') {
-            return JSON.parse(this);
+            return JSON.parse(_string);
         }
 
         if (Comment.Browser.Gecko) {
-            return new Function("return " + this)();
+            return new Function("return " + _string)();
         }
 
-        return eval('(' + this + ')');
+        return eval('(' + _string + ')');
     },
 
     parseXml() {
@@ -640,21 +662,19 @@ Object.extend(String.prototype, {
     },
 
     setKeywords() {
-        let _keyWords = document.querySelector("keywords");
-        if (_keyWords) {
-            _keyWords.setAttribute("content", this);
-        }
+        Array.from(document.querySelectorAll("meta"))
+            .filter(metaElement => (metaElement.name && metaElement.name.toLowerCase() === "keywords"))
+            .forEach(metaElement => metaElement.setAttribute("content", this));
     },
 
     setDescription() {
-        let _description = document.querySelector("description");
-        if (_description) {
-            _description.setAttribute("content", this);
-        }
+        Array.from(document.querySelectorAll("meta"))
+            .filter(metaElement => (metaElement.name && metaElement.name.toLowerCase() === "description"))
+            .forEach(metaElement => metaElement.setAttribute("content", this));
     },
 
     encodeBase64() {
-        return (typeof btoa === "function") ? btoa(unescape(encodeURIComponent(this))) : this.toByteArray().base64();
+        return (typeof btoa === "function") ? btoa(unescape(encodeURIComponent(this))) : this.toByteArray().encodeBase64();
     },
 
     decodeBase64() {
@@ -663,14 +683,14 @@ Object.extend(String.prototype, {
         }
         let _result = [], i = 0, _length = this.length;
         while (i < _length) {
-            _result.push((BASE64.indexOf(this.charAt(i)) << 2) | BASE64.indexOf(this.charAt(i + 1)) >> 4);
-            let _code = BASE64.indexOf(this.charAt(i + 2));
+            _result.push((Comment.BASE64.indexOf(this.charAt(i)) << 2) | (Comment.BASE64.indexOf(this.charAt(i + 1)) >> 4));
+            let _code = Comment.BASE64.indexOf(this.charAt(i + 2));
             if (_code !== 64) {
-                _result.push(((BASE64.indexOf(this.charAt(i + 1)) & 0xF) << 4) | (BASE64.indexOf(this.charAt(i + 2)) >> 2));
+                _result.push(((Comment.BASE64.indexOf(this.charAt(i + 1)) & 0xF) << 4) | (Comment.BASE64.indexOf(this.charAt(i + 2)) >> 2));
             }
-            _code = BASE64.indexOf(this.charAt(i + 2));
+            _code = Comment.BASE64.indexOf(this.charAt(i + 2));
             if (_code !== 64) {
-                _result.push(((BASE64.indexOf(this.charAt(i + 2)) & 0x3) << 6) | BASE64.indexOf(this.charAt(i + 3)));
+                _result.push(((Comment.BASE64.indexOf(this.charAt(i + 2)) & 0x3) << 6) | Comment.BASE64.indexOf(this.charAt(i + 3)));
             }
             i += 4;
         }
@@ -707,7 +727,7 @@ Object.extend(String.prototype, {
         return /[\u0080-\uFFFF]/.test(this) ? unescape(encodeURIComponent(this)) : this;
     },
 
-    toByteArray() {
+    toByteArray(bigEndian = false) {
         let _array = this.split(''), _length = _array.length, _result = [], _tmp, i, j;
         for (i = 0 ; i < _length ; i++) {
             _tmp = encodeURI(_array[i]);
@@ -722,6 +742,16 @@ Object.extend(String.prototype, {
                     }
                 }
             }
+        }
+        if (bigEndian) {
+            let _convResult = [];
+            for (let position = 0 ; position < _result.length ; position += 4) {
+                _convResult[position + 3] = _result[position];
+                _convResult[position + 2] = ((position + 1) < _result.length) ? _result[position + 1] : 0;
+                _convResult[position + 1] = ((position + 2) < _result.length) ? _result[position + 2] : 0;
+                _convResult[position] = ((position + 3) < _result.length) ? _result[position + 3] : 0;
+            }
+            return _convResult;
         }
         return _result;
     },
@@ -771,12 +801,12 @@ Object.extend(String.prototype, {
 
 Object.extend(Number.prototype, {
     parseTime(utc = false) {
-        let offset = 0;
-        if (utc) {
-            offset = (new Date().getTimezoneOffset() * 60 * 1000);
-        }
         let _date = new Date();
-        _date.setTime(this - offset);
+        if (utc) {
+            _date.setTime(this);
+        } else {
+            _date.setTime(this + (new Date().getTimezoneOffset() * 60 * 1000));
+        }
         return _date;
     },
 
@@ -904,28 +934,30 @@ Object.extend(Array.prototype, {
             _byte = this[i];
             for (let j = 0 ; j < 4 ; j++) {
                 if (littleEndian) {
-                    _result += BASE16[(_byte >> ((2 * j + 1) * 4)) & 0x0F] + BASE16[(_byte >> ((2 * j) * 4)) & 0x0F];
+                    _result += Comment.BASE16[(_byte >> ((2 * j + 1) * 4)) & 0x0F]
+                        + Comment.BASE16[(_byte >> ((2 * j) * 4)) & 0x0F];
                 } else {
-                    _result += BASE16[(_byte >> (28 - ((2 * j) * 4))) & 0x0F] + BASE16[(_byte >> (28 - ((2 * j + 1) * 4))) & 0x0F];
+                    _result += Comment.BASE16[(_byte >> (28 - ((2 * j) * 4))) & 0x0F]
+                        + Comment.BASE16[(_byte >> (28 - ((2 * j + 1) * 4))) & 0x0F];
                 }
             }
         }
         return _result;
     },
 
-    base64(padding = "") {
+    encodeBase64(padding = "") {
         let _result = "", _length = this.length, i;
         for (i = 0 ; i < _length ; i += 3) {
-            _result += (BASE64[this[i] >> 2] + BASE64[((this[i] & 0x3) << 4) | (this[i + 1] >> 4)]);
+            _result += (Comment.BASE64[this[i] >> 2] + Comment.BASE64[((this[i] & 0x3) << 4) | (this[i + 1] >> 4)]);
             if (i + 1 < _length) {
-                _result += BASE64[((this[i + 1] & 0xF) << 2) | (this[i + 2] >> 6)];
+                _result += Comment.BASE64[((this[i + 1] & 0xF) << 2) | (this[i + 2] >> 6)];
             }
             if (i + 2 < _length) {
-                _result += BASE64[this[i + 2] & 0x3F];
+                _result += Comment.BASE64[this[i + 2] & 0x3F];
             }
         }
         while (_result.length % 4 !== 0) {
-            _result += ((padding.length === 0) ? padding : BASE64[64]);
+            _result += ((padding.length === 0) ? padding : Comment.BASE64[64]);
         }
 
         return _result;

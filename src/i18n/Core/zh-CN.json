@@ -15,5 +15,11 @@
   "Template.Register" : "注册模板名称：{0}，读取地址：{1}",
   "Template.Exists" : "覆盖已存在的模板信息，模板名称：{0}",
   "Template.Not.Exists" : "模板未找到，模板名称：{0}",
-  "UI.Registered.Processor" : "界面选择器{0}已被注册"
+  "UI.Registered.Processor" : "界面选择器{0}已被注册",
+  "Button.Search" : "查询",
+  "Dialog.Confirm" : "确定",
+  "Dialog.Cancel" : "取消",
+  "text-list" : "文字列表",
+  "view-list" : "图文列表",
+  "image-list" : "图片列表"
 }

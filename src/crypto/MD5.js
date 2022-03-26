@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,16 +18,17 @@
  * 1.0.0
  * [New] MD5 and HmacMD5 Support
  */
-import {Crypto} from "./Crypto.js";
 
 (function (MD5) {
     if (typeof window.Cell === "undefined") {
         window.MD5 = MD5;
     } else {
-        Cell.registerComponent("MD5", MD5);
+        Cell.registerModule("MD5", MD5);
     }
 })(function() {
     'use strict';
+
+    import {Crypto} from "./Crypto.js";
 
     const HASH_INDEX_NORMAL = [
         [1, 2, 3, 1],
@@ -152,7 +153,6 @@ import {Crypto} from "./Crypto.js";
 
         static _rotateAndAdd(x = 0, y = 0, _count) {
             return Crypto.safeAdd(x.safeRotateLeft(_count), y);
-
         }
 
         static _md5FF(i = 0, j = 0, k = 0, x = 0, y = 0) {

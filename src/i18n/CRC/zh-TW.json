@@ -1,0 +1,7 @@
+{
+  "CRC.ALGORITHMS" : "無法找到CRC演算法{0}對應的配置參數",
+  "CRC.Not.Support" : "不支持32位以上的CRC計算",
+  "CRC.Register" : "註冊CRC演算法，名稱：{0}，位數：{1}，多項式：{2}，初始值：{3}，結果異或值：{4}，輸入反轉：{5}，輸出反轉：{6}",
+  "CRC.Exists" : "CRC演算法{0}配置已存在",
+  "CRC.SUPPORTED" : "已支援的CRC演算法：{0}"
+}

@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,17 +20,17 @@
  *      Support Algorithms: SHA1/SHA224/SHA256/SHA384/SHA512/SHA3_224/SHA3_256/SHA3_384/SHA3_512/
  *                          SHAKE128/SHAKE256/Keccak224/Keccak256/Keccak384/Keccak512
  */
-'use strict';
-
-import {Int64, Crypto} from "./Crypto.js";
-
 (function (SHA) {
     if (typeof window.Cell === "undefined") {
         window.SHA = SHA;
     } else {
-        Cell.registerComponent("SHA", SHA);
+        Cell.registerModule("SHA", SHA, true);
     }
 })(function () {
+    'use strict';
+
+    import {Int64, Crypto} from "./Crypto.js";
+
     const K = [
         new Int64(0x428A2F98, 0xD728AE22), new Int64(0x71374491, 0x23EF65CD),
         new Int64(0xB5C0FBCF, 0xEC4D3B2F), new Int64(0xE9B5DBA5, 0x8189DBBC),
@@ -98,7 +98,7 @@ import {Int64, Crypto} from "./Crypto.js";
     class SHA extends Crypto{
         constructor(bit, outBit, delimiter, blockSize, blockLength, key = "") {
             if (typeof bit === "undefined" || typeof outBit === "undefined" || typeof blockSize === "undefined") {
-                throw new Error("Invalid initialize arguments");
+                throw new Error(Cell.message("SHA", "SHA.ARGUMENT"));
             }
             super();
             this._bit = bit;
@@ -240,7 +240,7 @@ import {Int64, Crypto} from "./Crypto.js";
                         case 256:
                             return [0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A, 0x510E527F, 0x9B05688C, 0x1F83D9AB, 0x5BE0CD19];
                         default:
-                            throw new Error("Current outBit not support!");
+                            throw new Error(Cell.message("SHA", "SHA.Bit.Support", this._bit));
                     }
                 case 512:
                     switch (this._outBit) {
@@ -273,7 +273,7 @@ import {Int64, Crypto} from "./Crypto.js";
                                 new Int64(0x1F83D9AB, 0xFB41BD6B),  new Int64(0x5BE0CD19, 0x137E2179)
                             ];
                         default:
-                            throw new Error("Current outBit not support!");
+                            throw new Error(Cell.message("SHA", "SHA.Bit.Support", this._bit));
                     }
                 case 1600:
                     let _hash = new Array(5);
