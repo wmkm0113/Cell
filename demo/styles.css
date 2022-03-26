@@ -1940,7 +1940,7 @@ mock-dialog > div[slot="dialog"].confirm > button#cancel-btn {
     left: 50%;
 }
 social-group {
-    width: 20rem;
+    width: 100%;
     padding: 1rem;
 }
 social-group > span[slot="title"] {
