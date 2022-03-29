@@ -25,6 +25,14 @@ class BaseButton extends AbstractInput {
         }
         super(elementType);
         this._timer = null;
+        Object.defineProperty(this, "textContent", {
+            set(data) {
+                let inputElement = this._inputElement();
+                if (inputElement !== null) {
+                    inputElement.setAttribute("value", data);
+                }
+            }
+        });
     }
 
     set id(id) {

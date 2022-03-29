@@ -59,6 +59,9 @@ export default class TipsElement extends BaseElement {
                 tipsElement = document.createElement("span");
                 tipsElement.setAttribute("slot", "tipsButton");
                 this.appendChild(tipsElement);
+                let tipsIcon = document.createElement("i");
+                tipsIcon.setClass("icon-white_question");
+                tipsElement.appendChild(tipsIcon);
             }
             let tipsContent = this.querySelector("span > span");
             if (tipsContent === null) {

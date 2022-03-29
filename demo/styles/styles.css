@@ -1,11 +1,4 @@
 @charset "UTF-8";
-@font-face {
-    font-family: cell-icon;
-    src:
-            url("fonts/icon/iconfont.woff2") format("woff2"),
-            url("fonts/icon/iconfont.woff") format("woff"),
-            url("fonts/icon/iconfont.ttf") format("truetype");
-}
 * {
     float: left;
     background-color: transparent;
@@ -13,7 +6,7 @@
 html {
     font-size: 10px;
     float: none;
-    font-family: cell-icon, sans-serif;
+    font-family: sans-serif;
     color: #1B1B1B;
 }
 body {
@@ -31,24 +24,6 @@ a {
 .hidden {
     display: none;
 }
-.iconButton {
-    width: 3rem;
-    height: 3rem;
-    line-height: 3rem;
-    cursor: pointer;
-    overflow: hidden;
-    float: left;
-}
-.iconButton::before {
-    width: 3rem;
-    height: 3rem;
-    line-height: 3.2rem;
-    font-size: 2rem;
-    text-align: center;
-    color: #056EB7;
-    float: left;
-    font-family: cell-icon, sans-serif;
-}
 .fill-btn {
     margin: 0.5rem;
     border-radius: 1.5rem;
@@ -63,323 +38,6 @@ a {
 .current::before,
 .fill-btn:hover::before {
     color: #FFFFFF;
-}
-button.iconButton {
-    padding: 0;
-}
-a.favorite::before,
-button.favorite::before {
-    content: "\e7b4";
-}
-a.favorite-fill::before,
-button.favorite-fill::before {
-    content: "\e721";
-}
-a.wish-list::before,
-button.wish-list::before,
-span.star::before {
-    content: "\e79d";
-}
-a.wish-list-fill::before,
-button.wish-list-fill::before,
-span.star-fill::before  {
-    content: "\e79e";
-}
-span.star-half::before {
-    content: "\e605";
-}
-a.confirm-btn::before,
-button.confirm-btn::before {
-    content: "\e752";
-}
-a.config-btn::before,
-button.config-btn::before {
-    content: "\e780";
-}
-a.close-btn::before,
-button.close-btn::before {
-    content: "\e61c";
-}
-a.edit-btn::before,
-button.edit-btn::before {
-    content: "\e6f6";
-}
-a.delete-btn::before,
-button.delete-btn::before {
-    content: "\e749";
-}
-a.copy-btn::before,
-button.copy-btn::before {
-    content: "\e753";
-}
-a.upload-btn::before,
-button.upload-btn::before {
-    content: "\e77c";
-}
-a.download-btn::before,
-button.download-btn::before {
-    content: "\e75b";
-}
-a.lock-btn::before,
-button.lock-btn::before {
-    content: "\e647";
-}
-a.unlock-btn::before,
-button.unlock-btn::before {
-    content: "\e648";
-}
-a.cart-btn::before,
-button.cart-btn::before {
-    content: "\e751";
-}
-a.cart-full-btn::before,
-button.cart-full-btn::before {
-    content: "\e74e";
-}
-a.menu-btn::before,
-button.menu-btn::before {
-    content: "\eaf1";
-}
-a.logout-btn::before,
-button.logout-btn::before {
-    content: "\eb45";
-}
-a.user-btn::before,
-button.user-btn::before {
-    content: "\e7b7";
-}
-a.add-btn::before,
-button.add-btn::before {
-    content: "\e742";
-}
-a.reduce-btn::before,
-button.reduce-btn::before {
-    content: "\e76d";
-}
-a.filter-btn::before,
-button.filter-btn::before {
-    content: "\e75d";
-}
-a.sort-btn::before,
-button.sort-btn::before {
-    content: "\e775";
-}
-a.text-list::before,
-button.text-list::before {
-    content: "\e74f";
-}
-a.view-list::before,
-button.view-list::before {
-    content: "\e77f";
-}
-a.select-all-btn::before,
-button.select-all-btn::before {
-    content: "\e6cc";
-}
-a.select-all-btn[data-select-all="true"]::before,
-button.select-all-btn[data-select-all="true"]::before {
-    content: "\e6e8";
-}
-a.image-list::before,
-button.image-list::before {
-    content: "\e6ef";
-}
-a.coupon-btn::before,
-button.coupon-btn::before {
-    content: "\e754";
-}
-a.sms-btn::before,
-button.sms-btn::before {
-    content: "\eb42";
-}
-a.return-btn::before,
-button.return-btn::before {
-    content: "\e76e";
-}
-a.print-btn::before,
-button.print-btn::before {
-    content: "\e76c";
-}
-a.share-btn::before,
-button.share-btn::before {
-    content: "\e773";
-}
-a.left-btn::before,
-button.left-btn::before {
-    content: "\e761";
-}
-a.right-btn::before,
-button.right-btn::before {
-    content: "\e774";
-}
-a.scan-btn::before,
-button.scan-btn::before {
-    content: "\e770";
-}
-a.dollar-btn::before,
-button.dollar-btn::before {
-    content: "\e7ce";
-}
-a.tag-btn::before,
-button.tag-btn::before {
-    content: "\e75a";
-}
-a.telephone-btn::before,
-button.telephone-btn::before {
-    content: "\e600";
-}
-a.comment-btn::before,
-button.comment-btn::before {
-    content: "\e8c0";
-}
-a.send-btn::before,
-button.send-btn::before {
-    content: "\e916";
-}
-a.amazon-btn::before,
-button.amazon-btn::before {
-    content: "\e715";
-}
-a.dropbox-btn::before,
-button.dropbox-btn::before {
-    content: "\e654";
-}
-a.google-btn::before,
-button.google-btn::before {
-    content: "\e87a";
-}
-a.reddit-btn::before,
-button.reddit-btn::before {
-    content: "\e8a1";
-}
-a.slack-btn::before,
-button.slack-btn::before {
-    content: "\e789";
-}
-a.facebook-btn::before,
-button.facebook-btn::before {
-    content: "\e641";
-}
-a.linked-in-btn::before,
-button.linked-in-btn::before {
-    content: "\e688";
-}
-a.weibo-btn::before,
-button.weibo-btn::before {
-    content: "\e615";
-}
-a.stackflow-btn::before,
-button.stackflow-btn::before {
-    content: "\e919";
-}
-a.youtube-btn::before,
-button.youtube-btn::before {
-    content: "\e62d";
-}
-a.github-btn::before,
-button.github-btn::before {
-    content: "\e691";
-}
-a.twitter-btn::before,
-button.twitter-btn::before {
-    content: "\ecc1";
-}
-a.service-account-btn::before,
-button.service-account-btn::before {
-    content: "\e64e";
-}
-a.subscribe-account-btn::before,
-button.subscribe-account-btn::before {
-    content: "\e60e";
-}
-a.mini-program-btn::before,
-button.mini-program-btn::before {
-    content: "\e62e";
-}
-a.qq-btn::before,
-button.qq-btn::before {
-    content: "\e6af";
-}
-a.wechat-btn::before,
-button.wechat-btn::before {
-    content: "\e61b";
-}
-a.moments-btn::before,
-button.moments-btn::before {
-    content: "\e8bd";
-}
-a.dingtalk-btn::before,
-button.dingtalk-btn::before {
-    content: "\e886";
-}
-a.alipay-btn::before,
-button.alipay-btn::before {
-    content: "\e61f";
-}
-a.taobao-btn::before,
-button.taobao-btn::before {
-    content: "\e65e";
-}
-a.zhihu-btn::before,
-button.zhihu-btn::before {
-    content: "\e78e";
-}
-a.toutiao-btn::before,
-button.toutiao-btn::before {
-    content: "\e622";
-}
-a.tiktok-btn::before,
-button.tiktok-btn::before {
-    content: "\e8db";
-}
-a.kuaishou-btn::before,
-button.kuaishou-btn::before {
-    content: "\e8dc";
-}
-a.day-mode-btn::before,
-button.day-mode-btn::before {
-    content: "\e785";
-}
-a.night-mode-btn::before,
-button.night-mode-btn::before {
-    content: "\e788";
-}
-a.instagram-btn::before,
-button.instagram-btn::before {
-    content: "\e60d";
-}
-a.arrow-left::before,
-button.arrow-left::before {
-    content: "\e745";
-}
-a.double-arrow-left::before,
-button.double-arrow-left::before {
-    content: "\e759";
-}
-a.arrow-right::before,
-button.arrow-right::before {
-    content: "\e744";
-}
-a.double-arrow-right::before,
-button.double-arrow-right::before {
-    content: "\e757";
-}
-a.more-android-btn::before,
-button.more-android-btn::before {
-    content: "\eb00";
-}
-a.more-ios-btn::before,
-button.more-ios-btn::before {
-    content: "\eb01";
-}
-.android::before {
-    content: "\e881";
-}
-.apple::before {
-    content: "\e882";
-}
-.windows::before {
-    content: "\e883";
 }
 standard-button,
 submit-button,
@@ -436,16 +94,6 @@ password-input > input[slot="element"]:focus + span[slot="icon"] {
     height: 2.7rem;
     background-color: #DFF1FF;
     border-bottom: 2px solid #056EB7;
-}
-password-input > input[slot="element"][type="password"] + span[slot="icon"]::before {
-    color: #056EB7;
-    font-size: 2.4rem;
-    content: "\e74b";
-}
-password-input > input[slot="element"][type="text"] + span[slot="icon"]::before {
-    color: #056EB7;
-    font-size: 2.4rem;
-    content: "\e6fe";
 }
 input[slot="element"], select-input > select, textarea-input > textarea {
     height: 2.8rem;
@@ -768,8 +416,7 @@ tips-button > span {
     float: left;
     cursor: pointer;
 }
-tips-button > span::after {
-    content: "\e6ab";
+tips-button > span > i {
     width: 1.8rem;
     height: 1.8rem;
     line-height: 1.8rem;
@@ -1131,12 +778,7 @@ message-list > list-title > div[slot="btnGroup"] {
     float: right;
 }
 message-list > list-data > div[slot="batchOperators"] > a,
-message-list > list-data > div[slot="batchOperators"] > button,
-message-list > list-data > div[slot="batchOperators"] > button::before,
-message-list > list-title > div[slot="btnGroup"] > a,
-message-list > list-title > div[slot="btnGroup"] > a::before,
-message-list > list-title > div[slot="btnGroup"] > button,
-message-list > list-title > div[slot="btnGroup"] > button::before {
+message-list > list-data > div[slot="batchOperators"] > i {
     width: 3rem;
     height: 3rem;
     line-height: 3rem;
@@ -1145,48 +787,47 @@ message-list > list-title > div[slot="btnGroup"] > button::before {
     background-color: #DFF1FF;
     cursor: pointer;
     border-radius: 0.4rem;
+    text-align: center;
+    margin: 0 0.2rem;
+    font-size: 1.8rem;
 }
 message-list > list-data > div[slot="batchOperators"] > a,
-message-list > list-data > div[slot="batchOperators"] > button,
+message-list > list-data > div[slot="batchOperators"] > i,
 message-list > list-title > div[slot="btnGroup"] > a,
-message-list > list-title > div[slot="btnGroup"] > button {
+message-list > list-title > div[slot="btnGroup"] > i {
     margin-left: 0.5rem;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    color: #056EB7;
+}
+message-list > list-title > div[slot="btnGroup"] > a,
+message-list > list-title > div[slot="btnGroup"] > i {
+    width: 2.2rem;
+    height: 2.2rem;
+    padding: 0.4rem;
+    line-height: 2.4rem;
+    text-align: center;
+    font-size: 1.8rem;
+    border-radius: 0.4rem;
+    background-color: #DFF1FF;
+    cursor: pointer;
 }
 message-list > list-data > div[slot="batchOperators"] > a:hover,
-message-list > list-data > div[slot="batchOperators"] > button:hover,
-message-list > list-title > div[slot="btnGroup"] > button.current,
+message-list > list-data > div[slot="batchOperators"] > i:hover,
+message-list > list-title > div[slot="btnGroup"] > i.current,
 message-list > list-title > div[slot="btnGroup"] > a:hover,
-message-list > list-title > div[slot="btnGroup"] > button:hover {
+message-list > list-title > div[slot="btnGroup"] > i:hover {
     box-shadow: none;
 }
-message-list > list-data > div[slot="batchOperators"] > a > span#icon {
-    width: 3rem;
-    height: 3rem;
-    line-height: 3rem;
-    text-align: center;
-    color: #056EB7;
-    font-size: 2rem;
-}
-message-list > list-data > div[slot="batchOperators"] > a:hover > span#icon {
-    color: #FFFFFF;
-}
-message-list > list-data > div[slot="batchOperators"] > a::before,
-message-list > list-data > div[slot="batchOperators"] > button::before,
-message-list > list-title > div[slot="btnGroup"] > a::before,
-message-list > list-title > div[slot="btnGroup"] > button::before {
-    font-size: 2rem;
-}
 message-list > list-data > div[slot="batchOperators"] > a:hover,
-message-list > list-data > div[slot="batchOperators"] > button:hover::before,
-message-list > list-title > div[slot="btnGroup"] > a:hover::before,
-message-list > list-title > div[slot="btnGroup"] > button:hover::before,
-message-list > list-title > div[slot="btnGroup"] > button.current::before,
+message-list > list-data > div[slot="batchOperators"] > i:hover,
+message-list > list-title > div[slot="btnGroup"] > a:hover,
+message-list > list-title > div[slot="btnGroup"] > i:hover,
+message-list > list-title > div[slot="btnGroup"] > i.current,
 message-list > list-data > div[slot="listPager"] > #firstPage,
 message-list > list-data > div[slot="listPager"] > #beginPage:hover,
 message-list > list-data > div[slot="listPager"] > #endPage:hover,
 message-list > list-data > div[slot="listPager"] > #lastPage,
-message-list > list-data > div[slot="listPager"] > #pageGroup > button:hover,
+message-list > list-data > div[slot="listPager"] > #pageGroup > i:hover,
 message-list > list-data > div[slot="listPager"] > #pageGroup > .current {
     background-color: #056EB7;
     color: #FFFFFF;
@@ -1288,6 +929,9 @@ message-list > list-data > .text-list > #content > list-record > mock-checkbox >
 message-list > list-data > .text-list > list-header > span[slot="mainTitle"],
 message-list > list-data > .text-list > #content > list-record > span[slot="mainTitle"] {
     width: calc(-2.4rem + 25%);
+}
+message-list > list-data > .text-list > list-header > span[slot="mainTitle"] {
+    padding-left: 2.4rem;
 }
 message-list > list-data > .text-list > list-header > span[slot="operators"],
 message-list > list-data > .text-list > #content > list-record > div[slot="operators"] {
@@ -1401,9 +1045,13 @@ message-list > list-data > .image-list > #content > list-record > star-score > d
     line-height: 2rem;
     margin: 0.5rem 0;
 }
-message-list > list-data > .view-list > #content > list-record > star-score > div > span::before,
-message-list > list-data > .image-list > #content > list-record > star-score > div > span::before {
-    font-size: 1.8rem;
+message-list > list-data > .view-list > #content > list-record > star-score > div > i,
+message-list > list-data > .image-list > #content > list-record > star-score > div > i {
+    width: 1.8rem;
+    height: 2rem;
+    line-height: 2rem;
+    text-align: center;
+    font-size: 1.6rem;
 }
 message-list > list-data > .view-list > #content > list-record > span[slot="preview"] {
     width: 9rem;
@@ -1457,7 +1105,12 @@ message-list > list-data > .image-list > #content > list-record > div[slot="oper
 message-list > list-data > .view-list > #content > list-record > div[slot="operators"] > record-operator > a > #icon,
 message-list > list-data > .image-list > #content > list-record > div[slot="operators"] > record-operator > a > #icon,
 message-list > list-data > .text-list > #content > list-record > div[slot="operators"] > record-operator > a > #icon {
-    font-size: 2rem;
+    width: 1.4rem;
+    height: 2.4rem;
+    line-height: 2.4rem;
+    font-size: 1.4rem;
+    padding: 0 0.3rem;
+    color: #056EB7;
 }
 message-list > list-data > .view-list > #content > list-record > div[slot="operators"] > record-operator > a > #text,
 message-list > list-data > .text-list > #content > list-record > div[slot="operators"] > record-operator > a > #text {
@@ -1490,19 +1143,18 @@ message-list > list-data > div[slot="batchOperators"] {
     float: left;
 }
 message-list > list-data > div[slot="batchOperators"] > a,
-message-list > list-data > div[slot="batchOperators"] > button {
-    width: auto;
+message-list > list-data > div[slot="batchOperators"] > i {
+    width: 3rem;
     height: 3rem;
     line-height: 3rem;
     padding: 0;
-    margin-right: 1rem;
     text-decoration: none;
 }
 message-list > list-data > div[slot="listPager"] {
     float: right;
 }
-message-list > list-data > div[slot="listPager"] > button,
-message-list > list-data > div[slot="listPager"] > div > button {
+message-list > list-data > div[slot="listPager"] > i,
+message-list > list-data > div[slot="listPager"] > div > i {
     width: 2.6rem;
     height: 2.6rem;
     line-height: 2.6rem;
@@ -1513,7 +1165,6 @@ message-list > list-data > div[slot="listPager"] > div > button {
     cursor: pointer;
     margin: 0 0.5rem;
     text-align: center;
-    font-family: cell-icon, sans-serif;
 }
 slide-show {
     margin: 0 auto;
@@ -1596,15 +1247,14 @@ float-window > float-page {
     background-color: #FFFFFF;
     overflow: hidden;
 }
-float-window > float-page > button[slot="closeBtn"].iconButton {
+float-window > float-page > i[slot="closeBtn"] {
+    width: 3rem;
+    height: 3rem;
     background: none;
     border: none;
     position: absolute;
     top: 1rem;
     right: 1rem;
-}
-float-window > float-page > button.iconButton::before {
-    font-size: 2.4rem;
 }
 float-window > float-page > div {
     width: calc(-8rem + 100%);
@@ -1614,7 +1264,7 @@ float-window > float-page > div {
     overflow-y: scroll;
 }
 .waitingData {
-    background-image: url('images/loading.gif');
+    background-image: url('../images/loading.gif');
     background-size: 3rem;
     background-position: center;
     background-repeat: no-repeat;
@@ -1653,9 +1303,10 @@ notify-area {
     right: 0;
     z-index: 20;
 }
-notify-area > button {
+notify-area > i {
     width: 3rem;
     height: 3rem;
+    line-height: 3.2rem;
     padding: 0;
     position: fixed;
     outline: none;
@@ -1667,14 +1318,11 @@ notify-area > button {
     z-index: 20;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
     cursor: pointer;
-}
-notify-area > button::before {
-    content: "\e645";
-    font-size: 2.4rem;
+    text-align: center;
+    font-size: 2rem;
     color: #056EB7;
-    font-family: cell-icon, sans-serif;
 }
-notify-area > button.alert::after {
+notify-area > i.alert::after {
     content: "";
     width: 1rem;
     height: 1rem;
@@ -1691,24 +1339,17 @@ notify-area.notify {
     background-color: rgba(0, 0, 0, 0.4);
     z-index: 10;
 }
-notify-area > button:hover,
-notify-area.notify > button {
+notify-area > i:hover,
+notify-area.notify > i {
     background-color: #056EB7;
     border: 1px solid #056EB7;
     box-shadow: none;
-}
-notify-area.notify > button {
-    top: 1rem;
-    right: calc(-1.5rem + 30%);
-}
-notify-area > button:hover::before,
-notify-area.notify > button::before {
     color: #FFFFFF;
 }
-notify-area.notify > button::before {
-    content: "\e774";
+notify-area.notify > i {
+    right: calc(-1.5rem + 30%);
 }
-notify-area.notify > button.alert::after {
+notify-area.notify > i.alert::after {
     display: none;
 }
 notify-area > div[slot="floatNotify"],
@@ -1757,19 +1398,22 @@ notify-area > div > div > a {
     padding: 1rem;
     float: left;
 }
-notify-area > div > div > button {
+notify-area > div > div > i {
     width: 2rem;
     height: 2rem;
+    line-height: 2.2rem;
     padding: 0;
     outline: none;
     border: none;
     position: absolute;
     top: -0.8rem;
     right: -0.8rem;
-    background-color: #FF0000;
+    color: #FF0000;
+    background-color: #FFFFFF;
     border-radius: 1rem;
     z-index: 1;
     cursor: pointer;
+    font-size: 2.2rem;
 }
 notify-area > div > div > button::before {
     width: 2rem;
@@ -1949,6 +1593,15 @@ social-group > span[slot="title"] {
     line-height: 3rem;
     font-size: 1.6rem;
 }
+social-group > a.icon {
+    width: 3rem;
+    height: 3rem;
+    line-height: 3.2rem;
+    text-align: center;
+    font-size: 3rem;
+    margin-right: 1rem;
+    color: #056EB7;
+}
 drag-upload {
     width: 400px;
     height: auto;
@@ -1973,820 +1626,4 @@ drag-upload > div[slot="dragWindow"] {
     width: 398px;
     height: 298px;
     border: 2px dashed #CCCCCC;
-}
-header {
-    width: 100%;
-    height: 7.5rem;
-    background-color: #FFFFFF;
-    border-bottom: 2px solid #056EB7;
-    position: fixed;
-    top: 0;
-    z-index: 8;
-}
-header > a#logo-icon {
-    width: 6rem;
-    height: 5.5rem;
-    margin: 1rem;
-    background-image: var(--bg-image);
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-}
-header > span#logo-text {
-    width: calc(-38rem + 100%);
-    height: 3.5rem;
-    line-height: 3.5rem;
-    margin-top: 1rem;
-    padding-left: 1rem;
-    font-family: "Vain Capital", sans-serif;
-    font-size: 2rem;
-    font-weight: bold;
-    color: #056EB7;
-}
-header > a#hot-line {
-    height: 3.5rem;
-    line-height: 3.5rem;
-    margin-top: 1rem;
-    padding-right: 1rem;
-    float: right;
-}
-header > a#hot-line > span,
-header > a#hot-line::before {
-    height: 3rem;
-    line-height: 3rem;
-    color: #056EB7;
-}
-header > a#hot-line > span {
-    max-width: 45rem;
-    font-size: 1.4rem;
-}
-header > a#hot-line::before {
-    width: 3rem;
-    content: "\e643";
-    display: inline-block;
-    font-size: 2rem;
-    text-align: center;
-    float: left;
-}
-header > menu-element {
-    width: calc(-18rem + 100%);
-    height: 3rem;
-}
-header > menu-element > div > span[slot="icon"] {
-    display: none;
-}
-header > menu-element > div > menu-item > div {
-    width: calc(-8rem + 100%);
-    top: 7.5rem;
-    padding-top: 2px;
-    padding-left: 8rem;
-}
-header > menu-element > div > menu-item.current,
-header > menu-element > div > menu-item:hover {
-    background-color: #056EB7;
-}
-header > menu-element > div > menu-item > a > span[name="textContent"] {
-    color: #1B1B1B;
-}
-header > menu-element > div > menu-item:hover > a > span[name="textContent"],
-header > menu-element > div > menu-item > div > menu-item > a > span[name="textContent"] {
-    color: #F2F2F7;
-}
-header > menu-element > div > menu-item:hover > div > menu-item:hover > a > span[name="textContent"] {
-    font-weight: bold;
-}
-header > div#btn-group {
-    width: 9rem;
-    height: 3rem;
-    padding-left: 1rem;
-    float: right;
-    position: absolute;
-    top: 4.5rem;
-    right: 0;
-}
-header > div#btn-group > a,
-header > div#btn-group > div,
-header > div#btn-group > div > a,
-header > div#btn-group > div > span {
-    width: 3rem;
-    height: 3rem;
-    line-height: 3rem;
-    text-align: center;
-    font-size: 2rem;
-    cursor: pointer;
-}
-header > div#btn-group > a:hover,
-header > div#btn-group > div:hover > a,
-header > div#btn-group > div:hover > div,
-header > div#btn-group > div:hover > span {
-    background-color: #056EB7;
-    color: #FFFFFF;
-}
-header > div#btn-group > a#tel {
-    display: none;
-}
-header > div#btn-group > div > input[type="search"] {
-    display: none;
-    height: 3rem;
-    line-height: 3rem;
-    padding: 0 1rem;
-    background-color: #FFFFFF;
-    border: 1px solid #056EB7;
-    outline: none;
-    position: absolute;
-    top: 0;
-    right: 3rem;
-}
-header > div#btn-group > div > input[type="search"]::placeholder {
-    opacity: 0.5;
-    font-size: 1.2rem;
-}
-header > div#btn-group > div {
-    width: auto;
-    position: relative;
-}
-header > div#btn-group > div > label[for="keywords"] {
-    display: none;
-    height: 3rem;
-    line-height: 3rem;
-}
-header > div#btn-group > div:hover > input[type="search"] {
-    width: 20rem;
-    display: block;
-}
-header > div#btn-group > div > div {
-    display: none;
-    width: 10rem;
-    padding-top: 2px;
-    position: absolute;
-    top: 3rem;
-    right: 0;
-    z-index: 5;
-}
-header > div#btn-group > div:hover > div {
-    display: block;
-}
-header > div#btn-group > div > div > a {
-    width: 100%;
-    height: 3rem;
-    line-height: 3rem;
-    color: #FFFFFF;
-}
-header > div#btn-group > div > div > a:hover {
-    background-color: #DFF1FF;
-    color: #1B1B1B;
-}
-main {
-    width: 100%;
-    background-color: #FFFFFF;
-    margin-top: 7.7rem;
-}
-main > index-abstract {
-    width: 100%;
-    height: 800px;
-    padding: 0;
-    background: linear-gradient(rgba(227, 227, 227, 0.6), rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0.8) 100%), var(--bg-image) no-repeat center;
-    background-size: cover;
-    position: relative;
-}
-main > index-abstract > span {
-    width: 100%;
-    line-height: 40rem;
-    font-size: 6rem;
-    text-align: center;
-    color: #F2F2F7;
-    text-shadow: 0 0 10px #81B9FF, 0 0 20px #81B9FF, 0 0 30px #056EB7, 0 0 40px #056EB7;
-}
-main > index-abstract > a[slot="link"] {
-    width: 16rem;
-    height: 4rem;
-    line-height: 4rem;
-    margin: 2rem calc(-9.5rem + 50%) 4rem calc(-9.5rem + 50%);
-    border-radius: 2rem;
-    background-color: #92C238;
-    color: #F2F2F7;
-    font-size: 1.6rem;
-    font-weight: bold;
-    box-shadow: none;
-}
-main > index-abstract > a[slot="link"]:hover {
-    background-color: #92C238;
-    color: #F2F2F7;
-}
-main > index-abstract > article {
-    width: 80%;
-    height: 30rem;
-    padding: 0 10%;
-    position: absolute;
-    background-color: rgba(242, 242, 227, 0.6);
-    left: 0;
-    bottom: 0;
-}
-main > index-abstract > article > section {
-    width: 28%;
-    height: 24rem;
-    margin: 3rem 0 3rem 4%;
-}
-main > index-abstract > article > section:last-child {
-    margin-right: 4%;
-}
-main > index-abstract > article > section > h3,
-main > index-abstract > article > section > p {
-    width: 100%;
-    margin: 0 auto;
-}
-main > index-abstract > article > section > h3 {
-    height: 6rem;
-    line-height: 6rem;
-    text-align: center;
-    font-size: 2rem;
-}
-main > index-abstract > article > section > p {
-    max-height: 18rem;
-    line-height: 3rem;
-    font-size: 1.6rem;
-    text-indent: 3.2rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 6;
-}
-main > message-list.indexNewsList {
-    width: 98%;
-    padding: 0 1% 2rem 1%;
-}
-main > message-list.indexNewsList > list-title > span {
-    font-size: 2.4rem;
-}
-main > message-list.indexNewsList > list-data {
-    width: 100%;
-    padding: 0;
-}
-main > message-list.indexNewsList > list-data > div[slot="dataInfo"] > div#content {
-    width: 100%;
-    border: none;
-}
-main > message-list.indexNewsList > list-data > div[slot="dataInfo"] > div#content > list-record {
-    width: 20.5%;
-    height: 20.4rem;
-    padding: 1rem 1%;
-    margin-top: 2rem;
-    margin-left: 2%;
-    border-bottom: none;
-    border-radius: 2rem;
-}
-main > message-list.indexNewsList > list-data > div[slot="dataInfo"] > div#content > list-record:hover {
-    background-color: transparent;
-    box-shadow: 0 0 20px #81B9FF;
-}
-main > message-list.indexNewsList > list-data > div[slot="dataInfo"] > div#content > list-record:nth-child(4n) {
-    margin-right: 2%;
-}
-main > message-list.indexNewsList > list-data > div[slot="dataInfo"] > div#content > list-record > span[slot="preview"],
-main > message-list.indexNewsList > list-data > div[slot="dataInfo"] > div#content > list-record > div[slot="items"] > property-item > span[slot="name"] {
-    display: none;
-}
-main > message-list.indexNewsList > list-data > div[slot="dataInfo"] > div#content > list-record > span[slot="mainTitle"] {
-    width: 100%;
-    max-width: 100%;
-    height: 5rem;
-    padding-right: 0;
-}
-main > message-list.indexNewsList > list-data > div[slot="dataInfo"] > div#content > list-record > span[slot="mainTitle"] > a {
-    height: 5rem;
-    line-height: 5rem;
-    font-size: 1.8rem;
-}
-main > message-list.indexNewsList > list-data > div[slot="dataInfo"] > div#content > list-record > div[slot="items"] {
-    width: 100%;
-    float: left;
-}
-main > message-list.indexNewsList > list-data > div[slot="dataInfo"] > div#content > list-record > span[slot="abstract"] {
-    width: 100%;
-    line-height: 2.6rem;
-    margin: 1rem 0;
-    font-size: 1.4rem;
-    text-indent: 2.8rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 4;
-}
-main > slide-show {
-    height: 500px;
-}
-main > slide-show > div[slot="sort"] {
-    bottom: 2rem;
-}
-main > slide-show > div[slot="slide"] > div > a {
-    background-size: cover;
-    opacity: 0.6;
-}
-main > slide-show > div[slot="slide"] > div > a > span {
-    height: 500px;
-    line-height: 500px;
-    font-size: 50px;
-    font-weight: bold;
-    color: #F2F2F7;
-    text-shadow: 0 0 10px #81B9FF, 0 0 20px #81B9FF, 0 0 30px #056EB7, 0 0 40px #056EB7;
-    background-color: rgba(0, 0, 0, 0.5);
-}
-main > abstract-block,
-main > div {
-    width: 80%;
-    padding: 2rem 10% 3rem 10%;
-}
-main > abstract-block > span[slot="title"],
-main > div > span[data-type="title"] {
-    width: 100%;
-    height: 16rem;
-    line-height: 16rem;
-    font-size: 4rem;
-    font-weight: bold;
-    text-align: center;
-    letter-spacing: 10px;
-}
-main > abstract-block:nth-child(odd),
-main > div:nth-child(odd) {
-    background-color: #F2F2F7;
-}
-main > abstract-block:last-child,
-main > div:last-child {
-    padding-bottom: 2rem;
-}
-main > abstract-block > a {
-    margin-right: 2%;
-    padding: 1rem 0;
-    border-radius: 2rem;
-    transition: all 0.4s;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    position: relative;
-    cursor: pointer;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-main > abstract-block > a::before {
-    content: "";
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    border-radius: 1.8rem;
-    background-color: rgba(227, 227, 227, 0.8);
-    transition: background-color 0.4s;
-}
-main > abstract-block > a > span[data-type="title"],
-main > abstract-block > a > span[data-type="price"],
-main > abstract-block > a > ul,
-main > abstract-block > a > ul > li {
-    z-index: 1;
-}
-main > abstract-block > a > ul > li > tips-button {
-    z-index: 10;
-}
-main > abstract-block > a > span[data-type="title"] {
-    height: 6rem;
-    line-height: 6rem;
-    font-size: 3rem;
-    font-weight: bold;
-    text-align: center;
-    letter-spacing: 5px;
-}
-main > abstract-block > a > span[data-type="price"] {
-    height: 3rem;
-    line-height: 3rem;
-    text-align: center;
-    font-size: 2rem;
-}
-main > abstract-block > a > span[data-type="price"]:before {
-    content: "￥";
-    width: 3rem;
-    height: 3rem;
-    line-height: 3rem;
-    font-size: 2rem;
-    display: inline-block;
-}
-main > abstract-block > a > span[data-type="price"]:after {
-    content: "起";
-    width: 3rem;
-    height: 3rem;
-    line-height: 3rem;
-    font-size: 1.4rem;
-    display: inline-block;
-}
-main > abstract-block > a:last-child  > span[data-type="price"]:before,
-main > abstract-block > a:last-child  > span[data-type="price"]:after {
-    content: none;
-}
-main > abstract-block > a > ul,
-main > abstract-block > a > ul > li {
-    list-style: none;
-}
-main > abstract-block > a > ul > li {
-    width: 100%;
-    font-size: 1.8rem;
-}
-main > abstract-block > a:last-child {
-    margin-right: 0;
-}
-main > abstract-block.classification > a {
-    width: calc(-2px + 32%);
-    border: 1px solid #DFF1FF;
-    position: relative;
-    box-shadow: 0 0 10px #81B9FF;
-    background-color: #FFFFFF;
-}
-main > abstract-block.classification > a::before {
-    background-color: transparent;
-}
-main > abstract-block.classification > a:hover {
-    border: 1px solid #81B9FF;
-    box-shadow: 0 0 30px #056EB7;
-}
-main > abstract-block.classification > a > span,
-main > abstract-block.classification > a > ul {
-    width: 60%;
-    margin: 1rem 20%;
-    padding: 0;
-}
-main > abstract-block.classification > a > ul > li {
-    height: 4rem;
-    line-height: 4rem;
-}
-main > abstract-block.classification > a > ul > li > tips-button {
-    margin: 0.5rem 0;
-}
-main > abstract-block.introduction > a {
-    width: calc(-2px + 23.5%);
-    border: 1px solid #CCCCCC;
-}
-main > abstract-block.introduction > a > span,
-main > abstract-block.introduction > a > ul > li {
-    width: 100%;
-    padding: 0;
-}
-main > abstract-block.introduction > a > span {
-    font-size: 2rem;
-}
-main > abstract-block.introduction > a > ul {
-    width: 80%;
-    padding: 0 10%;
-}
-main > abstract-block.introduction > a > ul,
-main > abstract-block.introduction > a > ul > li {
-    list-style: none;
-}
-main > abstract-block.introduction > a > ul > li {
-    line-height: 3rem;
-    font-size: 1.6rem;
-}
-main > abstract-block.solution > a {
-    width: calc(-2px + 23.5%);
-    margin-bottom: 2rem;
-    display: flex;
-    justify-content: center;
-    justify-items: center;
-}
-main > abstract-block.solution > a > span[data-type="title"] {
-    width: 100%;
-    margin: calc(-1.5rem + 25%) 0;
-    transition: background-color 0.4s;
-}
-main > abstract-block.solution > a:hover::before {
-    background-color: rgba(227, 227, 227, 0.2);
-}
-main > abstract-block.solution > a:hover > span[data-type="title"] {
-    background-color: rgba(227, 227, 227, 0.8);
-}
-footer {
-    width: 80%;
-    padding: 1rem 10% 2rem 10%;
-    background-color: #056EB7;
-    color: #F2F2F7;
-}
-footer > menu-element {
-    width: calc(-25rem + 100%);
-    padding: 1rem 0;
-}
-footer > menu-element > div > menu-item {
-    width: auto;
-    height: auto;
-    padding-bottom: 2rem;
-}
-footer > menu-element > div > menu-item:hover,
-footer > menu-element > div > menu-item:hover > div[slot="menuList"] > menu-item {
-    background-color: transparent;
-}
-footer > menu-element > div > menu-item:hover > a > span[name="textContent"],
-footer > menu-element > div > menu-item:hover > div[slot="menuList"] > menu-item:hover > a > span[name="textContent"] {
-    color: #F2F2F7;
-}
-footer > menu-element > div > menu-item > div[slot="menuList"] {
-    position: initial;
-    display: flex;
-    flex-direction: column;
-}
-footer > menu-element > div > menu-item > div[slot="menuList"] > menu-item {
-    width: 100%;
-}
-footer > menu-element > div > menu-item > a {
-    width: calc(-2rem + 100%);
-    display: block;
-}
-footer > social-group {
-    float: right;
-}
-footer > social-group > a[slot="items"] {
-    background-color: #92C238;
-    box-shadow: 0 2px 5px #34521B;
-}
-footer > social-group > a[slot="items"]:hover {
-    background-color: #DFF1FF;
-}
-footer > social-group > a[slot="items"]::before {
-    color: #F2F2F7;
-}
-footer > social-group > a[slot="items"]:hover::before {
-    color: #056EB7;
-}
-footer > div#license {
-    width: 100%;
-    padding: 1rem 0;
-    border-top: 1px solid #F2F2F7;
-    display: flex;
-    justify-content: center;
-    flex-flow: row wrap;
-}
-footer > div#license > a,
-footer > div#license > span {
-    width: auto;
-    height: 3rem;
-    line-height: 3rem;
-    padding: 0 1rem;
-    font-size: 1.2rem;
-    white-space: nowrap;
-}
-footer > div#license > a[data-type="gongan"]::before {
-    content: "";
-    width: 3rem;
-    height: 3rem;
-    background-image: url("images/gongan.png");
-    background-position: center;
-    background-repeat: no-repeat;
-    display: inline-block;
-    float: left;
-}
-@media screen and (min-width: 1921px) {
-    message-list > list-data > .image-list > #content > list-record {
-        width: calc(-3.125rem + 10%);
-    }
-}
-@media screen and (min-width: 1441px) and (max-width: 1920px) {
-    message-list > list-data > .image-list > #content > list-record {
-        width: calc(-3.125rem + 12.5%);
-    }
-}
-@media screen and (max-width: 1440px) {
-    message-list > list-data > .image-list > #content > list-record {
-        width: calc(-3.125rem + 16.6%);
-    }
-    main > message-list.indexNewsList > list-data > div[slot="dataInfo"] > div#content > list-record {
-        width: 28.5%;
-    }
-    main > message-list.indexNewsList > list-data > div[slot="dataInfo"] > div#content > list-record:nth-child(3n) {
-        margin-right: 2%;
-    }
-    main > message-list.indexNewsList > list-data > div[slot="dataInfo"] > div#content > list-record:nth-child(4n) {
-        margin-right: 0;
-    }
-    footer > social-group {
-        width: 16rem;
-    }
-}
-@media screen and (max-width: 1280px) {
-    message-list > list-data > .image-list > #content > list-record {
-        width: calc(-3.125rem + 20%);
-    }
-}
-@media screen and (max-width: 1024px) {
-    message-list > list-data > .image-list > #content > list-record {
-        width: calc(-3.125rem + 25%);
-    }
-    main > index-abstract > article {
-        width: 92%;
-        padding: 0 4%;
-    }
-    main > message-list.indexNewsList > list-data > div[slot="dataInfo"] > div#content > list-record {
-        width: 44%;
-    }
-    main > message-list.indexNewsList > list-data > div[slot="dataInfo"] > div#content > list-record:nth-child(2n) {
-        margin-right: 2%;
-    }
-    main > message-list.indexNewsList > list-data > div[slot="dataInfo"] > div#content > list-record:nth-child(4n) {
-        margin-right: 0;
-    }
-    main > abstract-block {
-        width: 92%;
-        padding: 2rem 4% 3rem 4%;
-    }
-    main > abstract-block.solution > a,
-    main > abstract-block.classification > a,
-    main > abstract-block.introduction > a {
-        width: calc(-2px + -1rem + 50%);
-        margin: 0 0 2rem 0;
-    }
-    main > abstract-block.solution > a:nth-child(odd),
-    main > abstract-block.classification > a:nth-child(odd),
-    main > abstract-block.introduction > a:nth-child(odd) {
-        margin-left: 1rem;
-    }
-    main > abstract-block.solution > a:nth-child(even),
-    main > abstract-block.classification > a:nth-child(even),
-    main > abstract-block.introduction > a:nth-child(even) {
-        margin-right: 1rem;
-    }
-    footer {
-        width: 94%;
-        padding: 1rem 3% 2rem 3%;
-    }
-    footer > menu-element {
-        width: 100%;
-    }
-    footer > social-group {
-        width: calc(-2rem + 100%);
-    }
-}
-@media screen and (max-width: 600px) {
-    message-list > list-data > .image-list > #content > list-record {
-        width: calc(-3.125rem + 50%);
-    }
-    header {
-        height: 3rem;
-    }
-    header > a#logo-icon {
-        width: 3rem;
-        height: 3rem;
-        margin: 0 0.5rem;
-    }
-    header > span#logo-text {
-        width: auto;
-        height: 3rem;
-        line-height: 3rem;
-        margin: 0 auto;
-        font-size: 1.6rem;
-    }
-    header > a#hot-line {
-        width: 3rem;
-        height: 3rem;
-        position: fixed;
-        padding: 0;
-        border-radius: 1.5rem;
-        top: 4rem;
-        right: 1rem;
-        background-color: #056EB7;
-    }
-    header > a#hot-line::before {
-        color: #F2F2F7;
-    }
-    header > a#hot-line > span {
-        display: none;
-    }
-    header > menu-element {
-        width: 3rem;
-        height: 3rem;
-        float: right;
-        position: relative;
-    }
-    header > menu-element::before {
-        content: "\eaf1";
-        width: 3rem;
-        height: 3rem;
-        line-height: 3rem;
-        display: block;
-        text-align: center;
-        font-size: 2rem;
-        color: #1B1B1B;
-        cursor: pointer;
-    }
-    header > menu-element > div {
-        width: 40%;
-        min-height: 100%;
-        position: fixed;
-        top: 3rem;
-        right: 0;
-        background-color: #056EB7;
-        display: none;
-    }
-    header > menu-element:hover > div {
-        display: flex;
-        flex-direction: column;
-    }
-    header > menu-element > div > menu-item {
-        width: 100%;
-        height: auto;
-    }
-    header > menu-element > div > menu-item:hover > div > menu-item:hover {
-        background-color: transparent;
-    }
-    header > menu-element > div > menu-item > a > span[name="textContent"],
-    header > menu-element > div > menu-item:hover > a > span[name="textContent"],
-    header > menu-element > div > menu-item:hover > div > menu-item:hover > a > span[name="textContent"] {
-        color: #F2F2F7;
-    }
-    header > menu-element > div > menu-item > a {
-        width: calc(-2rem + 100%);
-        justify-content: flex-end;
-    }
-    header > menu-element > div > menu-item:hover > div[slot="menuList"] {
-        background-color: transparent;
-        position: initial;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        float: right;
-    }
-    header > menu-element > div > menu-item > div[slot="menuList"] > menu-item {
-        width: 100%;
-    }
-    header > menu-element > div > menu-item > div[slot="menuList"] > menu-item > a {
-        float: right;
-    }
-    header > div#btn-group {
-        margin: 0 auto;
-        position: initial;
-        float: right;
-    }
-    main {
-        margin-top: calc(3rem + 2px);
-    }
-    main > index-abstract > span {
-        line-height: 30rem;
-        font-size: 5rem;
-    }
-    main > index-abstract > article {
-        width: 92%;
-        height: 36rem;
-        padding: 2rem 4%;
-    }
-    main > index-abstract > article > section {
-        width: 100%;
-        height: 10rem;
-        margin: 1rem 0;
-    }
-    main > index-abstract > article > section:last-child {
-        margin-right: 0;
-    }
-    main > index-abstract > article > section > h3 {
-        height: 4rem;
-        line-height: 4rem;
-        font-size: 1.6rem;
-    }
-    main > index-abstract > article > section > p {
-        max-height: 6rem;
-        line-height: 2rem;
-        font-size: 1.4rem;
-        text-indent: 2.8rem;
-        -webkit-line-clamp: 3;
-    }
-    main > message-list.indexNewsList > list-data > div[slot="dataInfo"] > div#content > list-record {
-        width: 90%;
-        margin: 1rem 2% 0 2%;
-        padding: 1rem 3%;
-    }
-    main > slide-show > div[slot="slide"] > div > a > span {
-        font-size: 3rem;
-    }
-    main > abstract-block {
-        width: 96%;
-        padding: 2rem 2% 3rem 2%;
-    }
-    main > abstract-block.solution > a,
-    main > abstract-block.classification > a,
-    main > abstract-block.introduction > a {
-        width: calc(-2px + 100%);
-    }
-    main > abstract-block.solution > a:nth-child(odd),
-    main > abstract-block.classification > a:nth-child(odd),
-    main > abstract-block.introduction > a:nth-child(odd),
-    main > abstract-block.solution > a:nth-child(even),
-    main > abstract-block.classification > a:nth-child(even),
-    main > abstract-block.introduction > a:nth-child(even) {
-        margin: 0 0 2rem 0;
-    }
-    footer {
-        width: 96%;
-        padding: 1rem 1% 2rem 2%;
-    }
-    footer > menu-element {
-        display: none;
-    }
-    footer > social-group {
-        width: calc(-2rem + 100%);
-    }
 }

@@ -260,8 +260,9 @@ class NotifyArea extends CustomElement {
         }
 
         if (this._floatButton === null) {
-            this._floatButton = document.createElement("button");
+            this._floatButton = document.createElement("i");
             this._floatButton.setAttribute("slot", "button");
+            this._floatButton.setClass("icon-ringbell")
             this.appendChild(this._floatButton);
             this._floatButton.addEventListener("click", (event) => {
                 event.stopPropagation();
@@ -295,7 +296,8 @@ class NotifyArea extends CustomElement {
                 linkElement.appendChild(spanElement);
                 notifyItem.appendChild(linkElement);
                 let floatItem = notifyItem.cloneNode(true);
-                let clearButton = document.createElement("button");
+                let clearButton = document.createElement("i");
+                clearButton.setClass("icon-cancel_circle");
                 notifyItem.appendChild(clearButton);
                 this._notification.appendChild(notifyItem);
                 clearButton.addEventListener("click", (event) => {
@@ -303,7 +305,8 @@ class NotifyArea extends CustomElement {
                     this._notification.removeChild(notifyItem);
                     this.checkNotify();
                 });
-                let clearFloat = document.createElement("button");
+                let clearFloat = document.createElement("i");
+                clearFloat.setClass("icon-cancel_circle");
                 floatItem.appendChild(clearFloat);
                 let notify = this;
                 clearFloat.addEventListener("click", (event) => {

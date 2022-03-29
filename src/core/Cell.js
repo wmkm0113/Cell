@@ -29,13 +29,23 @@
 import {Comment, Config, $} from "../commons/Commons.js";
 import RSA from "../crypto/RSA.js";
 import UIRender from "../render/Render.js";
+import {FloatWindow, FloatPage, NotifyArea, MockSwitch, MockDialog, MockCheckBox, MockRadio} from "../ui/mock.js";
+import {StandardButton, SubmitButton, ResetButton} from "../ui/button.js";
+import {ProgressBar, ScrollBar, StarRating, StarScore} from "../ui/element.js";
+import {FormItem, FormInfo} from "../ui/form.js";
+import {ButtonGroup, CheckBoxGroup, RadioGroup} from "../ui/group.js";
+import * as Input from "../ui/input.js";
+import * as List from "../ui/list.js";
+import SlideShow from "../ui/slide.js";
+import SocialGroup from "../ui/social.js";
+import TipsElement from "../ui/tips.js";
+import {MenuElement, MenuItem} from "../ui/menu.js";
 
 class CellJS {
 
     constructor() {
         this._config = {
             developmentMode: false,
-            elements : [],
             contextPath : "",
             //  Internationalization
             i18n : {
@@ -105,7 +115,18 @@ class CellJS {
             }
             this._rsaPublic = Cell["RSA"].newInstance(this._config.security.RSA);
         }
-        this.Render = new UIRender(this._config.elements);
+        this.Render = new UIRender();
+        this.Render.init([
+            FloatWindow, FloatPage, NotifyArea, MockSwitch, MockDialog, MockCheckBox, MockRadio, StandardButton,
+            SubmitButton, ResetButton, ProgressBar, ScrollBar, StarRating, StarScore, FormItem, FormInfo,
+            ButtonGroup, CheckBoxGroup, RadioGroup, Input.InputElement, Input.BaseInput, Input.AbstractInput,
+            Input.PasswordInput, Input.HiddenInput, Input.TextInput, Input.SearchInput, Input.NumberInput,
+            Input.DateInput, Input.TimeInput, Input.DateTimeInput, Input.SelectInput, Input.TextAreaInput,
+            Input.NumberIntervalInput, Input.DateIntervalInput, Input.TimeIntervalInput, Input.DateTimeIntervalInput,
+            Input.DragUpload, List.ListFilter, List.ListData, List.ListStatistics, List.ListTitle, List.ListRecord,
+            List.RecordOperator, List.ListHeader, List.PropertyItem, List.PropertyDefine, List.MessageList,
+            SlideShow, SocialGroup, TipsElement, MenuElement, MenuItem
+        ]);
     }
 
     alert(message = null) {
@@ -153,12 +174,36 @@ class CellJS {
                 } else {
                     Cell.Ajax(linkAddress)
                         .then(responseText => {
-                            let _element = $(target.dataset.elementId);
-                            if (_element) {
-                                if ((typeof responseText) === "string") {
+                            if (responseText.isJSON()) {
+                                let respData = responseText.parseJSON();
+                                if (respData.hasOwnProperty("message")) {
+                                    if (respData.hasOwnProperty("notify")) {
+                                        Cell.notify(respData.message);
+                                    } else {
+                                        Cell.alert(respData.message);
+                                    }
+                                } else if (respData.hasOwnProperty("status") && respData.hasOwnProperty("data")) {
+                                    if (respData.status === 200) {
+                                        respData.data.forEach(dataItem => {
+                                            if (dataItem.hasOwnProperty("elementName")
+                                                && dataItem.hasOwnProperty("elementTag")
+                                                && dataItem.hasOwnProperty("data")) {
+                                                let selector = dataItem.elementTag + "[name=\"" + dataItem.elementName + "\"]";
+                                                let element = document.querySelector(selector);
+                                                if (element) {
+                                                    element.data = dataItem.data;
+                                                }
+                                            }
+                                        });
+                                    } else {
+                                        console.error("Response status: " + respData.status + ", error message: "
+                                            + respData.message);
+                                    }
+                                }
+                            } else {
+                                let _element = $(target.dataset.elementId);
+                                if (_element) {
                                     _element.innerHTML = ("" + responseText);
-                                } else {
-                                    _element.data = responseText;
                                 }
                             }
                         })
@@ -403,40 +448,7 @@ class CellJS {
             if (_options.asynchronous) {
                 _request.onreadystatechange = function() {
                     if (this.readyState === 4) {
-                        let _jwtToken = this.getResponseHeader("Authentication");
-                        if (_jwtToken !== null) {
-                            sessionStorage.setItem("JWTToken", _jwtToken);
-                        }
-
-                        if (_request.status === 301 || _request.status === 302 || _request.status === 307) {
-                            let _redirectPath = _request.getResponseHeader("Location");
-                            if (_redirectPath.length !== 0) {
-                                let _newOption = {};
-                                Object.extend(_newOption, this._options || {});
-                                _newOption.method = "GET";
-                                return Cell.Ajax(_redirectPath, _newOption);
-                            } else {
-                                reject(_request);
-                            }
-                        } else if (_request.status === 200) {
-                            let responseText = _request.responseText;
-                            if (responseText.isJSON()) {
-                                let respData = responseText.parseJSON();
-                                if (respData.status === 301 || respData.status === 302 || respData.status === 307) {
-                                    location.href = respData.location;
-                                } else {
-                                    if (respData.hasOwnProperty("data")) {
-                                        resolve(JSON.stringify(respData.data));
-                                    } else {
-                                        resolve(JSON.stringify(respData));
-                                    }
-                                }
-                            } else {
-                                resolve(responseText);
-                            }
-                        } else {
-                            reject(_request.status);
-                        }
+                        CellJS._parseResponse(_request, resolve, reject);
                     }
                 };
             }
@@ -467,7 +479,34 @@ class CellJS {
             }
 
             _request.send(_options.parameters);
+
+            if (!_options.asynchronous) {
+                CellJS._parseResponse(_request, resolve, reject);
+            }
         });
+    }
+
+    static _parseResponse(_request, resolve, reject) {
+        let _jwtToken = _request.getResponseHeader("Authentication");
+        if (_jwtToken !== null) {
+            sessionStorage.setItem("JWTToken", _jwtToken);
+        }
+
+        if (_request.status === 301 || _request.status === 302 || _request.status === 307) {
+            let _redirectPath = _request.getResponseHeader("Location");
+            if (_redirectPath.length !== 0) {
+                let _newOption = {};
+                Object.extend(_newOption, _request._options || {});
+                _newOption.method = "GET";
+                Cell.Ajax(_redirectPath, _newOption).then(resolve).catch(reject);
+            } else {
+                reject(_request);
+            }
+        } else if (_request.status === 200) {
+            resolve(_request.responseText);
+        } else {
+            reject(_request.status);
+        }
     }
 }
 

@@ -68,7 +68,7 @@ export default class SocialGroup extends BaseElement {
                         linkElement.setAttribute("target", "_blank");
                         this.appendChild(linkElement);
                     }
-                    linkElement.setClass("iconButton fill-btn " + jsonItem.className);
+                    linkElement.setClass(jsonItem.className);
                     linkElement.setAttribute("title", jsonItem.hasOwnProperty("title") ? jsonItem.title : "");
                     linkElement.setAttribute("href", jsonItem.hasOwnProperty("link") ? jsonItem.link : "#");
                     if (jsonItem.hasOwnProperty("sortIndex")) {

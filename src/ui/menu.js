@@ -34,12 +34,19 @@ class MenuElement extends BaseElement {
         this.menuList = document.createElement("div");
         this.menuList.setAttribute("slot", "menuList");
         this.appendChild(this.menuList);
+        let initData = this.getAttribute("data");
+        if (initData !== undefined && initData !== null && initData.isJSON()) {
+            this.dataset.menuData = initData;
+        }
         this._render();
     }
 
     renderElement(data) {
         if (data.hasOwnProperty("className")) {
             this.setClass(data.className);
+        }
+        if (data.hasOwnProperty("elementId")) {
+            this.dataset.elementId = data.elementId;
         }
         if (data.hasOwnProperty("data")) {
             this.dataset.menuData = JSON.stringify(data.data);

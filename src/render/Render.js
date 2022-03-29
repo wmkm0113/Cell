@@ -22,35 +22,13 @@
  */
 'use strict';
 
-import {FloatWindow, FloatPage, NotifyArea, MockSwitch, MockDialog, MockCheckBox, MockRadio} from "../ui/mock.js";
-import {StandardButton, SubmitButton, ResetButton} from "../ui/button.js";
-import {ProgressBar, ScrollBar, StarRating, StarScore} from "../ui/element.js";
-import {FormItem, FormInfo} from "../ui/form.js";
-import {ButtonGroup, CheckBoxGroup, RadioGroup} from "../ui/group.js";
-import * as Input from "../ui/input.js";
-import * as List from "../ui/list.js";
-import SlideShow from "../ui/slide.js";
-import SocialGroup from "../ui/social.js";
-import TipsElement from "../ui/tips.js";
-import {MenuElement, MenuItem} from "../ui/menu.js";
+import {NotifyArea, MockDialog} from "../ui/mock.js";
 
 export default class UIRender {
-    constructor(elements = []) {
-        UIRender.init([
-            FloatWindow, FloatPage, NotifyArea, MockSwitch, MockDialog, MockCheckBox, MockRadio, StandardButton,
-            SubmitButton, ResetButton, ProgressBar, ScrollBar, StarRating, StarScore, FormItem, FormInfo,
-            ButtonGroup, CheckBoxGroup, RadioGroup, Input.InputElement, Input.BaseInput, Input.AbstractInput,
-            Input.PasswordInput, Input.HiddenInput, Input.TextInput, Input.SearchInput, Input.NumberInput,
-            Input.DateInput, Input.TimeInput, Input.DateTimeInput, Input.SelectInput, Input.TextAreaInput,
-            Input.NumberIntervalInput, Input.DateIntervalInput, Input.TimeIntervalInput, Input.DateTimeIntervalInput,
-            Input.DragUpload, List.ListFilter, List.ListData, List.ListStatistics, List.ListTitle, List.ListRecord,
-            List.RecordOperator, List.ListHeader, List.MessageList, List.PropertyItem, List.PropertyDefine,
-            SlideShow, SocialGroup, TipsElement, MenuElement, MenuItem
-        ]);
-        UIRender.init(elements);
+    constructor() {
     }
 
-    static init(elements = []) {
+    init(elements = []) {
         elements.filter(element => element.tagName !== undefined && (typeof element.tagName) === "function")
             .forEach(element => {
                 let tagName = element.tagName();

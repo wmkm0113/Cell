@@ -426,7 +426,7 @@ class StarScore extends CustomElement {
             divElement.setAttribute("slot", "starScore");
             this.appendChild(divElement);
             for (let i = 0 ; i < 5 ; i++) {
-                let spanElement = document.createElement("span");
+                let spanElement = document.createElement("i");
                 spanElement.setClass("star");
                 divElement.appendChild(spanElement);
             }
@@ -435,21 +435,21 @@ class StarScore extends CustomElement {
 
     set score(score) {
         if ((typeof score) === "number") {
-            let spanList = this.querySelectorAll("div[slot='starScore'] > span");
+            let starList = this.querySelectorAll("div[slot='starScore'] > i");
             if (score <= 0) {
-                spanList.forEach(spanElement => spanElement.setClass("star"));
+                starList.forEach(starItem => starItem.setClass("icon-star_empty"));
             } else if (score >= 5) {
-                spanList.forEach(spanElement => spanElement.setClass("star-fill"));
+                starList.forEach(starItem => starItem.setClass("icon-star_half"));
             } else {
                 let fillCount = score | 0;
                 for (let i = 1 ; i <= 5 ; i++) {
                     if (i <= fillCount) {
-                        spanList[i - 1].setClass("star-fill");
+                        starList[i - 1].setClass("icon-star");
                     } else {
                         if ((i - score) < 1) {
-                            spanList[i - 1].setClass("star-half");
+                            starList[i - 1].setClass("icon-star_half");
                         } else {
-                            spanList[i - 1].setClass("star");
+                            starList[i - 1].setClass("icon-star_empty");
                         }
                     }
                 }

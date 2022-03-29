@@ -145,28 +145,28 @@ class ListFilter extends BaseElement {
         this.show();
         if (this.dataset.sortBy !== undefined && this.dataset.sortBy.length > 0) {
             if (this.sortByElement === null) {
-                this.sortByElement = document.createElement(HiddenInput.tagName());
+                this.sortByElement = new HiddenInput();
                 this.filterForm.appendChild(this.sortByElement);
             }
             this.sortByElement.setAttribute("name", this.dataset.sortBy);
         }
         if (this.dataset.sortType !== undefined && this.dataset.sortType.length > 0) {
             if (this.sortTypeElement === null) {
-                this.sortTypeElement = document.createElement(HiddenInput.tagName());
+                this.sortTypeElement = new HiddenInput();
                 this.filterForm.appendChild(this.sortTypeElement);
             }
             this.sortTypeElement.setAttribute("name", this.dataset.sortType);
         }
         if (this.dataset.pageNo !== undefined && this.dataset.pageNo.length > 0) {
             if (this.pageNoElement === null) {
-                this.pageNoElement = document.createElement(HiddenInput.tagName());
+                this.pageNoElement = new HiddenInput();
                 this.filterForm.appendChild(this.pageNoElement);
             }
             this.pageNoElement.setAttribute("name", this.dataset.pageNo);
         }
         if (this.dataset.pageLimit !== undefined && this.dataset.pageLimit.length > 0) {
             if (this.pageLimitElement === null) {
-                this.pageLimitElement = document.createElement(HiddenInput.tagName());
+                this.pageLimitElement = new HiddenInput();
                 this.filterForm.appendChild(this.pageLimitElement);
             }
             this.pageLimitElement.setAttribute("name", this.dataset.pageLimit);
@@ -183,15 +183,19 @@ class ListFilter extends BaseElement {
                 this.filterForm.appendChild(filterItem);
                 filterItem.data = JSON.stringify(itemData);
             });
-        if (this.querySelector("standard-button[slot='searchBtn']") === null) {
-            let searchBtn = document.createElement(StandardButton.tagName());
+        let searchBtn = this.querySelector("standard-button[slot='searchBtn']");
+        if (searchBtn === null) {
+            searchBtn = new StandardButton();
             searchBtn.setAttribute("slot", "searchBtn");
             searchBtn.addEventListener("click", (event) => {
                 event.stopPropagation();
                 Cell.submitForm(this.filterForm);
             });
-            searchBtn.setAttribute("value", Cell.message("Core", "Button.Search"));
+            searchBtn.setAttribute("value", "Search");
             this.appendChild(searchBtn);
+        }
+        if (this.dataset.searchText !== undefined && this.dataset.searchText.length > 0) {
+            searchBtn.textContent = this.dataset.searchText;
         }
     }
 
@@ -376,26 +380,35 @@ class ListTitle extends BaseElement {
             this.btnGroup.hide();
             this.appendChild(this.btnGroup);
 
-            this.importBtn = document.createElement("button");
-            this.importBtn.setClass("iconButton upload-btn");
+            this.importBtn = document.createElement("a");
+            this.importBtn.setClass("icon icon-upload");
             this.btnGroup.appendChild(this.importBtn);
             this.importBtn.addEventListener("click", (event) => Cell.sendRequest(event));
             this.importBtn.hide();
 
-            ["text-list", "view-list", "image-list"].forEach(styleClass => {
-                let styleBtn = document.createElement("button");
-                styleBtn.setAttribute("title", Cell.message("Core", styleClass));
-                styleBtn.setClass("iconButton " + styleClass);
-                if ("view-list" === styleClass) {
+            ["text-list", "view-list", "image-list"].forEach(listType => {
+                let styleBtn = document.createElement("i");
+                styleBtn.dataset.listType = listType;
+                switch (listType) {
+                    case "text-list":
+                        styleBtn.setClass("icon-reorder");
+                        break;
+                    case "view-list":
+                        styleBtn.setClass("icon-list");
+                        break;
+                    case "image-list":
+                        styleBtn.setClass("icon-reorder_square");
+                        break;
+                }
+                if ("view-list" === listType) {
                     styleBtn.appendClass("current");
                 }
-                styleBtn.dataset.styleClass = styleClass;
                 this.btnGroup.appendChild(styleBtn);
                 styleBtn.addEventListener("click", (event) => {
                     event.stopPropagation();
-                    this.parentElement.switchStyle(styleClass);
-                    this.btnGroup.querySelectorAll("button").forEach(itemBtn => {
-                        if (itemBtn.hasClass(styleClass)) {
+                    this.parentElement.switchStyle(listType);
+                    this.btnGroup.querySelectorAll("i").forEach(itemBtn => {
+                        if (itemBtn.dataset.listType === listType) {
                             itemBtn.appendClass("current");
                         } else {
                             itemBtn.removeClass("current");
@@ -414,7 +427,7 @@ class ListTitle extends BaseElement {
             this.titleElement.hide();
         }
         if (data.hasOwnProperty("importUrl")) {
-            this.importBtn.dataset.link = data.importUrl;
+            this.importBtn.setAttribute("href", data.importUrl);
             this.importBtn.show();
         }
         if (data.hasOwnProperty("disableSwitch") && data.disableSwitch) {
@@ -683,7 +696,7 @@ class RecordOperator extends BaseElement {
         this.linkElement.setAttribute("slot", "link");
         this.appendChild(this.linkElement);
         this.linkElement.addEventListener("click", (event) => Cell.sendRequest(event));
-        this.iconElement = document.createElement("span");
+        this.iconElement = document.createElement("i");
         this.iconElement.setAttribute("id", "icon");
         this.linkElement.appendChild(this.iconElement);
         this.textElement = document.createElement("span");
@@ -699,7 +712,7 @@ class RecordOperator extends BaseElement {
             this.linkElement.setAttribute("title", data.title);
         }
         if (data.hasOwnProperty("iconContent")) {
-            this.iconElement.innerHTML = data.iconContent;
+            this.iconElement.setClass(data.iconContent);
         }
         if (data.hasOwnProperty("textContent")) {
             this.textElement.innerHTML = data.textContent;
@@ -771,7 +784,7 @@ class ListRecord extends BaseElement {
             let jsonData = this.dataset.recordData.parseJSON();
             if (jsonData.hasOwnProperty("link") && jsonData.hasOwnProperty("title")) {
                 if (this.selectElement === null) {
-                    this.selectElement = document.createElement(MockCheckBox.tagName());
+                    this.selectElement = new MockCheckBox();
                     this.selectElement.setAttribute("slot", "selectAll");
                     this.appendChild(this.selectElement);
                     this.selectElement.addEventListener("click", (event) => {
@@ -837,7 +850,7 @@ class ListRecord extends BaseElement {
                     if (i < existsCount) {
                         propertyItem = propertyList[i];
                     } else {
-                        propertyItem = document.createElement(PropertyItem.tagName());
+                        propertyItem = new PropertyItem();
                         this.itemsElement.appendChild(propertyItem);
                     }
                     propertyItem.itemName(propertyDefine.title);
@@ -872,7 +885,7 @@ class ListRecord extends BaseElement {
                             if (i < existsCount) {
                                 recordOperator = operatorList[i];
                             } else {
-                                recordOperator = document.createElement(RecordOperator.tagName());
+                                recordOperator = new RecordOperator();
                                 this.operatorsElement.appendChild(recordOperator);
                             }
                             recordOperator.elementId = elementId;
@@ -923,7 +936,7 @@ class ListData extends BaseElement {
             this.appendChild(this.listElement);
         }
         if (this.headerElement === null) {
-            this.headerElement = document.createElement(ListHeader.tagName());
+            this.headerElement = new ListHeader();
             this.listElement.appendChild(this.headerElement);
         }
         if (this.contentElement === null) {
@@ -1013,8 +1026,8 @@ class ListData extends BaseElement {
             return;
         }
         if (this.selectAllBtn === null) {
-            this.selectAllBtn = document.createElement("button");
-            this.selectAllBtn.setClass("iconButton select-all-btn");
+            this.selectAllBtn = document.createElement("i");
+            this.selectAllBtn.setClass("icon-check");
             this.batchElement.appendChild(this.selectAllBtn);
             this.selectAllBtn.addEventListener("click", (event) => {
                 event.stopPropagation();
@@ -1037,7 +1050,7 @@ class ListData extends BaseElement {
             existsCount = existsOperators.length, operatorCount = jsonData.length, i;
         for (i = 0 ; i < operatorCount ; i++) {
             let operatorData = jsonData[i];
-            if (operatorData.hasOwnProperty("link") && operatorData.hasOwnProperty("textContent")) {
+            if (operatorData.hasOwnProperty("link") && operatorData.hasOwnProperty("title")) {
                 let operator;
                 if (i < existsCount) {
                     operator = existsOperators[i];
@@ -1050,21 +1063,8 @@ class ListData extends BaseElement {
                 operator.setAttribute("title",
                     operatorData.hasOwnProperty("title") ? operatorData.title : operatorData.textContent);
                 if (operatorData.hasOwnProperty("icon")) {
-                    let iconElement = operator.querySelector("span[id='icon']");
-                    if (iconElement === null) {
-                        iconElement = document.createElement("span");
-                        iconElement.setAttribute("id", "icon");
-                        operator.appendChild(iconElement);
-                    }
-                    iconElement.innerHTML = operatorData.icon;
+                    operator.setClass("icon " + operatorData.icon);
                 }
-                let spanElement = operator.querySelector("span[id='textContent']");
-                if (spanElement === null) {
-                    spanElement = document.createElement("span");
-                    spanElement.setAttribute("id", "textContent");
-                    operator.appendChild(spanElement);
-                }
-                spanElement.innerHTML = operatorData.textContent;
                 if (operatorData.hasOwnProperty("elementId")) {
                     operator.dataset.elementId = operatorData.elementId;
                 }
@@ -1093,7 +1093,7 @@ class ListData extends BaseElement {
         if (jsonData instanceof Array) {
             if (this.dataset.type === "append") {
                 jsonData.forEach(rowData => {
-                    let rowElement = document.createElement(ListRecord.tagName());
+                    let rowElement = new ListRecord();
                     this.contentElement.appendChild(rowElement);
                     rowElement.updateDefines(this.headerElement.itemDefines);
                     if (rowData.hasOwnProperty(this.selectName)) {
@@ -1111,7 +1111,7 @@ class ListData extends BaseElement {
                     if (i < rowList.length) {
                         rowElement = rowList[i];
                     } else {
-                        rowElement = document.createElement(ListRecord.tagName());
+                        rowElement = new ListRecord();
                         this.contentElement.appendChild(rowElement);
                         rowElement.updateDefines(this.headerElement.itemDefines);
                     }
@@ -1150,11 +1150,11 @@ class ListData extends BaseElement {
             }
         }
 
-        let firstPageBtn = this.pagerElement.querySelector("button[id='firstPage']");
+        let firstPageBtn = this.pagerElement.querySelector("i[id='firstPage']");
         if (firstPageBtn === null) {
-            firstPageBtn = document.createElement("button");
+            firstPageBtn = document.createElement("i");
             firstPageBtn.setAttribute("id", "firstPage");
-            firstPageBtn.innerHTML = "&#xe759";
+            firstPageBtn.setClass("icon-step_backward");
             firstPageBtn.dataset.currentPage = "1";
             this.pagerElement.appendChild(firstPageBtn);
             firstPageBtn.addEventListener("click", (event) => {
@@ -1173,11 +1173,11 @@ class ListData extends BaseElement {
             beginPage = 1;
         }
 
-        let beginPageBtn = this.pagerElement.querySelector("button[id='beginPage']");
+        let beginPageBtn = this.pagerElement.querySelector("i[id='beginPage']");
         if (beginPageBtn === null) {
-            beginPageBtn = document.createElement("button");
+            beginPageBtn = document.createElement("i");
             beginPageBtn.setAttribute("id", "beginPage");
-            beginPageBtn.innerHTML = "&#xe745";
+            beginPageBtn.setClass("icon-chevron_left");
             this.pagerElement.appendChild(beginPageBtn);
             beginPageBtn.addEventListener("click", (event) => {
                 event.stopPropagation();
@@ -1201,14 +1201,14 @@ class ListData extends BaseElement {
         if (totalPage < endPage) {
             endPage = totalPage;
         }
-        let pageBtnList = pageGroup.querySelectorAll("button");
+        let pageBtnList = pageGroup.querySelectorAll("i");
         if (totalPage < pageBtnList.length) {
             for (let i = pageBtnList.length ; i < totalPage ; i++) {
                 pageGroup.removeChild(pageBtnList[i]);
             }
         } else if (pageBtnList.length < totalPage) {
             for (let i = pageBtnList.length ; i < totalPage ; i++) {
-                let pageBtn = document.createElement("button");
+                let pageBtn = document.createElement("i");
                 pageBtn.dataset.currentPage = (i + 1).toString();
                 pageBtn.innerText = (i + 1).toString();
                 pageGroup.appendChild(pageBtn);
@@ -1219,7 +1219,7 @@ class ListData extends BaseElement {
             }
         }
 
-        pageGroup.querySelectorAll("button").forEach(pageBtn => {
+        pageGroup.querySelectorAll("i").forEach(pageBtn => {
             let pageNo = pageBtn.dataset.currentPage.parseInt();
             if (pageNo === currentPage) {
                 pageBtn.appendClass("current");
@@ -1230,11 +1230,11 @@ class ListData extends BaseElement {
                 pageBtn.show();
             }
         })
-        let endPageBtn = this.pagerElement.querySelector("button[id='endPage']");
+        let endPageBtn = this.pagerElement.querySelector("i[id='endPage']");
         if (endPageBtn === null) {
-            endPageBtn = document.createElement("button");
+            endPageBtn = document.createElement("i");
             endPageBtn.setAttribute("id", "endPage");
-            endPageBtn.innerHTML = "&#xe744";
+            endPageBtn.setClass("icon-chevron_right");
             this.pagerElement.appendChild(endPageBtn);
             endPageBtn.addEventListener("click", (event) => {
                 event.stopPropagation();
@@ -1247,11 +1247,11 @@ class ListData extends BaseElement {
             endPageBtn.dataset.currentPage = (endPage + 1).toString();
             endPageBtn.show();
         }
-        let lastPageBtn = this.pagerElement.querySelector("button[id='lastPage']");
+        let lastPageBtn = this.pagerElement.querySelector("i[id='lastPage']");
         if (lastPageBtn === null) {
-            lastPageBtn = document.createElement("button");
+            lastPageBtn = document.createElement("i");
             lastPageBtn.setAttribute("id", "lastPage");
-            lastPageBtn.innerHTML = "&#xe757";
+            lastPageBtn.setClass("icon-step_forward");
             lastPageBtn.dataset.currentPage = totalPage.toString();
             this.pagerElement.appendChild(lastPageBtn);
             lastPageBtn.addEventListener("click", (event) => {
@@ -1284,26 +1284,31 @@ class MessageList extends BaseElement {
 
     connectedCallback() {
         if (this.filterElement === null) {
-            this.filterElement = document.createElement(ListFilter.tagName());
+            this.filterElement = new ListFilter()
             this.filterElement.setAttribute("slot", "filter");
             this.appendChild(this.filterElement);
             this.filterElement.hide();
         }
         if (this.statisticsElement === null) {
-            this.statisticsElement = document.createElement(ListStatistics.tagName());
+            this.statisticsElement = new ListStatistics()
             this.statisticsElement.setAttribute("slot", "statistics");
             this.appendChild(this.statisticsElement);
             this.statisticsElement.hide();
         }
         if (this.titleEleemnt === null) {
-            this.titleEleemnt = document.createElement(ListTitle.tagName());
+            this.titleEleemnt = new ListTitle();
             this.titleEleemnt.setAttribute("slot", "title");
             this.appendChild(this.titleEleemnt);
         }
         if (this.gridElement === null) {
-            this.gridElement = document.createElement(ListData.tagName());
+            this.gridElement = new ListData();
             this.gridElement.setAttribute("slot", "info");
             this.appendChild(this.gridElement);
+        }
+
+        let initData = this.getAttribute("data");
+        if (initData !== undefined && initData !== null && initData.isJSON()) {
+            this.renderElement(initData.parseJSON());
         }
     }
 

@@ -148,7 +148,6 @@ const RegexLibrary = {
 
 const Config = {
     developmentMode: false,
-    elements : [],
     contextPath : "",
     //  Internationalization
     i18n : {
