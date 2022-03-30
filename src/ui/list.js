@@ -407,7 +407,7 @@ class ListTitle extends BaseElement {
                 styleBtn.addEventListener("click", (event) => {
                     event.stopPropagation();
                     this.parentElement.switchStyle(listType);
-                    this.btnGroup.querySelectorAll("i").forEach(itemBtn => {
+                    this.btnGroup.querySelectorAll(":scope > i").forEach(itemBtn => {
                         if (itemBtn.dataset.listType === listType) {
                             itemBtn.appendClass("current");
                         } else {
@@ -436,9 +436,9 @@ class ListTitle extends BaseElement {
             this.btnGroup.show();
         }
         if (data.hasOwnProperty("styleClass")) {
-            this.btnGroup.querySelectorAll(":scope > button")
+            this.btnGroup.querySelectorAll(":scope > i")
                 .forEach(buttonElement => {
-                    if (buttonElement.hasClass(data.styleClass)) {
+                    if (buttonElement.dataset.listType === data.styleClass) {
                         buttonElement.click();
                     }
                 });
@@ -711,8 +711,8 @@ class RecordOperator extends BaseElement {
         if (data.hasOwnProperty("title")) {
             this.linkElement.setAttribute("title", data.title);
         }
-        if (data.hasOwnProperty("iconContent")) {
-            this.iconElement.setClass(data.iconContent);
+        if (data.hasOwnProperty("iconClass")) {
+            this.iconElement.setClass(data.iconClass);
         }
         if (data.hasOwnProperty("textContent")) {
             this.textElement.innerHTML = data.textContent;
@@ -1085,7 +1085,8 @@ class ListData extends BaseElement {
     }
 
     _renderData() {
-        if (this.contentElement.dataset.itemData === undefined || !this.contentElement.dataset.itemData.isJSON()) {
+        if (this.contentElement.dataset.itemData === undefined || this.contentElement.dataset.itemData == null
+            || !this.contentElement.dataset.itemData.isJSON()) {
             return;
         }
 

@@ -1105,11 +1105,11 @@ message-list > list-data > .image-list > #content > list-record > div[slot="oper
 message-list > list-data > .view-list > #content > list-record > div[slot="operators"] > record-operator > a > #icon,
 message-list > list-data > .image-list > #content > list-record > div[slot="operators"] > record-operator > a > #icon,
 message-list > list-data > .text-list > #content > list-record > div[slot="operators"] > record-operator > a > #icon {
-    width: 1.4rem;
+    width: 2.4rem;
     height: 2.4rem;
     line-height: 2.4rem;
-    font-size: 1.4rem;
-    padding: 0 0.3rem;
+    font-size: 1.6rem;
+    text-align: center;
     color: #056EB7;
 }
 message-list > list-data > .view-list > #content > list-record > div[slot="operators"] > record-operator > a > #text,

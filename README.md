@@ -108,6 +108,7 @@ slideType option: slideLeft/slideTop/slideRight/slideBottom/zoomIn/zoomOut/opaci
     "sortType": "sortType",
     "pageNo": "pageNo",
     "pageLimit": "pageLimit",
+    "searchText": "Search Button",
     "items": [
       {
         "id": "elementId",
@@ -195,7 +196,8 @@ slideType option: slideLeft/slideTop/slideRight/slideBottom/zoomIn/zoomOut/opaci
   ],
   "title": {
     "textContent": "Message List Title",
-    "importUrl": "Import Url"
+    "importUrl": "Import Url",
+    "styleClass": "image-list"
   },
   "grid":
   {
@@ -203,8 +205,8 @@ slideType option: slideLeft/slideTop/slideRight/slideBottom/zoomIn/zoomOut/opaci
     "selectName": "identifyCode",
     "pageLimit": 15,
     "header": {
-      "mainTitle": "标题",
-      "operatorTitle": "操作",
+      "mainTitle": "Title",
+      "operatorTitle": "Operators",
       "items": [
         {
           "index": 1,
@@ -292,19 +294,19 @@ slideType option: slideLeft/slideTop/slideRight/slideBottom/zoomIn/zoomOut/opaci
           {
             "title": "Edit",
             "link": "Link address",
-            "iconContent": "&#xe6f6;",
+            "iconContent": "icon-pen",
             "textContent": "Edit"
           },
           {
             "title": "Delete",
             "link": "Link address",
-            "iconContent": "&#xe749;",
+            "iconContent": "icon-trash_can",
             "textContent": "Delete"
           },
           {
             "title": "Multilingual",
             "link": "Link address",
-            "iconContent": "&#xe702;",
+            "iconContent": "icon-globe",
             "textContent": "Multilingual"
           }
         ]
@@ -334,19 +336,19 @@ slideType option: slideLeft/slideTop/slideRight/slideBottom/zoomIn/zoomOut/opaci
           {
             "title": "Edit",
             "link": "Link address",
-            "iconContent": "&#xe6f6;",
+            "iconContent": "icon-pen",
             "textContent": "Edit"
           },
           {
             "title": "Delete",
             "link": "Link address",
-            "iconContent": "&#xe749;",
+            "iconContent": "icon-trash_can",
             "textContent": "Delete"
           },
           {
             "title": "Multilingual",
             "link": "Link address",
-            "iconContent": "&#xe702;",
+            "iconContent": "icon-globe",
             "textContent": "Multilingual"
           }
         ]
@@ -371,19 +373,19 @@ slideType option: slideLeft/slideTop/slideRight/slideBottom/zoomIn/zoomOut/opaci
           {
             "title": "Edit",
             "link": "Link address",
-            "iconContent": "&#xe6f6;",
+            "iconContent": "icon-pen",
             "textContent": "Edit"
           },
           {
             "title": "Delete",
             "link": "Link address",
-            "iconContent": "&#xe749;",
+            "iconContent": "icon-trash_can",
             "textContent": "Delete"
           },
           {
             "title": "Multilingual",
             "link": "Link address",
-            "iconContent": "&#xe702;",
+            "iconContent": "icon-globe",
             "textContent": "Multilingual"
           }
         ]
@@ -413,19 +415,19 @@ slideType option: slideLeft/slideTop/slideRight/slideBottom/zoomIn/zoomOut/opaci
           {
             "title": "Edit",
             "link": "Link address",
-            "iconContent": "&#xe6f6;",
+            "iconContent": "icon-pen",
             "textContent": "Edit"
           },
           {
             "title": "Delete",
             "link": "Link address",
-            "iconContent": "&#xe749;",
+            "iconContent": "icon-trash_can",
             "textContent": "Delete"
           },
           {
             "title": "Multilingual",
             "link": "Link address",
-            "iconContent": "&#xe702;",
+            "iconContent": "icon-globe",
             "textContent": "Multilingual"
           }
         ]
@@ -450,19 +452,19 @@ slideType option: slideLeft/slideTop/slideRight/slideBottom/zoomIn/zoomOut/opaci
           {
             "title": "Edit",
             "link": "Link address",
-            "iconContent": "&#xe6f6;",
+            "iconContent": "icon-pen",
             "textContent": "Edit"
           },
           {
             "title": "Delete",
             "link": "Link address",
-            "iconContent": "&#xe749;",
+            "iconContent": "icon-trash_can",
             "textContent": "Delete"
           },
           {
             "title": "Multilingual",
             "link": "Link address",
-            "iconContent": "&#xe702;",
+            "iconContent": "icon-globe",
             "textContent": "Multilingual"
           }
         ]
@@ -491,19 +493,19 @@ slideType option: slideLeft/slideTop/slideRight/slideBottom/zoomIn/zoomOut/opaci
           {
             "title": "Edit",
             "link": "Link address",
-            "iconContent": "&#xe6f6;",
+            "iconContent": "icon-pen",
             "textContent": "Edit"
           },
           {
             "title": "Delete",
             "link": "Link address",
-            "iconContent": "&#xe749;",
+            "iconContent": "icon-trash_can",
             "textContent": "Delete"
           },
           {
             "title": "Multilingual",
             "link": "Link address",
-            "iconContent": "&#xe702;",
+            "iconContent": "icon-globe",
             "textContent": "Multilingual"
           }
         ]
@@ -528,19 +530,19 @@ slideType option: slideLeft/slideTop/slideRight/slideBottom/zoomIn/zoomOut/opaci
           {
             "title": "Edit",
             "link": "Link address",
-            "iconContent": "&#xe6f6;",
+            "iconContent": "icon-pen",
             "textContent": "Edit"
           },
           {
             "title": "Delete",
             "link": "Link address",
-            "iconContent": "&#xe749;",
+            "iconContent": "icon-trash_can",
             "textContent": "Delete"
           },
           {
             "title": "Multilingual",
             "link": "Link address",
-            "iconContent": "&#xe702;",
+            "iconContent": "icon-globe",
             "textContent": "Multilingual"
           }
         ]
@@ -570,19 +572,19 @@ slideType option: slideLeft/slideTop/slideRight/slideBottom/zoomIn/zoomOut/opaci
           {
             "title": "Edit",
             "link": "Link address",
-            "iconContent": "&#xe6f6;",
+            "iconContent": "icon-pen",
             "textContent": "Edit"
           },
           {
             "title": "Delete",
             "link": "Link address",
-            "iconContent": "&#xe749;",
+            "iconContent": "icon-trash_can",
             "textContent": "Delete"
           },
           {
             "title": "Multilingual",
             "link": "Link address",
-            "iconContent": "&#xe702;",
+            "iconContent": "icon-globe",
             "textContent": "Multilingual"
           }
         ]
@@ -598,8 +600,7 @@ slideType option: slideLeft/slideTop/slideRight/slideBottom/zoomIn/zoomOut/opaci
         "link": "Export data url",
         "elementId": "elementId",
         "title": "Export Data",
-        "textContent": "Import Data",
-        "icon": "&#xe75b"
+        "icon": "icon-download"
       }
     ]
   }
