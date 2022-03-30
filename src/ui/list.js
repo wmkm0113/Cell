@@ -143,6 +143,7 @@ class ListFilter extends BaseElement {
             return;
         }
         this.show();
+        this.filterForm.clearChildNodes();
         if (this.dataset.sortBy !== undefined && this.dataset.sortBy.length > 0) {
             if (this.sortByElement === null) {
                 this.sortByElement = new HiddenInput();
@@ -174,7 +175,6 @@ class ListFilter extends BaseElement {
         if (this.dataset.className !== undefined && this.dataset.className.length > 0) {
             this.filterForm.setClass(this.dataset.className);
         }
-        this.filterForm.clearChildNodes();
         let jsonData = this.dataset.items.parseJSON();
         Array.from(jsonData)
             .filter(itemData => (itemData.hasOwnProperty("tag") && ListFilter.VALID_TAGS.includes(itemData.tag)))
