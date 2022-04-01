@@ -91,8 +91,6 @@ import {HiddenInput} from "./input.js";
  * }
  */
 class ListFilter extends BaseElement {
-    static VALID_TAGS = ["search-input", "number-interval-input", "date-interval-input", "time-interval-input",
-        "datetime-interval-input", "checkbox-group", "radio-group"];
 
     constructor() {
         super();
@@ -111,15 +109,9 @@ class ListFilter extends BaseElement {
     renderElement(data) {
         Object.keys(data).forEach(key => {
             switch (key.toLowerCase()) {
-                case "id":
-                    this.setAttribute("id", data[key]);
-                    break;
                 case "action":
                 case "method":
                     this.filterForm.setAttribute(key, data[key]);
-                    break;
-                case "bindto":
-                    this.filterForm.dataset.elementId = data[key];
                     break;
                 default:
                     this.dataset[key] = ((typeof data[key]) === "string") ? data[key] : JSON.stringify(data[key]);
@@ -177,7 +169,7 @@ class ListFilter extends BaseElement {
         }
         let jsonData = this.dataset.items.parseJSON();
         Array.from(jsonData)
-            .filter(itemData => (itemData.hasOwnProperty("tag") && ListFilter.VALID_TAGS.includes(itemData.tag)))
+            .filter(itemData => itemData.hasOwnProperty("tag"))
             .forEach(itemData => {
                 let filterItem = document.createElement(itemData.tag);
                 this.filterForm.appendChild(filterItem);
@@ -189,7 +181,7 @@ class ListFilter extends BaseElement {
             searchBtn.setAttribute("slot", "searchBtn");
             searchBtn.addEventListener("click", (event) => {
                 event.stopPropagation();
-                Cell.submitForm(this.filterForm);
+                this._submitForm();
             });
             searchBtn.setAttribute("value", "Search");
             this.appendChild(searchBtn);
@@ -200,7 +192,7 @@ class ListFilter extends BaseElement {
     }
 
     refresh() {
-        Cell.submitForm(this.filterForm);
+        this._submitForm();
     }
 
     sortQuery(sortBy = "", asc = false) {
@@ -210,15 +202,22 @@ class ListFilter extends BaseElement {
         if (this.sortTypeElement !== null) {
             this.sortTypeElement.setAttribute("value", asc ? "ASC" : "DESC");
         }
-        Cell.submitForm(this.filterForm);
+        this._submitForm();
     }
 
-    pageQuery(pageNo = 1, pageLimit = 15) {
+    pageQuery(pageNo = 1, pageLimit = 20) {
         if (this.pageNoElement !== null) {
             this.pageNoElement.setAttribute("value", pageNo);
         }
         if (this.pageLimitElement !== null) {
             this.pageLimitElement.setAttribute("value", pageLimit);
+        }
+        this._submitForm();
+    }
+
+    _submitForm() {
+        if (this.dataset.elementId !== undefined && this.dataset.elementId !== null) {
+            this.filterForm.dataset.elementId = this.dataset.elementId;
         }
         Cell.submitForm(this.filterForm);
     }
@@ -644,7 +643,7 @@ class ListHeader extends BaseElement {
                             asc = true;
                             itemElement.dataset.sortType = "asc";
                         }
-                        this.parentElement.sortQuery(itemData.mapKey, asc);
+                        this.parentElement.parentElement.sortQuery(itemData.mapKey, asc);
                     });
                 } else {
                     itemElement.style.cursor = "auto";
@@ -909,7 +908,7 @@ class ListData extends BaseElement {
     constructor() {
         super();
         super._addSlot("dataInfo", "batchOperators", "listPager");
-        this.pageLimit = 15;
+        this.pageLimit = 20;
         this.selectAll = false;
         this.selectName = "";
         this.listElement = null;
@@ -958,9 +957,6 @@ class ListData extends BaseElement {
         if (data === null) {
             return;
         }
-        if (data.hasOwnProperty("id")) {
-            this.setAttribute("id", data.id);
-        }
         if (data.hasOwnProperty("type")) {
             this.dataset.type = data.type;
         }
@@ -985,7 +981,7 @@ class ListData extends BaseElement {
         if (data.hasOwnProperty("pageLimit") && ((typeof data.pageLimit) === "number")) {
             this.pageLimit = data.pageLimit;
         } else {
-            this.pageLimit = 15;
+            this.pageLimit = 20;
         }
     }
 
@@ -1015,6 +1011,10 @@ class ListData extends BaseElement {
             }
             this.headerElement.checked = (checkedCount === recordCount);
         }
+    }
+
+    sortQuery(sortBy = "", asc = false) {
+        this.parentElement.sortQuery(sortBy, asc);
     }
 
     _renderBatchOperators() {
@@ -1166,27 +1166,27 @@ class ListData extends BaseElement {
             firstPageBtn.show();
         }
 
-        let beginPage = currentPage - 2;
-        if (beginPage < 1) {
-            beginPage = 1;
+        let previousPage = currentPage - 1;
+        if (previousPage < 1) {
+            previousPage = 1;
         }
 
-        let beginPageBtn = this.pagerElement.querySelector("i[id='beginPage']");
-        if (beginPageBtn === null) {
-            beginPageBtn = document.createElement("i");
-            beginPageBtn.setAttribute("id", "beginPage");
-            beginPageBtn.setClass("icon-chevron_left");
-            this.pagerElement.appendChild(beginPageBtn);
-            beginPageBtn.addEventListener("click", (event) => {
+        let previousPageBtn = this.pagerElement.querySelector("i[id='previousPage']");
+        if (previousPageBtn === null) {
+            previousPageBtn = document.createElement("i");
+            previousPageBtn.setAttribute("id", "previousPage");
+            previousPageBtn.setClass("icon-chevron_left");
+            this.pagerElement.appendChild(previousPageBtn);
+            previousPageBtn.addEventListener("click", (event) => {
                 event.stopPropagation();
-                this.parentElement.pageQuery(beginPageBtn.dataset.currentPage.parseInt(), this.pageLimit);
+                this.parentElement.pageQuery(previousPageBtn.dataset.currentPage.parseInt(), this.pageLimit);
             });
         }
-        if (beginPage === 1) {
-            beginPageBtn.hide();
+        if (previousPage === 1) {
+            previousPageBtn.hide();
         } else {
-            beginPageBtn.dataset.currentPage = (beginPage - 1).toString();
-            beginPageBtn.show();
+            previousPageBtn.dataset.currentPage = previousPage.toString();
+            previousPageBtn.show();
         }
 
         let pageGroup = this.pagerElement.querySelector("div[id='pageGroup']");
@@ -1194,10 +1194,6 @@ class ListData extends BaseElement {
             pageGroup = document.createElement("div");
             pageGroup.setAttribute("id", "pageGroup");
             this.pagerElement.appendChild(pageGroup);
-        }
-        let endPage = beginPage + 4;
-        if (totalPage < endPage) {
-            endPage = totalPage;
         }
         let pageBtnList = pageGroup.querySelectorAll("i");
         if (totalPage < pageBtnList.length) {
@@ -1217,6 +1213,7 @@ class ListData extends BaseElement {
             }
         }
 
+        let beginPage = Math.max(1, currentPage - 2), endPage = Math.min(totalPage, currentPage + 2);
         pageGroup.querySelectorAll("i").forEach(pageBtn => {
             let pageNo = pageBtn.dataset.currentPage.parseInt();
             if (pageNo === currentPage) {
@@ -1228,22 +1225,26 @@ class ListData extends BaseElement {
                 pageBtn.show();
             }
         })
-        let endPageBtn = this.pagerElement.querySelector("i[id='endPage']");
-        if (endPageBtn === null) {
-            endPageBtn = document.createElement("i");
-            endPageBtn.setAttribute("id", "endPage");
-            endPageBtn.setClass("icon-chevron_right");
-            this.pagerElement.appendChild(endPageBtn);
-            endPageBtn.addEventListener("click", (event) => {
+        let nextPage = currentPage + 1;
+        if (totalPage < nextPage) {
+            nextPage = totalPage;
+        }
+        let nextPageBtn = this.pagerElement.querySelector("i[id='nextPage']");
+        if (nextPageBtn === null) {
+            nextPageBtn = document.createElement("i");
+            nextPageBtn.setAttribute("id", "nextPage");
+            nextPageBtn.setClass("icon-chevron_right");
+            this.pagerElement.appendChild(nextPageBtn);
+            nextPageBtn.addEventListener("click", (event) => {
                 event.stopPropagation();
-                this.parentElement.pageQuery(endPageBtn.dataset.currentPage.parseInt(), this.pageLimit);
+                this.parentElement.pageQuery(nextPageBtn.dataset.currentPage.parseInt(), this.pageLimit);
             });
         }
-        if (endPage === totalPage) {
-            endPageBtn.hide();
+        if (nextPage === totalPage) {
+            nextPageBtn.hide();
         } else {
-            endPageBtn.dataset.currentPage = (endPage + 1).toString();
-            endPageBtn.show();
+            nextPageBtn.dataset.currentPage = nextPage.toString();
+            nextPageBtn.show();
         }
         let lastPageBtn = this.pagerElement.querySelector("i[id='lastPage']");
         if (lastPageBtn === null) {
@@ -1313,6 +1314,10 @@ class MessageList extends BaseElement {
     renderElement(data) {
         if (data === null) {
             return;
+        }
+        if (data.hasOwnProperty("id")) {
+            this.setAttribute("id", data.id);
+            this.filterElement.dataset.elementId = data.id;
         }
         if (data.hasOwnProperty("filter")) {
             this.filterElement.data = JSON.stringify(data.filter);

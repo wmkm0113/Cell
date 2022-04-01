@@ -824,8 +824,7 @@ message-list > list-title > div[slot="btnGroup"] > a:hover,
 message-list > list-title > div[slot="btnGroup"] > i:hover,
 message-list > list-title > div[slot="btnGroup"] > i.current,
 message-list > list-data > div[slot="listPager"] > #firstPage,
-message-list > list-data > div[slot="listPager"] > #beginPage:hover,
-message-list > list-data > div[slot="listPager"] > #endPage:hover,
+message-list > list-data > div[slot="listPager"] > i:hover,
 message-list > list-data > div[slot="listPager"] > #lastPage,
 message-list > list-data > div[slot="listPager"] > #pageGroup > i:hover,
 message-list > list-data > div[slot="listPager"] > #pageGroup > .current {
@@ -1015,11 +1014,12 @@ message-list > list-data > .image-list > div {
     padding: 5px;
 }
 message-list > list-data > .image-list > #content > list-record {
-    width: calc(-10px + 12.5%);
+    width: calc(-12px + 12.5%);
     margin: 5px;
     padding-bottom: 0.5rem;
     border-radius: 1rem;
     position: relative;
+    border: 1px solid #CCCCCC;
 }
 message-list > list-data > .image-list > #content > list-record > span[slot="preview"] {
     border-radius: 1rem 1rem 0 0;

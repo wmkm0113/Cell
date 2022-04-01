@@ -123,6 +123,7 @@ slideType option: slideLeft/slideTop/slideRight/slideBottom/zoomIn/zoomOut/opaci
 ## message-list
 ```
 {
+    "id" : "listElement",
     "filter" :
     {
         "pageLimit" : "pageLimit",
@@ -132,7 +133,6 @@ slideType option: slideLeft/slideTop/slideRight/slideBottom/zoomIn/zoomOut/opaci
         "pageNo" : "pageNo",
         "action" : "url",
         "sortBy" : "sortBy",
-        "id" : "elementId",
         "items" : [
             {
                 "name" : "searchElement",
@@ -261,7 +261,6 @@ slideType option: slideLeft/slideTop/slideRight/slideBottom/zoomIn/zoomOut/opaci
     },
     "grid" :
     {
-        "id" : "gridElement",
         "selectName" : "identifyCode",
         "pageLimit" : 20,
         "header" :
