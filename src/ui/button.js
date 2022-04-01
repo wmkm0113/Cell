@@ -68,7 +68,8 @@ class BaseButton extends AbstractInput {
             .forEach(attributeName =>
                 inputElement.setAttribute(attributeName, this.getAttribute(attributeName)));
         let buttonElement = this;
-        if (this.dataset.intervalTime !== undefined && this.dataset.intervalTime.isNum()) {
+        if (this.dataset.intervalTime !== undefined && this.dataset.intervalTime !== null
+            && this.dataset.intervalTime.isNum()) {
             inputElement.addEventListener("click", () => {
                 if (buttonElement._timer === null) {
                     buttonElement.dataset.buttonText = inputElement.getAttribute("value");

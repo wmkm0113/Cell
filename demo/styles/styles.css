@@ -845,9 +845,6 @@ message-list > list-data > div[slot="dataInfo"] > #content > list-record > div[s
     height: 2.4rem;
     line-height: 2.4rem;
 }
-message-list > list-data > div[slot="dataInfo"] > #content > list-record > div[slot="operators"] > record-operator > a > span {
-    color: #056EB7;
-}
 message-list > list-data > div[slot="dataInfo"] > list-header,
 message-list > list-data > div[slot="dataInfo"] > #content {
     border: 1px solid #056EB7;
@@ -881,13 +878,17 @@ message-list > list-data > div[slot="dataInfo"] > #content > list-record.error {
     background-color: rgba(255, 0, 0, 0.5);
 }
 message-list > list-data > div[slot="dataInfo"] > #content > list-record > span[slot="mainTitle"] > a {
-    width: 100%;
     height: 3rem;
     overflow: hidden;
     text-decoration: none;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+message-list > list-data > .text-list > #content > list-record > span[slot="mainTitle"] > a,
+message-list > list-data > .view-list > #content > list-record > span[slot="mainTitle"] > a {
+    width: 100%;
+}
+message-list > list-data > div[slot="dataInfo"] > #content > list-record.error:hover > span[slot="abstract"],
 message-list > list-data > div[slot="dataInfo"] > #content > list-record.error:hover > span[slot="mainTitle"] > a,
 message-list > list-data > div[slot="dataInfo"] > #content > list-record.error:hover > star-score > div > span::before,
 message-list > list-data > div[slot="dataInfo"] > #content > list-record.error:hover > div[slot="items"] > property-item > span,
@@ -980,16 +981,17 @@ message-list > list-data > .text-list > #content > list-record > div[slot="items
     width: 100%;
 }
 message-list > list-data > .view-list > list-header > mock-checkbox,
-message-list > list-data > .view-list > #content > list-record > mock-checkbox,
+message-list > list-data > .view-list > #content > list-record > mock-checkbox {
+    width: 2.4rem;
+    position: absolute;
+    left: 2.5rem;
+}
 message-list > list-data > .image-list > list-header > mock-checkbox,
 message-list > list-data > .image-list > #content > list-record > mock-checkbox {
     width: 2.4rem;
     position: absolute;
-    left: 1rem;
-}
-message-list > list-data > .view-list > list-header > mock-checkbox,
-message-list > list-data > .view-list > #content > list-record > mock-checkbox {
-    left: 2.5rem;
+    left: 0.5rem;
+    top: 0.5rem;
 }
 message-list > list-data > .view-list > list-header > mock-checkbox > div > input + label > i,
 message-list > list-data > .view-list > #content > list-record > mock-checkbox > div > input + label > i,
@@ -1008,23 +1010,37 @@ message-list > list-data > .image-list > #content > list-record > span[slot="mai
     font-size: 1.4rem;
     font-weight: bolder;
 }
+message-list > list-data > .image-list > div {
+    width: calc(-12px + 100%);
+    padding: 5px;
+}
 message-list > list-data > .image-list > #content > list-record {
-    width: 21.9rem;
-    padding: 1rem;
-    margin-top: 1rem;
-    margin-left: 1rem;
-    border-radius: 0.5rem;
+    width: calc(-10px + 12.5%);
+    margin: 5px;
+    padding-bottom: 0.5rem;
+    border-radius: 1rem;
     position: relative;
+}
+message-list > list-data > .image-list > #content > list-record > span[slot="preview"] {
+    border-radius: 1rem 1rem 0 0;
+}
+message-list > list-data > .image-list > #content > list-record > span[slot="mainTitle"],
+message-list > list-data > .image-list > #content > list-record > div[slot="operators"],
+message-list > list-data > .image-list > #content > list-record > star-score {
+    width: calc(-20px + 100%);
+    padding: 0 10px;
+}
+message-list > list-data > .image-list > #content > list-record > span[slot="mainTitle"] > a {
+    width: calc(-20px + 100%);
 }
 message-list > list-data > .image-list > #content > list-record:hover {
     box-shadow: 0 0 10px;
 }
-message-list > list-data > .image-list > #content > list-record.warning:hover {
-    box-shadow: 0 0 10px #FFFF00;
-}
 message-list > list-data > .view-list > list-header,
 message-list > list-data > .image-list > list-header,
 message-list > list-data > .image-list > #content > list-record > div[slot="items"],
+message-list > list-data > .text-list > #content > list-record > span[slot="abstract"],
+message-list > list-data > .image-list > #content > list-record > span[slot="abstract"],
 message-list > list-data > .text-list > #content > list-record > span[slot="preview"],
 message-list > list-data > .text-list > #content > list-record > star-score,
 message-list > list-data > .text-list > #content > list-record > div[slot="items"] > property-item > span[slot="name"],
@@ -1054,24 +1070,37 @@ message-list > list-data > .image-list > #content > list-record > star-score > d
     font-size: 1.6rem;
 }
 message-list > list-data > .view-list > #content > list-record > span[slot="preview"] {
-    width: 9rem;
-    height: 9rem;
+    width: 16rem;
+    height: 16rem;
     margin: 0 1rem 0 0.5rem;
 }
 message-list > list-data > .view-list > #content > list-record > span[slot="mainTitle"] {
-    max-width: calc(-20.5rem + 100%);
+    max-width: calc(-27.5rem + 100%);
     height: 3rem;
     line-height: 3rem;
     padding-right: 1rem;
     overflow: hidden;
 }
+message-list > list-data > .view-list > #content > list-record > span[slot="abstract"] {
+    width: calc(-17.5rem + 100%);
+    height: 5.2rem;
+    line-height: 2.6rem;
+    font-size: 1.2rem;
+    overflow: hidden;
+}
 message-list > list-data > .view-list > #content > list-record > div[slot="items"],
 message-list > list-data > .view-list > #content > list-record > div[slot="operators"] {
-    width: calc(-10.5rem + 100%);
-    min-height: 2.4rem;
+    width: calc(-17.5rem + 100%);
     line-height: 2.4rem;
-    margin-top: 0.6rem;
+    overflow: hidden;
     float: right;
+}
+message-list > list-data > .view-list > #content > list-record > div[slot="items"] {
+    height: 4.8rem;
+}
+message-list > list-data > .view-list > #content > list-record > div[slot="operators"] {
+    height: 2.4rem;
+    margin-top: 0.6rem;
 }
 message-list > list-data > .view-list > #content > list-record > div[slot="items"] > property-item {
     margin-right: 1rem;
@@ -1110,7 +1139,11 @@ message-list > list-data > .text-list > #content > list-record > div[slot="opera
     line-height: 2.4rem;
     font-size: 1.6rem;
     text-align: center;
-    color: #056EB7;
+}
+message-list > list-data > .view-list > #content > list-record.error:hover > div[slot="operators"] > record-operator > a > #icon,
+message-list > list-data > .image-list > #content > list-record.error:hover > div[slot="operators"] > record-operator > a > #icon,
+message-list > list-data > .text-list > #content > list-record.error:hover > div[slot="operators"] > record-operator > a > #icon {
+    color: #FFFFFF;
 }
 message-list > list-data > .view-list > #content > list-record > div[slot="operators"] > record-operator > a > #text,
 message-list > list-data > .text-list > #content > list-record > div[slot="operators"] > record-operator > a > #text {

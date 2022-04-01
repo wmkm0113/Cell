@@ -864,10 +864,7 @@ class ListRecord extends BaseElement {
                     propertyItem.style = ("--width:" + propertyDefine.width);
                 }
                 if (jsonData.hasOwnProperty("score")) {
-                    this.scoreElement.show();
                     this.scoreElement.score = jsonData.score;
-                } else {
-                    this.scoreElement.hide();
                 }
                 if (this.operatorsElement === null) {
                     this.operatorsElement = document.createElement("div");

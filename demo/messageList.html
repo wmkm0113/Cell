@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <script type="module">
         import {Config} from "../src/commons/Commons.js";
+        //  Setting for context path
+        Config.contextPath = "";
+        //  Setting for i18n folder path
         Config.i18n.resPath = "../src/i18n";
     </script>
     <script src="../src/core/Cell.js" type="module"></script>
@@ -15,517 +18,503 @@
     <script type="module">
         import {MessageList} from "../src/ui/list.js";
 
-        const listData = `{
-            "filter": {
-                "id": "elementId",
-                "method": "post",
-                "action": "url",
-                "bindTo": "gridElement",
-                "sortBy": "sortBy",
-                "sortType": "sortType",
-                "pageNo": "pageNo",
-                "pageLimit": "pageLimit",
-                "searchText": "Search Button",
-                "items": [
+        const listData = `
+        {
+            "filter" :
+            {
+                "pageLimit" : "pageLimit",
+                "searchText" : "Search Button",
+                "method" : "post",
+                "sortType" : "sortType",
+                "pageNo" : "pageNo",
+                "action" : "url",
+                "sortBy" : "sortBy",
+                "id" : "elementId",
+                "items" : [
                     {
-                        "id": "elementId",
-                        "name": "elementName",
-                        "tag": "search-input",
-                        "value": "",
-                        "placeholder": "Place holder text",
-                        "textContent": "Element label text",
-                        "tips": {"content": "Tips message"}
+                        "name" : "searchElement",
+                        "textContent" : "Search Input",
+                        "id" : "searchElement",
+                        "tag" : "search-input",
+                        "placeholder" : "Input keywords",
+                        "sortCode" : 10,
+                        "value" : "",
+                        "tips" :
+                        {
+                            "content" : "Tips message"
+                        }
                     },
                     {
-                        "id": "elementId",
-                        "beginName": "beginElement",
-                        "endName": "endElement",
-                        "tag": "number-interval-input",
-                        "beginValue": "1",
-                        "endValue": "3",
-                        "textContent": "Element label text",
-                        "tips": {"content": "Tips message"}
+                        "endValue" : 3,
+                        "endName" : "endElement",
+                        "textContent" : "Interval Input",
+                        "id" : "intervalElement",
+                        "tag" : "number-interval-input",
+                        "beginValue" : 1,
+                        "sortCode" : 8,
+                        "beginName" : "beginElement",
+                        "tips" : {
+                            "content" : "Interval Tips"
+                        }
                     },
                     {
-                        "id": "elementId",
-                        "name": "elementName",
-                        "tag": "checkbox-group",
-                        "value": ["value2", "value4"],
-                        "textContent": "Element label text",
-                        "tips": {"content": "Tips message"},
-                        "items": [
-                            {"id" : "checkbox7", "name" : "checkbox7", "value" : "value1", "textButton" : "Radio Content"},
-                            {"id" : "checkbox8", "name" : "checkbox8", "value" : "value2", "textButton" : "Radio Content"},
-                            {"id" : "checkbox9", "name" : "checkbox9", "value" : "value3", "textButton" : "Radio Content"}
-                        ]
+                        "name" : "checkGroup",
+                        "textContent" : "Check Group",
+                        "id" : "checkGroup",
+                        "tag" : "checkbox-group",
+                        "sortCode" : 6,
+                        "value" : [ "value2", "value4" ],
+                        "items" : [
+                            {
+                                "textButton" : "Option1",
+                                "id" : "checkbox1",
+                                "value" : "value2"
+                            },
+                            {
+                                "textButton" : "Option2",
+                                "id" : "checkbox2",
+                                "value" : "value4"
+                            },
+                            {
+                                "textButton" : "Option3",
+                                "id" : "checkbox3",
+                                "value" : "value6"
+                            }
+                        ],
+                        "tips" :
+                        {
+                            "content" : "CheckGroup Tips"
+                        }
                     },
                     {
-                        "id": "elementId",
-                        "name": "elementName",
-                        "tag": "radio-group",
-                        "value": "value1",
-                        "textContent": "Element label text",
-                        "tips": {"content": "Tips message"},
-                        "items": [
-                            {"id" : "radioButtonId1", "name" : "radioButtonId1", "value" : "value1", "textButton" : "Radio Content"},
-                            {"id" : "radioButtonId2", "name" : "radioButtonId2", "value" : "value2", "textButton" : "Radio Content"},
-                            {"id" : "radioButtonId3", "name" : "radioButtonId3", "value" : "value3", "textButton" : "Radio Content"},
-                            {"id" : "radioButtonId4", "name" : "radioButtonId4", "value" : "value1", "textButton" : "Radio Content"},
-                            {"id" : "radioButtonId5", "name" : "radioButtonId5", "value" : "value2", "textButton" : "Radio Content"},
-                            {"id" : "radioButtonId6", "name" : "radioButtonId6", "value" : "value3", "textButton" : "Radio Content"},
-                            {"id" : "radioButtonId7", "name" : "radioButtonId7", "value" : "value1", "textButton" : "Radio Content"},
-                            {"id" : "radioButtonId8", "name" : "radioButtonId8", "value" : "value2", "textButton" : "Radio Content"},
-                            {"id" : "radioButtonId9", "name" : "radioButtonId9", "value" : "value3", "textButton" : "Radio Content"}
-                        ]
-                    },
-                    {
-                        "id": "elementId",
-                        "name": "elementName",
-                        "itemType": "search-input",
-                        "value": "Initialize value",
-                        "textContent": "Element label text",
-                        "tips": {"content": "Tips message"}
+                        "name" : "radioGroup",
+                        "textContent" : "Check Group",
+                        "id" : "radioGroup",
+                        "tag" : "radio-group",
+                        "sortCode" : 4,
+                        "value" : "value4",
+                        "items" : [
+                            {
+                                "textButton" : "Option4",
+                                "id" : "radio1",
+                                "value" : "value2"
+                            },
+                            {
+                                "textButton" : "Option5",
+                                "id" : "radio2",
+                                "value" : "value4"
+                            },
+                            {
+                                "textButton" : "Option6",
+                                "id" : "radio3",
+                                "value" : "value6"
+                            }
+                        ],
+                        "tips" :
+                        {
+                            "content" : "RadioGroup Tips"
+                        }
                     }
-                ]
+                ],
+                "bindTo" : "gridElement"
             },
-            "statistics": [
+            "statistics" :
+            [
                 {
-                    "index": 1,
-                    "id": "index1",
-                    "title": "Title 1",
-                    "data": "Data 1",
-                    "className": "error"
+                    "data" : "Data 1",
+                    "index" : 1,
+                    "className" : "error",
+                    "id" : "statistics1",
+                    "title" : "Title 1"
                 },
                 {
-                    "index": 2,
-                    "id": "index2",
-                    "title": "Title 2",
-                    "data": "Data 2"
+                    "data" : "Data 2",
+                    "index" : 2,
+                    "id" : "statistics2",
+                    "title" : "Title 2"
                 },
                 {
-                    "index": 3,
-                    "id": "index3",
-                    "title": "Title 3",
-                    "data": "Data 3",
-                    "className": "warning"
+                    "data" : "Data 3",
+                    "index" : 3,
+                    "className" : "warning",
+                    "id" : "statistics3",
+                    "title" : "Title 3"
                 },
                 {
-                    "index": 4,
-                    "id": "index4",
-                    "title": "Title 4",
-                    "data": "Data 4"
+                    "data" : "Data 4",
+                    "index" : 4,
+                    "id" : "statistics4",
+                    "title" : "Title 4"
                 }
             ],
-            "title": {
-                "textContent": "Message List Title",
-                "importUrl": "Import Url",
-                "styleClass": "image-list"
-            },
-            "grid":
+            "title" :
             {
-                "id": "gridElement",
-                "selectName": "identifyCode",
-                "pageLimit": 15,
-                "header": {
-                    "mainTitle": "Title",
-                    "operatorTitle": "Operators",
-                    "items": [
+                "textContent" : "Message List Title",
+                "importUrl" : "ImportUrl",
+                "styleClass" : "view-list",
+                "disableSwitch" : false
+            },
+            "grid" :
+            {
+                "id" : "gridElement",
+                "selectName" : "identifyCode",
+                "pageLimit" : 20,
+                "header" :
+                {
+                    "mainTitle" : "Title",
+                    "operatorTitle" : "Operators",
+                    "items" :
+                    [
                         {
-                            "index": 1,
-                            "mapKey": "key1",
-                            "width": "15%",
-                            "title": "column title 1",
-                            "sort": false
+                            "mapKey" : "key9",
+                            "width" : "10%",
+                            "index" : 8,
+                            "sort" : true,
+                            "title" : "Column Title 9"
                         },
                         {
-                            "index": 0,
-                            "mapKey": "key2",
-                            "width": "15%",
-                            "title": "column title 2",
-                            "sort": false
+                            "mapKey" : "key8",
+                            "width" : "10%",
+                            "index" : 7,
+                            "sort" : false,
+                            "title" : "Column Title 8"
                         },
                         {
-                            "index": 2,
-                            "mapKey": "key3",
-                            "width": "10%",
-                            "title": "column title 3",
-                            "sort": true
+                            "mapKey" : "key7",
+                            "width" : "10%",
+                            "index" : 6,
+                            "sort" : false,
+                            "title" : "Column Title 7"
                         },
                         {
-                            "index": 3,
-                            "mapKey": "key4",
-                            "width": "10%",
-                            "title": "column title 4",
-                            "sort": false
+                            "mapKey" : "key6",
+                            "width" : "10%",
+                            "index" : 5,
+                            "sort" : true,
+                            "title" : "Column Title 6"
                         },
                         {
-                            "index": 4,
-                            "mapKey": "key5",
-                            "width": "10%",
-                            "title": "column title 5",
-                            "sort": false
+                            "mapKey" : "key5",
+                            "width" : "10%",
+                            "index" : 4,
+                            "sort" : false,
+                            "title" : "Column Title 5"
                         },
                         {
-                            "index": 5,
-                            "mapKey": "key6",
-                            "width": "10%",
-                            "title": "column title 6",
-                            "sort": true
+                            "mapKey" : "key4",
+                            "width" : "10%",
+                            "index" : 3,
+                            "sort" : false,
+                            "title" : "Column Title 4"
                         },
                         {
-                            "index": 6,
-                            "mapKey": "key7",
-                            "width": "10%",
-                            "title": "column title 7",
-                            "sort": false
+                            "mapKey" : "key3",
+                            "width" : "10%",
+                            "index" : 2,
+                            "sort" : true,
+                            "title" : "Column Title 3"
                         },
                         {
-                            "index": 7,
-                            "mapKey": "key8",
-                            "width": "10%",
-                            "title": "column title 8",
-                            "sort": false
+                            "mapKey" : "key1",
+                            "width" : "15%",
+                            "index" : 1,
+                            "sort" : false,
+                            "title" : "Column Title 1"
                         },
                         {
-                            "index": 8,
-                            "mapKey": "key9",
-                            "width": "10%",
-                            "title": "column title 9",
-                            "sort": true
+                            "mapKey" : "key2",
+                            "width" : "15%",
+                            "index" : 0,
+                            "sort" : false,
+                            "title" : "Column Title 2"
                         }
                     ]
                 },
-                "itemData": [
+                "pager" :
+                {
+                    "totalPage" : 20,
+                    "currentPage" : 5
+                },
+                "itemData" :
+                [
                     {
-                        "identifyCode": "1",
-                        "link": "Link address",
-                        "elementId": "Bind element id",
-                        "imgPath": "./images/1.jpg",
-                        "title": "Text content Text content Text content Text content Text content Text content Text content Text content",
-                        "key1": "Column 1 text",
-                        "key2": "Column 2 text",
-                        "key3": "Column 3 text",
-                        "key4": "Column 1 text",
-                        "key5": "Column 2 text",
-                        "key6": "Column 3 text",
-                        "key7": "Column 1 text",
-                        "key8": "Column 2 text",
-                        "key9": "Column 3 text",
-                        "score": 4.2,
-                        "operators": [
+                        "key1" : "Column 1 Text",
+                        "elementId" : "elementId",
+                        "key2" : "Column 2 Text",
+                        "key5" : "Column 5 Text",
+                        "key6" : "Column 6 Text",
+                        "key3" : "Column 3 Text",
+                        "key4" : "Column 4 Text",
+                        "link" : "LinkAddress1",
+                        "key9" : "Column 9 Text",
+                        "key7" : "Column 7 Text",
+                        "key8" : "Column 8 Text",
+                        "abstract" : "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                        "title" : "Text content Text content Text content Text content Text content Text content Text content Text content",
+                        "score" : 4.2,
+                        "operators" :
+                        [
                             {
-                                "title": "Edit",
-                                "link": "Link address",
-                                "iconClass": "icon-pen",
-                                "textContent": "Edit"
+                                "link" : "EditLink",
+                                "index" : 3,
+                                "textContent" : "Edit",
+                                "title" : "Edit",
+                                "iconClass" : "icon-pen"
                             },
                             {
-                                "title": "Delete",
-                                "link": "Link address",
-                                "iconClass": "icon-trash_can",
-                                "textContent": "Delete"
+                                "link" : "DeleteLink",
+                                "index" : 2,
+                                "textContent" : "Delete",
+                                "title" : "Delete",
+                                "iconClass" : "icon-trash_can"
                             },
                             {
-                                "title": "Multilingual",
-                                "link": "Link address",
-                                "iconClass": "icon-globe",
-                                "textContent": "Multilingual"
+                                "link" : "MultiLink",
+                                "index" : 1,
+                                "textContent" : "Multilingual",
+                                "title" : "Multilingual",
+                                "iconClass" : "icon-globe"
                             }
-                        ]
+                        ],
+                        "imgPath" : "./images/1.jpg",
+                        "identifyCode" : "1"
                     },
                     {
-                        "identifyCode": "2",
-                        "link": "Link address",
-                        "elementId": "Bind element id",
-                        "imgPath": "./images/1.jpg",
-                        "title": "Text content",
-                        "key1": "Column 1 text",
-                        "key2": "Column 2 text",
-                        "key3": "Column 3 text",
-                        "score": 3,
-                        "className": "warning"
+                        "key1" : "Column 1 Text",
+                        "elementId" : "elementId",
+                        "key2" : "Column 2 Text",
+                        "score" : 3.0,
+                        "key3" : "Column 3 Text",
+                        "imgPath" : "./images/1.jpg",
+                        "link" : "LinkAddress2",
+                        "className" : "warning",
+                        "identifyCode" : "2",
+                        "title" : "Text content Text content Text content Text content Text content Text content Text content Text content"
                     },
                     {
-                        "identifyCode": "3",
-                        "link": "Link address",
-                        "elementId": "Bind element id",
-                        "imgPath": "./images/1.jpg",
-                        "title": "Text content",
-                        "key1": "Column 1 text",
-                        "key2": "Column 2 text",
-                        "key3": "Column 3 text",
-                        "operators": [
+                        "key1" : "Column 1 Text",
+                        "elementId" : "elementId",
+                        "key2" : "Column 2 Text",
+                        "operators" :
+                        [
                             {
-                                "title": "Edit",
-                                "link": "Link address",
-                                "iconClass": "icon-pen",
-                                "textContent": "Edit"
+                                "link" : "EditLink",
+                                "index" : 3,
+                                "textContent" : "Edit",
+                                "title" : "Edit",
+                                "iconClass" : "icon-pen"
                             },
                             {
-                                "title": "Delete",
-                                "link": "Link address",
-                                "iconClass": "icon-trash_can",
-                                "textContent": "Delete"
+                                "link" : "DeleteLink",
+                                "index" : 2,
+                                "textContent" : "Delete",
+                                "title" : "Delete",
+                                "iconClass" : "icon-trash_can"
                             },
                             {
-                                "title": "Multilingual",
-                                "link": "Link address",
-                                "iconClass": "icon-globe",
-                                "textContent": "Multilingual"
+                                "link" : "MultiLink",
+                                "index" : 1,
+                                "textContent" : "Multilingual",
+                                "title" : "Multilingual",
+                                "iconClass" : "icon-globe"
                             }
-                        ]
+                        ],
+                        "key3" : "Column 3 Text",
+                        "imgPath" : "./images/1.jpg",
+                        "link" : "LinkAddress2",
+                        "identifyCode" : "3",
+                        "abstract" : "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                        "title" : "Text content Text content Text content Text content Text content Text content Text content Text content"
                     },
                     {
-                        "identifyCode": "1",
-                        "link": "Link address",
-                        "elementId": "Bind element id",
-                        "imgPath": "./images/1.jpg",
-                        "title": "Text content",
-                        "key1": "Column 1 text",
-                        "key2": "Column 2 text",
-                        "key3": "Column 3 text",
-                        "key4": "Column 1 text",
-                        "key5": "Column 2 text",
-                        "key6": "Column 3 text",
-                        "key7": "Column 1 text",
-                        "key8": "Column 2 text",
-                        "key9": "Column 3 text",
-                        "score": 4.2,
-                        "operators": [
+                        "key1" : "Column 1 Text",
+                        "elementId" : "elementId",
+                        "key2" : "Column 2 Text",
+                        "key5" : "Column 5 Text",
+                        "key6" : "Column 6 Text",
+                        "key3" : "Column 3 Text",
+                        "key4" : "Column 4 Text",
+                        "link" : "LinkAddress1",
+                        "key9" : "Column 9 Text",
+                        "key7" : "Column 7 Text",
+                        "key8" : "Column 8 Text",
+                        "abstract" : "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                        "title" : "Text content Text content Text content Text content Text content Text content Text content Text content",
+                        "score" : 3.2,
+                        "operators" :
+                        [
                             {
-                                "title": "Edit",
-                                "link": "Link address",
-                                "iconClass": "icon-pen",
-                                "textContent": "Edit"
+                                "link" : "EditLink",
+                                "index" : 3,
+                                "textContent" : "Edit",
+                                "title" : "Edit",
+                                "iconClass" : "icon-pen"
                             },
                             {
-                                "title": "Delete",
-                                "link": "Link address",
-                                "iconClass": "icon-trash_can",
-                                "textContent": "Delete"
+                                "link" : "DeleteLink",
+                                "index" : 2,
+                                "textContent" : "Delete",
+                                "title" : "Delete",
+                                "iconClass" : "icon-trash_can"
                             },
                             {
-                                "title": "Multilingual",
-                                "link": "Link address",
-                                "iconClass": "icon-globe",
-                                "textContent": "Multilingual"
+                                "link" : "MultiLink",
+                                "index" : 1,
+                                "textContent" : "Multilingual",
+                                "title" : "Multilingual",
+                                "iconClass" : "icon-globe"
                             }
-                        ]
+                        ],
+                        "imgPath" : "./images/1.jpg",
+                        "identifyCode" : "4"
                     },
                     {
-                        "identifyCode": "2",
-                        "link": "Link address",
-                        "elementId": "Bind element id",
-                        "imgPath": "./images/1.jpg",
-                        "title": "Text content",
-                        "key1": "Column 1 text",
-                        "key2": "Column 2 text",
-                        "key3": "Column 3 text",
-                        "score": 3
+                        "key1" : "Column 1 Text",
+                        "elementId" : "elementId",
+                        "key2" : "Column 2 Text",
+                        "score" : 3.0,
+                        "key3" : "Column 3 Text",
+                        "imgPath" : "./images/1.jpg",
+                        "link" : "LinkAddress2",
+                        "identifyCode" : "5",
+                        "title" : "Text content Text content Text content Text content Text content Text content Text content Text content"
                     },
                     {
-                        "identifyCode": "3",
-                        "link": "Link address",
-                        "elementId": "Bind element id",
-                        "imgPath": "./images/1.jpg",
-                        "title": "Text content",
-                        "key1": "Column 1 text",
-                        "key2": "Column 2 text",
-                        "key3": "Column 3 text",
-                        "className": "error",
-                        "operators": [
+                        "key1" : "Column 1 Text",
+                        "elementId" : "elementId",
+                        "key2" : "Column 2 Text",
+                        "operators" :
+                        [
                             {
-                                "title": "Edit",
-                                "link": "Link address",
-                                "iconClass": "icon-pen",
-                                "textContent": "Edit"
+                                "link" : "EditLink",
+                                "index" : 3,
+                                "textContent" : "Edit",
+                                "title" : "Edit",
+                                "iconClass" : "icon-pen"
                             },
                             {
-                                "title": "Delete",
-                                "link": "Link address",
-                                "iconClass": "icon-trash_can",
-                                "textContent": "Delete"
+                                "link" : "DeleteLink",
+                                "index" : 2,
+                                "textContent" : "Delete",
+                                "title" : "Delete",
+                                "iconClass" : "icon-trash_can"
                             },
                             {
-                                "title": "Multilingual",
-                                "link": "Link address",
-                                "iconClass": "icon-globe",
-                                "textContent": "Multilingual"
+                                "link" : "MultiLink",
+                                "index" : 1,
+                                "textContent" : "Multilingual",
+                                "title" : "Multilingual",
+                                "iconClass" : "icon-globe"
                             }
-                        ]
+                        ],
+                        "key3" : "Column 3 Text",
+                        "imgPath" : "./images/1.jpg",
+                        "link" : "LinkAddress2",
+                        "className" : "error",
+                        "identifyCode" : "6",
+                        "abstract" : "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                        "title" : "Text content Text content Text content Text content Text content Text content Text content Text content"
                     },
                     {
-                        "identifyCode": "1",
-                        "link": "Link address",
-                        "elementId": "Bind element id",
-                        "imgPath": "./images/1.jpg",
-                        "title": "Text content",
-                        "key1": "Column 1 text",
-                        "key2": "Column 2 text",
-                        "key3": "Column 3 text",
-                        "key4": "Column 1 text",
-                        "key5": "Column 2 text",
-                        "key6": "Column 3 text",
-                        "key7": "Column 1 text",
-                        "key8": "Column 2 text",
-                        "key9": "Column 3 text",
-                        "score": 4.2,
-                        "operators": [
+                        "key1" : "Column 1 Text",
+                        "elementId" : "elementId",
+                        "key2" : "Column 2 Text",
+                        "key5" : "Column 5 Text",
+                        "key6" : "Column 6 Text",
+                        "key3" : "Column 3 Text",
+                        "key4" : "Column 4 Text",
+                        "link" : "LinkAddress1",
+                        "key9" : "Column 9 Text",
+                        "key7" : "Column 7 Text",
+                        "key8" : "Column 8 Text",
+                        "abstract" : "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                        "title" : "Text content Text content Text content Text content Text content Text content Text content Text content",
+                        "score" : 4.2,
+                        "operators" :
+                        [
                             {
-                                "title": "Edit",
-                                "link": "Link address",
-                                "iconClass": "icon-pen",
-                                "textContent": "Edit"
+                                "link" : "EditLink",
+                                "index" : 3,
+                                "textContent" : "Edit",
+                                "title" : "Edit",
+                                "iconClass" : "icon-pen"
                             },
                             {
-                                "title": "Delete",
-                                "link": "Link address",
-                                "iconClass": "icon-trash_can",
-                                "textContent": "Delete"
+                                "link" : "DeleteLink",
+                                "index" : 2,
+                                "textContent" : "Delete",
+                                "title" : "Delete",
+                                "iconClass" : "icon-trash_can"
                             },
                             {
-                                "title": "Multilingual",
-                                "link": "Link address",
-                                "iconClass": "icon-globe",
-                                "textContent": "Multilingual"
+                                "link" : "MultiLink",
+                                "index" : 1,
+                                "textContent" : "Multilingual",
+                                "title" : "Multilingual",
+                                "iconClass" : "icon-globe"
                             }
-                        ]
+                        ],
+                        "imgPath" : "./images/1.jpg",
+                        "identifyCode" : "7"
                     },
                     {
-                        "identifyCode": "2",
-                        "link": "Link address",
-                        "elementId": "Bind element id",
-                        "imgPath": "./images/1.jpg",
-                        "title": "Text content",
-                        "key1": "Column 1 text",
-                        "key2": "Column 2 text",
-                        "key3": "Column 3 text",
-                        "score": 3
+                        "key1" : "Column 1 Text",
+                        "elementId" : "elementId",
+                        "key2" : "Column 2 Text",
+                        "score" : 3.0,
+                        "key3" : "Column 3 Text",
+                        "imgPath" : "./images/1.jpg",
+                        "link" : "LinkAddress2",
+                        "identifyCode" : "8",
+                        "title" : "Text content Text content Text content Text content Text content Text content Text content Text content"
                     },
                     {
-                        "identifyCode": "3",
-                        "link": "Link address",
-                        "elementId": "Bind element id",
-                        "imgPath": "./images/1.jpg",
-                        "title": "Text content",
-                        "key1": "Column 1 text",
-                        "key2": "Column 2 text",
-                        "key3": "Column 3 text",
-                        "operators": [
+                        "key1" : "Column 1 Text",
+                        "elementId" : "elementId",
+                        "key2" : "Column 2 Text",
+                        "operators" :
+                        [
                             {
-                                "title": "Edit",
-                                "link": "Link address",
-                                "iconClass": "icon-pen",
-                                "textContent": "Edit"
+                                "link" : "EditLink",
+                                "index" : 3,
+                                "textContent" : "Edit",
+                                "title" : "Edit",
+                                "iconClass" : "icon-pen"
                             },
                             {
-                                "title": "Delete",
-                                "link": "Link address",
-                                "iconClass": "icon-trash_can",
-                                "textContent": "Delete"
+                                "link" : "DeleteLink",
+                                "index" : 2,
+                                "textContent" : "Delete",
+                                "title" : "Delete",
+                                "iconClass" : "icon-trash_can"
                             },
                             {
-                                "title": "Multilingual",
-                                "link": "Link address",
-                                "iconClass": "icon-globe",
-                                "textContent": "Multilingual"
+                                "link" : "MultiLink",
+                                "index" : 1,
+                                "textContent" : "Multilingual",
+                                "title" : "Multilingual",
+                                "iconClass" : "icon-globe"
                             }
-                        ]
-                    },
-                    {
-                        "identifyCode": "1",
-                        "link": "Link address",
-                        "elementId": "Bind element id",
-                        "imgPath": "./images/1.jpg",
-                        "title": "Text content Text content Text content Text content Text content Text content Text content Text content",
-                        "key1": "Column 1 text",
-                        "key2": "Column 2 text",
-                        "key3": "Column 3 text",
-                        "key4": "Column 1 text",
-                        "key5": "Column 2 text",
-                        "key6": "Column 3 text",
-                        "key7": "Column 1 text",
-                        "key8": "Column 2 text",
-                        "key9": "Column 3 text",
-                        "score": 4.2,
-                        "operators": [
-                            {
-                                "title": "Edit",
-                                "link": "Link address",
-                                "iconClass": "icon-pen",
-                                "textContent": "Edit"
-                            },
-                            {
-                                "title": "Delete",
-                                "link": "Link address",
-                                "iconClass": "icon-trash_can",
-                                "textContent": "Delete"
-                            },
-                            {
-                                "title": "Multilingual",
-                                "link": "Link address",
-                                "iconClass": "icon-globe",
-                                "textContent": "Multilingual"
-                            }
-                        ]
-                    },
-                    {
-                        "identifyCode": "2",
-                        "link": "Link address",
-                        "elementId": "Bind element id",
-                        "imgPath": "./images/1.jpg",
-                        "title": "Text content",
-                        "key1": "Column 1 text",
-                        "key2": "Column 2 text",
-                        "key3": "Column 3 text",
-                        "score": 3,
-                        "warning": true
-                    },
-                    {
-                        "identifyCode": "3",
-                        "link": "Link address",
-                        "elementId": "Bind element id",
-                        "imgPath": "./images/1.jpg",
-                        "title": "Text content",
-                        "key1": "Column 1 text",
-                        "key2": "Column 2 text",
-                        "key3": "Column 3 text",
-                        "operators": [
-                            {
-                                "title": "Edit",
-                                "link": "Link address",
-                                "iconClass": "icon-pen",
-                                "textContent": "Edit"
-                            },
-                            {
-                                "title": "Delete",
-                                "link": "Link address",
-                                "iconClass": "icon-trash_can",
-                                "textContent": "Delete"
-                            },
-                            {
-                                "title": "Multilingual",
-                                "link": "Link address",
-                                "iconClass": "icon-globe",
-                                "textContent": "Multilingual"
-                            }
-                        ]
+                        ],
+                        "key3" : "Column 3 Text",
+                        "imgPath" : "./images/1.jpg",
+                        "link" : "LinkAddress2",
+                        "identifyCode" : "9",
+                        "abstract" : "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                        "title" : "Text content Text content Text content Text content Text content Text content Text content Text content"
                     }
                 ],
-                "pager": {
-                    "totalPage": 20,
-                    "currentPage": 5
-                },
-                "batchOperators": [
+                "batchOperators" :
+                [
                     {
-                        "link": "Export data url",
-                        "elementId": "elementId",
-                        "title": "Export Data",
-                        "icon": "icon-download"
+                        "elementId" : "elementId",
+                        "link" : "ExportUrl",
+                        "icon" : "icon-download",
+                        "title" : "Export Data"
                     }
                 ]
             }
-       }`;
+        }`;
 
         window.onload = function () {
             window.setTimeout(function () {
