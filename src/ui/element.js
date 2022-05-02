@@ -50,7 +50,7 @@ class BaseElement extends CustomElement {
         super();
         Object.defineProperty(this, "data", {
             set(data) {
-                if (this.renderElement !== undefined && data && data.isJSON()) {
+                if (this.renderElement !== undefined && data !== null && data.isJSON()) {
                     this._removeProgress();
                     this.renderElement(data.parseJSON());
                 }
@@ -123,7 +123,6 @@ class AbstractElement extends BaseElement {
         }
         if (this.dataset.tips !== undefined && this.dataset.tips.isJSON()) {
             tipsButton.data = this.dataset.tips;
-        } else {
         }
     }
 }
@@ -177,7 +176,7 @@ class GroupElement extends AbstractElement {
                 }
             }
             let eventMap = [];
-            this.getAttributeNames().forEach(attributeName => {
+            this.attrNames().forEach(attributeName => {
                 if (attributeName.startsWith("on")) {
                     eventMap.push([attributeName, this.getAttribute(attributeName)]);
                     this.removeAttribute(attributeName);
@@ -196,7 +195,6 @@ class GroupElement extends AbstractElement {
                 if (index < existsItems.length) {
                     itemElement = existsItems[index];
                 } else {
-                    itemElement;
                     switch (tagName) {
                         case "mock-switch":
                             itemElement = new MockSwitch();
@@ -212,7 +210,7 @@ class GroupElement extends AbstractElement {
                     }
                     divElement.appendChild(itemElement);
                 }
-                itemElement.getAttributeNames().forEach(attributeName => {
+                itemElement.attrNames().forEach(attributeName => {
                     if (attributeName.startsWith("on")) {
                         itemElement.removeAttribute(attributeName);
                     }
@@ -361,7 +359,7 @@ class ScrollBar extends CustomElement {
 }
 
 /**
- * Mock five star rating
+ * Mock five-star rating
  * setting name attribute for form item name
  */
 class StarRating extends CustomElement {
@@ -437,9 +435,9 @@ class StarScore extends CustomElement {
         if ((typeof score) === "number") {
             let starList = this.querySelectorAll("div[slot='starScore'] > i");
             if (score <= 0) {
-                starList.forEach(starItem => starItem.setClass("icon-star_empty"));
+                starList.forEach(starItem => starItem.setClass("icon-star-outline"));
             } else if (score >= 5) {
-                starList.forEach(starItem => starItem.setClass("icon-star_half"));
+                starList.forEach(starItem => starItem.setClass("icon-star-half"));
             } else {
                 let fillCount = score | 0;
                 for (let i = 1 ; i <= 5 ; i++) {
@@ -447,9 +445,9 @@ class StarScore extends CustomElement {
                         starList[i - 1].setClass("icon-star");
                     } else {
                         if ((i - score) < 1) {
-                            starList[i - 1].setClass("icon-star_half");
+                            starList[i - 1].setClass("icon-star-half");
                         } else {
-                            starList[i - 1].setClass("icon-star_empty");
+                            starList[i - 1].setClass("icon-star-outline");
                         }
                     }
                 }

@@ -50,10 +50,10 @@ export default class UIRender {
 
         switch (type.toLowerCase()) {
             case "alert":
-                UIRender._retrieve("mock-dialog").showMessage(type, message);
+                UIRender._retrieve("mock-dialog").showMessage(message, type);
                 break;
             case "confirm":
-                UIRender._retrieve("mock-dialog").showMessage(type, message, confirmFunc);
+                UIRender._retrieve("mock-dialog").showMessage(message, type, confirmFunc);
                 break;
             case "notify":
                 UIRender._retrieve("notify-area").notify(message);

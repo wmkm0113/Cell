@@ -150,30 +150,6 @@ export default class RSA {
 
         return _result.substring(0, _result.length - 1);
     }
-
-    decrypt(msgContent) {
-        let _blocks = msgContent.split(" ");
-        let _result = "";
-
-        for (let i = 0 ; i < _blocks.length ; ++i) {
-            let _BigInteger =
-                (this._key.radix === 16)
-                    ? BigInteger.parseHex(_blocks[i])
-                    : BigInteger.parseString(_blocks[i], this._key.radix);
-
-            let _block = this._key.powMod(_BigInteger);
-
-            for (let j = 0 ; j <= _block.highIndex() ; ++j) {
-                _result += String.fromCharCode(_block._digits[j] & 255, _block._digits[j] >> 8);
-            }
-        }
-
-        if (_result.charCodeAt(_result.length - 1) === 0) {
-            _result = _result.substring(0, _result.length - 1);
-        }
-
-        return _result.reverse();
-    }
 }
 
 const HIGH_BIT_MASKS = [0x0000, 0x8000, 0xC000, 0xE000, 0xF000, 0xF800, 0xFC00,
@@ -635,12 +611,12 @@ class BigInteger {
                 _fgl = BigInteger.DPL10;
             }
 
-            _result = BigInteger.parseNumber(Number(s.substr(_index, _fgl)));
+            _result = BigInteger.parseNumber(Number(s.substring(_index, _index + _fgl)));
             _index += _fgl;
 
             while (_index < s.length) {
                 _result = BigInteger.add(BigInteger.multiply(_result, BigInteger.LR10),
-                    BigInteger.parseNumber(Number(s.substr(_index, BigInteger.DPL10))));
+                    BigInteger.parseNumber(Number(s.substring(_index, _index + BigInteger.DPL10))));
                 _index += BigInteger.DPL10;
             }
 
@@ -654,7 +630,8 @@ class BigInteger {
         let _result = new BigInteger();
         let _length = hex.length;
         for (let i = _length , j = 0 ; i > 0 ; i -= 4 , ++j) {
-            _result._digits[j] = hexToDigit(hex.substr(Math.max(i - 4, 0), Math.min(i, 4)));
+            let beginIndex = Math.max(i - 4, 0);
+            _result._digits[j] = hexToDigit(hex.substring(beginIndex, beginIndex + Math.min(i, 4)));
         }
         return _result;
     }

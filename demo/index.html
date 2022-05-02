@@ -13,11 +13,78 @@
     <script src="../src/core/Cell.js" type="module"></script>
     <title></title>
     <link rel="shortcut icon" href="./favicon.ico" />
-    <link rel="stylesheet" href="./styles/iconset.css" />
-    <link rel="stylesheet" href="./styles/styles.css" />
+    <link rel="stylesheet" href="../src/fonts/iconfont.css" />
+    <link rel="stylesheet" href="./styles/style.css" />
+    <link rel="stylesheet" href="./styles/cell.css" />
     <script type="module">
-        import {MessageList} from "../src/ui/list.js";
-
+        const indexTopMenuData = `{
+            "data" : [
+                {
+                    "title": "Menu 1",
+                    "link": "#Link1"
+                },
+                {
+                    "title": "Demo Menu",
+                    "items": [
+                        {
+                            "title": "Slide Show",
+                            "link": "#slideDemo"
+                        },
+                        {
+                            "title": "Message List",
+                            "link": "#listDemo"
+                        }
+                    ]
+                },
+                {
+                    "title": "Menu 3",
+                    "items": [
+                        {
+                            "title": "Child Menu 1",
+                            "link": "#Link3-1"
+                        },
+                        {
+                            "title": "Child Menu 2",
+                            "link": "#Link3-2"
+                        },
+                        {
+                            "title": "Child Menu 3",
+                            "link": "#Link3-3"
+                        }
+                    ]
+                }
+            ]
+        }`;
+        const socialData = `{
+            "textContent": "Follow Us",
+            "items": [
+                {
+                    "className": "icon icon-facebook",
+                    "title": "Facebook",
+                    "link": "#FacebookAddress"
+                },
+                {
+                    "className": "icon icon-linkedin",
+                    "title": "LinkedIn",
+                    "link": "#LinkedInAddress"
+                },
+                {
+                    "className": "icon icon-github-circle",
+                    "title": "Github",
+                    "link": "https://github.com/Nervousync"
+                },
+                {
+                    "className": "icon icon-twitter",
+                    "title": "Twitter",
+                    "link": "#TwitterAddress"
+                },
+                {
+                    "className": "icon icon-instagram",
+                    "title": "Instagram",
+                    "link": "#InstagramAddress"
+                }
+            ]
+        }`;
         const listData = `
         {
             "id" : "listElement",
@@ -88,7 +155,7 @@
                     },
                     {
                         "name" : "radioGroup",
-                        "textContent" : "Check Group",
+                        "textContent" : "Radio Group",
                         "id" : "radioGroup",
                         "tag" : "radio-group",
                         "sortCode" : 4,
@@ -192,13 +259,6 @@
                             "title" : "Column Title 6"
                         },
                         {
-                            "mapKey" : "key5",
-                            "width" : "10%",
-                            "index" : 4,
-                            "sort" : false,
-                            "title" : "Column Title 5"
-                        },
-                        {
                             "mapKey" : "key4",
                             "width" : "10%",
                             "index" : 3,
@@ -207,7 +267,7 @@
                         },
                         {
                             "mapKey" : "key3",
-                            "width" : "10%",
+                            "width" : "20%",
                             "index" : 2,
                             "sort" : true,
                             "title" : "Column Title 3"
@@ -243,7 +303,7 @@
                         "key6" : "Column 6 Text",
                         "key3" : "Column 3 Text",
                         "key4" : "Column 4 Text",
-                        "link" : "LinkAddress1",
+                        "link" : "#LinkAddress1",
                         "key9" : "Column 9 Text",
                         "key7" : "Column 7 Text",
                         "key8" : "Column 8 Text",
@@ -257,21 +317,21 @@
                                 "index" : 3,
                                 "textContent" : "Edit",
                                 "title" : "Edit",
-                                "iconClass" : "icon-pen"
+                                "iconClass" : "icon-pencil"
                             },
                             {
                                 "link" : "DeleteLink",
                                 "index" : 2,
                                 "textContent" : "Delete",
                                 "title" : "Delete",
-                                "iconClass" : "icon-trash_can"
+                                "iconClass" : "icon-delete"
                             },
                             {
                                 "link" : "MultiLink",
                                 "index" : 1,
                                 "textContent" : "Multilingual",
                                 "title" : "Multilingual",
-                                "iconClass" : "icon-globe"
+                                "iconClass" : "icon-earth"
                             }
                         ],
                         "imgPath" : "./images/1.jpg",
@@ -300,21 +360,14 @@
                                 "index" : 3,
                                 "textContent" : "Edit",
                                 "title" : "Edit",
-                                "iconClass" : "icon-pen"
-                            },
-                            {
-                                "link" : "DeleteLink",
-                                "index" : 2,
-                                "textContent" : "Delete",
-                                "title" : "Delete",
-                                "iconClass" : "icon-trash_can"
+                                "iconClass" : "icon-pencil"
                             },
                             {
                                 "link" : "MultiLink",
                                 "index" : 1,
                                 "textContent" : "Multilingual",
                                 "title" : "Multilingual",
-                                "iconClass" : "icon-globe"
+                                "iconClass" : "icon-earth"
                             }
                         ],
                         "key3" : "Column 3 Text",
@@ -332,7 +385,7 @@
                         "key6" : "Column 6 Text",
                         "key3" : "Column 3 Text",
                         "key4" : "Column 4 Text",
-                        "link" : "LinkAddress1",
+                        "link" : "#LinkAddress1",
                         "key9" : "Column 9 Text",
                         "key7" : "Column 7 Text",
                         "key8" : "Column 8 Text",
@@ -342,25 +395,18 @@
                         "operators" :
                         [
                             {
-                                "link" : "EditLink",
-                                "index" : 3,
-                                "textContent" : "Edit",
-                                "title" : "Edit",
-                                "iconClass" : "icon-pen"
-                            },
-                            {
                                 "link" : "DeleteLink",
                                 "index" : 2,
                                 "textContent" : "Delete",
                                 "title" : "Delete",
-                                "iconClass" : "icon-trash_can"
+                                "iconClass" : "icon-delete"
                             },
                             {
                                 "link" : "MultiLink",
                                 "index" : 1,
                                 "textContent" : "Multilingual",
                                 "title" : "Multilingual",
-                                "iconClass" : "icon-globe"
+                                "iconClass" : "icon-earth"
                             }
                         ],
                         "imgPath" : "./images/1.jpg",
@@ -380,7 +426,7 @@
                     {
                         "key1" : "Column 1 Text",
                         "elementId" : "elementId",
-                        "key2" : "Column 2 Text",
+                        "key7" : "Column 2 Text",
                         "operators" :
                         [
                             {
@@ -388,21 +434,14 @@
                                 "index" : 3,
                                 "textContent" : "Edit",
                                 "title" : "Edit",
-                                "iconClass" : "icon-pen"
+                                "iconClass" : "icon-pencil"
                             },
                             {
                                 "link" : "DeleteLink",
                                 "index" : 2,
                                 "textContent" : "Delete",
                                 "title" : "Delete",
-                                "iconClass" : "icon-trash_can"
-                            },
-                            {
-                                "link" : "MultiLink",
-                                "index" : 1,
-                                "textContent" : "Multilingual",
-                                "title" : "Multilingual",
-                                "iconClass" : "icon-globe"
+                                "iconClass" : "icon-delete"
                             }
                         ],
                         "key3" : "Column 3 Text",
@@ -421,7 +460,7 @@
                         "key6" : "Column 6 Text",
                         "key3" : "Column 3 Text",
                         "key4" : "Column 4 Text",
-                        "link" : "LinkAddress1",
+                        "link" : "#LinkAddress1",
                         "key9" : "Column 9 Text",
                         "key7" : "Column 7 Text",
                         "key8" : "Column 8 Text",
@@ -435,21 +474,21 @@
                                 "index" : 3,
                                 "textContent" : "Edit",
                                 "title" : "Edit",
-                                "iconClass" : "icon-pen"
+                                "iconClass" : "icon-pencil"
                             },
                             {
                                 "link" : "DeleteLink",
                                 "index" : 2,
                                 "textContent" : "Delete",
                                 "title" : "Delete",
-                                "iconClass" : "icon-trash_can"
+                                "iconClass" : "icon-delete"
                             },
                             {
                                 "link" : "MultiLink",
                                 "index" : 1,
                                 "textContent" : "Multilingual",
                                 "title" : "Multilingual",
-                                "iconClass" : "icon-globe"
+                                "iconClass" : "icon-earth"
                             }
                         ],
                         "imgPath" : "./images/1.jpg",
@@ -477,21 +516,14 @@
                                 "index" : 3,
                                 "textContent" : "Edit",
                                 "title" : "Edit",
-                                "iconClass" : "icon-pen"
-                            },
-                            {
-                                "link" : "DeleteLink",
-                                "index" : 2,
-                                "textContent" : "Delete",
-                                "title" : "Delete",
-                                "iconClass" : "icon-trash_can"
+                                "iconClass" : "icon-pencil"
                             },
                             {
                                 "link" : "MultiLink",
                                 "index" : 1,
                                 "textContent" : "Multilingual",
                                 "title" : "Multilingual",
-                                "iconClass" : "icon-globe"
+                                "iconClass" : "icon-earth"
                             }
                         ],
                         "key3" : "Column 3 Text",
@@ -513,15 +545,79 @@
                 ]
             }
         }`;
+        const slideData = `{
+            "width": "100%",
+            "height": "500px",
+            "transitionTime": 1000,
+            "openWindow" : false,
+            "timeOut" : 5000,
+            "slideType" : "scrollLeft",
+            "items" : [
+                {
+                    "href" : "#",
+                    "imagePath" : "./images/slides/1.jpg",
+                    "title" : "Title 1"
+                },
+                {
+                    "href" : "#",
+                    "imagePath" : "./images/slides/2.jpg",
+                    "title" : "Title 2"
+                },
+                {
+                    "href" : "#",
+                    "imagePath" : "./images/slides/3.jpg",
+                    "title" : "Title 3"
+                },
+                {
+                    "href" : "#",
+                    "imagePath" : "./images/slides/4.jpg",
+                    "title" : "Title 4"
+                }
+            ]
+        }`;
 
         window.onload = function () {
             window.setTimeout(function () {
-                let messageList = new MessageList();
-                document.body.append(messageList);
-                messageList.data = listData;
+                let indexTopMenu = $("indexTopMenu");
+                if (indexTopMenu) {
+                    indexTopMenu.data = indexTopMenuData;
+                }
+                let socialGroup = $("socialGroup");
+                if (socialGroup) {
+                    socialGroup.data = socialData;
+                }
+                let slideShow = $("slideShow");
+                if (slideShow) {
+                    slideShow.data = slideData;
+                }
+                let messageList = $("messageList");
+                if (messageList) {
+                    messageList.data = listData;
+                }
             }, 1000);
         }
     </script>
 </head>
 <body>
+    <header>
+        <span class="logo" style="background-image: url('./images/logo.png');"></span>
+        <span class="title">Nervousync Studio</span>
+        <menu-element id="indexTopMenu"></menu-element>
+    </header>
+    <main>
+        <section id="slideDemo">
+            <h1>Slide Show</h1>
+            <slide-show id="slideShow"></slide-show>
+        </section>
+        <section id="listDemo">
+            <h1>Message List</h1>
+            <message-list id="messageList"></message-list>
+        </section>
+    </main>
+    <footer>
+        <social-group id="socialGroup"></social-group>
+        <div id="copyRight">
+            <span id="poweredBy">Powered By Cell.js</span>
+        </div>
+    </footer>
 </body>

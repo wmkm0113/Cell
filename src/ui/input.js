@@ -473,7 +473,6 @@ class DragUpload extends AbstractElement {
     constructor() {
         super();
         super._addSlot("preview", "dragWindow");
-        this.formElement = null;
         this.dragWindow = null;
         this.previewElement = null;
         this.drawFiles = [];
@@ -494,6 +493,61 @@ class DragUpload extends AbstractElement {
         }
     }
 
+    _checkType(fileItem = null) {
+        if (fileItem === null) {
+            return false;
+        }
+        for (let existItem of this.drawFiles) {
+            if (existItem.type === fileItem.type
+                && existItem.size === fileItem.size
+                && existItem.name === fileItem.name) {
+                return false;
+            }
+        }
+        if (this.dataset.fileType !== undefined && this.dataset.fileType !== null && fileItem.type.indexOf(this.dataset.fileType) === -1) {
+            return false;
+        }
+        return !(this.dataset.fileSize !== undefined && this.dataset.fileSize !== null && (this.dataset.fileSize.parseInt() < fileItem.size));
+    }
+
+    _removeItem(identifyCode = "") {
+        if (identifyCode === "" && this.dataset.multipartFile) {
+            return;
+        }
+        if (this.dataset.multipleFile) {
+            let newArrays = [];
+            for (let fileItem of this.drawFiles) {
+                if (fileItem.identifyCode !== identifyCode) {
+                    newArrays.push(fileItem);
+                }
+            }
+            this.drawFiles = newArrays;
+            if (this.drawFiles.length === 0) {
+                this.dragWindow.show();
+            }
+        } else {
+            this.drawFiles = [];
+            this.dragWindow.show();
+        }
+    }
+
+    _renderItem(identifyCode = "") {
+        if (identifyCode === "" && this.dataset.multipartFile) {
+            return null;
+        }
+        let imgPreview = document.createElement("span");
+        imgPreview.hide();
+        let dragUpload = this;
+        let closeBtn = document.createElement("i");
+        closeBtn.setClass("icon-close");
+        closeBtn.addEventListener("click", function () {
+            dragUpload._removeItem(identifyCode);
+            dragUpload.previewElement.removeChild(imgPreview);
+        });
+        imgPreview.appendChild(closeBtn);
+        return imgPreview;
+    }
+
     connectedCallback() {
         super._removeProgress();
         this._render();
@@ -508,40 +562,54 @@ class DragUpload extends AbstractElement {
         this.bindEvent("drop", function (event) {
             event.preventDefault();
             event.stopPropagation();
-            Array.from(event.dataTransfer.files)
-                .filter(fileItem => {
-                    for (let existItem in this.drawFiles) {
-                        if (existItem.type === fileItem.type
-                            && existItem.size === fileItem.size
-                            && existItem.name === fileItem.name) {
-                            return false;
-                        }
-                    }
-                    return true;
-                })
-                .forEach(fileItem => {
-                    let checkResult = true;
-                    if (this.dataset.fileType !== undefined && fileItem.type.indexOf(this.dataset.fileType) === -1) {
-                        checkResult = false;
-                    }
-                    if (this.dataset.fileSize !== undefined && (this.dataset.fileSize.parseInt() < fileItem.size)) {
-                        checkResult = false;
-                    }
-                    if (checkResult) {
+            if (this.dataset.multipleFile) {
+                Array.from(event.dataTransfer.files)
+                    .filter(fileItem => this._checkType(fileItem))
+                    .forEach(fileItem => {
+                        let identifyCode = Cell.calculateData("md5", fileItem.name);
+                        fileItem.identifyCode = identifyCode;
                         this.drawFiles.push(fileItem);
                         if (fileItem.type.indexOf("image") !== -1) {
-                            let imgPreview = document.createElement("img");
-                            imgPreview.hide();
-                            this.previewElement.append(imgPreview);
-                            let reader = new FileReader();
-                            reader.onload = function(event) {
-                                imgPreview.src = event.currentTarget.result;
-                                imgPreview.show();
+                            let imgPreview = this._renderItem(identifyCode);
+                            if (imgPreview) {
+                                this.previewElement.append(imgPreview);
+                                let reader = new FileReader();
+                                reader.onload = function(event) {
+                                    imgPreview.style.backgroundImage = "url('" + event.currentTarget.result + "')";
+                                    imgPreview.show();
+                                }
+                                reader.readAsDataURL(fileItem);
                             }
-                            reader.readAsDataURL(fileItem);
                         }
+                        this.dragWindow.hide();
+                    });
+            } else {
+                if (event.dataTransfer.files.length > 0) {
+                    let fileItem = event.dataTransfer.files[0];
+                    if (this._checkType(fileItem)) {
+                        this.drawFiles = [];
+                        this.drawFiles.push(fileItem);
+                        if (fileItem.type.indexOf("image") !== -1) {
+                            let imgPreview = this.previewElement.querySelector("span");
+                            if (imgPreview === null) {
+                                imgPreview = this._renderItem();
+                                if (imgPreview) {
+                                    this.previewElement.append(imgPreview);
+                                }
+                            }
+                            if (imgPreview) {
+                                let reader = new FileReader();
+                                reader.onload = function(event) {
+                                    imgPreview.style.backgroundImage = ("url('" + event.currentTarget.result + "')");
+                                    imgPreview.show();
+                                }
+                                reader.readAsDataURL(fileItem);
+                            }
+                        }
+                        this.dragWindow.hide();
                     }
-                });
+                }
+            }
         });
     }
 

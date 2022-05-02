@@ -217,7 +217,7 @@ class FormInfo extends BaseElement {
                     this.formElement.removeChild(existsItems[i]);
                 }
             }
-            this.getAttributeNames().forEach(attributeName => {
+            this.attrNames().forEach(attributeName => {
                 if (!attributeName.startsWith("data-") && attributeName.toLowerCase() !== "slot") {
                     this.formElement.setAttribute(attributeName, this.getAttribute(attributeName));
                 }

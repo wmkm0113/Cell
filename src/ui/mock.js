@@ -84,7 +84,7 @@ class MockElement extends BaseInput {
             if (this.dataset.checked === "true") {
                 inputElement.checked = true;
             }
-            this.getAttributeNames().forEach(attributeName => {
+            this.attrNames().forEach(attributeName => {
                 if (attributeName.startsWith("on")) {
                     inputElement.setAttribute(attributeName, this.getAttribute(attributeName));
                     this.removeAttribute(attributeName);
@@ -177,7 +177,7 @@ class MockDialog extends CustomElement {
         return "mock-dialog";
     }
 
-    showMessage(type = "alert", message = "", callFunc = null) {
+    showMessage(message = "", type = "alert", callFunc = null) {
         document.body.style.overflow = "hidden";
         let dialogElement = document.createElement("div");
         dialogElement.setAttribute("slot", "dialog");

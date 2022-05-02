@@ -130,51 +130,38 @@ class ListFilter extends BaseElement {
     }
 
     _render() {
-        if (this.dataset.items === undefined || !this.dataset.items.isJSON()) {
-            this.hide();
-            return;
-        }
-        this.show();
         this.filterForm.clearChildNodes();
         if (this.dataset.sortBy !== undefined && this.dataset.sortBy.length > 0) {
             if (this.sortByElement === null) {
                 this.sortByElement = new HiddenInput();
-                this.filterForm.appendChild(this.sortByElement);
+                this.sortByElement.dataset.name = this.dataset.sortBy;
             }
-            this.sortByElement.setAttribute("name", this.dataset.sortBy);
+            this.filterForm.appendChild(this.sortByElement);
         }
         if (this.dataset.sortType !== undefined && this.dataset.sortType.length > 0) {
             if (this.sortTypeElement === null) {
                 this.sortTypeElement = new HiddenInput();
-                this.filterForm.appendChild(this.sortTypeElement);
+                this.sortTypeElement.dataset.name = this.dataset.sortType;
             }
-            this.sortTypeElement.setAttribute("name", this.dataset.sortType);
+            this.filterForm.appendChild(this.sortTypeElement);
         }
         if (this.dataset.pageNo !== undefined && this.dataset.pageNo.length > 0) {
             if (this.pageNoElement === null) {
                 this.pageNoElement = new HiddenInput();
-                this.filterForm.appendChild(this.pageNoElement);
+                this.pageNoElement.dataset.name = this.dataset.pageNo;
             }
-            this.pageNoElement.setAttribute("name", this.dataset.pageNo);
+            this.filterForm.appendChild(this.pageNoElement);
         }
         if (this.dataset.pageLimit !== undefined && this.dataset.pageLimit.length > 0) {
             if (this.pageLimitElement === null) {
                 this.pageLimitElement = new HiddenInput();
-                this.filterForm.appendChild(this.pageLimitElement);
+                this.pageLimitElement.dataset.name = this.dataset.pageLimit;
             }
-            this.pageLimitElement.setAttribute("name", this.dataset.pageLimit);
+            this.filterForm.appendChild(this.pageLimitElement);
         }
         if (this.dataset.className !== undefined && this.dataset.className.length > 0) {
             this.filterForm.setClass(this.dataset.className);
         }
-        let jsonData = this.dataset.items.parseJSON();
-        Array.from(jsonData)
-            .filter(itemData => itemData.hasOwnProperty("tag"))
-            .forEach(itemData => {
-                let filterItem = document.createElement(itemData.tag);
-                this.filterForm.appendChild(filterItem);
-                filterItem.data = JSON.stringify(itemData);
-            });
         let searchBtn = this.querySelector("standard-button[slot='searchBtn']");
         if (searchBtn === null) {
             searchBtn = new StandardButton();
@@ -189,6 +176,19 @@ class ListFilter extends BaseElement {
         if (this.dataset.searchText !== undefined && this.dataset.searchText.length > 0) {
             searchBtn.textContent = this.dataset.searchText;
         }
+        if (this.dataset.items === undefined || !this.dataset.items.isJSON()) {
+            this.hide();
+            return;
+        }
+        this.show();
+        let jsonData = this.dataset.items.parseJSON();
+        Array.from(jsonData)
+            .filter(itemData => itemData.hasOwnProperty("tag"))
+            .forEach(itemData => {
+                let filterItem = document.createElement(itemData.tag);
+                this.filterForm.appendChild(filterItem);
+                filterItem.data = JSON.stringify(itemData);
+            });
     }
 
     refresh() {
@@ -197,20 +197,20 @@ class ListFilter extends BaseElement {
 
     sortQuery(sortBy = "", asc = false) {
         if (this.sortByElement !== null) {
-            this.sortByElement.setAttribute("value", sortBy);
+            this.sortByElement.value = sortBy;
         }
         if (this.sortTypeElement !== null) {
-            this.sortTypeElement.setAttribute("value", asc ? "ASC" : "DESC");
+            this.sortTypeElement.value = asc ? "ASC" : "DESC";
         }
         this._submitForm();
     }
 
     pageQuery(pageNo = 1, pageLimit = 20) {
         if (this.pageNoElement !== null) {
-            this.pageNoElement.setAttribute("value", pageNo);
+            this.pageNoElement.value = pageNo;
         }
         if (this.pageLimitElement !== null) {
-            this.pageLimitElement.setAttribute("value", pageLimit);
+            this.pageLimitElement.value = pageLimit;
         }
         this._submitForm();
     }
@@ -376,7 +376,6 @@ class ListTitle extends BaseElement {
         if (this.btnGroup === null) {
             this.btnGroup = document.createElement("div");
             this.btnGroup.setAttribute("slot", "btnGroup");
-            this.btnGroup.hide();
             this.appendChild(this.btnGroup);
 
             this.importBtn = document.createElement("a");
@@ -390,13 +389,13 @@ class ListTitle extends BaseElement {
                 styleBtn.dataset.listType = listType;
                 switch (listType) {
                     case "text-list":
-                        styleBtn.setClass("icon-reorder");
+                        styleBtn.setClass("icon-view-headline");
                         break;
                     case "view-list":
-                        styleBtn.setClass("icon-list");
+                        styleBtn.setClass("icon-view-list");
                         break;
                     case "image-list":
-                        styleBtn.setClass("icon-reorder_square");
+                        styleBtn.setClass("icon-view-grid");
                         break;
                 }
                 if ("view-list" === listType) {
@@ -430,9 +429,13 @@ class ListTitle extends BaseElement {
             this.importBtn.show();
         }
         if (data.hasOwnProperty("disableSwitch") && data.disableSwitch) {
-            this.btnGroup.hide();
+            this.btnGroup.querySelectorAll(":scope > i").forEach(itemBtn => {
+                itemBtn.hide();
+            });
         } else {
-            this.btnGroup.show();
+            this.btnGroup.querySelectorAll(":scope > i").forEach(itemBtn => {
+                itemBtn.show();
+            });
         }
         if (data.hasOwnProperty("styleClass")) {
             this.btnGroup.querySelectorAll(":scope > i")
@@ -578,7 +581,7 @@ class ListHeader extends BaseElement {
                     if (a.index === b.index) {
                         return a.mapKey.localeCompare(b.mapKey);
                     }
-                    return a.index - b.index;
+                    return b.index - a.index;
                 });
         }
         this._render();
@@ -626,10 +629,11 @@ class ListHeader extends BaseElement {
                     itemElement = document.createElement("span");
                     this.itemElement.appendChild(itemElement);
                 }
-                itemElement.style = ("--width:" + itemData.width);
+                itemElement.setStyle("--width:" + itemData.width);
                 if (itemData.sort) {
                     itemElement.dataset.sortType = "";
                 }
+                itemElement.dataset.sortCode = itemData.index;
                 itemElement.innerText = itemData.title;
                 if (itemData.sort) {
                     itemElement.style.cursor = "pointer";
@@ -649,6 +653,7 @@ class ListHeader extends BaseElement {
                     itemElement.style.cursor = "auto";
                 }
             }
+            this.itemElement.sortChildrenBy("span", "data-sort-code", true);
         }
     }
 
@@ -657,7 +662,7 @@ class ListHeader extends BaseElement {
         if (this.itemDefines !== null) {
             this.itemDefines.forEach(item => {
                 if (item.mapKey === mapKey) {
-                    index = this.items.indexOf(item);
+                    index = this.itemDefines.indexOf(item);
                 }
             });
         }
@@ -802,6 +807,8 @@ class ListRecord extends BaseElement {
                 this.previewImg.dataset.elementId = jsonData.hasOwnProperty("elementId") ? jsonData.elementId : "";
                 if (jsonData.hasOwnProperty("imgPath")) {
                     this.previewImg.style.backgroundImage = "url('" + jsonData.imgPath + "')";
+                } else {
+                    this.previewImg.style.backgroundImage = "";
                 }
                 if (this.mainTitle === null) {
                     this.mainTitle = document.createElement("span");
@@ -837,7 +844,7 @@ class ListRecord extends BaseElement {
                     this.itemsElement.setAttribute("slot", "items");
                     this.appendChild(this.itemsElement);
                 }
-                let propertyList = this.itemsElement.querySelectorAll("property-item[slot='items']");
+                let propertyList = this.itemsElement.querySelectorAll("property-item");
                 let propertyCount = this.propertyDefines.length, existsCount = propertyList.length;
                 if (propertyCount < existsCount) {
                     for (let i = propertyCount ; i < existsCount ; i++) {
@@ -855,12 +862,10 @@ class ListRecord extends BaseElement {
                     propertyItem.itemName(propertyDefine.title);
                     if (jsonData.hasOwnProperty(propertyDefine.mapKey)) {
                         propertyItem.itemValue(jsonData[propertyDefine.mapKey]);
-                        propertyItem.show();
                     } else {
                         propertyItem.itemValue("");
-                        propertyItem.hide();
                     }
-                    propertyItem.style = ("--width:" + propertyDefine.width);
+                    propertyItem.setStyle("--width:" + propertyDefine.width);
                 }
                 if (jsonData.hasOwnProperty("score")) {
                     this.scoreElement.score = jsonData.score;
@@ -963,8 +968,6 @@ class ListData extends BaseElement {
         this.selectName = data.hasOwnProperty("selectName") ? data.selectName : "";
         if (data.hasOwnProperty("header")) {
             this.headerElement.data = JSON.stringify(data.header);
-            this.contentElement.querySelectorAll("property-item")
-                .forEach(propertyItem => propertyItem.updateDefines(this.headerElement.items));
         }
         if (data.hasOwnProperty("batchOperators") && (data.batchOperators instanceof Array)) {
             this.batchElement.dataset.batchOperators = JSON.stringify(data.batchOperators);
@@ -972,12 +975,16 @@ class ListData extends BaseElement {
         }
         if (data.hasOwnProperty("itemData")) {
             this.contentElement.dataset.itemData = JSON.stringify(data.itemData);
-            this._renderData();
+        } else {
+            this.contentElement.dataset.itemData = JSON.stringify([]);
         }
+        this._renderData();
         if (data.hasOwnProperty("pager")) {
             this.pagerElement.dataset.itemData = JSON.stringify(data.pager);
-            this._renderPager();
+        } else {
+            this.pagerElement.dataset.itemData = JSON.stringify({});
         }
+        this._renderPager();
         if (data.hasOwnProperty("pageLimit") && ((typeof data.pageLimit) === "number")) {
             this.pageLimit = data.pageLimit;
         } else {
@@ -1024,7 +1031,7 @@ class ListData extends BaseElement {
         }
         if (this.selectAllBtn === null) {
             this.selectAllBtn = document.createElement("i");
-            this.selectAllBtn.setClass("icon-check");
+            this.selectAllBtn.setClass("icon-checkbox-multiple-marked");
             this.batchElement.appendChild(this.selectAllBtn);
             this.selectAllBtn.addEventListener("click", (event) => {
                 event.stopPropagation();
@@ -1139,8 +1146,10 @@ class ListData extends BaseElement {
             totalPage = jsonData.totalPage;
         }
         if (totalPage <= 0) {
+            this.pagerElement.hide();
             return;
         }
+        this.pagerElement.show();
         if (jsonData.hasOwnProperty("currentPage") && ((typeof jsonData.currentPage) === "number")) {
             currentPage = jsonData.currentPage;
             if (currentPage < 1) {
@@ -1152,7 +1161,7 @@ class ListData extends BaseElement {
         if (firstPageBtn === null) {
             firstPageBtn = document.createElement("i");
             firstPageBtn.setAttribute("id", "firstPage");
-            firstPageBtn.setClass("icon-step_backward");
+            firstPageBtn.setClass("icon-chevron-double-left");
             firstPageBtn.dataset.currentPage = "1";
             this.pagerElement.appendChild(firstPageBtn);
             firstPageBtn.addEventListener("click", (event) => {
@@ -1175,7 +1184,7 @@ class ListData extends BaseElement {
         if (previousPageBtn === null) {
             previousPageBtn = document.createElement("i");
             previousPageBtn.setAttribute("id", "previousPage");
-            previousPageBtn.setClass("icon-chevron_left");
+            previousPageBtn.setClass("icon-chevron-left");
             this.pagerElement.appendChild(previousPageBtn);
             previousPageBtn.addEventListener("click", (event) => {
                 event.stopPropagation();
@@ -1218,6 +1227,8 @@ class ListData extends BaseElement {
             let pageNo = pageBtn.dataset.currentPage.parseInt();
             if (pageNo === currentPage) {
                 pageBtn.appendClass("current");
+            } else {
+                pageBtn.removeClass("current");
             }
             if (pageNo < beginPage || pageNo > endPage) {
                 pageBtn.hide();
@@ -1233,7 +1244,7 @@ class ListData extends BaseElement {
         if (nextPageBtn === null) {
             nextPageBtn = document.createElement("i");
             nextPageBtn.setAttribute("id", "nextPage");
-            nextPageBtn.setClass("icon-chevron_right");
+            nextPageBtn.setClass("icon-chevron-right");
             this.pagerElement.appendChild(nextPageBtn);
             nextPageBtn.addEventListener("click", (event) => {
                 event.stopPropagation();
@@ -1250,7 +1261,7 @@ class ListData extends BaseElement {
         if (lastPageBtn === null) {
             lastPageBtn = document.createElement("i");
             lastPageBtn.setAttribute("id", "lastPage");
-            lastPageBtn.setClass("icon-step_forward");
+            lastPageBtn.setClass("icon-chevron-double-right");
             lastPageBtn.dataset.currentPage = totalPage.toString();
             this.pagerElement.appendChild(lastPageBtn);
             lastPageBtn.addEventListener("click", (event) => {
@@ -1283,13 +1294,13 @@ class MessageList extends BaseElement {
 
     connectedCallback() {
         if (this.filterElement === null) {
-            this.filterElement = new ListFilter()
+            this.filterElement = new ListFilter();
             this.filterElement.setAttribute("slot", "filter");
             this.appendChild(this.filterElement);
             this.filterElement.hide();
         }
         if (this.statisticsElement === null) {
-            this.statisticsElement = new ListStatistics()
+            this.statisticsElement = new ListStatistics();
             this.statisticsElement.setAttribute("slot", "statistics");
             this.appendChild(this.statisticsElement);
             this.statisticsElement.hide();

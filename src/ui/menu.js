@@ -58,7 +58,8 @@ class MenuElement extends BaseElement {
         if (this.dataset.menuData !== undefined && this.dataset.menuData.isJSON()) {
             let itemList = this.menuList.querySelectorAll(":scope > menu-item"),
                 existsCount = itemList.length, i = 0;
-            Array.from(this.dataset.menuData.parseJSON())
+            let jsonData = this.dataset.menuData.parseJSON();
+            jsonData
                 .filter(itemData => itemData.hasOwnProperty("title"))
                 .forEach(itemData => {
                     let menuItem;

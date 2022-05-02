@@ -110,22 +110,20 @@ class CellJS {
     init() {
         this.language(this._config.i18n.language);
         if (this._config.security.RSA.exponent.length > 0 && this._config.security.RSA.modulus.length > 0) {
-            if (!Cell.hasOwnProperty("RSA")) {
-                Cell.registerModule("RSA", RSA);
-            }
-            this._rsaPublic = Cell["RSA"].newInstance(this._config.security.RSA);
+            this._rsaPublic = new RSA(this._config.security.RSA);
         }
         this.Render = new UIRender();
         this.Render.init([
-            FloatWindow, FloatPage, NotifyArea, MockSwitch, MockDialog, MockCheckBox, MockRadio, StandardButton,
-            SubmitButton, ResetButton, ProgressBar, ScrollBar, StarRating, StarScore, FormItem, FormInfo,
-            ButtonGroup, CheckBoxGroup, RadioGroup, Input.InputElement, Input.BaseInput, Input.AbstractInput,
-            Input.PasswordInput, Input.HiddenInput, Input.TextInput, Input.SearchInput, Input.NumberInput,
-            Input.DateInput, Input.TimeInput, Input.DateTimeInput, Input.SelectInput, Input.TextAreaInput,
-            Input.NumberIntervalInput, Input.DateIntervalInput, Input.TimeIntervalInput, Input.DateTimeIntervalInput,
-            Input.DragUpload, List.ListFilter, List.ListData, List.ListStatistics, List.ListTitle, List.ListRecord,
+            TipsElement, FloatWindow, FloatPage, NotifyArea, MockSwitch, MockDialog, MockCheckBox, MockRadio,
+            StandardButton, SubmitButton, ResetButton, ProgressBar, ScrollBar, StarRating, StarScore,
+            ButtonGroup, CheckBoxGroup, RadioGroup, FormItem, FormInfo,
+            Input.InputElement, Input.BaseInput, Input.AbstractInput, Input.PasswordInput, Input.HiddenInput,
+            Input.TextInput, Input.SearchInput, Input.NumberInput, Input.DateInput, Input.TimeInput,
+            Input.DateTimeInput, Input.SelectInput, Input.TextAreaInput, Input.NumberIntervalInput,
+            Input.DateIntervalInput, Input.TimeIntervalInput, Input.DateTimeIntervalInput, Input.DragUpload,
+            List.ListFilter, List.ListData, List.ListStatistics, List.ListTitle, List.ListRecord,
             List.RecordOperator, List.ListHeader, List.PropertyItem, List.PropertyDefine, List.MessageList,
-            SlideShow, SocialGroup, TipsElement, MenuElement, MenuItem
+            SlideShow, SocialGroup, MenuItem, MenuElement
         ]);
     }
 
@@ -169,37 +167,14 @@ class CellJS {
                 ? target.getAttribute("href")
                 : target.dataset.link;
             if (linkAddress !== undefined && linkAddress.length > 0 && linkAddress !== "#") {
-                if (target.dataset.elementId === undefined) {
+                if (target.dataset.elementId === undefined || target.dataset.elementId === null
+                    || target.dataset.elementId.length === 0) {
                     window.location = linkAddress;
                 } else {
                     Cell.Ajax(linkAddress)
                         .then(responseText => {
                             if (responseText.isJSON()) {
-                                let respData = responseText.parseJSON();
-                                if (respData.hasOwnProperty("message")) {
-                                    if (respData.hasOwnProperty("notify")) {
-                                        Cell.notify(respData.message);
-                                    } else {
-                                        Cell.alert(respData.message);
-                                    }
-                                } else if (respData.hasOwnProperty("status") && respData.hasOwnProperty("data")) {
-                                    if (respData.status === 200) {
-                                        respData.data.forEach(dataItem => {
-                                            if (dataItem.hasOwnProperty("elementName")
-                                                && dataItem.hasOwnProperty("elementTag")
-                                                && dataItem.hasOwnProperty("data")) {
-                                                let selector = dataItem.elementTag + "[name=\"" + dataItem.elementName + "\"]";
-                                                let element = document.querySelector(selector);
-                                                if (element) {
-                                                    element.data = dataItem.data;
-                                                }
-                                            }
-                                        });
-                                    } else {
-                                        console.error("Response status: " + respData.status + ", error message: "
-                                            + respData.message);
-                                    }
-                                }
+                                this._renderElement(responseText.parseJSON());
                             } else {
                                 let _element = $(target.dataset.elementId);
                                 if (_element) {
@@ -218,23 +193,51 @@ class CellJS {
         }
     }
 
+    _renderElement(jsonData = []) {
+        jsonData.forEach(dataItem => {
+            if (dataItem.hasOwnProperty("elementTag")
+                && dataItem.hasOwnProperty("data")) {
+                let selector = dataItem.elementTag;
+                if (dataItem.hasOwnProperty("elementId")) {
+                    selector += ("[id=\"" + dataItem.elementId + "\"]");
+                }
+                let element = document.querySelector(selector);
+                if (element) {
+                    element.data = JSON.stringify(dataItem.data);
+                }
+            }
+        });
+    }
+
     submitForm(formElement) {
         if (formElement && !formElement.dataset.disabled && formElement.validate()) {
-            if (formElement.dataset.elementId === undefined) {
-                formElement.submit();
-            } else {
-                Cell.Ajax(formElement.action, {
-                    method : formElement.getAttribute("method"),
-                    parameters : formElement.formData()
-                }).then(responseText => {
-                    let _element = $(formElement.dataset.elementId);
-                    if (_element) {
-                        _element.data = responseText;
+            let jsonData = formElement.formData();
+            Cell.Ajax(formElement.action, {
+                method : formElement.getAttribute("method"),
+                uploadFile : jsonData.uploadFile,
+                uploadProgress : jsonData.uploadProgress
+            }, jsonData.formData).then(responseText => {
+                if (formElement.dataset.redirect !== undefined
+                    && formElement.dataset.redirect !== null
+                    && formElement.dataset.redirect.length > 0) {
+                    window.location = formElement.dataset.redirect;
+                    return;
+                }
+                if (responseText.isJSON()) {
+                    this._renderElement(responseText.parseJSON());
+                } else {
+                    if (formElement.dataset.elementId === undefined) {
+                        document.body.innerHTML = responseText;
+                    } else {
+                        let _element = $(formElement.dataset.elementId);
+                        if (_element) {
+                            _element.data = responseText;
+                        }
                     }
-                }).catch(errorMsg => {
-                    console.error(errorMsg);
-                });
-            }
+                }
+            }).catch(errorMsg => {
+                console.error(errorMsg);
+            });
         }
         return false;
     }
@@ -416,14 +419,15 @@ class CellJS {
         return value;
     }
 
-    Ajax(url, options = {}) {
+    Ajax(url, options = {}, parameters = null) {
         return new Promise(function (resolve, reject) {
             let _options = {
                 method : "get",
                 userName : null,
                 passWord : null,
                 asynchronous : true,
-                parameters : []
+                uploadFile : false,
+                uploadProgress : null
             };
             Object.extend(_options, options);
             let _request;
@@ -458,27 +462,28 @@ class CellJS {
                 reject(_request);
             };
             if (_options.userName !== null && _options.passWord !== null) {
-                _request.open(_options.method, url, _options.asynchronous,
-                    _options.userName, _options.passWord);
+                _request.open(_options.method, url, _options.asynchronous, _options.userName, _options.passWord);
             } else {
                 _request.open(_options.method, url, _options.asynchronous);
             }
 
-            _request.setRequestHeader("cache-control", "no-cache");
+            _request.setRequestHeader("Cache-Control", "no-cache");
             _request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
             let _jwtToken = sessionStorage.getItem("JWTToken");
             if (_jwtToken != null) {
                 _request.setRequestHeader("Authorization", _jwtToken);
             }
 
-            if (_options.parameters && _options.parameters.uploadFile
-                && _options.parameters.uploadProgress) {
-                _request.upload.onprogress = function(event) {
-                    $(_options.parameters.uploadProgress).setAttribute("value", (event.loaded / event.total).toString());
-                };
+            if (parameters) {
+                if (_options.uploadFile) {
+                    if (_options.uploadProgress) {
+                        _request.upload.onprogress = function(event) {
+                            $(_options.uploadProgress).setAttribute("value", (event.loaded / event.total).toString());
+                        };
+                    }
+                }
             }
-
-            _request.send(_options.parameters);
+            _request.send(parameters);
 
             if (!_options.asynchronous) {
                 CellJS._parseResponse(_request, resolve, reject);

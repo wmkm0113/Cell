@@ -1,26 +1,4 @@
 @charset "UTF-8";
-* {
-    float: left;
-    background-color: transparent;
-}
-html {
-    font-size: 10px;
-    float: none;
-    font-family: sans-serif;
-    color: #1B1B1B;
-}
-body {
-    width: 100%;
-    margin: 0 auto;
-    padding: 0;
-    background-color: #F2F2F7;
-    overflow-y: scroll;
-}
-a {
-    text-decoration: none;
-    font-size: 1.2rem;
-    color: inherit;
-}
 .hidden {
     display: none;
 }
@@ -524,7 +502,8 @@ message-list > list-filter {
     float: left;
 }
 message-list {
-    width: 100%;
+    width: calc(-2rem + 100%);
+    margin: 1rem;
 }
 message-list > list-statistics > div,
 message-list > list-data > div {
@@ -947,6 +926,7 @@ message-list > list-data > .text-list > #content > list-record > div[slot="items
 message-list > list-data > .text-list > list-header > div[slot="items"] > span,
 message-list > list-data > .text-list > #content > list-record > div[slot="items"] > property-item {
     width: var(--width);
+    min-height: 100%;
     text-align: center;
 }
 message-list > list-data > .text-list > list-header > span,
@@ -983,7 +963,7 @@ message-list > list-data > .view-list > list-header > mock-checkbox,
 message-list > list-data > .view-list > #content > list-record > mock-checkbox {
     width: 2.4rem;
     position: absolute;
-    left: 2.5rem;
+    left: 3.5rem;
 }
 message-list > list-data > .image-list > list-header > mock-checkbox,
 message-list > list-data > .image-list > #content > list-record > mock-checkbox {
@@ -1215,11 +1195,12 @@ slide-show > div[slot="slide"] > div {
     position: absolute;
     top: 0;
     left: 0;
+    display: flex;
 }
 slide-show > div[slot="slide"] > div > a {
     position: relative;
     background-position: center;
-    background-size: contain;
+    background-size: cover;
     background-repeat: no-repeat;
     background-color: #FFFFFF;
     float: left;
@@ -1618,12 +1599,12 @@ mock-dialog > div[slot="dialog"].confirm > button#cancel-btn {
 }
 social-group {
     width: 100%;
-    padding: 1rem;
 }
 social-group > span[slot="title"] {
     width: 100%;
-    height: 3rem;
-    line-height: 3rem;
+    height: 5rem;
+    margin: 0 auto;
+    line-height: 5rem;
     font-size: 1.6rem;
 }
 social-group > a.icon {
@@ -1632,7 +1613,7 @@ social-group > a.icon {
     line-height: 3.2rem;
     text-align: center;
     font-size: 3rem;
-    margin-right: 1rem;
+    margin: 0 0.5rem;
     color: #056EB7;
 }
 drag-upload {

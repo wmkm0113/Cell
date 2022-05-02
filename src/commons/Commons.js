@@ -28,7 +28,7 @@
 const Comment = {
     Version:    "1.0.1",
     Language:   navigator.language,
-    Html5:      !!window.applicationCache,
+    Html5:      ((typeof Worker) !== "undefined"),
     MaxWidth :  Math.max(document.documentElement.scrollWidth, document.documentElement.clientWidth),
     MaxHeight : Math.max(document.documentElement.scrollHeight, document.documentElement.clientHeight),
     GPS :       !!navigator.geolocation,
@@ -44,6 +44,7 @@ const Comment = {
         'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/', '='
     ],
+    MONTH : ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
     SocialCreditCode : [
         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
         'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'T', 'U', 'W', 'X', 'Y'
@@ -134,16 +135,15 @@ const TagDefine = {
 Object.seal(TagDefine);
 
 const RegexLibrary = {
-    E_Mail : /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,4})$/i,
-    UUID : /^([0-9a-f]{8}((-[0-9a-f]{4}){3})-[0-9a-f]{12})|([0-9a-f]{32})\b/g,
-    TrimBlank : /(^\s*)|(\s*$)/g,
-    BlankText : /[\s]+/ig,
+    E_Mail : /^([A-Za-z\d_\-.])+@([A-Za-z\d_\-.])+\.([A-Za-z]{2,4})$/i,
+    UUID : /^([\da-f]{8}((-[\da-f]{4}){3})-[\da-f]{12})|([\da-f]{32})\b/g,
+    BlankText : /\s+/ig,
     Number : /\b\d+\b/g,
-    Color : /^#[0-9A-F]{6}$/i,
-    XML : /<[a-zA-Z0-9]+[^>]*>(?:.|[\r\n])*?<\/[a-zA-Z0-9]+>/ig,
-    HtmlTag : /<[a-zA-Z0-9]+[^>]*>/ig,
-    CHN_ID_Card : /^[1-9]([0-9]{17}|([0-9]{16}X))$/g,
-    CHN_Social_Credit : /^([1-9]|A|N|Y)[0-9A-Z]{17}$/g
+    Color : /^#[\dA-F]{6}$/i,
+    XML : /<[a-zA-Z\d]+[^>]*>(?:.|[\r\n])*?<\/[a-zA-Z\d]+>/ig,
+    HtmlTag : /<[a-zA-Z\d]+[^>]*>/ig,
+    CHN_ID_Card : /^[1-9](\d{17}|(\d{16}X))$/g,
+    CHN_Social_Credit : /^([1-9]|A|N|Y)[\dA-Z]{17}$/g
 };
 
 const Config = {
@@ -314,14 +314,6 @@ Object.extend(Element.prototype, {
         }
     },
 
-    switchDisplay() {
-        if (this.hasClass("hidden")) {
-            this.show();
-        } else {
-            this.hide();
-        }
-    },
-
     hide() {
         this.appendClass("hidden");
     },
@@ -347,46 +339,54 @@ Object.extend(Element.prototype, {
     },
 
     formData() {
+        let jsonData = {};
         if (this.tagName.toLowerCase() === "form") {
+            jsonData.uploadFile = false;
             let _formData = new FormData();
-            _formData.uploadFile = false;
             let _inputName, _inputValue;
             this.querySelectorAll("input, select, textarea").forEach(input => {
                 _inputName = input.name;
-                _inputValue = input.tagName.toLowerCase() === "textarea" ? input.innerHTML : input.value;
-                if (_inputValue !== null && _inputValue.length > 0) {
-                    if (input.tagName.toLowerCase() === "input") {
-                        switch (input.type.toLowerCase()) {
-                            case "password":
-                                _inputValue = Cell.encryptPassword(_inputValue);
-                                break;
-                            case "date":
-                            case "datetime-local":
-                                _inputValue = Cell.convertDateTime(_inputValue);
-                                break;
-                            case "file":
-                                _formData.uploadFile = true;
-                                break;
+                let process = true;
+                if (input.type === "checkbox" || input.type === "radio") {
+                    process = input.checked;
+                }
+                if (process) {
+                    _inputValue = input.tagName.toLowerCase() === "textarea" ? input.innerHTML : input.value;
+                    if (_inputValue !== null && _inputValue.length > 0) {
+                        if (input.tagName.toLowerCase() === "input") {
+                            switch (input.type.toLowerCase()) {
+                                case "password":
+                                    _inputValue = Cell.encryptPassword(_inputValue);
+                                    break;
+                                case "date":
+                                case "datetime-local":
+                                    _inputValue = Cell.convertDateTime(_inputValue);
+                                    break;
+                                case "file":
+                                    jsonData.uploadFile = true;
+                                    break;
+                            }
+                            _formData.append(_inputName, _inputValue);
+                        } else if (input.tagName.toLowerCase() === "select") {
+                            _formData.append(_inputName, _inputValue);
+                        } else {
+                            _formData.append(_inputName, _inputValue.encodeByRegExp());
                         }
-                        _formData.append(_inputName, _inputValue);
-                    } else if (input.tagName.toLowerCase() === "select") {
-                        _formData.append(_inputName, _inputValue);
-                    } else {
-                        _formData.append(_inputName, _inputValue.encodeByRegExp());
                     }
                 }
             });
             this.querySelectorAll("drag-upload").forEach(drawUpload => {
                 drawUpload.uploadFiles().forEach(fileItem => {
                     _formData.append(drawUpload.getAttribute("name"), fileItem, fileItem.name);
-                    _formData.uploadFile = true;
+                    jsonData.uploadFile = true;
                 })
             });
-            if (_formData.uploadFile && this.dataset.uploadProgress) {
-                _formData.uploadProgress = this.dataset.uploadProgress;
+            if (jsonData.uploadFile && this.dataset.uploadProgress) {
+                jsonData.uploadProgress = this.dataset.uploadProgress;
             }
-            return _formData;
+            jsonData.formData = _formData;
         }
+        return jsonData;
     },
 
     validate() {
@@ -444,7 +444,11 @@ Object.extend(Element.prototype, {
                         let aValue = a.getAttribute(attributeName);
                         let bValue = b.getAttribute(attributeName);
 
-                        return  _sortDesc ? bValue.compare(aValue) : aValue.compare(bValue);
+                        if (bValue.length !== aValue.length) {
+                            return _sortDesc ? bValue.length > aValue.length : bValue.length < aValue.length;
+                        }
+
+                        return  _sortDesc ? bValue.localeCompare(aValue) : aValue.localeCompare(bValue);
                     } catch (e) {
                         return 0;
                     }
@@ -511,10 +515,6 @@ Object.extend(Element.prototype, {
 });
 
 Object.extend(String.prototype, {
-    trim() {
-        return this.replace(RegexLibrary.TrimBlank, "");
-    },
-
     reverse() {
         return Array.from(this).reverse().join('');
     },
@@ -562,11 +562,12 @@ Object.extend(String.prototype, {
     },
 
     isJSON() {
-        let _string = this.replace(/\\["\\\/bfnrtu]/g, '@');
-        _string = _string.replace(/\\{\d+\\}/g, "");
-        _string = _string.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']');
-        _string = _string.replace(/(?:^|:|,)(?:\s*\[)+/g, '');
-        return /^[\],:{}\s]*$/.test(_string);
+        try {
+            let obj = JSON.parse(this);
+            return (typeof obj) === "object" && obj;
+        } catch (e) {
+            return false;
+        }
     },
 
     isColorCode() {
@@ -584,9 +585,9 @@ Object.extend(String.prototype, {
             for (let i = 0 ; i < _length ; i++) {
                 _tagName = this.match(RegexLibrary.HtmlTag[i]);
                 if (_tagName !== null) {
-                    _tagName = _tagName.substr(1, _tagName.length - 2);
+                    _tagName = _tagName.substring(1, _tagName.length - 1);
                     if (_tagName.indexOf(" ") > 0) {
-                        _tagName = _tagName.substr(0, _tagName.indexOf(" "));
+                        _tagName = _tagName.substring(0, _tagName.indexOf(" "));
                     }
 
                     _matchResult = Comment.Html5
@@ -673,12 +674,12 @@ Object.extend(String.prototype, {
     },
 
     encodeBase64() {
-        return (typeof btoa === "function") ? btoa(unescape(encodeURIComponent(this))) : this.toByteArray().encodeBase64();
+        return (typeof btoa === "function") ? btoa(decodeURI(encodeURIComponent(this))) : this.toByteArray().encodeBase64();
     },
 
     decodeBase64() {
         if (typeof atob === "function") {
-            return decodeURIComponent(escape(atob(this)));
+            return decodeURIComponent(decodeURI(atob(this)));
         }
         let _result = [], i = 0, _length = this.length;
         while (i < _length) {
@@ -723,7 +724,7 @@ Object.extend(String.prototype, {
     },
 
     toUTF8 : function() {
-        return /[\u0080-\uFFFF]/.test(this) ? unescape(encodeURIComponent(this)) : this;
+        return /[\u0080-\uFFFF]/.test(this) ? decodeURI(encodeURIComponent(this)) : this;
     },
 
     toByteArray(bigEndian = false) {
@@ -802,9 +803,9 @@ Object.extend(Number.prototype, {
     parseTime(utc = false) {
         let _date = new Date();
         if (utc) {
-            _date.setTime(this);
-        } else {
             _date.setTime(this + (new Date().getTimezoneOffset() * 60 * 1000));
+        } else {
+            _date.setTime(this);
         }
         return _date;
     },
@@ -835,21 +836,29 @@ Object.extend(Date.prototype, {
             "q+" : Math.floor((this.getMonth() + 3) / 3)
         };
 
+        let returnValue = pattern;
         for (let regex in Pattern) {
-            if (new RegExp("(" + regex + ")").test(pattern)) {
-                let replaceValue = "" + Pattern[regex];
-                if (RegExp.$1.length > replaceValue.length) {
-                    let _limit = RegExp.$1.length - replaceValue.length;
-                    for (let i = 0 ; i < _limit ; i++) {
-                        replaceValue = "0" + replaceValue;
+            let matchResult = pattern.match(regex);
+            if (matchResult !== null) {
+                let matchKey = matchResult[0];
+                let replaceValue;
+                if (matchKey === "MMM") {
+                    replaceValue = Comment.MONTH[Pattern[regex] - 1];
+                } else {
+                    replaceValue = "" + Pattern[regex];
+                    if (matchKey.length < replaceValue.length) {
+                        replaceValue = replaceValue.substring(replaceValue.length - matchKey.length);
+                    } else {
+                        while (replaceValue.length < matchKey.length) {
+                            replaceValue = ("0" + replaceValue);
+                        }
                     }
                 }
-
-                pattern = pattern.replace(RegExp.$1, replaceValue);
+                returnValue = returnValue.replace(matchKey, replaceValue);
             }
         }
 
-        return pattern;
+        return returnValue;
     },
 
     /**

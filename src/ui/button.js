@@ -63,14 +63,16 @@ class BaseButton extends AbstractInput {
 
     _render() {
         let inputElement = super._inputElement();
-        this.getAttributeNames()
+        this.attrNames()
             .filter(attributeName => attributeName.toLowerCase() !== "slot")
             .forEach(attributeName =>
                 inputElement.setAttribute(attributeName, this.getAttribute(attributeName)));
         let buttonElement = this;
         if (this.dataset.intervalTime !== undefined && this.dataset.intervalTime !== null
             && this.dataset.intervalTime.isNum()) {
-            inputElement.addEventListener("click", () => {
+            inputElement.addEventListener("click", (event) => {
+                event.preventDefault();
+                event.stopPropagation();
                 if (buttonElement._timer === null) {
                     buttonElement.dataset.buttonText = inputElement.getAttribute("value");
                     inputElement.disabled = true;
@@ -85,12 +87,14 @@ class BaseButton extends AbstractInput {
             });
         }
         if (this._elementType === "submit" || this._elementType === "reset") {
-            inputElement.addEventListener("click", function () {
+            inputElement.addEventListener("click", function (event) {
+                event.preventDefault();
+                event.stopPropagation();
                 let formElement = $(buttonElement.dataset.formId);
                 if (formElement) {
                     switch (buttonElement._elementType) {
                         case "submit":
-                            formElement.submit();
+                            Cell.submitForm(formElement);
                             break;
                         case "reset":
                             formElement.reset();

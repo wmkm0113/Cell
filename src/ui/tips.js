@@ -60,7 +60,7 @@ export default class TipsElement extends BaseElement {
                 tipsElement.setAttribute("slot", "tipsButton");
                 this.appendChild(tipsElement);
                 let tipsIcon = document.createElement("i");
-                tipsIcon.setClass("icon-white_question");
+                tipsIcon.setClass("icon-helpcircle");
                 tipsElement.appendChild(tipsIcon);
             }
             let tipsContent = this.querySelector("span > span");
