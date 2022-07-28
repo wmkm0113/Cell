@@ -36,17 +36,16 @@ class MenuElement extends BaseElement {
         this.appendChild(this.menuList);
         let initData = this.getAttribute("data");
         if (initData !== undefined && initData !== null && initData.isJSON()) {
-            this.dataset.menuData = initData;
+            this.renderElement(initData.parseJSON());
         }
-        this._render();
     }
 
     renderElement(data) {
         if (data.hasOwnProperty("className")) {
             this.setClass(data.className);
         }
-        if (data.hasOwnProperty("elementId")) {
-            this.dataset.elementId = data.elementId;
+        if (data.hasOwnProperty("targetId")) {
+            this.dataset.targetId = data.targetId;
         }
         if (data.hasOwnProperty("data")) {
             this.dataset.menuData = JSON.stringify(data.data);
@@ -59,8 +58,7 @@ class MenuElement extends BaseElement {
             let itemList = this.menuList.querySelectorAll(":scope > menu-item"),
                 existsCount = itemList.length, i = 0;
             let jsonData = this.dataset.menuData.parseJSON();
-            jsonData
-                .filter(itemData => itemData.hasOwnProperty("title"))
+            jsonData.filter(itemData => itemData.hasOwnProperty("title"))
                 .forEach(itemData => {
                     let menuItem;
                     if (i < existsCount) {
@@ -69,8 +67,8 @@ class MenuElement extends BaseElement {
                         menuItem = new MenuItem();
                         this.menuList.appendChild(menuItem);
                     }
-                    if (this.dataset.elementId !== undefined) {
-                        menuItem.dataset.elementId = this.dataset.elementId;
+                    if (this.dataset.targetId !== undefined) {
+                        menuItem.dataset.targetId = this.dataset.targetId;
                     }
                     menuItem.data = JSON.stringify(itemData);
                     i++;
@@ -126,7 +124,7 @@ class MenuItem extends BaseElement {
             }
             linkAddress += itemData.link;
             element.setAttribute("href", linkAddress);
-            if (element.dataset.elementId !== undefined) {
+            if (element.dataset.targetId !== undefined) {
                 element.bindEvent("click", Cell.sendRequest);
             }
         } else {
@@ -169,8 +167,8 @@ class MenuItem extends BaseElement {
                 } else {
                     languageCode = "";
                 }
-                if (this.dataset.elementId !== undefined) {
-                    this._menuTitle.dataset.elementId = this.dataset.elementId;
+                if (this.dataset.targetId !== undefined) {
+                    this._menuTitle.dataset.targetId = this.dataset.targetId;
                 }
                 MenuItem._renderContent(this._menuTitle, languageCode, jsonData);
                 if (jsonData.hasOwnProperty("items")) {
@@ -186,8 +184,8 @@ class MenuItem extends BaseElement {
                                 menuItem = new MenuItem();
                                 this._menuList.appendChild(menuItem);
                             }
-                            if (this.dataset.elementId !== undefined) {
-                                menuItem.dataset.elementId = this.dataset.elementId;
+                            if (this.dataset.targetId !== undefined) {
+                                menuItem.dataset.targetId = this.dataset.targetId;
                             }
                             menuItem.dataset.languageCode = languageCode;
                             menuItem.data = JSON.stringify(itemData);

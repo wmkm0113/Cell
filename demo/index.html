@@ -5,595 +5,50 @@
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <script type="module">
         import {Config} from "../src/commons/Commons.js";
-        //  Setting for context path
-        Config.contextPath = "";
-        //  Setting for i18n folder path
-        Config.i18n.resPath = "../src/i18n";
+        Object.assign(Config, {
+            resPath: "/src/i18n",
+            formConfig : {
+                utcDateTime : true
+            }
+        });
     </script>
     <script src="../src/core/Cell.js" type="module"></script>
     <title></title>
     <link rel="shortcut icon" href="./favicon.ico" />
     <link rel="stylesheet" href="../src/fonts/iconfont.css" />
+    <link rel="stylesheet" href="../src/styles/Cell.css" />
     <link rel="stylesheet" href="./styles/style.css" />
-    <link rel="stylesheet" href="./styles/cell.css" />
     <script type="module">
-        const indexTopMenuData = `{
-            "data" : [
-                {
-                    "title": "Menu 1",
-                    "link": "#Link1"
-                },
-                {
-                    "title": "Demo Menu",
-                    "items": [
-                        {
-                            "title": "Slide Show",
-                            "link": "#slideDemo"
-                        },
-                        {
-                            "title": "Message List",
-                            "link": "#listDemo"
-                        }
-                    ]
-                },
-                {
-                    "title": "Menu 3",
-                    "items": [
-                        {
-                            "title": "Child Menu 1",
-                            "link": "#Link3-1"
-                        },
-                        {
-                            "title": "Child Menu 2",
-                            "link": "#Link3-2"
-                        },
-                        {
-                            "title": "Child Menu 3",
-                            "link": "#Link3-3"
-                        }
-                    ]
-                }
-            ]
-        }`;
-        const socialData = `{
-            "textContent": "Follow Us",
-            "items": [
-                {
-                    "className": "icon icon-facebook",
-                    "title": "Facebook",
-                    "link": "#FacebookAddress"
-                },
-                {
-                    "className": "icon icon-linkedin",
-                    "title": "LinkedIn",
-                    "link": "#LinkedInAddress"
-                },
-                {
-                    "className": "icon icon-github-circle",
-                    "title": "Github",
-                    "link": "https://github.com/Nervousync"
-                },
-                {
-                    "className": "icon icon-twitter",
-                    "title": "Twitter",
-                    "link": "#TwitterAddress"
-                },
-                {
-                    "className": "icon icon-instagram",
-                    "title": "Instagram",
-                    "link": "#InstagramAddress"
-                }
-            ]
-        }`;
-        const listData = `
-        {
-            "id" : "listElement",
-            "filter" :
-            {
-                "pageLimit" : "pageLimit",
-                "searchText" : "Search Button",
-                "method" : "post",
-                "sortType" : "sortType",
-                "pageNo" : "pageNo",
-                "action" : "url",
-                "sortBy" : "sortBy",
-                "items" : [
-                    {
-                        "name" : "searchElement",
-                        "textContent" : "Search Input",
-                        "id" : "searchElement",
-                        "tag" : "search-input",
-                        "placeholder" : "Input keywords",
-                        "sortCode" : 10,
-                        "value" : "",
-                        "tips" :
-                        {
-                            "content" : "Tips message"
-                        }
-                    },
-                    {
-                        "endValue" : 3,
-                        "endName" : "endElement",
-                        "textContent" : "Interval Input",
-                        "id" : "intervalElement",
-                        "tag" : "number-interval-input",
-                        "beginValue" : 1,
-                        "sortCode" : 8,
-                        "beginName" : "beginElement",
-                        "tips" : {
-                            "content" : "Interval Tips"
-                        }
-                    },
-                    {
-                        "name" : "checkGroup",
-                        "textContent" : "Check Group",
-                        "id" : "checkGroup",
-                        "tag" : "checkbox-group",
-                        "sortCode" : 6,
-                        "value" : [ "value2", "value4" ],
-                        "items" : [
-                            {
-                                "textButton" : "Option1",
-                                "id" : "checkbox1",
-                                "value" : "value2"
-                            },
-                            {
-                                "textButton" : "Option2",
-                                "id" : "checkbox2",
-                                "value" : "value4"
-                            },
-                            {
-                                "textButton" : "Option3",
-                                "id" : "checkbox3",
-                                "value" : "value6"
-                            }
-                        ],
-                        "tips" :
-                        {
-                            "content" : "CheckGroup Tips"
-                        }
-                    },
-                    {
-                        "name" : "radioGroup",
-                        "textContent" : "Radio Group",
-                        "id" : "radioGroup",
-                        "tag" : "radio-group",
-                        "sortCode" : 4,
-                        "value" : "value4",
-                        "items" : [
-                            {
-                                "textButton" : "Option4",
-                                "id" : "radio1",
-                                "value" : "value2"
-                            },
-                            {
-                                "textButton" : "Option5",
-                                "id" : "radio2",
-                                "value" : "value4"
-                            },
-                            {
-                                "textButton" : "Option6",
-                                "id" : "radio3",
-                                "value" : "value6"
-                            }
-                        ],
-                        "tips" :
-                        {
-                            "content" : "RadioGroup Tips"
-                        }
-                    }
-                ]
-            },
-            "statistics" :
-            [
-                {
-                    "data" : "Data 1",
-                    "index" : 1,
-                    "className" : "error",
-                    "id" : "statistics1",
-                    "title" : "Title 1"
-                },
-                {
-                    "data" : "Data 2",
-                    "index" : 2,
-                    "id" : "statistics2",
-                    "title" : "Title 2"
-                },
-                {
-                    "data" : "Data 3",
-                    "index" : 3,
-                    "className" : "warning",
-                    "id" : "statistics3",
-                    "title" : "Title 3"
-                },
-                {
-                    "data" : "Data 4",
-                    "index" : 4,
-                    "id" : "statistics4",
-                    "title" : "Title 4"
-                }
-            ],
-            "title" :
-            {
-                "textContent" : "Message List Title",
-                "importUrl" : "ImportUrl",
-                "styleClass" : "view-list",
-                "disableSwitch" : false
-            },
-            "grid" :
-            {
-                "selectName" : "identifyCode",
-                "pageLimit" : 20,
-                "header" :
-                {
-                    "mainTitle" : "Title",
-                    "operatorTitle" : "Operators",
-                    "items" :
-                    [
-                        {
-                            "mapKey" : "key9",
-                            "width" : "10%",
-                            "index" : 8,
-                            "sort" : true,
-                            "title" : "Column Title 9"
-                        },
-                        {
-                            "mapKey" : "key8",
-                            "width" : "10%",
-                            "index" : 7,
-                            "sort" : false,
-                            "title" : "Column Title 8"
-                        },
-                        {
-                            "mapKey" : "key7",
-                            "width" : "10%",
-                            "index" : 6,
-                            "sort" : false,
-                            "title" : "Column Title 7"
-                        },
-                        {
-                            "mapKey" : "key6",
-                            "width" : "10%",
-                            "index" : 5,
-                            "sort" : true,
-                            "title" : "Column Title 6"
-                        },
-                        {
-                            "mapKey" : "key4",
-                            "width" : "10%",
-                            "index" : 3,
-                            "sort" : false,
-                            "title" : "Column Title 4"
-                        },
-                        {
-                            "mapKey" : "key3",
-                            "width" : "20%",
-                            "index" : 2,
-                            "sort" : true,
-                            "title" : "Column Title 3"
-                        },
-                        {
-                            "mapKey" : "key1",
-                            "width" : "15%",
-                            "index" : 1,
-                            "sort" : false,
-                            "title" : "Column Title 1"
-                        },
-                        {
-                            "mapKey" : "key2",
-                            "width" : "15%",
-                            "index" : 0,
-                            "sort" : false,
-                            "title" : "Column Title 2"
-                        }
-                    ]
-                },
-                "pager" :
-                {
-                    "totalPage" : 20,
-                    "currentPage" : 5
-                },
-                "itemData" :
-                [
-                    {
-                        "key1" : "Column 1 Text",
-                        "elementId" : "elementId",
-                        "key2" : "Column 2 Text",
-                        "key5" : "Column 5 Text",
-                        "key6" : "Column 6 Text",
-                        "key3" : "Column 3 Text",
-                        "key4" : "Column 4 Text",
-                        "link" : "#LinkAddress1",
-                        "key9" : "Column 9 Text",
-                        "key7" : "Column 7 Text",
-                        "key8" : "Column 8 Text",
-                        "abstract" : "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
-                        "title" : "Text content Text content Text content Text content Text content Text content Text content Text content",
-                        "score" : 4.2,
-                        "operators" :
-                        [
-                            {
-                                "link" : "EditLink",
-                                "index" : 3,
-                                "textContent" : "Edit",
-                                "title" : "Edit",
-                                "iconClass" : "icon-pencil"
-                            },
-                            {
-                                "link" : "DeleteLink",
-                                "index" : 2,
-                                "textContent" : "Delete",
-                                "title" : "Delete",
-                                "iconClass" : "icon-delete"
-                            },
-                            {
-                                "link" : "MultiLink",
-                                "index" : 1,
-                                "textContent" : "Multilingual",
-                                "title" : "Multilingual",
-                                "iconClass" : "icon-earth"
-                            }
-                        ],
-                        "imgPath" : "./images/1.jpg",
-                        "identifyCode" : "1"
-                    },
-                    {
-                        "key1" : "Column 1 Text",
-                        "elementId" : "elementId",
-                        "key2" : "Column 2 Text",
-                        "score" : 3.0,
-                        "key3" : "Column 3 Text",
-                        "imgPath" : "./images/1.jpg",
-                        "link" : "LinkAddress2",
-                        "className" : "warning",
-                        "identifyCode" : "2",
-                        "title" : "Text content Text content Text content Text content Text content Text content Text content Text content"
-                    },
-                    {
-                        "key1" : "Column 1 Text",
-                        "elementId" : "elementId",
-                        "key2" : "Column 2 Text",
-                        "operators" :
-                        [
-                            {
-                                "link" : "EditLink",
-                                "index" : 3,
-                                "textContent" : "Edit",
-                                "title" : "Edit",
-                                "iconClass" : "icon-pencil"
-                            },
-                            {
-                                "link" : "MultiLink",
-                                "index" : 1,
-                                "textContent" : "Multilingual",
-                                "title" : "Multilingual",
-                                "iconClass" : "icon-earth"
-                            }
-                        ],
-                        "key3" : "Column 3 Text",
-                        "imgPath" : "./images/1.jpg",
-                        "link" : "LinkAddress2",
-                        "identifyCode" : "3",
-                        "abstract" : "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
-                        "title" : "Text content Text content Text content Text content Text content Text content Text content Text content"
-                    },
-                    {
-                        "key1" : "Column 1 Text",
-                        "elementId" : "elementId",
-                        "key2" : "Column 2 Text",
-                        "key5" : "Column 5 Text",
-                        "key6" : "Column 6 Text",
-                        "key3" : "Column 3 Text",
-                        "key4" : "Column 4 Text",
-                        "link" : "#LinkAddress1",
-                        "key9" : "Column 9 Text",
-                        "key7" : "Column 7 Text",
-                        "key8" : "Column 8 Text",
-                        "abstract" : "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
-                        "title" : "Text content Text content Text content Text content Text content Text content Text content Text content",
-                        "score" : 3.2,
-                        "operators" :
-                        [
-                            {
-                                "link" : "DeleteLink",
-                                "index" : 2,
-                                "textContent" : "Delete",
-                                "title" : "Delete",
-                                "iconClass" : "icon-delete"
-                            },
-                            {
-                                "link" : "MultiLink",
-                                "index" : 1,
-                                "textContent" : "Multilingual",
-                                "title" : "Multilingual",
-                                "iconClass" : "icon-earth"
-                            }
-                        ],
-                        "imgPath" : "./images/1.jpg",
-                        "identifyCode" : "4"
-                    },
-                    {
-                        "key1" : "Column 1 Text",
-                        "elementId" : "elementId",
-                        "key2" : "Column 2 Text",
-                        "score" : 3.0,
-                        "key3" : "Column 3 Text",
-                        "imgPath" : "./images/1.jpg",
-                        "link" : "LinkAddress2",
-                        "identifyCode" : "5",
-                        "title" : "Text content Text content Text content Text content Text content Text content Text content Text content"
-                    },
-                    {
-                        "key1" : "Column 1 Text",
-                        "elementId" : "elementId",
-                        "key7" : "Column 2 Text",
-                        "operators" :
-                        [
-                            {
-                                "link" : "EditLink",
-                                "index" : 3,
-                                "textContent" : "Edit",
-                                "title" : "Edit",
-                                "iconClass" : "icon-pencil"
-                            },
-                            {
-                                "link" : "DeleteLink",
-                                "index" : 2,
-                                "textContent" : "Delete",
-                                "title" : "Delete",
-                                "iconClass" : "icon-delete"
-                            }
-                        ],
-                        "key3" : "Column 3 Text",
-                        "imgPath" : "./images/1.jpg",
-                        "link" : "LinkAddress2",
-                        "className" : "error",
-                        "identifyCode" : "6",
-                        "abstract" : "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
-                        "title" : "Text content Text content Text content Text content Text content Text content Text content Text content"
-                    },
-                    {
-                        "key1" : "Column 1 Text",
-                        "elementId" : "elementId",
-                        "key2" : "Column 2 Text",
-                        "key5" : "Column 5 Text",
-                        "key6" : "Column 6 Text",
-                        "key3" : "Column 3 Text",
-                        "key4" : "Column 4 Text",
-                        "link" : "#LinkAddress1",
-                        "key9" : "Column 9 Text",
-                        "key7" : "Column 7 Text",
-                        "key8" : "Column 8 Text",
-                        "abstract" : "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
-                        "title" : "Text content Text content Text content Text content Text content Text content Text content Text content",
-                        "score" : 4.2,
-                        "operators" :
-                        [
-                            {
-                                "link" : "EditLink",
-                                "index" : 3,
-                                "textContent" : "Edit",
-                                "title" : "Edit",
-                                "iconClass" : "icon-pencil"
-                            },
-                            {
-                                "link" : "DeleteLink",
-                                "index" : 2,
-                                "textContent" : "Delete",
-                                "title" : "Delete",
-                                "iconClass" : "icon-delete"
-                            },
-                            {
-                                "link" : "MultiLink",
-                                "index" : 1,
-                                "textContent" : "Multilingual",
-                                "title" : "Multilingual",
-                                "iconClass" : "icon-earth"
-                            }
-                        ],
-                        "imgPath" : "./images/1.jpg",
-                        "identifyCode" : "7"
-                    },
-                    {
-                        "key1" : "Column 1 Text",
-                        "elementId" : "elementId",
-                        "key2" : "Column 2 Text",
-                        "score" : 3.0,
-                        "key3" : "Column 3 Text",
-                        "imgPath" : "./images/1.jpg",
-                        "link" : "LinkAddress2",
-                        "identifyCode" : "8",
-                        "title" : "Text content Text content Text content Text content Text content Text content Text content Text content"
-                    },
-                    {
-                        "key1" : "Column 1 Text",
-                        "elementId" : "elementId",
-                        "key2" : "Column 2 Text",
-                        "operators" :
-                        [
-                            {
-                                "link" : "EditLink",
-                                "index" : 3,
-                                "textContent" : "Edit",
-                                "title" : "Edit",
-                                "iconClass" : "icon-pencil"
-                            },
-                            {
-                                "link" : "MultiLink",
-                                "index" : 1,
-                                "textContent" : "Multilingual",
-                                "title" : "Multilingual",
-                                "iconClass" : "icon-earth"
-                            }
-                        ],
-                        "key3" : "Column 3 Text",
-                        "imgPath" : "./images/1.jpg",
-                        "link" : "LinkAddress2",
-                        "identifyCode" : "9",
-                        "abstract" : "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
-                        "title" : "Text content Text content Text content Text content Text content Text content Text content Text content"
-                    }
-                ],
-                "batchOperators" :
-                [
-                    {
-                        "elementId" : "elementId",
-                        "link" : "ExportUrl",
-                        "icon" : "icon-download",
-                        "title" : "Export Data"
-                    }
-                ]
-            }
-        }`;
-        const slideData = `{
-            "width": "100%",
-            "height": "500px",
-            "transitionTime": 1000,
-            "openWindow" : false,
-            "timeOut" : 5000,
-            "slideType" : "scrollLeft",
-            "items" : [
-                {
-                    "href" : "#",
-                    "imagePath" : "./images/slides/1.jpg",
-                    "title" : "Title 1"
-                },
-                {
-                    "href" : "#",
-                    "imagePath" : "./images/slides/2.jpg",
-                    "title" : "Title 2"
-                },
-                {
-                    "href" : "#",
-                    "imagePath" : "./images/slides/3.jpg",
-                    "title" : "Title 3"
-                },
-                {
-                    "href" : "#",
-                    "imagePath" : "./images/slides/4.jpg",
-                    "title" : "Title 4"
-                }
-            ]
-        }`;
-
+        import * as Data from "./data.js";
         window.onload = function () {
             window.setTimeout(function () {
                 let indexTopMenu = $("indexTopMenu");
                 if (indexTopMenu) {
-                    indexTopMenu.data = indexTopMenuData;
+                    indexTopMenu.data = Data.indexTopMenuData;
                 }
                 let socialGroup = $("socialGroup");
                 if (socialGroup) {
-                    socialGroup.data = socialData;
+                    socialGroup.data = Data.socialData;
                 }
                 let slideShow = $("slideShow");
                 if (slideShow) {
-                    slideShow.data = slideData;
+                    slideShow.data = Data.slideData;
                 }
                 let messageList = $("messageList");
                 if (messageList) {
-                    messageList.data = listData;
+                    messageList.data = Data.listData;
                 }
+                let formInfo = $("formInfo");
+                if (formInfo) {
+                    formInfo.data = Data.formData;
+                }
+                let openWindow = $("openWindow");
+                if (openWindow) {
+                    openWindow.addEventListener("click", function () {
+                        Cell.openWindow(Data.floatData);
+                    });
+                }
+                Cell.notify(`{"textContent" : "Test Notify"}`);
             }, 1000);
         }
     </script>
@@ -613,6 +68,14 @@
             <h1>Message List</h1>
             <message-list id="messageList"></message-list>
         </section>
+        <section id="formDemo">
+            <h1>Form Info</h1>
+            <form-info id="formInfo"></form-info>
+        </section>
+        <section id="floatWindow">
+            <h1>Open Form In Float Window</h1>
+            <standard-button id="openWindow" value="Form In Float Window"></standard-button>
+        </section>
     </main>
     <footer>
         <social-group id="socialGroup"></social-group>
@@ -620,4 +83,5 @@
             <span id="poweredBy">Powered By Cell.js</span>
         </div>
     </footer>
+    <notify-area></notify-area>
 </body>

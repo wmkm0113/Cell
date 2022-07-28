@@ -1,21 +1,33 @@
-@charset "UTF-8";
-.hidden {
-    display: none;
+@CHARSET "UTF-8";
+html > body {
+    --bright-bg-color: 255, 255, 255;
+    --dark-bg-color: 0, 0, 0;
+    --bg-color: 5, 110, 183;
+    --border-color: 129, 185, 255;
+    --btn-bg-color: 223, 241, 255;
+    --disabled-bg-color: 227, 227, 227;
+    --disabled-switch-btn-color: 170, 170, 170;
+    --disabled-switch-bg-color: 221, 221, 221;
+    --text-color: 27, 27, 27;
+    --warning-bg-color: 255, 255, 0;
+    --error-bg-color: 255, 0, 0;
+    --close-btn-bg-color: 255, 0, 0;
+    --notify-bg-color: 242, 242, 247;
 }
 .fill-btn {
     margin: 0.5rem;
     border-radius: 1.5rem;
     border: none;
-    background-color: #DFF1FF;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+    background-color: rgb(var(--btn-bg-color));
+    box-shadow: 0 2px 5px rgba(var(--border-color), 0.4);
 }
 .fill-btn:hover {
-    background-color: #056EB7;
+    background-color: rgb(var(--bg-color));
     box-shadow: none;
 }
 .current::before,
 .fill-btn:hover::before {
-    color: #FFFFFF;
+    color: rgb(var(--bright-bg-color));
 }
 standard-button,
 submit-button,
@@ -34,17 +46,17 @@ reset-button > input[slot="element"] {
     min-width: 8rem;
     height: 3rem;
     padding: 0 1.5rem;
-    background-color: #F1FAFF;
+    background-color: rgb(var(--btn-bg-color));
     border: none;
     border-radius: 1.5rem;
     cursor: pointer;
     font-size: 1.4rem;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 2px 5px rgba(var(--text-color), 0.4);
 }
 textarea-input > textarea {
     width: calc(-2.2rem + 100%);
     padding: 0;
-    border: 1px solid #81B9FF;
+    border: 1px solid rgb(var(--border-color));
     resize: none;
 }
 input[slot="element"] {
@@ -53,7 +65,6 @@ input[slot="element"] {
 select-input > select,
 search-input > input[slot="element"] {
     width: 100%;
-    height: 2.9rem;
     padding-bottom: 0.2rem;
 }
 password-input > input[slot="element"] {
@@ -64,20 +75,20 @@ password-input > input[slot="element"] + span[slot="icon"] {
     height: 2.8rem;
     line-height: 2.8rem;
     text-align: center;
-    border-bottom: 1px solid #81B9FF;
+    border-bottom: 1px solid rgb(var(--border-color));
     float: left;
     cursor: pointer;
 }
 password-input > input[slot="element"]:focus + span[slot="icon"] {
     height: 2.7rem;
-    background-color: #DFF1FF;
-    border-bottom: 2px solid #056EB7;
+    background-color: rgb(var(--btn-bg-color));
+    border-bottom: 2px solid rgb(var(--bg-color));
 }
 input[slot="element"], select-input > select, textarea-input > textarea {
     height: 2.8rem;
     line-height: 2.8rem;
     border: none;
-    border-bottom: 1px solid #81B9FF;
+    border-bottom: 1px solid rgb(var(--border-color));
     outline: none;
     float: left;
     padding: 0 1rem;
@@ -97,9 +108,9 @@ reset-button > input[slot="element"]:disabled:hover,
 message-list > list-filter > standard-button > input[slot="element"]:disabled,
 message-list > list-filter > submit-button > input[slot="element"]:disabled,
 message-list > list-filter > reset-button > input[slot="element"]:disabled {
-    background-color: #D9D9D9;
-    border-color: #D9D9D9;
-    color: #000000;
+    background-color: rgb(var(--disabled-bg-color));
+    border-color: rgb(var(--disabled-bg-color));
+    color: rgb(var(--text-color));
     box-shadow: none;
     font-weight: normal;
 }
@@ -110,32 +121,76 @@ select-input > select {
 }
 textarea-input > textarea {
     line-height: 2rem;
-    border: 1px solid #81B9FF;
+    border: 1px solid rgb(var(--border-color));
     padding: 1rem;
 }
 input[slot="element"]::placeholder,
 textarea-input > textarea::placeholder,
 input.passwordInput::placeholder {
-    color: rgba(0, 0, 0, 0.6);
-    opacity: 0.7;
+    color: rgba(var(--text-color), 0.4);
+    opacity: 0.8;
 }
 input[slot="element"]:focus,
 select-input > select:focus {
-    background-color: #DFF1FF;
-    border-bottom: 2px solid #056EB7;
+    background-color: rgb(var(--btn-bg-color));
+    border-bottom: 2px solid rgb(var(--bg-color));
     padding-bottom: 0;
 }
 input[slot="element"]:focus {
     height: 2.7rem;
 }
 textarea-input > textarea:focus {
-    border-color: #056EB7;
-    background-color: #DFF1FF;
+    border-color: rgb(var(--bg-color));
+    background-color: rgb(var(--btn-bg-color));
 }
 search-input > input[slot="element"]:focus {
-    height: 2.9rem;
+    height: 2.8rem;
     line-height: 2.8rem;
     padding-bottom: 0;
+}
+number-interval-input,
+date-interval-input,
+time-interval-input,
+datetime-interval-input {
+    width: 50%;
+    line-height: 2.8rem;
+}
+number-interval-input > div,
+date-interval-input > div,
+time-interval-input > div,
+datetime-interval-input > div {
+    width: 100%;
+    height: 2.8rem;
+    line-height: 2.8rem;
+}
+number-interval-input > div > input,
+date-interval-input > div > input,
+time-interval-input > div > input,
+datetime-interval-input > div > input {
+    width: calc(-2rem + 50%);
+    height: 2.8rem;
+    line-height: 2.8rem;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid rgb(var(--border-color));
+    text-align: center;
+}
+number-interval-input > div > input:focus,
+date-interval-input > div > input:focus,
+time-interval-input > div > input:focus,
+datetime-interval-input > div > input:focus {
+    border-bottom: 2px solid rgb(var(--bg-color));
+    background-color: rgb(var(--btn-bg-color));
+}
+number-interval-input > div > span[id="concat"],
+date-interval-input > div > span[id="concat"],
+time-interval-input > div > span[id="concat"],
+datetime-interval-input > div > span[id="concat"] {
+    width: 4rem;
+    height: 3rem;
+    line-height: 3rem;
+    text-align: center;
+    font-size: 1.8rem;
 }
 a.mockButton {
     min-width: 8rem;
@@ -143,11 +198,11 @@ a.mockButton {
     line-height: 3rem;
     padding: 0 1.5rem;
     margin: 0 1rem 1rem 1rem;
-    background-color: #F1FAFF;
+    background-color: rgb(var(--btn-bg-color));
     border: none;
     border-radius: 1.5rem;
     cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 2px 5px rgba(var(--border-color), 0.4);
     font-size: 1.4rem;
     text-align: center;
     float: left;
@@ -159,8 +214,8 @@ a.mockButton:hover,
 standard-button:hover > input[slot="element"],
 submit-button:hover > input[slot="element"],
 reset-button:hover > input[slot="element"] {
-    background-color: #056EB7;
-    color: #FFFFFF;
+    background-color: rgb(var(--bg-color));
+    color: rgb(var(--bright-bg-color));
     font-weight: bolder;
     box-shadow: none;
 }
@@ -222,25 +277,25 @@ mock-radio > div > input + label > i:before {
     height: 60%;
 }
 mock-radio > div > input + label > i:after {
-    width: 40%;
-    height: 40%;
+    width: calc(-6px + 60%);
+    height: calc(-6px + 60%);
 }
 mock-radio > div > input + label > i:before {
-    margin: 10% 20%;
+    margin: 20%;
     border-radius: 100%;
-    background-color: #FFFFFF;
+    background-color: rgb(var(--bright-bg-color));
     transition: background 0.4s;
-    border: 1px solid #056EB7;
+    border: 1px solid rgb(var(--bg-color));
 }
 mock-radio > div > input + label > i:after {
-    margin: 25% 35%;
+    margin: calc(4px + 20%);
     border-radius: 100%;
 }
 mock-radio > div > input:checked + label > i:before {
-    background-color: #056EB7;
+    background-color: rgb(var(--bg-color));
 }
 mock-radio > div > input:checked + label > i:after {
-    background-color: #FFFFFF;
+    background-color: rgb(var(--bright-bg-color));
 }
 mock-switch > div > input + label > i,
 mock-checkbox > div > input + label > i {
@@ -255,7 +310,7 @@ mock-switch > div > input + label > i {
     padding: 0.2rem;
     width: 3.2rem;
     height: 1.6rem;
-    background-color: #056EB7;
+    background-color: rgb(var(--bg-color));
     border-radius: 1.6rem;
 }
 mock-switch > div > input + label > i:before,
@@ -269,7 +324,7 @@ mock-switch > div > input + label > i:after {
 }
 mock-switch > div > input + label > i:before {
     right: 1px;
-    background-color: #DFF1FF;
+    background-color: rgb(var(--btn-bg-color));
     border-radius: 1.6rem;
     transition: background 0.4s;
 }
@@ -277,29 +332,29 @@ mock-switch > div > input + label > i:after {
     width: 1.6rem;
     height: 1.6rem;
     margin: 0.1rem;
-    background-color: #FFFFFF;
+    background-color: rgb(var(--bright-bg-color));
     border-radius: 100%;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 5px rgba(var(--border-color), 0.4);
     transition: margin 0.4s;
 }
 mock-switch > div > input:checked + label > i:before {
-    background-color: #056EB7;
+    background-color: rgb(var(--bg-color));
 }
 mock-switch > div > input:checked + label > i:after {
     margin-left: 1.7rem;
 }
 mock-switch > div > input:disabled + label > i {
-    background-color: #AAAAAA;
+    background-color: rgb(var(--disabled-switch-btn-color));
 }
 mock-switch > div > input:disabled + label > i:before {
-    background-color: #DDDDDD;
+    background-color: rgb(var(--disabled-switch-bg-color));
 }
 mock-switch > div > input:disabled + label > i:after {
-    background-color: #AAAAAA;
+    background-color: rgb(var(--disabled-switch-btn-color));
     box-shadow: none;
 }
 mock-switch > div > input:disabled:checked + label > i:after {
-    background-color: #AAAAAA;
+    background-color: rgb(var(--disabled-switch-btn-color));
     margin-left: 21px;
     box-shadow: none;
 }
@@ -311,8 +366,8 @@ mock-checkbox > div > input + label > i {
     cursor: pointer;
     outline: none;
     user-select: none;
-    border: 1px solid #056EB7;
-    background-color: #FFFFFF;
+    border: 1px solid rgb(var(--bg-color));
+    background-color: rgb(var(--bright-bg-color));
     margin: 0.5rem 0.7rem;
 }
 mock-checkbox > div > input + label > i:after {
@@ -322,24 +377,27 @@ mock-checkbox > div > input + label > i:after {
     text-align: center;
 }
 mock-checkbox > div > input:checked + label > i {
-    background-color: #056EB7;
+    background-color: rgb(var(--bg-color));
 }
 mock-checkbox > div > input:checked + label > i:after {
+    width: 1.2rem;
     display: block;
     position: absolute;
     content: "\2713";
-    color: #FFFFFF;
+    color: rgb(var(--bright-bg-color));
 }
 form-info {
-    width: 100%;
-    min-height: 100%;
-    margin: 0 auto;
+    width: calc(-2rem + 100%);
+    margin: 1rem;
     float: left;
 }
 form-info > form {
-    width: 100%;
+    width: calc(-4rem + 100%);
+    padding: 2rem;
     min-height: 100%;
     float: left;
+    background-color: rgb(var(--bright-bg-color));
+    border-radius: 1rem;
 }
 form-info > h2 {
     width: 100%;
@@ -399,7 +457,7 @@ tips-button > span > i {
     height: 1.8rem;
     line-height: 1.8rem;
     border-radius: 100%;
-    color: #056EB7;
+    color: rgb(var(--bg-color));
     display: block;
     text-align: center;
     font-size: 1.8rem;
@@ -413,8 +471,8 @@ tips-button > span > span {
     padding: 0.5rem 1rem;
     position: absolute;
     display: none;
-    background-color: #056EB7;
-    color: #FFFFFF;
+    background-color: rgb(var(--bg-color));
+    color: rgb(var(--bright-bg-color));
     left: 2rem;
     top: 0;
     font-size: 1.2rem;
@@ -424,8 +482,8 @@ tips-button > span::before {
     width: 1.2rem;
     height: 1.2rem;
     transform: rotate(45deg);
-    background-color: #056EB7;
-    border: 1px solid #056EB7;
+    background-color: rgb(var(--bg-color));
+    border: 1px solid rgb(var(--bg-color));
     position: absolute;
     left: 3.3rem;
     top: 0.8rem;
@@ -434,21 +492,25 @@ tips-button > span::before {
 tips-button > span:hover::before,
 tips-button > span:hover > span {
     display: block;
+    z-index: 100;
 }
 menu-element,
 menu-element > div {
     width: 100%;
     min-height: 3rem;
+    display: flex;
+    justify-content: left;
 }
 menu-element > div > menu-item {
     height: 3rem;
     line-height: 3rem;
+    margin: 0;
 }
 menu-element > div > menu-item.current,
 menu-element > div > menu-item:hover,
 menu-element > div > menu-item > div > menu-item.current,
 menu-element > div > menu-item > div > menu-item:hover {
-    background-color: #DFF1FF;
+    background-color: rgb(var(--btn-bg-color));
 }
 menu-element > div > menu-item > a {
     padding: 0 1rem;
@@ -466,9 +528,9 @@ menu-element > div > menu-item > div {
     position: absolute;
     top: 4rem;
     left: 0;
-    background-color: #056EB7;
+    background-color: rgb(var(--bg-color));
     display: none;
-    z-index: 10;
+    z-index: 100;
 }
 menu-element > div > menu-item:hover > div {
     display: block;
@@ -493,7 +555,7 @@ menu-element > div > menu-item.current > a > span[name="textContent"],
 menu-element > div > menu-item.current > div[name="items"] > a.current > span[name="textContent"],
 menu-element > div > menu-item:hover > a > span[name="textContent"],
 menu-element > div > menu-item > div > menu-item:hover > a > span[name="textContent"] {
-    color: #1B1B1B;
+    color: rgb(var(--text-color));
 }
 message-list,
 message-list > list-filter {
@@ -513,7 +575,7 @@ message-list > list-filter,
 message-list > list-statistics,
 message-list > list-title,
 message-list > list-data {
-    background-color: #FFFFFF;
+    background-color: rgb(var(--bright-bg-color));
     border-radius: 1rem;
 }
 message-list > list-filter {
@@ -547,9 +609,9 @@ message-list > list-filter > form > * > label[slot="itemName"] {
 message-list > list-filter > standard-button > input[slot="element"]:disabled,
 message-list > list-filter > submit-button > input[slot="element"]:disabled,
 message-list > list-filter > reset-button > input[slot="element"]:disabled {
-    background-color: #D9D9D9;
-    border-color: #D9D9D9;
-    color: #000000;
+    background-color: rgb(var(--disabled-bg-color));
+    border-color: rgb(var(--disabled-bg-color));
+    color: rgb(var(--text-color));
     box-shadow: none;
     font-weight: normal;
 }
@@ -601,12 +663,12 @@ message-list > list-filter > form > search-input > input {
     outline: none;
     border: none;
     padding-left: 1rem;
-    border-bottom: 1px solid #81B9FF;
+    border-bottom: 1px solid rgb(var(--border-color));
 }
 message-list > list-filter > form > search-input > input:focus {
     height: 3rem;
-    border-bottom: 2px solid #056EB7;
-    background-color: #F1FAFF;
+    border-bottom: 2px solid rgb(var(--bg-color));
+    background-color: rgb(var(--btn-bg-color));
 }
 message-list > list-filter > form > number-interval-input,
 message-list > list-filter > form > date-interval-input,
@@ -633,15 +695,15 @@ message-list > list-filter > form > datetime-interval-input > div > input {
     line-height: 2.9rem;
     outline: none;
     border: none;
-    border-bottom: 1px solid #81B9FF;
+    border-bottom: 1px solid rgb(var(--border-color));
     text-align: center;
 }
 message-list > list-filter > form > number-interval-input > div > input:focus,
 message-list > list-filter > form > date-interval-input > div > input:focus,
 message-list > list-filter > form > time-interval-input > div > input:focus,
 message-list > list-filter > form > datetime-interval-input > div > input:focus {
-    border-bottom: 2px solid #056EB7;
-    background-color: #DFF1FF;
+    border-bottom: 2px solid rgb(var(--bg-color));
+    background-color: rgb(var(--btn-bg-color));
 }
 message-list > list-filter > form > number-interval-input > div > span[id="concat"],
 message-list > list-filter > form > date-interval-input > div > span[id="concat"],
@@ -667,7 +729,7 @@ message-list > list-filter > form > checkbox-group > div > mock-checkbox > div >
 message-list > list-filter > form > checkbox-group > div > mock-checkbox > div > input:checked + label {
     height: 2.4rem;
     border-radius: 0.5rem;
-    background-color: #056EB7;
+    background-color: rgb(var(--bg-color));
 }
 message-list > list-filter > form > radio-group > div > mock-radio > div,
 message-list > list-filter > form > checkbox-group > div > mock-checkbox > div {
@@ -677,7 +739,7 @@ message-list > list-filter > form > radio-group > div > mock-radio > div > label
 message-list > list-filter > form > radio-group > div > mock-radio > div > input:checked + label > span,
 message-list > list-filter > form > checkbox-group > div > mock-checkbox > div > label:hover > span,
 message-list > list-filter > form > checkbox-group > div > mock-checkbox > div > input:checked + label > span {
-    color: #FFFFFF;
+    color: rgb(var(--bright-bg-color));
 }
 message-list > list-filter > form > radio-group > div > mock-radio > tips-button,
 message-list > list-filter > form > radio-group > div > mock-radio > div > label > i,
@@ -698,8 +760,8 @@ message-list > list-filter > reset-button > input[slot="element"],
 message-list > list-filter > standard-button > input[slot="element"]:focus,
 message-list > list-filter > submit-button > input[slot="element"]:focus,
 message-list > list-filter > reset-button > input[slot="element"]:focus {
-    background-color: #056EB7;
-    color: #FFFFFF;
+    background-color: rgb(var(--bg-color));
+    color: rgb(var(--bright-bg-color));
     box-shadow: none;
 }
 message-list > list-filter > standard-button:hover > input[slot="element"],
@@ -712,17 +774,17 @@ message-list > list-statistics > div > div {
     margin-right: 2rem;
     padding: 2rem;
     border-radius: 2rem;
-    box-shadow: 0 0 15px rgba(68, 132, 206, 0.8);
+    box-shadow: 0 0 15px rgba(var(--bg-color), 0.4);
 }
 message-list > list-statistics > div > div.warning {
-    background-color: #FFFF00;
+    background-color: rgb(var(--warning-bg-color));
 }
 message-list > list-statistics > div > div.error {
-    background-color: #FF0000;
+    background-color: rgb(var(--error-bg-color));
 }
 message-list > list-statistics > div > div.error > #title,
 message-list > list-statistics > div > div.error > #data {
-    color: #FFFFFF;
+    color: rgb(var(--bright-bg-color));
 }
 message-list > list-statistics > div > div:last-child {
     margin-right: 0;
@@ -734,7 +796,7 @@ message-list > list-statistics > div > div > span {
 message-list > list-statistics > div > div > #title {
     font-size: 1.4rem;
     line-height: 2.4rem;
-    color: #888888;
+    color: rgb(var(--text-color));
 }
 message-list > list-statistics > div > div > #data {
     font-size: 1.8rem;
@@ -763,7 +825,7 @@ message-list > list-data > div[slot="batchOperators"] > i {
     line-height: 3rem;
     border: none;
     outline: none;
-    background-color: #DFF1FF;
+    background-color: rgb(var(--btn-bg-color));
     cursor: pointer;
     border-radius: 0.4rem;
     text-align: center;
@@ -775,8 +837,8 @@ message-list > list-data > div[slot="batchOperators"] > i,
 message-list > list-title > div[slot="btnGroup"] > a,
 message-list > list-title > div[slot="btnGroup"] > i {
     margin-left: 0.5rem;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    color: #056EB7;
+    box-shadow: 0 2px 5px rgba(var(--border-color), 0.4);
+    color: rgb(var(--bg-color));
 }
 message-list > list-title > div[slot="btnGroup"] > a,
 message-list > list-title > div[slot="btnGroup"] > i {
@@ -787,7 +849,7 @@ message-list > list-title > div[slot="btnGroup"] > i {
     text-align: center;
     font-size: 1.8rem;
     border-radius: 0.4rem;
-    background-color: #DFF1FF;
+    background-color: rgb(var(--btn-bg-color));
     cursor: pointer;
 }
 message-list > list-data > div[slot="batchOperators"] > a:hover,
@@ -807,33 +869,33 @@ message-list > list-data > div[slot="listPager"] > i:hover,
 message-list > list-data > div[slot="listPager"] > #lastPage,
 message-list > list-data > div[slot="listPager"] > #pageGroup > i:hover,
 message-list > list-data > div[slot="listPager"] > #pageGroup > .current {
-    background-color: #056EB7;
-    color: #FFFFFF;
+    background-color: rgb(var(--bg-color));
+    color: rgb(var(--bright-bg-color));
 }
-message-list > list-data[data-select-all="false"] > div[slot="dataInfo"] > list-header > mock-checkbox,
 message-list > list-data[data-select-all="false"] > div[slot="dataInfo"] > #content > list-record > mock-checkbox {
     visibility: hidden;
 }
 message-list > list-data > div[slot="dataInfo"] > #content > list-record > span[slot="preview"] {
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
     cursor: pointer;
 }
 message-list > list-data > div[slot="dataInfo"] > #content > list-record > div[slot="operators"] > record-operator {
     height: 2.4rem;
     line-height: 2.4rem;
+    margin: 0;
 }
 message-list > list-data > div[slot="dataInfo"] > list-header,
 message-list > list-data > div[slot="dataInfo"] > #content {
-    border: 1px solid #056EB7;
+    border: 1px solid rgb(var(--bg-color));
 }
 message-list > list-data > div[slot="dataInfo"] > list-header {
-    background-color: #056EB7;
+    background-color: rgb(var(--bg-color));
 }
 message-list > list-data > .image-list > #content {
     padding-bottom: 1rem;
 }
-message-list > list-data > div[slot="dataInfo"] > list-header > mock-checkbox > tips-button,
 message-list > list-data > div[slot="dataInfo"] > #content > list-record > mock-checkbox > tips-button {
     display: none;
 }
@@ -841,19 +903,19 @@ message-list > list-data > div[slot="dataInfo"] > #content > list-record {
     transition: box-shadow 0.4s, background-color 0.4s linear;
 }
 message-list > list-data > div[slot="dataInfo"] > #content > list-record:hover {
-    background-color: #DFF1FF;
+    background-color: rgb(var(--btn-bg-color));
 }
 message-list > list-data > div[slot="dataInfo"] > #content > list-record.warning:hover {
-    background-color: #FFFF00;
+    background-color: rgb(var(--warning-bg-color));
 }
 message-list > list-data > div[slot="dataInfo"] > #content > list-record.warning {
-    background-color: rgba(255, 255, 0, 0.5);
+    background-color: rgba(var(--warning-bg-color), 0.5);
 }
 message-list > list-data > div[slot="dataInfo"] > #content > list-record.error:hover {
-    background-color: #FF0000;
+    background-color: rgb(var(--error-bg-color));
 }
 message-list > list-data > div[slot="dataInfo"] > #content > list-record.error {
-    background-color: rgba(255, 0, 0, 0.5);
+    background-color: rgba(var(--error-bg-color), 0.5);
 }
 message-list > list-data > div[slot="dataInfo"] > #content > list-record > span[slot="mainTitle"] > a {
     height: 3rem;
@@ -871,39 +933,32 @@ message-list > list-data > div[slot="dataInfo"] > #content > list-record.error:h
 message-list > list-data > div[slot="dataInfo"] > #content > list-record.error:hover > star-score > div > span::before,
 message-list > list-data > div[slot="dataInfo"] > #content > list-record.error:hover > div[slot="items"] > property-item > span,
 message-list > list-data > div[slot="dataInfo"] > #content > list-record.error:hover > div[slot="operators"] > record-operator > a > span {
-    color: #FFFFFF;
+    color: rgb(var(--bright-bg-color));
 }
 message-list > list-data > .text-list > #content > list-record,
 message-list > list-data > .view-list > #content > list-record {
     width: 100%;
     padding: 0.5rem 0;
-    border-bottom: 1px solid #81B9FF;
+    border-bottom: 1px solid rgb(var(--border-color));
+    position: relative;
 }
 message-list > list-data > .text-list > #content > list-record:last-child,
 message-list > list-data > .view-list > #content > list-record:last-child {
     border-bottom: none;
 }
-message-list > list-data > .text-list > list-header > mock-checkbox,
 message-list > list-data > .text-list > #content > list-record > mock-checkbox {
     width: 2.4rem;
-}
-message-list > list-data > .text-list > list-header > mock-checkbox > div[slot="element"] {
-    padding: 0.8rem 0;
+    height: 2.4rem;
 }
 message-list > list-data > .text-list > #content > list-record > mock-checkbox > div[slot="element"] {
     padding: 0;
 }
-message-list > list-data > .text-list > list-header > mock-checkbox > div[slot="element"] > input + label > i,
 message-list > list-data > .text-list > #content > list-record > mock-checkbox > div[slot="element"] > input + label > i {
     margin: 0.5rem;
-    background-color: #FFFFFF;
+    background-color: rgb(var(--bright-bg-color));
 }
-message-list > list-data > .text-list > list-header > mock-checkbox > div[slot="element"] > input + label > i {
-    border-color: #FFFFFF;
-}
-message-list > list-data > .text-list > list-header > mock-checkbox > div[slot="element"] > input:checked + label > i::after,
 message-list > list-data > .text-list > #content > list-record > mock-checkbox > div[slot="element"] > input:checked + label > i::after {
-    color: #056EB7;
+    color: rgb(var(--bg-color));
 }
 message-list > list-data > .text-list > list-header > span[slot="mainTitle"],
 message-list > list-data > .text-list > #content > list-record > span[slot="mainTitle"] {
@@ -925,6 +980,7 @@ message-list > list-data > .text-list > #content > list-record > div[slot="items
 }
 message-list > list-data > .text-list > list-header > div[slot="items"] > span,
 message-list > list-data > .text-list > #content > list-record > div[slot="items"] > property-item {
+    --width: auto;
     width: var(--width);
     min-height: 100%;
     text-align: center;
@@ -944,11 +1000,11 @@ message-list > list-data > .text-list > list-header > div[slot="items"],
 message-list > list-data > .text-list > list-header > span[slot="operators"] {
     height: 4rem;
     line-height: 4rem;
-    color: #FFFFFF;
+    color: rgb(var(--bright-bg-color));
     font-size: 1.4rem;
 }
 message-list > list-data > .text-list > list-header > div[slot="items"] > span {
-    color: #FFFFFF;
+    color: rgb(var(--bright-bg-color));
 }
 message-list > list-data > .text-list > #content > list-record > span[slot="mainTitle"],
 message-list > list-data > .text-list > #content > list-record > div[slot="items"],
@@ -959,30 +1015,24 @@ message-list > list-data > .text-list > #content > list-record > span[slot="oper
 message-list > list-data > .text-list > #content > list-record > div[slot="items"] > property-item > span[slot="value"] {
     width: 100%;
 }
-message-list > list-data > .view-list > list-header > mock-checkbox,
 message-list > list-data > .view-list > #content > list-record > mock-checkbox {
     width: 2.4rem;
     position: absolute;
-    left: 3.5rem;
+    left: 10px;
 }
-message-list > list-data > .image-list > list-header > mock-checkbox,
 message-list > list-data > .image-list > #content > list-record > mock-checkbox {
     width: 2.4rem;
     position: absolute;
     left: 0.5rem;
     top: 0.5rem;
 }
-message-list > list-data > .view-list > list-header > mock-checkbox > div > input + label > i,
 message-list > list-data > .view-list > #content > list-record > mock-checkbox > div > input + label > i,
-message-list > list-data > .image-list > list-header > mock-checkbox > div > input + label > i,
 message-list > list-data > .image-list > #content > list-record > mock-checkbox > div > input + label > i {
-    background-color: #FFFFFF;
+    background-color: rgb(var(--bright-bg-color));
 }
-message-list > list-data > .view-list > list-header > mock-checkbox > div > input:checked + label > i,
 message-list > list-data > .view-list > #content > list-record > mock-checkbox > div > input:checked + label > i,
-message-list > list-data > .image-list > list-header > mock-checkbox > div > input:checked + label > i,
 message-list > list-data > .image-list > #content > list-record > mock-checkbox > div > input:checked + label > i {
-    background-color: #056EB7;
+    background-color: rgb(var(--bg-color));
 }
 message-list > list-data > .view-list > #content > list-record > span[slot="mainTitle"] > a,
 message-list > list-data > .image-list > #content > list-record > span[slot="mainTitle"] > a {
@@ -991,15 +1041,17 @@ message-list > list-data > .image-list > #content > list-record > span[slot="mai
 }
 message-list > list-data > .image-list > div {
     width: calc(-12px + 100%);
-    padding: 5px;
 }
 message-list > list-data > .image-list > #content > list-record {
-    width: calc(-12px + 12.5%);
-    margin: 5px;
+    width: calc(-1.6875rem - 2px + 12.5%);
+    margin: 1.5rem 0 0 1.5rem;
     padding-bottom: 0.5rem;
     border-radius: 1rem;
     position: relative;
-    border: 1px solid #CCCCCC;
+    border: 1px solid rgba(var(--border-color), 0.4);
+}
+message-list > list-data > .image-list > #content > list-record:nth-child(8n) {
+    margin-right: 1.5rem;
 }
 message-list > list-data > .image-list > #content > list-record > span[slot="preview"] {
     border-radius: 1rem 1rem 0 0;
@@ -1087,7 +1139,7 @@ message-list > list-data > .view-list > #content > list-record > div[slot="items
 }
 message-list > list-data > .view-list > #content > list-record > div[slot="items"] > property-item > span {
     font-size: 1.2rem;
-    color: rgba(0, 0, 0, 0.5);
+    color: rgba(var(--text-color), 0.6);
 }
 message-list > list-data > .view-list > #content > list-record > div[slot="items"] > property-item > span[slot="name"]::after {
     content: ":";
@@ -1123,7 +1175,7 @@ message-list > list-data > .text-list > #content > list-record > div[slot="opera
 message-list > list-data > .view-list > #content > list-record.error:hover > div[slot="operators"] > record-operator > a > #icon,
 message-list > list-data > .image-list > #content > list-record.error:hover > div[slot="operators"] > record-operator > a > #icon,
 message-list > list-data > .text-list > #content > list-record.error:hover > div[slot="operators"] > record-operator > a > #icon {
-    color: #FFFFFF;
+    color: rgb(var(--bright-bg-color));
 }
 message-list > list-data > .view-list > #content > list-record > div[slot="operators"] > record-operator > a > #text,
 message-list > list-data > .text-list > #content > list-record > div[slot="operators"] > record-operator > a > #text {
@@ -1202,7 +1254,7 @@ slide-show > div[slot="slide"] > div > a {
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
-    background-color: #FFFFFF;
+    background-color: rgb(var(--bright-bg-color));
     float: left;
     display: block;
 }
@@ -1217,7 +1269,7 @@ slide-show > div[slot="slide"] > div > a > span {
     bottom: 0;
     background-color: rgba(220, 238, 249, 0.8);
     text-align: center;
-    color: #1B1B1B;
+    color: rgb(var(--text-color));
     display: block;
 }
 slide-show > div[slot="slide"] > div > a > span.hidden {
@@ -1237,11 +1289,11 @@ slide-show > div[slot="sort"] > span {
     height: 0.5rem;
     border-radius: 0.5rem;
     margin: 0 0.5rem;
-    background-color: #FFFFFF;
+    background-color: rgb(var(--bright-bg-color));
     float: left;
 }
 slide-show > div[slot="sort"] > span.current {
-    background-color: #056EB7;
+    background-color: rgb(var(--bg-color));
 }
 float-window {
     position: absolute;
@@ -1257,8 +1309,8 @@ float-window > float-page {
     padding-top: 4rem;
     left: calc(-4rem + 10%);
     border-radius: 2rem;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
-    background-color: #FFFFFF;
+    box-shadow: 0 0 15px rgba(var(--border-color), 0.4);
+    background-color: rgb(var(--bright-bg-color));
     overflow: hidden;
 }
 float-window > float-page > i[slot="closeBtn"] {
@@ -1277,6 +1329,19 @@ float-window > float-page > div {
     float: left;
     overflow-y: scroll;
 }
+float-window > float-page > button.icon {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 1rem;
+    background-color: rgb(var(--close-btn-bg-color));
+    color: rgb(var(--bright-bg-color));
+    border: none;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    cursor: pointer;
+    font-size: 2rem;
+}
 .waitingData {
     background-image: url('../images/loading.gif');
     background-size: 3rem;
@@ -1292,7 +1357,7 @@ scroll-bar {
     right: 1rem;
     border-radius: 0.3rem;
     transition: all 0.4s;
-    background-color: #F1FAFF;
+    background-color: rgb(var(--btn-bg-color));
     display: none;
 }
 scroll-bar > div[slot="scrollItem"] {
@@ -1302,7 +1367,7 @@ scroll-bar > div[slot="scrollItem"] {
     left: 0;
     border-radius: 0.3rem;
     transition: width 0.4s;
-    background-color: #056EB7;
+    background-color: rgb(var(--bg-color));
 }
 scroll-bar:hover,
 scroll-bar:hover > div[slot="scrollItem"] {
@@ -1324,24 +1389,24 @@ notify-area > i {
     padding: 0;
     position: fixed;
     outline: none;
-    border: 1px solid #F1FAFF;
-    background-color: #F1FAFF;
+    border: 1px solid rgb(var(--btn-bg-color));
+    background-color: rgb(var(--btn-bg-color));
     border-radius: 1.5rem;
     top: 9rem;
     right: 1rem;
     z-index: 20;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 2px 5px rgba(var(--border-color), 0.4);
     cursor: pointer;
     text-align: center;
     font-size: 2rem;
-    color: #056EB7;
+    color: rgb(var(--bg-color));
 }
 notify-area > i.alert::after {
     content: "";
     width: 1rem;
     height: 1rem;
     border-radius: 0.5rem;
-    background-color: #FF0000;
+    background-color: rgb(var(--close-btn-bg-color));
     position: absolute;
     top: 0.3rem;
     right: 0.3rem;
@@ -1350,15 +1415,15 @@ notify-area.notify {
     width: 100%;
     height: 100%;
     border: none;
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(var(--border-color), 0.4);
     z-index: 10;
 }
 notify-area > i:hover,
 notify-area.notify > i {
-    background-color: #056EB7;
-    border: 1px solid #056EB7;
+    background-color: rgb(var(--bg-color));
+    border: 1px solid rgb(var(--bg-color));
     box-shadow: none;
-    color: #FFFFFF;
+    color: rgb(var(--bright-bg-color));
 }
 notify-area.notify > i {
     right: calc(-1.5rem + 30%);
@@ -1379,7 +1444,7 @@ notify-area > div[slot="floatNotify"] {
     padding: 0 2rem;
     width: calc(-4rem + 60%);
     left: 20%;
-    background-color: rgba(68, 132, 206, 0.4);
+    background-color: rgba(var(--bg-color), 0.4);
     border-radius: 0 0 1rem 1rem;
     z-index: 20;
     opacity: 0;
@@ -1388,7 +1453,7 @@ notify-area > div[slot="notification"] {
     width: 30%;
     height: calc(-6rem + 100%);
     right: 0;
-    background-color: #F2F2F7;
+    background-color: rgb(var(--notify-bg-color));
     transition: all 0.4s;
     opacity: 0;
 }
@@ -1402,8 +1467,8 @@ notify-area > div > div {
     margin: 1rem 2rem;
     padding: 1rem;
     border-radius: 1rem;
-    background-color: #FFFFFF;
-    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.4);
+    background-color: rgb(var(--bright-bg-color));
+    box-shadow: 0 0 1rem rgba(var(--border-color), 0.4);
     position: relative;
     float: left;
 }
@@ -1415,19 +1480,18 @@ notify-area > div > div > a {
 notify-area > div > div > i {
     width: 2rem;
     height: 2rem;
-    line-height: 2.2rem;
+    line-height: 2rem;
     padding: 0;
     outline: none;
-    border: none;
     position: absolute;
     top: -0.8rem;
     right: -0.8rem;
-    color: #FF0000;
-    background-color: #FFFFFF;
-    border-radius: 1rem;
+    color: rgb(var(--bright-bg-color));
+    background-color: rgb(var(--close-btn-bg-color));
+    border-radius: 2rem;
     z-index: 1;
     cursor: pointer;
-    font-size: 2.2rem;
+    font-size: 2rem;
 }
 notify-area > div > div > button::before {
     width: 2rem;
@@ -1436,7 +1500,7 @@ notify-area > div > div > button::before {
     padding: 0;
     font-size: 2rem;
     content: "\e61c";
-    color: #FFFFFF;
+    color: rgb(var(--bright-bg-color));
     float: left;
     text-align: center;
     font-family: cell-icon, sans-serif;
@@ -1465,19 +1529,19 @@ progress-bar {
     line-height: 2.6rem;
     margin: 1rem 0;
     border-radius: 1.3rem;
-    border: 1px solid #81B9FF;
-    background-color: #F1FAFF;
+    border: 1px solid rgb(var(--border-color));
+    background-color: rgb(var(--btn-bg-color));
     position: relative;
     float: left;
 }
 progress-bar > span[slot="progressInfo"] {
     width: 0;
     height: 2.6rem;
-    background-color: rgba(129, 185, 255, 0.9);
+    background-color: rgba(var(--border-color), 0.9);
     border-radius: 1.3rem;
     background-size: 3rem 3rem;
-    background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2) inset;
+    background-image: linear-gradient(135deg, rgba(var(--bright-bg-color), 0.15) 25%, transparent 25%, transparent 50%, rgba(var(--bright-bg-color), 0.15) 50%, rgba(var(--bright-bg-color), 0.15) 75%, transparent 75%, transparent);
+    box-shadow: 0 0 1rem rgba(var(--text-color), 0.2) inset;
     display: inline-block;
     transition: width 0.5s ease-in-out;
     position: absolute;
@@ -1497,7 +1561,7 @@ progress-bar > span[slot="progressText"] {
     top: 0;
     left: 0;
     background-color: transparent;
-    color: #056EB7;
+    color: rgb(var(--bg-color));
 }
 star-rating > div,
 star-score > div,
@@ -1524,7 +1588,7 @@ star-rating > div > label {
 star-rating > div > label::before {
     font-size: 2.2rem;
     content: "\e79d";
-    color: #056EB7;
+    color: rgb(var(--bg-color));
 }
 star-rating > div > input:checked ~ label::before,
 star-rating > div:not(:checked) > label:hover::before,
@@ -1533,13 +1597,13 @@ star-rating > div:not(:checked) > label:hover ~ label::before {
 }
 star-score > div > span::before {
     font-size: 2.2rem;
-    color: #056EB7;
+    color: rgb(var(--bg-color));
 }
 mock-dialog {
     width: 100%;
     height: 100%;
     border: none;
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(var(--border-color), 0.4);
     z-index: 10;
     position: fixed;
     top: 0;
@@ -1553,8 +1617,8 @@ mock-dialog > div[slot="dialog"] {
     left: 25%;
     border: none;
     border-radius: 2rem;
-    background-color: #FFFFFF;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+    background-color: rgb(var(--bright-bg-color));
+    box-shadow: 0 2px 5px rgba(var(--border-color), 0.4);
 }
 mock-dialog > div[slot="dialog"] > span {
     width: calc(-6rem + 100%);
@@ -1566,7 +1630,7 @@ mock-dialog > div[slot="dialog"] > span {
 mock-dialog > div[slot="dialog"] > button {
     height: 4rem;
     line-height: 4rem;
-    background-color: #DFF1FF;
+    background-color: rgb(var(--btn-bg-color));
     border: none;
     outline: none;
     position: absolute;
@@ -1576,8 +1640,8 @@ mock-dialog > div[slot="dialog"] > button {
     font-size: 1.5rem;
 }
 mock-dialog > div[slot="dialog"] > button:hover {
-    background-color: #056EB7;
-    color: #FFFFFF;
+    background-color: rgb(var(--bg-color));
+    color: rgb(var(--bright-bg-color));
 }
 mock-dialog > div[slot="dialog"].alert > button#confirm-btn {
     width: 100%;
@@ -1585,7 +1649,7 @@ mock-dialog > div[slot="dialog"].alert > button#confirm-btn {
 }
 mock-dialog > div[slot="dialog"].confirm > button {
     width: calc(-1px + 50%);
-    border-left: 1px solid #FFFFFF;
+    border-left: 1px solid rgb(var(--bright-bg-color));
 }
 mock-dialog > div[slot="dialog"].confirm > button#confirm-btn {
     width: 50%;
@@ -1614,7 +1678,7 @@ social-group > a.icon {
     text-align: center;
     font-size: 3rem;
     margin: 0 0.5rem;
-    color: #056EB7;
+    color: rgb(var(--bg-color));
 }
 drag-upload {
     width: 400px;
@@ -1639,5 +1703,5 @@ drag-upload > div[slot="preview"] > img:nth-child(2n + 1) {
 drag-upload > div[slot="dragWindow"] {
     width: 398px;
     height: 298px;
-    border: 2px dashed #CCCCCC;
+    border: 2px dashed rgb(var(--disabled-bg-color));
 }

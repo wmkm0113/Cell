@@ -16,7 +16,7 @@
  */
 "use strict";
 
-import {BaseElement, CustomElement} from "./element.js";
+import {BaseElement, CustomElement, ScrollBar} from "./element.js";
 import {BaseInput} from "./input.js";
 
 /**
@@ -131,7 +131,7 @@ class MockElement extends BaseInput {
  */
 class MockSwitch extends MockElement {
     constructor() {
-        super("mock-switch", "checkbox");
+        super("checkbox", "mock-switch");
     }
 
     static tagName() {
@@ -262,7 +262,7 @@ class NotifyArea extends CustomElement {
         if (this._floatButton === null) {
             this._floatButton = document.createElement("i");
             this._floatButton.setAttribute("slot", "button");
-            this._floatButton.setClass("icon-ringbell")
+            this._floatButton.setClass("icon-bell-ring")
             this.appendChild(this._floatButton);
             this._floatButton.addEventListener("click", (event) => {
                 event.stopPropagation();
@@ -297,7 +297,7 @@ class NotifyArea extends CustomElement {
                 notifyItem.appendChild(linkElement);
                 let floatItem = notifyItem.cloneNode(true);
                 let clearButton = document.createElement("i");
-                clearButton.setClass("icon-cancel_circle");
+                clearButton.setClass("icon-close");
                 notifyItem.appendChild(clearButton);
                 this._notification.appendChild(notifyItem);
                 clearButton.addEventListener("click", (event) => {
@@ -306,7 +306,7 @@ class NotifyArea extends CustomElement {
                     this.checkNotify();
                 });
                 let clearFloat = document.createElement("i");
-                clearFloat.setClass("icon-cancel_circle");
+                clearFloat.setClass("icon-close");
                 floatItem.appendChild(clearFloat);
                 let notify = this;
                 clearFloat.addEventListener("click", (event) => {
@@ -363,7 +363,7 @@ class FloatWindow extends BaseElement {
     }
 
     close() {
-        document.body.style.overflow = "auto";
+        document.body.style.overflowY = "scroll";
         this.parentElement.removeChild(this);
     }
 
@@ -375,7 +375,6 @@ class FloatWindow extends BaseElement {
     }
 
     connectedCallback() {
-        document.body.style.overflow = "hidden";
         let pageElement = this.querySelector("float-page");
         if (pageElement === null) {
             pageElement = new FloatPage();
@@ -386,7 +385,7 @@ class FloatWindow extends BaseElement {
     }
 
     resize() {
-        this.style.width = document.body.scrollWidth + "px";
+        this.style.width = "100%";
         this.style.height = document.body.scrollHeight + "px";
         let pageElement = this.querySelector("float-page");
         if (pageElement !== null) {
@@ -440,7 +439,7 @@ class FloatPage extends BaseElement {
     }
 
     resize() {
-        let scrollTop = window.pageYOffset;
+        let scrollTop = window.scrollY;
         let height = Math.floor(window.innerHeight * 0.8);
         this.style.height = height + "px";
         let top = Math.floor((window.innerHeight - height) / 2);
@@ -458,7 +457,7 @@ class FloatPage extends BaseElement {
             if (this._windowHeight < this._pageHeight) {
                 this._scrollBar.enable();
                 this._itemHeight = Math.floor(this._windowHeight * this._windowHeight / this._pageHeight);
-                this._scrollBar.init(this._itemHeight);
+                this._scrollBar.initHeight(this._itemHeight);
                 this._differentHeight = this._pageHeight - this._windowHeight;
                 this._divElement.addEventListener("scroll", (event) => {
                     event.stopPropagation();
@@ -543,16 +542,17 @@ class FloatPage extends BaseElement {
         if (this.querySelector("button[slot='closeBtn']") === null) {
             let closeBtn = document.createElement("button");
             closeBtn.setAttribute("slot", "closeBtn");
-            closeBtn.setClass("iconButton close-btn");
+            closeBtn.setClass("icon icon-close");
             let floatPage = this;
             closeBtn.addEventListener("click", function (event) {
                 event.stopPropagation();
+                document.body.style.overflowY = "scroll";
                 floatPage.close();
             });
             this.appendChild(closeBtn);
         }
         if (this._scrollBar === null) {
-            this._scrollBar = document.createElement("scroll-bar");
+            this._scrollBar = new ScrollBar();
             this._scrollBar.setAttribute("slot", "scroll");
             this.appendChild(this._scrollBar);
         }
@@ -568,6 +568,7 @@ class FloatPage extends BaseElement {
         if (this.dataset.data !== undefined && this.dataset.data.isJSON()) {
             this._divElement.removeClass("waitingData");
             let jsonData = this.dataset.data.parseJSON();
+            document.body.style.overflowY = "hidden";
             if (jsonData.hasOwnProperty("tagName") && jsonData.hasOwnProperty("data")) {
                 if (jsonData.hasOwnProperty("title")) {
                     jsonData.title.setTitle();

@@ -52,7 +52,11 @@ class BaseElement extends CustomElement {
             set(data) {
                 if (this.renderElement !== undefined && data !== null && data.isJSON()) {
                     this._removeProgress();
-                    this.renderElement(data.parseJSON());
+                    let jsonData = data.parseJSON();
+                    if (jsonData.hasOwnProperty("elementId")) {
+                        this.setAttribute("id", jsonData.elementId);
+                    }
+                    this.renderElement(jsonData);
                 }
             }
         });
@@ -340,7 +344,7 @@ class ScrollBar extends CustomElement {
         this.style.display = "block";
     }
 
-    init(itemHeight = 0) {
+    initHeight(itemHeight = 0) {
         if (this._scrollItem !== null && itemHeight > 0) {
             this._scrollItem.style.height = itemHeight + "px";
             this._scrollItem.style.top = "0";

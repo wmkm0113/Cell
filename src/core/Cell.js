@@ -31,6 +31,7 @@ import RSA from "../crypto/RSA.js";
 import UIRender from "../render/Render.js";
 import {FloatWindow, FloatPage, NotifyArea, MockSwitch, MockDialog, MockCheckBox, MockRadio} from "../ui/mock.js";
 import {StandardButton, SubmitButton, ResetButton} from "../ui/button.js";
+import * as Details from "../ui/details.js";
 import {ProgressBar, ScrollBar, StarRating, StarScore} from "../ui/element.js";
 import {FormItem, FormInfo} from "../ui/form.js";
 import {ButtonGroup, CheckBoxGroup, RadioGroup} from "../ui/group.js";
@@ -42,24 +43,27 @@ import TipsElement from "../ui/tips.js";
 import {MenuElement, MenuItem} from "../ui/menu.js";
 
 class CellJS {
+    _languageCode = null;
 
     constructor() {
         this._config = {
             developmentMode: false,
             contextPath : "",
-            //  Internationalization
-            i18n : {
-                //  Current language
-                language : Comment.Language,
-                resPath : ""
-            },
+            resPath : "/src/i18n",
+            languageCode : Comment.Language,
             //  Config the dark mode by sunrise and sunset
             darkMode : {
                 enabled : false,
                 styleClass : "darkMode"
             },
             //  Config for form data
-            form : {
+            formConfig : {
+                //  Convert date/time from 'yyyy-MM-dd [HH:mm]' to number of milliseconds between that date and midnight, January 1, 1970.
+                convertDateTime : false,
+                //  Convert value is UTC number of milliseconds between that date and midnight, January 1, 1970.
+                utcDateTime : false
+            },
+            security : {
                 //  Encrypt value of input[type='password']
                 encryptPassword : true,
                 //  Encrypt method for input[type='password']
@@ -67,12 +71,6 @@ class CellJS {
                 //              SHA3_224/SHA3_256/SHA3_384/SHA3_512/SHAKE128/SHAKE256
                 //              Keccak224/Keccak256/Keccak384/Keccak512
                 encryptMethod : "MD5",
-                //  Convert date/time from 'yyyy-MM-dd [HH:mm]' to number of milliseconds between that date and midnight, January 1, 1970.
-                convertDateTime : false,
-                //  Convert value is UTC number of milliseconds between that date and midnight, January 1, 1970.
-                utcDateTime : false
-            },
-            security : {
                 //  RSA Key Config
                 RSA : {
                     //  Public Key data
@@ -83,12 +81,28 @@ class CellJS {
                     //  Public Key Size
                     keySize : 1024
                 }
-            }
+            },
+            elements : [
+                TipsElement, FloatPage, FloatWindow, NotifyArea, MockSwitch, MockDialog, MockCheckBox, MockRadio,
+                StandardButton, SubmitButton, ResetButton, ProgressBar, ScrollBar, StarRating, StarScore,
+                ButtonGroup, CheckBoxGroup, RadioGroup, FormItem, FormInfo,
+                Input.InputElement, Input.BaseInput, Input.AbstractInput, Input.PasswordInput, Input.HiddenInput,
+                Input.TextInput, Input.SearchInput, Input.NumberInput, Input.DateInput, Input.TimeInput,
+                Input.DateTimeInput, Input.SelectInput, Input.TextAreaInput, Input.NumberIntervalInput,
+                Input.DateIntervalInput, Input.TimeIntervalInput, Input.DateTimeIntervalInput, Input.DragUpload,
+                List.ListFilter, List.ListData, List.ListStatistics, List.ListTitle, List.ListRecord,
+                List.RecordOperator, List.ListHeader, List.PropertyItem, List.PropertyDefine, List.MessageList,
+                List.CategoryList, SlideShow, SocialGroup, MenuItem, MenuElement, Details.AttachFiles, Details.MessageDetails,
+                Details.ModelList, Details.CategoryAccessories, Details.AccessoriesList, Details.CorporateAddress,
+                Details.CorporateResource, Details.CorporateDetails, Details.CorporateAbstract, Details.WidgetButton,
+                Details.ContentBanner
+            ]
         };
-
         Object.extend(this._config, (Config || {}));
         //  Freeze config
         Object.freeze(this._config);
+        this._languageCode = this._config.languageCode;
+
         this._resources = {};
         this._modules = {};
 
@@ -108,23 +122,12 @@ class CellJS {
     }
 
     init() {
-        this.language(this._config.i18n.language);
+        this.language(this._languageCode);
         if (this._config.security.RSA.exponent.length > 0 && this._config.security.RSA.modulus.length > 0) {
             this._rsaPublic = new RSA(this._config.security.RSA);
         }
         this.Render = new UIRender();
-        this.Render.init([
-            TipsElement, FloatWindow, FloatPage, NotifyArea, MockSwitch, MockDialog, MockCheckBox, MockRadio,
-            StandardButton, SubmitButton, ResetButton, ProgressBar, ScrollBar, StarRating, StarScore,
-            ButtonGroup, CheckBoxGroup, RadioGroup, FormItem, FormInfo,
-            Input.InputElement, Input.BaseInput, Input.AbstractInput, Input.PasswordInput, Input.HiddenInput,
-            Input.TextInput, Input.SearchInput, Input.NumberInput, Input.DateInput, Input.TimeInput,
-            Input.DateTimeInput, Input.SelectInput, Input.TextAreaInput, Input.NumberIntervalInput,
-            Input.DateIntervalInput, Input.TimeIntervalInput, Input.DateTimeIntervalInput, Input.DragUpload,
-            List.ListFilter, List.ListData, List.ListStatistics, List.ListTitle, List.ListRecord,
-            List.RecordOperator, List.ListHeader, List.PropertyItem, List.PropertyDefine, List.MessageList,
-            SlideShow, SocialGroup, MenuItem, MenuElement
-        ]);
+        this.Render.init(this._config.elements);
     }
 
     alert(message = null) {
@@ -167,19 +170,33 @@ class CellJS {
                 ? target.getAttribute("href")
                 : target.dataset.link;
             if (linkAddress !== undefined && linkAddress.length > 0 && linkAddress !== "#") {
-                if (target.dataset.elementId === undefined || target.dataset.elementId === null
-                    || target.dataset.elementId.length === 0) {
+                if (target.dataset.targetId === undefined || target.dataset.targetId === null
+                    || target.dataset.targetId.length === 0) {
                     window.location = linkAddress;
                 } else {
                     Cell.Ajax(linkAddress)
                         .then(responseText => {
-                            if (responseText.isJSON()) {
-                                this._renderElement(responseText.parseJSON());
-                            } else {
-                                let _element = $(target.dataset.elementId);
-                                if (_element) {
+                            let _element = $(target.dataset.targetId);
+                            if (_element) {
+                                if (responseText.isJSON()) {
+                                    _element.clearChildNodes();
+                                    let responseData = responseText.parseJSON();
+                                    if (responseData.hasOwnProperty("title")) {
+                                        responseData.title.setTitle();
+                                    }
+                                    if (responseData.hasOwnProperty("keywords")) {
+                                        responseData.keywords.setKeywords();
+                                    }
+                                    if (responseData.hasOwnProperty("description")) {
+                                        responseData.description.setDescription();
+                                    }
+                                    if (responseData.hasOwnProperty("data")) {
+                                        Cell._renderElement(_element, responseData);
+                                    }
+                                } else {
                                     _element.innerHTML = ("" + responseText);
                                 }
+                                history.pushState(null, null, linkAddress);
                             }
                         })
                         .catch(errorMsg => {
@@ -193,51 +210,76 @@ class CellJS {
         }
     }
 
-    _renderElement(jsonData = []) {
-        jsonData.forEach(dataItem => {
-            if (dataItem.hasOwnProperty("elementTag")
+    openWindow(data) {
+        let floatWindow = document.body.querySelector("float-window");
+        if (floatWindow === null) {
+            floatWindow = new FloatWindow();
+            document.body.append(floatWindow);
+        }
+        floatWindow.data = data;
+    }
+
+    _renderElement(element, jsonData = []) {
+        jsonData.data.forEach(dataItem => {
+            if (dataItem.hasOwnProperty("tagName")
                 && dataItem.hasOwnProperty("data")) {
-                let selector = dataItem.elementTag;
-                if (dataItem.hasOwnProperty("elementId")) {
-                    selector += ("[id=\"" + dataItem.elementId + "\"]");
+                let selector = dataItem.tagName;
+                if (dataItem.data.hasOwnProperty("id")) {
+                    selector += ("[id=\"" + dataItem.data.id + "\"]");
                 }
-                let element = document.querySelector(selector);
-                if (element) {
-                    element.data = JSON.stringify(dataItem.data);
+                let bindElement = element.querySelector(selector);
+                if (bindElement === null) {
+                    bindElement = document.createElement(dataItem.tagName);
+                    element.appendChild(bindElement);
                 }
+                if (dataItem.hasOwnProperty("targetId")) {
+                    bindElement.dataset.targetId = dataItem.targetId;
+                }
+                bindElement.data = JSON.stringify(dataItem.data);
             }
         });
     }
 
     submitForm(formElement) {
         if (formElement && !formElement.dataset.disabled && formElement.validate()) {
-            let jsonData = formElement.formData();
-            Cell.Ajax(formElement.action, {
-                method : formElement.getAttribute("method"),
-                uploadFile : jsonData.uploadFile,
-                uploadProgress : jsonData.uploadProgress
-            }, jsonData.formData).then(responseText => {
-                if (formElement.dataset.redirect !== undefined
-                    && formElement.dataset.redirect !== null
-                    && formElement.dataset.redirect.length > 0) {
-                    window.location = formElement.dataset.redirect;
-                    return;
-                }
-                if (responseText.isJSON()) {
-                    this._renderElement(responseText.parseJSON());
-                } else {
-                    if (formElement.dataset.elementId === undefined) {
-                        document.body.innerHTML = responseText;
-                    } else {
-                        let _element = $(formElement.dataset.elementId);
+            if (formElement.dataset.targetId === undefined || formElement.dataset.targetId === null
+                || formElement.dataset.targetId.length === 0) {
+                formElement.submit();
+            } else {
+                let jsonData = formElement.formData();
+                Cell.Ajax(formElement.action, {
+                    method : formElement.getAttribute("method"),
+                    uploadFile : jsonData.uploadFile,
+                    uploadProgress : jsonData.uploadProgress
+                }, jsonData.formData)
+                    .then(responseText => {
+                        let _element = $(formElement.dataset.targetId);
                         if (_element) {
-                            _element.data = responseText;
+                            if (responseText.isJSON()) {
+                                _element.clearChildNodes();
+                                Cell._renderElement(_element, responseText.parseJSON());
+                            } else {
+                                _element.innerHTML = ("" + responseText);
+                            }
                         }
-                    }
-                }
-            }).catch(errorMsg => {
-                console.error(errorMsg);
-            });
+                        if (formElement.method.toLowerCase() === "get") {
+                            let urlAddress = formElement.action;
+                            if (jsonData.formData != null) {
+                                let queryString = "";
+                                for (let key of jsonData.formData.keys()) {
+                                    queryString += ("&" + key + "=" + jsonData.formData.get(key));
+                                }
+                                if (queryString.length > 0) {
+                                    urlAddress += ("?" + queryString.substring(1));
+                                }
+                            }
+                            history.pushState(null, null, urlAddress);
+                        }
+                    })
+                    .catch(errorMsg => {
+                        console.error(errorMsg);
+                    });
+            }
         }
         return false;
     }
@@ -269,9 +311,9 @@ class CellJS {
     }
 
     loadResource(bundle = "", initFunc = null) {
-        let _url = this._config.contextPath + this._config.i18n.resPath;
-        _url += this._config.i18n.resPath.endsWith("/") ? "" : "/";
-        _url += bundle + "/" + this._language + ".json";
+        let _url = this.contextPath() + this._config.resPath;
+        _url += this._config.resPath.endsWith("/") ? "" : "/";
+        _url += bundle + "/" + this._languageCode + ".json";
         Cell.Ajax(_url).then(responseData => {
             this._resources[bundle] = responseData.parseJSON();
             if (initFunc != null) {
@@ -299,11 +341,12 @@ class CellJS {
         return bundle + "." + key;
     }
 
-    language(language) {
-        if (this._language === language) {
+    language(languageCode) {
+        if (this._languageCode === languageCode) {
             return;
         }
-        this._language = language;
+
+        this._languageCode = languageCode;
         this._resources = {};
         //  Load Core Resource
         this.loadResource("Core");
@@ -331,13 +374,17 @@ class CellJS {
     }
 
     encryptPassword(password) {
-        if (!this._config.form.encryptPassword) {
-            return password;
+        if (this._config.security.encryptPassword) {
+            if (this._config.security.encryptMethod === "RSA") {
+                if (this._rsaPublic === null) {
+                    console.error("RSA key not initialized");
+                    return "";
+                }
+                return this._rsaPublic.encrypt(password);
+            }
+            return this.calculateData(this._config.security.encryptMethod, password);
         }
-        if (this._config.form.encryptMethod === "RSA" && this._rsaPublic !== null) {
-            return this._rsaPublic.encrypt(password);
-        }
-        return this.calculateData(this._config.form.encryptMethod, password);
+        return password;
     }
 
     calculateData(method, data, key = "") {
@@ -408,13 +455,24 @@ class CellJS {
         return encryptor.finish();
     }
 
-    convertDateTime(value = "") {
-        if (this._config.form.convertDateTime) {
+    dateToMilliseconds(value = "") {
+        if (this._config.formConfig.convertDateTime) {
             let milliseconds = Date.parse(value);
-            if (this._config.form.utcDateTime) {
-                milliseconds += (new Date().getTimezoneOffset() * 60 * 1000);
+            if (this._config.formConfig.utcDateTime) {
+                milliseconds += Comment.TimeZoneOffset;
             }
             return milliseconds;
+        }
+        return value;
+    }
+
+    millisecondsToDate(value = null, pattern = Comment.ISO8601DATETIMEPattern,
+                       utc = this._config.formConfig.utcDateTime) {
+        if (Number.isFinite(value)) {
+            return value.parseTime(utc).format(pattern);
+        }
+        if (Object.prototype.toString.call(value) === "[object String]" && value.isNum()) {
+            return value.parseInt().parseTime(utc).format(pattern);
         }
         return value;
     }
@@ -492,6 +550,10 @@ class CellJS {
     }
 
     static _parseResponse(_request, resolve, reject) {
+        let languageCode = _request.getResponseHeader("languageCode");
+        if (languageCode !== null) {
+            Cell.language(languageCode);
+        }
         let _jwtToken = _request.getResponseHeader("Authentication");
         if (_jwtToken !== null) {
             sessionStorage.setItem("JWTToken", _jwtToken);

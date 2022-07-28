@@ -130,6 +130,9 @@ class ListFilter extends BaseElement {
     }
 
     _render() {
+        if (this.dataset.targetId !== null && this.dataset.targetId !== undefined) {
+            this.filterForm.dataset.targetId = this.dataset.targetId;
+        }
         this.filterForm.clearChildNodes();
         if (this.dataset.sortBy !== undefined && this.dataset.sortBy.length > 0) {
             if (this.sortByElement === null) {
@@ -148,6 +151,7 @@ class ListFilter extends BaseElement {
         if (this.dataset.pageNo !== undefined && this.dataset.pageNo.length > 0) {
             if (this.pageNoElement === null) {
                 this.pageNoElement = new HiddenInput();
+                this.pageNoElement.dataset.id = this.dataset.pageNo;
                 this.pageNoElement.dataset.name = this.dataset.pageNo;
             }
             this.filterForm.appendChild(this.pageNoElement);
@@ -155,6 +159,7 @@ class ListFilter extends BaseElement {
         if (this.dataset.pageLimit !== undefined && this.dataset.pageLimit.length > 0) {
             if (this.pageLimitElement === null) {
                 this.pageLimitElement = new HiddenInput();
+                this.pageLimitElement.dataset.id = this.dataset.pageLimit;
                 this.pageLimitElement.dataset.name = this.dataset.pageLimit;
             }
             this.filterForm.appendChild(this.pageLimitElement);
@@ -180,15 +185,19 @@ class ListFilter extends BaseElement {
             this.hide();
             return;
         }
-        this.show();
         let jsonData = this.dataset.items.parseJSON();
-        Array.from(jsonData)
-            .filter(itemData => itemData.hasOwnProperty("tag"))
-            .forEach(itemData => {
-                let filterItem = document.createElement(itemData.tag);
-                this.filterForm.appendChild(filterItem);
-                filterItem.data = JSON.stringify(itemData);
-            });
+        if (Array.from(jsonData).length === 0) {
+            this.hide();
+        } else {
+            Array.from(jsonData)
+                .filter(itemData => itemData.hasOwnProperty("tag"))
+                .forEach(itemData => {
+                    let filterItem = document.createElement(itemData.tag);
+                    this.filterForm.appendChild(filterItem);
+                    filterItem.data = JSON.stringify(itemData);
+                });
+            this.show();
+        }
     }
 
     refresh() {
@@ -216,8 +225,8 @@ class ListFilter extends BaseElement {
     }
 
     _submitForm() {
-        if (this.dataset.elementId !== undefined && this.dataset.elementId !== null) {
-            this.filterForm.dataset.elementId = this.dataset.elementId;
+        if (this.dataset.targetId !== undefined && this.dataset.targetId !== null) {
+            this.filterForm.dataset.targetId = this.dataset.targetId;
         }
         Cell.submitForm(this.filterForm);
     }
@@ -334,6 +343,11 @@ class ListStatistics extends BaseElement {
                 }
             }
             this.statisticsElement.sortChildrenBy("div", "data-index", true);
+            if (data.length > 0) {
+                this.show();
+            } else {
+                this.hide();
+            }
         }
     }
 }
@@ -381,6 +395,7 @@ class ListTitle extends BaseElement {
             this.importBtn = document.createElement("a");
             this.importBtn.setClass("icon icon-upload");
             this.btnGroup.appendChild(this.importBtn);
+            this.importBtn.dataset.targetId = this.dataset.targetId;
             this.importBtn.addEventListener("click", (event) => Cell.sendRequest(event));
             this.importBtn.hide();
 
@@ -495,6 +510,8 @@ class PropertyDefine {
     mapKey = "";
     title = "";
     width = "";
+    pattern = "";
+    utc = false;
     sort = false;
     modified = false;
 
@@ -524,6 +541,18 @@ class PropertyDefine {
         if (data.hasOwnProperty("width")) {
             if (this.width !== data.width) {
                 this.width = data.width;
+                updateCount++;
+            }
+        }
+        if (data.hasOwnProperty("pattern")) {
+            if (this.pattern !== data.pattern) {
+                this.pattern = data.pattern;
+                updateCount++;
+            }
+        }
+        if (data.hasOwnProperty("utc")) {
+            if (this.utc !== data.utc) {
+                this.utc = data.utc;
                 updateCount++;
             }
         }
@@ -671,9 +700,6 @@ class ListHeader extends BaseElement {
 }
 
 class RecordOperator extends BaseElement {
-    static get observedAttributes() {
-        return ['elementId'];
-    }
 
     constructor() {
         super();
@@ -685,14 +711,6 @@ class RecordOperator extends BaseElement {
 
     static tagName() {
         return "record-operator";
-    }
-
-    get elementId() {
-        return this.linkElement.dataset.elementId;
-    }
-
-    set elementId(elementId) {
-        this.linkElement.dataset.elementId = elementId;
     }
 
     connectedCallback() {
@@ -720,6 +738,9 @@ class RecordOperator extends BaseElement {
         }
         if (data.hasOwnProperty("textContent")) {
             this.textElement.innerHTML = data.textContent;
+        }
+        if (this.dataset.targetId !== null) {
+            this.linkElement.dataset.targetId = this.dataset.targetId;
         }
     }
 }
@@ -770,15 +791,6 @@ class ListRecord extends BaseElement {
         }
     }
 
-    set enableSelectAll(enabled) {
-        this.selectElement.disabled = !enabled;
-        if (this.selectElement.disabled) {
-            this.selectElement.hide();
-        } else {
-            this.selectElement.show();
-        }
-    }
-
     selected() {
         return this.selectElement.checked;
     }
@@ -787,6 +799,7 @@ class ListRecord extends BaseElement {
         if (this.dataset.recordData !== undefined && this.dataset.recordData.isJSON()) {
             let jsonData = this.dataset.recordData.parseJSON();
             if (jsonData.hasOwnProperty("link") && jsonData.hasOwnProperty("title")) {
+                this.dataset.link = jsonData.link;
                 if (this.selectElement === null) {
                     this.selectElement = new MockCheckBox();
                     this.selectElement.setAttribute("slot", "selectAll");
@@ -795,16 +808,18 @@ class ListRecord extends BaseElement {
                         event.stopPropagation();
                         this.selectElement.checked = !this.selectElement.checked;
                         this.parentElement.parentElement.parentElement.checkSelectAll();
-                    })
+                    });
                 }
                 if (this.previewImg === null) {
                     this.previewImg = document.createElement("span");
                     this.previewImg.setAttribute("slot", "preview");
                     this.appendChild(this.previewImg);
+                    this.previewImg.dataset.link = jsonData.link;
+                    if (this.dataset.targetId !== null && this.dataset.targetId !== undefined) {
+                        this.previewImg.dataset.targetId = this.dataset.targetId;
+                    }
                     this.previewImg.addEventListener("click", (event) => Cell.sendRequest(event));
                 }
-                this.previewImg.dataset.link = jsonData.link;
-                this.previewImg.dataset.elementId = jsonData.hasOwnProperty("elementId") ? jsonData.elementId : "";
                 if (jsonData.hasOwnProperty("imgPath")) {
                     this.previewImg.style.backgroundImage = "url('" + jsonData.imgPath + "')";
                 } else {
@@ -831,11 +846,12 @@ class ListRecord extends BaseElement {
                     this.mainTitle.appendChild(linkElement);
                     linkElement.addEventListener("click", (event) => Cell.sendRequest(event));
                 }
-                let elementId = jsonData.hasOwnProperty("elementId") ? jsonData.elementId : "";
                 linkElement.innerText = jsonData.title;
                 linkElement.setAttribute("title", jsonData.title);
                 linkElement.setAttribute("href", jsonData.link);
-                linkElement.dataset.elementId = elementId;
+                if (this.dataset.targetId !== null && this.dataset.targetId !== undefined) {
+                    linkElement.dataset.targetId = this.dataset.targetId;
+                }
 
                 this.abstractElement.innerHTML = jsonData.hasOwnProperty("abstract") ? jsonData.abstract : "";
 
@@ -860,11 +876,18 @@ class ListRecord extends BaseElement {
                         this.itemsElement.appendChild(propertyItem);
                     }
                     propertyItem.itemName(propertyDefine.title);
+                    let itemValue = null;
                     if (jsonData.hasOwnProperty(propertyDefine.mapKey)) {
-                        propertyItem.itemValue(jsonData[propertyDefine.mapKey]);
-                    } else {
-                        propertyItem.itemValue("");
+                        let dataValue = jsonData[propertyDefine.mapKey];
+                        propertyItem.dataset.data = dataValue;
+                        if (propertyDefine.pattern.length > 0) {
+                            itemValue = Cell.millisecondsToDate(dataValue, propertyDefine.pattern, propertyDefine.utc);
+                        }
+                        if (itemValue === null) {
+                            itemValue = dataValue;
+                        }
                     }
+                    propertyItem.itemValue(itemValue);
                     propertyItem.setStyle("--width:" + propertyDefine.width);
                 }
                 if (jsonData.hasOwnProperty("score")) {
@@ -889,7 +912,7 @@ class ListRecord extends BaseElement {
                                 recordOperator = new RecordOperator();
                                 this.operatorsElement.appendChild(recordOperator);
                             }
-                            recordOperator.elementId = elementId;
+                            recordOperator.dataset.targetId = this.dataset.targetId;
                             recordOperator.data = JSON.stringify(operatorItem);
                         });
                     while (i < existsCount) {
@@ -989,6 +1012,13 @@ class ListData extends BaseElement {
             this.pageLimit = data.pageLimit;
         } else {
             this.pageLimit = 20;
+        }
+        if (this.selectAllBtn !== null) {
+            if (this.selectName === "") {
+                this.selectAllBtn.hide();
+            } else {
+                this.selectAllBtn.show();
+            }
         }
     }
 
@@ -1101,12 +1131,7 @@ class ListData extends BaseElement {
                     let rowElement = new ListRecord();
                     this.contentElement.appendChild(rowElement);
                     rowElement.updateDefines(this.headerElement.itemDefines);
-                    if (rowData.hasOwnProperty(this.selectName)) {
-                        rowElement.dataset[this.selectName] = rowData[this.selectName];
-                    }
-                    rowElement.data = JSON.stringify(rowData);
-                    rowElement.selectAll = this.selectName;
-                    rowElement.enableSelectAll = this.selectAll;
+                    this._renderRow(rowElement, rowData);
                 });
             } else {
                 let rowList = this.contentElement.querySelectorAll("list-record"),
@@ -1118,14 +1143,9 @@ class ListData extends BaseElement {
                     } else {
                         rowElement = new ListRecord();
                         this.contentElement.appendChild(rowElement);
-                        rowElement.updateDefines(this.headerElement.itemDefines);
                     }
-                    if (rowData.hasOwnProperty(this.selectName)) {
-                        rowElement.dataset[this.selectName] = rowData[this.selectName];
-                    }
-                    rowElement.data = JSON.stringify(rowData);
-                    rowElement.selectAll = this.selectName;
-                    rowElement.enableSelectAll = this.selectAll;
+                    rowElement.updateDefines(this.headerElement.itemDefines);
+                    this._renderRow(rowElement, rowData);
                     i++;
                 });
                 while (i < existsCount) {
@@ -1134,6 +1154,21 @@ class ListData extends BaseElement {
                 }
             }
         }
+    }
+
+    _renderRow(rowElement = null, rowData = []) {
+        if (rowElement == null || rowData.length === 0) {
+            return;
+        }
+        if (this.dataset.targetId !== null && this.dataset.targetId !== undefined) {
+            rowElement.dataset.targetId = this.dataset.targetId;
+        }
+        if (rowData.hasOwnProperty(this.selectName)) {
+            rowElement.dataset[this.selectName] = rowData[this.selectName];
+        }
+        rowElement.data = JSON.stringify(rowData);
+        rowElement.selectAll = this.selectName;
+        rowElement.enableSelectAll = this.selectAll;
     }
 
     _renderPager() {
@@ -1326,25 +1361,31 @@ class MessageList extends BaseElement {
         if (data === null) {
             return;
         }
+        if (data.hasOwnProperty("className")) {
+            this.setClass(data.className);
+        }
         if (data.hasOwnProperty("id")) {
             this.setAttribute("id", data.id);
-            this.filterElement.dataset.elementId = data.id;
+        }
+        if (data.hasOwnProperty("targetId")) {
+            this.dataset.targetId = data.targetId;
+        }
+        if (this.dataset.targetId !== null && this.dataset.targetId !== undefined) {
+            this.filterElement.dataset.targetId = this.dataset.targetId;
+            this.titleEleemnt.dataset.targetId = this.dataset.targetId;
+            this.gridElement.dataset.targetId = this.dataset.targetId;
         }
         if (data.hasOwnProperty("filter")) {
             this.filterElement.data = JSON.stringify(data.filter);
-            this.filterElement.show();
         }
         if (data.hasOwnProperty("statistics")) {
             this.statisticsElement.data = JSON.stringify(data.statistics);
-            this.statisticsElement.show();
         }
         if (data.hasOwnProperty("title")) {
             this.titleEleemnt.data = JSON.stringify(data.title);
-            this.titleEleemnt.show();
         }
         if (data.hasOwnProperty("grid")) {
             this.gridElement.data = JSON.stringify(data.grid);
-            this.gridElement.show();
         }
 
         if (this.interval !== 0) {
@@ -1381,5 +1422,66 @@ class MessageList extends BaseElement {
     }
 }
 
+class CategoryList extends BaseElement {
+    constructor() {
+        super();
+        super._addSlot("title", "itemList");
+        this.titleElement = null;
+        this.itemElement = null;
+    }
+
+    static tagName() {
+        return "category-list";
+    }
+
+    connectedCallback() {
+        if (this.titleElement === null) {
+            this.titleElement = document.createElement("h3");
+            this.titleElement.setAttribute("slot", "title");
+            this.appendChild(this.titleElement);
+        }
+        if (this.itemElement === null) {
+            this.itemElement = document.createElement("div");
+            this.itemElement.setAttribute("slot", "itemList");
+            this.appendChild(this.itemElement);
+        }
+        if (this.hasAttribute("data") && this.getAttribute("data").isJSON())
+            this.renderElement(this.getAttribute("data").parseJSON());
+    }
+
+    renderElement(data) {
+        if (data === null) {
+            return;
+        }
+        if (data.hasOwnProperty("className")) {
+            this.setClass(data.className);
+        }
+        if (data.hasOwnProperty("id")) {
+            this.setAttribute("id", data.id);
+        }
+        if (data.hasOwnProperty("titleContent")) {
+            this.titleElement.innerText = data.titleContent;
+        }
+        let targetId;
+        if (this.dataset.targetId !== null && this.dataset.targetId !== undefined) {
+            targetId = this.dataset.targetId;
+        } else {
+            targetId = "";
+        }
+        this.itemElement.clearChildNodes();
+        Array.from(data.hasOwnProperty("itemList") ? data.itemList : [])
+            .forEach(itemInfo => {
+                let itemText = itemInfo.hasOwnProperty("itemText") ? itemInfo.itemText : "";
+                let linkElement = document.createElement("a");
+                linkElement.setAttribute("href", itemInfo.hasOwnProperty("linkAddress") ? itemInfo.linkAddress : "#");
+                linkElement.setAttribute("title", itemText);
+                linkElement.innerText = itemText;
+                linkElement.dataset.targetId = targetId;
+                linkElement.addEventListener("click", Cell.sendRequest);
+                this.itemElement.appendChild(linkElement);
+            });
+    }
+}
+
 export {ListFilter, ListData, ListStatistics, ListTitle, ListRecord,
-    RecordOperator, ListHeader, MessageList, PropertyItem, PropertyDefine};
+    RecordOperator, ListHeader, MessageList, PropertyItem, PropertyDefine, CategoryList};

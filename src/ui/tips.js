@@ -29,11 +29,7 @@ import {BaseElement} from "./element.js";
 export default class TipsElement extends BaseElement {
     constructor() {
         super();
-        if (this._shadowRoot.querySelector("slot[name='tipsButton']") === null) {
-            let slotElement = document.createElement("slot");
-            slotElement.setAttribute("name", "tipsButton");
-            this._shadowRoot.appendChild(slotElement);
-        }
+        super._addSlot("tipsButton");
     }
 
     static tagName() {
@@ -60,7 +56,7 @@ export default class TipsElement extends BaseElement {
                 tipsElement.setAttribute("slot", "tipsButton");
                 this.appendChild(tipsElement);
                 let tipsIcon = document.createElement("i");
-                tipsIcon.setClass("icon-helpcircle");
+                tipsIcon.setClass("icon-help-circle");
                 tipsElement.appendChild(tipsIcon);
             }
             let tipsContent = this.querySelector("span > span");

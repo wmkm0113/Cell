@@ -32,6 +32,10 @@ const Comment = {
     MaxWidth :  Math.max(document.documentElement.scrollWidth, document.documentElement.clientWidth),
     MaxHeight : Math.max(document.documentElement.scrollHeight, document.documentElement.clientHeight),
     GPS :       !!navigator.geolocation,
+    TimeZoneOffset : new Date().getTimezoneOffset() * 60 * 1000,
+    ISO8601DATEPattern : "yyyy-MM-dd",
+    ISO8601TIMEPattern : "HH:mm:ss",
+    ISO8601DATETIMEPattern : "yyyy-MM-ddTHH:mm:ss.SSS",
     BASE16 :    ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'],
     BASE36 : [
         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
@@ -138,7 +142,7 @@ const RegexLibrary = {
     E_Mail : /^([A-Za-z\d_\-.])+@([A-Za-z\d_\-.])+\.([A-Za-z]{2,4})$/i,
     UUID : /^([\da-f]{8}((-[\da-f]{4}){3})-[\da-f]{12})|([\da-f]{32})\b/g,
     BlankText : /\s+/ig,
-    Number : /\b\d+\b/g,
+    Number : /^\b\d+\b$/g,
     Color : /^#[\dA-F]{6}$/i,
     XML : /<[a-zA-Z\d]+[^>]*>(?:.|[\r\n])*?<\/[a-zA-Z\d]+>/ig,
     HtmlTag : /<[a-zA-Z\d]+[^>]*>/ig,
@@ -149,19 +153,21 @@ const RegexLibrary = {
 const Config = {
     developmentMode: false,
     contextPath : "",
-    //  Internationalization
-    i18n : {
-        //  Current language
-        language : Comment.Language,
-        resPath : "./i18n"
-    },
+    resPath : "/i18n",
+    languageCode : Comment.Language,
     //  Config the dark mode by sunrise and sunset
     darkMode : {
         enabled : false,
         styleClass : "darkMode"
     },
     //  Config for form data
-    form : {
+    formConfig : {
+        //  Convert date/time from 'yyyy-MM-dd [HH:mm]' to number of milliseconds between that date and midnight, January 1, 1970.
+        convertDateTime : false,
+        //  Convert value is UTC number of milliseconds between that date and midnight, January 1, 1970.
+        utcDateTime : false
+    },
+    security : {
         //  Encrypt value of input[type='password']
         encryptPassword : true,
         //  Encrypt method for input[type='password']
@@ -169,12 +175,6 @@ const Config = {
         //              SHA3_224/SHA3_256/SHA3_384/SHA3_512/SHAKE128/SHAKE256
         //              Keccak224/Keccak256/Keccak384/Keccak512
         encryptMethod : "SHA256",
-        //  Convert date/time from 'yyyy-MM-dd [HH:mm]' to number of milliseconds between that date and midnight, January 1, 1970.
-        convertDateTime : false,
-        //  Convert value is UTC number of milliseconds between that date and midnight, January 1, 1970.
-        utcDateTime : false
-    },
-    security : {
         //  RSA Key Config
         RSA : {
             exponent : "",
@@ -351,7 +351,7 @@ Object.extend(Element.prototype, {
                     process = input.checked;
                 }
                 if (process) {
-                    _inputValue = input.tagName.toLowerCase() === "textarea" ? input.innerHTML : input.value;
+                    _inputValue = input.value;
                     if (_inputValue !== null && _inputValue.length > 0) {
                         if (input.tagName.toLowerCase() === "input") {
                             switch (input.type.toLowerCase()) {
@@ -359,8 +359,9 @@ Object.extend(Element.prototype, {
                                     _inputValue = Cell.encryptPassword(_inputValue);
                                     break;
                                 case "date":
+                                case "time":
                                 case "datetime-local":
-                                    _inputValue = Cell.convertDateTime(_inputValue);
+                                    _inputValue = Cell.dateToMilliseconds(_inputValue);
                                     break;
                                 case "file":
                                     jsonData.uploadFile = true;
@@ -803,7 +804,7 @@ Object.extend(Number.prototype, {
     parseTime(utc = false) {
         let _date = new Date();
         if (utc) {
-            _date.setTime(this + (new Date().getTimezoneOffset() * 60 * 1000));
+            _date.setTime(this - Comment.TimeZoneOffset);
         } else {
             _date.setTime(this);
         }

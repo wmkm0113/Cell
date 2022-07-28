@@ -16,6 +16,7 @@
  */
 "use strict";
 
+import {Comment} from "../commons/Commons.js";
 import {AbstractElement} from "./element.js";
 
 /**
@@ -26,7 +27,7 @@ class InputElement extends AbstractElement {
         super();
     }
 
-    _renderElement(tagName = "") {
+    _createElement(tagName = "") {
         if (tagName.length > 0) {
             let element = document.createElement(tagName);
             element.setAttribute("slot", "element");
@@ -35,12 +36,20 @@ class InputElement extends AbstractElement {
         }
         return null;
     }
+
+    renderElement(data) {
+        if (data.hasOwnProperty("id") && data.hasOwnProperty("name")) {
+            Object.keys(data).forEach(key =>
+                this.dataset[key] = ((typeof data[key]) === "string") ? data[key] : JSON.stringify(data[key]));
+            this._render();
+        }
+    }
 }
 
 class IntervalInput extends AbstractElement {
     constructor(type = "") {
         super();
-        this.type = (type == null) ? "" : type;
+        this.type = type;
         this.elementGroup = null;
         this.beginElement = null;
         this.endElement = null;
@@ -51,12 +60,26 @@ class IntervalInput extends AbstractElement {
             Object.keys(data).forEach(key => {
                 switch (key) {
                     case "tips":
+                        this.dataset[key] = JSON.stringify(data[key]);
+                        break;
                     case "textContent":
                     case "beginName":
-                    case "beginValue":
                     case "endName":
+                        this.dataset[key] = data[key];
+                        break;
+                    case "beginValue":
                     case "endValue":
-                        this.dataset[key] = ((typeof data[key]) === "string") ? data[key] : JSON.stringify(data[key]);
+                        switch (this.type.toLowerCase()) {
+                            case "date":
+                                this.dataset[key] = Cell.millisecondsToDate(data[key], Comment.ISO8601DATEPattern);
+                                break;
+                            case "time":
+                                this.dataset[key] = Cell.millisecondsToDate(data[key], Comment.ISO8601TIMEPattern);
+                                break;
+                            case "datetime-local":
+                                this.dataset[key] = Cell.millisecondsToDate(data[key], Comment.ISO8601DATETIMEPattern);
+                                break;
+                        }
                         break;
                     default:
                         this.setAttribute(key, data[key]);
@@ -124,7 +147,20 @@ class BaseInput extends InputElement {
             Object.keys(data).forEach(key => {
                 if (key.toLowerCase() === "value") {
                     if (this._elementType.toLowerCase() !== "password") {
-                        this.setAttribute("value", data[key]);
+                        switch (this._elementType.toLowerCase()) {
+                            case "date":
+                                this.dataset.value = Cell.millisecondsToDate(data[key], Comment.ISO8601DATEPattern);
+                                break;
+                            case "time":
+                                this.dataset.value = Cell.millisecondsToDate(data[key], Comment.ISO8601TIMEPattern);
+                                break;
+                            case "datetime-local":
+                                this.dataset.value = Cell.millisecondsToDate(data[key], Comment.ISO8601DATETIMEPattern);
+                                break;
+                            default:
+                                this.dataset.value = data[key];
+                                break;
+                        }
                     }
                 } else {
                     this.dataset[key] = ((typeof data[key]) === "string") ? data[key] : JSON.stringify(data[key]);
@@ -238,9 +274,11 @@ class AbstractInput extends BaseInput {
             }
             super._addSlot("element", "icon");
             let inputElement = this._inputElement();
-            Object.keys(this.dataset).forEach(key => {
-                inputElement.setAttribute(key, this.dataset[key]);
-            })
+            Object.keys(this.dataset)
+                .filter(key => ["id", "name", "placeholder", "value"].indexOf(key.toLowerCase()) !== -1)
+                .forEach(key => {
+                    inputElement.setAttribute(key, this.dataset[key]);
+                });
             inputElement.addEventListener("blur", (event) => {
                 event.stopPropagation();
                 if (inputElement.validate()) {
@@ -675,14 +713,6 @@ class SelectInput extends InputElement {
         return "select-input";
     }
 
-    renderElement(data) {
-        if (data.hasOwnProperty("id") && data.hasOwnProperty("name")) {
-            Object.keys(data).forEach(key =>
-                this.dataset[key] = ((typeof data[key]) === "string") ? data[key] : JSON.stringify(data[key]));
-            this._render();
-        }
-    }
-
     connectedCallback() {
         super._removeProgress();
         this._render();
@@ -694,7 +724,7 @@ class SelectInput extends InputElement {
         super._addSlot("element");
         let selectElement = this.querySelector("select");
         if (selectElement === null) {
-            selectElement = this._renderElement("select");
+            selectElement = this._createElement("select");
         } else {
             selectElement.clearChildNodes();
         }
@@ -737,14 +767,6 @@ class TextAreaInput extends InputElement {
         return "textarea-input";
     }
 
-    renderElement(data) {
-        if (data.hasOwnProperty("id") && data.hasOwnProperty("name")) {
-            Object.keys(data).forEach(key =>
-                this.dataset[key] = ((typeof data[key]) === "string") ? data[key] : JSON.stringify(data[key]));
-            this._render();
-        }
-    }
-
     connectedCallback() {
         super._removeProgress();
         this._render();
@@ -758,7 +780,7 @@ class TextAreaInput extends InputElement {
         super._addSlot("element");
         let textareaElement = this.querySelector("textarea");
         if (textareaElement === null) {
-            textareaElement = this._renderElement("textarea");
+            textareaElement = this._createElement("textarea");
         }
 
         if (this.dataset.id !== undefined) {
@@ -775,7 +797,7 @@ class TextAreaInput extends InputElement {
         }
         textareaElement.style.minHeight = height + "px";
         if (this.dataset.value !== undefined) {
-            textareaElement.innerHTML = this.dataset.value;
+            textareaElement.innerHTML = this.dataset.value.decodeByRegExp();
         }
     }
 }

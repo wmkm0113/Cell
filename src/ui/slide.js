@@ -74,10 +74,22 @@ export default class SlideShow extends BaseElement {
                 this.dataset.items = "";
             }
         }
-        this.connectedCallback();
+        this.renderSlides();
     }
 
     connectedCallback() {
+        super._addSlot("slide", "sort");
+        if (this.sortElement === null) {
+            this.sortElement = document.createElement("div");
+            this.sortElement.setAttribute("slot", "sort");
+            this.appendChild(this.sortElement);
+        }
+        if (this.hasAttribute("data") && this.getAttribute("data").isJSON()) {
+            this.renderElement(this.getAttribute("data").parseJSON());
+        }
+    }
+
+    renderSlides() {
         if (this.dataset.items === undefined) {
             return;
         }
@@ -88,12 +100,6 @@ export default class SlideShow extends BaseElement {
             this._timer = null;
         }
 
-        super._addSlot("slide", "sort");
-        if (this.sortElement === null) {
-            this.sortElement = document.createElement("div");
-            this.sortElement.setAttribute("slot", "sort");
-            this.appendChild(this.sortElement);
-        }
         let itemList = this.dataset.items;
         if (itemList.isJSON()) {
             let jsonItems = itemList.parseJSON();
