@@ -95,7 +95,7 @@
         new Int64(0x00000000, 0x80000001), new Int64(0x80000000, 0x80008008)
     ];
 
-    class SHA extends Crypto{
+    class SHA extends Crypto {
         constructor(bit, outBit, delimiter, blockSize, blockLength, key = "") {
             if (typeof bit === "undefined" || typeof outBit === "undefined" || typeof blockSize === "undefined") {
                 throw new Error(Cell.message("SHA", "SHA.ARGUMENT"));

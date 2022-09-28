@@ -1,3 +1,20 @@
+const multiMenuData = `{
+    "items" : [
+        {
+            "languageCode" : "en",
+            "languageName" : "English"
+        },
+        {
+            "languageCode" : "zh_CN",
+            "languageName" : "简体中文"
+        },
+        {
+            "languageCode" : "zh_TW",
+            "languageName" : "繁體中文"
+        }
+    ]
+}`;
+
 const indexTopMenuData = `{
     "data" : [
         {
@@ -8,8 +25,8 @@ const indexTopMenuData = `{
             "title": "Demo Menu",
             "items": [
                 {
-                    "title": "Slide Show",
-                    "link": "#slideDemo"
+                    "title": "Mock Elements",
+                    "link": "#mockElement"
                 },
                 {
                     "title": "Message List",
@@ -20,8 +37,16 @@ const indexTopMenuData = `{
                     "link": "#formDemo"
                 },
                 {
-                    "title": "Float Form",
-                    "link": "#floatWindow"
+                    "title": "Message Details",
+                    "link": "#detailsDemo"
+                },
+                {
+                    "title": "Corporate Details",
+                    "link": "#corpDetailsDemo"
+                },
+                {
+                    "title": "Address Details",
+                    "link": "#addressDetails"
                 }
             ]
         },
@@ -44,6 +69,16 @@ const indexTopMenuData = `{
         }
     ]
 }`;
+
+const progressBarDataNumber = `{
+    "percent" : "27"
+}`;
+
+const progressBarDataDetails = `{
+    "processed" : "4466304",
+    "total" : "13032864"
+}`;
+
 const socialData = `{
     "textContent": "Follow Us",
     "items": [
@@ -153,21 +188,21 @@ const listData = `{
             },
             {
                 "data" : "Data 3",
-                "index" : 3,
+                "index" : 4,
                 "className" : "warning",
                 "id" : "statistics3",
-                "title" : "Title 3"
+                "title" : "Title 3",
+                "link" : "#"
             },
             {
                 "data" : "Data 4",
-                "index" : 4,
+                "index" : 3,
                 "id" : "statistics4",
                 "title" : "Title 4"
             }
         ],
     "title" : {
         "textContent" : "Message List Title",
-        "importUrl" : "ImportUrl",
         "styleClass" : "view-list",
         "disableSwitch" : false
     },
@@ -222,18 +257,18 @@ const listData = `{
                     "title" : "Column Title 3"
                 },
                 {
-                    "mapKey" : "key1",
-                    "width" : "15%",
-                    "index" : 1,
-                    "sort" : false,
-                    "title" : "Column Title 1"
-                },
-                {
                     "mapKey" : "key2",
                     "width" : "15%",
                     "index" : 0,
                     "sort" : false,
                     "title" : "Column Title 2"
+                },
+                {
+                    "mapKey" : "key1",
+                    "width" : "15%",
+                    "index" : 1,
+                    "sort" : false,
+                    "title" : "Column Title 1"
                 }
             ]
         },
@@ -250,20 +285,22 @@ const listData = `{
                 "key6" : "Column 6 Text",
                 "key3" : "Column 3 Text",
                 "key4" : 1658958745944,
-                "link" : "#LinkAddress1",
+                "link" : "details-data.json",
+                "openWindow": true,
                 "key9" : "Column 9 Text",
                 "key7" : "Column 7 Text",
                 "key8" : "Column 8 Text",
-                "abstract" : "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                "abstract" : "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
                 "title" : "Text content Text content Text content Text content Text content Text content Text content Text content",
                 "score" : 4.2,
                 "operators" : [
                     {
-                        "link" : "EditLink",
+                        "link" : "form-data.json",
                         "index" : 3,
                         "textContent" : "Edit",
                         "title" : "Edit",
-                        "iconClass" : "icon-pencil"
+                        "iconClass" : "icon-pencil",
+                        "openWindow": true
                     },
                     {
                         "link" : "DeleteLink",
@@ -290,7 +327,8 @@ const listData = `{
                 "score" : 3.0,
                 "key3" : "Column 3 Text",
                 "imgPath" : "./images/1.jpg",
-                "link" : "LinkAddress2",
+                "link" : "details-data.json",
+                "openWindow": true,
                 "className" : "warning",
                 "identifyCode" : "2",
                 "title" : "Text content Text content Text content Text content Text content Text content Text content Text content"
@@ -301,11 +339,12 @@ const listData = `{
                 "key2" : "Column 2 Text",
                 "operators" : [
                     {
-                        "link" : "EditLink",
+                        "link" : "form-data.json",
                         "index" : 3,
                         "textContent" : "Edit",
                         "title" : "Edit",
-                        "iconClass" : "icon-pencil"
+                        "iconClass" : "icon-pencil",
+                        "openWindow": true
                     },
                     {
                         "link" : "MultiLink",
@@ -317,9 +356,10 @@ const listData = `{
                 ],
                 "key3" : "Column 3 Text",
                 "imgPath" : "./images/1.jpg",
-                "link" : "LinkAddress2",
+                "link" : "details-data.json",
+                "openWindow": true,
                 "identifyCode" : "3",
-                "abstract" : "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                "abstract" : "中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试",
                 "title" : "Text content Text content Text content Text content Text content Text content Text content Text content"
             },
             {
@@ -330,7 +370,8 @@ const listData = `{
                 "key6" : "Column 6 Text",
                 "key3" : "Column 3 Text",
                 "key4" : "1658958745944",
-                "link" : "#LinkAddress1",
+                "link" : "details-data.json",
+                "openWindow": true,
                 "key9" : "Column 9 Text",
                 "key7" : "Column 7 Text",
                 "key8" : "Column 8 Text",
@@ -363,7 +404,8 @@ const listData = `{
                 "score" : 3.0,
                 "key3" : "Column 3 Text",
                 "imgPath" : "./images/1.jpg",
-                "link" : "LinkAddress2",
+                "link" : "details-data.json",
+                "openWindow": true,
                 "identifyCode" : "5",
                 "title" : "Text content Text content Text content Text content Text content Text content Text content Text content"
             },
@@ -373,11 +415,12 @@ const listData = `{
                 "key7" : "Column 2 Text",
                 "operators" : [
                     {
-                        "link" : "EditLink",
+                        "link" : "form-data.json",
                         "index" : 3,
                         "textContent" : "Edit",
                         "title" : "Edit",
-                        "iconClass" : "icon-pencil"
+                        "iconClass" : "icon-pencil",
+                        "openWindow": true
                     },
                     {
                         "link" : "DeleteLink",
@@ -389,7 +432,8 @@ const listData = `{
                 ],
                 "key3" : "Column 3 Text",
                 "imgPath" : "./images/1.jpg",
-                "link" : "LinkAddress2",
+                "link" : "details-data.json",
+                "openWindow": true,
                 "className" : "error",
                 "identifyCode" : "6",
                 "abstract" : "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
@@ -403,7 +447,8 @@ const listData = `{
                 "key6" : "Column 6 Text",
                 "key3" : "Column 3 Text",
                 "key4" : "Column 4 Text",
-                "link" : "#LinkAddress1",
+                "link" : "details-data.json",
+                "openWindow": true,
                 "key9" : "Column 9 Text",
                 "key7" : "Column 7 Text",
                 "key8" : "Column 8 Text",
@@ -412,11 +457,12 @@ const listData = `{
                 "score" : 4.2,
                 "operators" : [
                     {
-                        "link" : "EditLink",
+                        "link" : "form-data.json",
                         "index" : 3,
                         "textContent" : "Edit",
                         "title" : "Edit",
-                        "iconClass" : "icon-pencil"
+                        "iconClass" : "icon-pencil",
+                        "openWindow": true
                     },
                     {
                         "link" : "DeleteLink",
@@ -443,7 +489,8 @@ const listData = `{
                 "score" : 3.0,
                 "key3" : "Column 3 Text",
                 "imgPath" : "./images/1.jpg",
-                "link" : "LinkAddress2",
+                "link" : "details-data.json",
+                "openWindow": true,
                 "identifyCode" : "8",
                 "title" : "Text content Text content Text content Text content Text content Text content Text content Text content"
             },
@@ -453,11 +500,12 @@ const listData = `{
                 "key2" : "Column 2 Text",
                 "operators" : [
                     {
-                        "link" : "EditLink",
+                        "link" : "form-data.json",
                         "index" : 3,
                         "textContent" : "Edit",
                         "title" : "Edit",
-                        "iconClass" : "icon-pencil"
+                        "iconClass" : "icon-pencil",
+                        "openWindow": true
                     },
                     {
                         "link" : "MultiLink",
@@ -469,9 +517,75 @@ const listData = `{
                 ],
                 "key3" : "Column 3 Text",
                 "imgPath" : "./images/1.jpg",
-                "link" : "LinkAddress2",
+                "link" : "details-data.json",
+                "openWindow": true,
                 "identifyCode" : "9",
                 "abstract" : "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                "title" : "Text content Text content Text content Text content Text content Text content Text content Text content"
+            },
+            {
+                "key1" : "Column 1 Text",
+                "elementId" : "elementId",
+                "key2" : "Column 2 Text",
+                "score" : 3.0,
+                "key3" : "Column 3 Text",
+                "imgPath" : "./images/1.jpg",
+                "link" : "details-data.json",
+                "openWindow": true,
+                "className" : "warning",
+                "identifyCode" : "10",
+                "title" : "Text content Text content Text content Text content Text content Text content Text content Text content"
+            },
+            {
+                "key1" : "Column 1 Text",
+                "elementId" : "elementId",
+                "key2" : "Column 2 Text",
+                "score" : 3.0,
+                "key3" : "Column 3 Text",
+                "imgPath" : "./images/1.jpg",
+                "link" : "details-data.json",
+                "openWindow": true,
+                "className" : "warning",
+                "identifyCode" : "11",
+                "title" : "Text content Text content Text content Text content Text content Text content Text content Text content"
+            },
+            {
+                "key1" : "Column 1 Text",
+                "elementId" : "elementId",
+                "key2" : "Column 2 Text",
+                "score" : 3.0,
+                "key3" : "Column 3 Text",
+                "imgPath" : "./images/1.jpg",
+                "link" : "details-data.json",
+                "openWindow": true,
+                "className" : "warning",
+                "identifyCode" : "12",
+                "title" : "Text content Text content Text content Text content Text content Text content Text content Text content"
+            },
+            {
+                "key1" : "Column 1 Text",
+                "elementId" : "elementId",
+                "key2" : "Column 2 Text",
+                "score" : 3.0,
+                "key3" : "Column 3 Text",
+                "imgPath" : "./images/1.jpg",
+                "link" : "details-data.json",
+                "openWindow": true,
+                "className" : "warning",
+                "identifyCode" : "13",
+                "title" : "Text content Text content Text content Text content Text content Text content Text content Text content"
+            },
+            {
+                "key1" : "Column 1 Text",
+                "elementId" : "elementId",
+                "key2" : "Column 2 Text",
+                "score" : 3.0,
+                "key3" : "Column 3 Text",
+                "imgPath" : "./images/1.jpg",
+                "link" : "details-data.json",
+                "openWindow": true,
+                "className" : "warning",
+                "identifyCode" : "14",
                 "title" : "Text content Text content Text content Text content Text content Text content Text content Text content"
             }
         ],
@@ -481,14 +595,25 @@ const listData = `{
                 "link" : "ExportUrl",
                 "icon" : "icon-download",
                 "title" : "Export Data"
+            },
+            {
+                "elementId" : "importId",
+                "link" : "ImportUrl",
+                "icon" : "icon-upload",
+                "title" : "Import Data"
             }
         ]
     }
 }`;
 
+const bannerData = `{
+    "bannerTitle": "Banner Title",
+    "resourcePath": "./images/slides/1.jpg"
+}`;
+
 const slideData = `{
     "width": "100%",
-    "height": "500px",
+    "height": "600px",
     "transitionTime": 1000,
     "openWindow" : false,
     "timeOut" : 5000,
@@ -523,6 +648,15 @@ const formData = `{
     "title": "Form title",
     "items": [
         {
+            "tag": "property-details",
+            "class": "formItem",
+            "data": {
+                "title": "Property Name",
+                "content": "Property Content",
+                "tips": {"content": "Tips message"}
+            }
+        },
+        {
             "tag": "select-input",
             "class": "formItem",
             "data": {
@@ -546,8 +680,12 @@ const formData = `{
             "data": {
                 "id": "textareaElement",
                 "name": "textareaElement",
+                "placeholder": "Placeholder string",
                 "value": "Initialize value",
                 "textContent": "Element label text",
+                "multilingual": true,
+                "language": "English",
+                "reference": "Reference context",
                 "tips": {"content": "Tips message"}
             }
         },
@@ -584,6 +722,9 @@ const formData = `{
                 "placeholder": "Placeholder string",
                 "textContent": "Element label text",
                 "value": "Initialize value",
+                "multilingual": true,
+                "language": "简体中文",
+                "reference": "Reference context",
                 "tips": {"content": "Tips message"}
             }
         },
@@ -724,7 +865,6 @@ const formData = `{
                 "name": "radioGroupElement",
                 "value": "radioValue2",
                 "textContent": "Element label text",
-                "tips": {"content": "Tips message"},
                 "items": [
                     {"id" : "radioButtonId1", "value" : "radioValue1", "textButton" : "Radio Content"},
                     {"id" : "radioButtonId2", "value" : "radioValue2", "textButton" : "Radio Content"},
@@ -732,247 +872,157 @@ const formData = `{
                     {"id" : "radioButtonId4", "value" : "radioValue4", "textButton" : "Radio Content"}
                 ]
             }
+        },
+        {
+            "tag": "drag-upload",
+            "class": "formItem",
+            "data": {
+                "id": "uploadElement",
+                "multipleFile": "true",
+                "name": "uploadElement",
+                "textContent": "Upload label text",
+                "multilingual": true,
+                "reference": [
+                    {
+                        "mimeType": "image/jpg",
+                        "resourcePath": "images/1.jpg"
+                    },
+                    {
+                        "mimeType": "image/jpg",
+                        "resourcePath": "images/1.jpg"
+                    }
+                ],
+                "tips": {"content": "Tips message"}
+            }
         }
     ]
 }`;
 
-const floatData = `{
-    "tagName": "form-info",
-    "value": "Float Form",
-    "data": {
-        "id": "floatForm",
-        "method": "post",
-        "action": "/#",
-        "title": "Form title",
-        "items": [
+const detailsData = `{
+    "messageTitle": "Message Title Message Title Message Title Message Title",
+    "properties": [
+        {
+            "title": "Properties1",
+            "content": "Content1"
+        },
+        {
+            "title": "Properties2",
+            "content": "Content2"
+        },
+        {
+            "title": "Properties3",
+            "content": "Content3"
+        }
+    ],
+    "resourcePath": "images/logo.svg",
+    "mimeType": "image/png",
+    "abstractMessage": "Abstract Message Abstract Message Abstract Message Abstract Message Abstract Message Abstract Message Abstract Message Abstract Message",
+    "contentMessage": "Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content",
+    "resourceList": [
+        {
+            "mimeType": "image/jpg",
+            "resourcePath": "images/slides/1.jpg"
+        },
+        {
+            "mimeType": "image/jpg",
+            "resourcePath": "images/slides/2.jpg"
+        },
+        {
+            "mimeType": "image/jpg",
+            "resourcePath": "images/slides/3.jpg"
+        },
+        {
+            "mimeType": "image/jpg",
+            "resourcePath": "images/slides/4.jpg"
+        }
+    ],
+    "attachList": {
+        "title": "Attach Files",
+        "attachList": [
             {
-                "tag": "select-input",
-                "class": "formItem",
-                "data": {
-                    "id": "selectElementFloat",
-                    "name": "selectElementFloat",
-                    "value": "4",
-                    "textContent": "Element label text",
-                    "tips": {"content": "Tips message"},
-                    "options": [
-                        {"text":"option0","value":0},{"text":"option1","value":1},
-                        {"text":"option2","value":2},{"text":"option3","value":3},
-                        {"text":"option4","value":4},{"text":"option5","value":5},
-                        {"text":"option6","value":6},{"text":"option7","value":7},
-                        {"text":"option8","value":8},{"text":"option9","value":9}
-                    ]
-                }
+                "resourceName": "Attach File1",
+                "resourcePath": "#File1"
             },
             {
-                "tag": "textarea-input",
-                "class": "formItem",
-                "data": {
-                    "id": "textareaElementFloat",
-                    "name": "textareaElementFloat",
-                    "value": "Initialize value",
-                    "textContent": "Element label text",
-                    "tips": {"content": "Tips message"}
-                }
+                "resourceName": "Attach File2",
+                "resourcePath": "#File2"
             },
             {
-                "tag": "password-input",
-                "class": "formItem",
-                "data": {
-                    "id": "passwordElementFloat",
-                    "name": "passwordElementFloat",
-                    "placeholder": "Placeholder string",
-                    "textContent": "Element label text",
-                    "value": "Initialize value",
-                    "tips": {"content": "Tips message"}
-                }
+                "resourceName": "Attach File3",
+                "resourcePath": "#File3"
             },
             {
-                "tag": "hidden-input",
-                "class": "formItem",
-                "data": {
-                    "id": "hiddenElementFloat",
-                    "name": "hiddenElementFloat",
-                    "placeholder": "Placeholder string",
-                    "textContent": "Element label text",
-                    "value": "Initialize value",
-                    "tips": {"content": "Tips message"}
-                }
+                "resourceName": "Attach File4",
+                "resourcePath": "#File4"
             },
             {
-                "tag": "text-input",
-                "class": "formItem",
-                "data": {
-                    "id": "textElementFloat",
-                    "name": "textElementFloat",
-                    "placeholder": "Placeholder string",
-                    "textContent": "Element label text",
-                    "value": "Initialize value",
-                    "tips": {"content": "Tips message"}
-                }
-            },
-            {
-                "tag": "search-input",
-                "class": "formItem",
-                "data": {
-                    "id": "searchFormElementFloat",
-                    "name": "searchFormElementFloat",
-                    "placeholder": "Placeholder string",
-                    "textContent": "Element label text",
-                    "value": "Initialize value",
-                    "tips": {"content": "Tips message"}
-                }
-            },
-            {
-                "tag": "number-input",
-                "class": "formItem",
-                "data": {
-                    "id": "numberElementFloat",
-                    "name": "numberElementFloat",
-                    "placeholder": "Placeholder string",
-                    "textContent": "Element label text",
-                    "value": "Initialize value",
-                    "tips": {"content": "Tips message"}
-                }
-            },
-            {
-                "tag": "date-input",
-                "class": "formItem",
-                "data": {
-                    "id": "dateElementFloat",
-                    "name": "dateElementFloat",
-                    "placeholder": "Placeholder string",
-                    "textContent": "Element label text",
-                    "value": "Initialize value",
-                    "tips": {"content": "Tips message"}
-                }
-            },
-            {
-                "tag": "time-input",
-                "class": "formItem",
-                "data": {
-                    "id": "timeElementFloat",
-                    "name": "timeElementFloat",
-                    "placeholder": "Placeholder string",
-                    "textContent": "Element label text",
-                    "value": "Initialize value",
-                    "tips": {"content": "Tips message"}
-                }
-            },
-            {
-                "tag": "datetime-input",
-                "class": "formItem",
-                "data": {
-                    "id": "datetimeElementFloat",
-                    "name": "datetimeElementFloat",
-                    "placeholder": "Placeholder string",
-                    "textContent": "Element label text",
-                    "value": "Initialize value",
-                    "tips": {"content": "Tips message"}
-                }
-            },
-            {
-                "tag": "number-interval-input",
-                "class": "formItem",
-                "data": {
-                    "id": "numberIntervalElementFloat",
-                    "tips": {"content": "Tips message"},
-                    "textContent": "Element label text",
-                    "beginName": "numberBeginFloat",
-                    "beginValue": 10,
-                    "endName": "numberEndFloat",
-                    "endValue": 100
-                }
-            },
-            {
-                "tag": "date-interval-input",
-                "class": "formItem",
-                "data": {
-                    "id": "dateIntervalElementFloat",
-                    "tips": {"content": "Tips message"},
-                    "textContent": "Element label text",
-                    "beginName": "dateBeginFloat",
-                    "beginValue": "",
-                    "endName": "dateEndFloat",
-                    "endValue": ""
-                }
-            },
-            {
-                "tag": "time-interval-input",
-                "class": "formItem",
-                "data": {
-                    "id": "timeIntervalElementFloat",
-                    "tips": {"content": "Tips message"},
-                    "textContent": "Element label text",
-                    "beginName": "timeBeginFloat",
-                    "beginValue": "",
-                    "endName": "timeEndFloat",
-                    "endValue": ""
-                }
-            },
-            {
-                "tag": "datetime-interval-input",
-                "class": "formItem",
-                "data": {
-                    "id": "datetimeIntervalElementFloat",
-                    "tips": {"content": "Tips message"},
-                    "textContent": "Element label text",
-                    "beginName": "datetimeBeginFloat",
-                    "beginValue": "",
-                    "endName": "datetimeEndFloat",
-                    "endValue": ""
-                }
-            },
-            {
-                "tag": "checkbox-group",
-                "class": "formItem",
-                "data": {
-                    "id": "checkBoxGroupElementFloat",
-                    "name": "checkBoxGroupElementFloat",
-                    "value": ["checkBoxValue2", "checkBoxValue3"],
-                    "textContent": "Element label text",
-                    "tips": {"content": "Tips message"},
-                    "items": [
-                        {"id" : "checkBoxFloatButtonId1", "value" : "checkBoxValue1", "textButton" : "checkBox Content"},
-                        {"id" : "checkBoxFloatButtonId2", "value" : "checkBoxValue2", "textButton" : "checkBox Content"},
-                        {"id" : "checkBoxFloatButtonId3", "value" : "checkBoxValue3", "textButton" : "checkBox Content"},
-                        {"id" : "checkBoxFloatButtonId4", "value" : "checkBoxValue4", "textButton" : "checkBox Content"}
-                    ]
-                }
-            },
-            {
-                "tag": "radio-group",
-                "class": "formItem",
-                "data": {
-                    "id": "radioGroupElementFloat",
-                    "name": "radioGroupElementFloat",
-                    "value": "radioValue2",
-                    "textContent": "Element label text",
-                    "tips": {"content": "Tips message"},
-                    "items": [
-                        {"id" : "radioFloatButtonId1", "value" : "radioValue1", "textButton" : "Radio Content"},
-                        {"id" : "radioFloatButtonId2", "value" : "radioValue2", "textButton" : "Radio Content"},
-                        {"id" : "radioFloatButtonId3", "value" : "radioValue3", "textButton" : "Radio Content"},
-                        {"id" : "radioFloatButtonId4", "value" : "radioValue4", "textButton" : "Radio Content"}
-                    ]
-                }
-            },
-            {
-                "tag" : "submit-button",
-                "data" : {
-                    "formId" : "floatForm",
-                    "intervalTime" : 5,
-                    "value" : "Submit Button"
-                }
-            },
-            {
-                "tag" : "reset-button",
-                "data" : {
-                    "formId" : "floatForm",
-                    "value" : "Reset Button"
-                }
+                "resourceName": "Attach File5",
+                "resourcePath": "#File5"
             }
-        ]
+      ]
     }
 }`;
 
-export {indexTopMenuData, formData, floatData, listData, slideData, socialData}
+const addressData = `{
+    "addressTitle" : "Address Title",
+    "addressContent" : "Room 909, Building A, Broadtec International Plaza, Chaoyang District, Beijing, China",
+    "location" : {
+        "provider" : "baidu-map",
+        "latitude" : "40.009068571369137",
+        "longitude" : "116.4790988860714"
+    }
+}`;
+
+const widgetData = `{
+    "linkAddress": "#widgetButton",
+    "resource" : {
+        "mimeType": "image/jpg",
+        "resourcePath": "images/1.jpg"
+    }
+}`;
+
+const corporateData = `{
+    "contentInfo": "Corporate details article Corporate details article Corporate details article Corporate details article Corporate details article Corporate details article Corporate details article Corporate details article ",
+    "resourceList": [
+        {
+            "mimeType": "image/jpg",
+            "resourcePath": "images/1.jpg"
+        },
+        {
+            "mimeType": "video/mp4",
+            "resourcePath": "images/demoVideo.mp4"
+        }
+    ],
+    "addressList": [
+        {
+            "addressTitle" : "Address Title 1",
+            "addressContent" : "Room 909, Building A, Broadtec International Plaza, Chaoyang District, Beijing, China",
+            "location" : {
+                "provider" : "baidu-map",
+                "latitude" : "40.009068571369137",
+                "longitude" : "116.4790988860714"
+            }
+        },
+        {
+            "addressTitle" : "Address Title 2",
+            "addressContent" : "Room 909, Building A, Broadtec International Plaza, Chaoyang District, Beijing, China",
+            "location" : {
+                "provider" : "baidu-map",
+                "latitude" : "40.009068571369137",
+                "longitude" : "116.4790988860714"
+            }
+        },
+        {
+            "addressTitle" : "Address Title 3",
+            "addressContent" : "Room 909, Building A, Broadtec International Plaza, Chaoyang District, Beijing, China",
+            "location" : {
+                "provider" : "baidu-map",
+                "latitude" : "40.009068571369137",
+                "longitude" : "116.4790988860714"
+            }
+        }
+    ]
+}`;
+
+export {multiMenuData, indexTopMenuData, progressBarDataNumber, progressBarDataDetails, bannerData,
+    formData, listData, slideData, socialData, detailsData, addressData, widgetData, corporateData}

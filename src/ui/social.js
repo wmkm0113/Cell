@@ -45,7 +45,7 @@ export default class SocialGroup extends BaseElement {
         }
 
         if (this.titleElement === null) {
-            this.titleElement = document.createElement("span");
+            this.titleElement = document.createElement("h3");
             this.titleElement.setAttribute("slot", "title");
             this.appendChild(this.titleElement);
         }

@@ -1,0 +1,335 @@
+{
+  "title": "Test title",
+  "keywords": "Test keywords",
+  "description": "Test description",
+  "data": {
+    "tagName": "message-details",
+    "data": {
+      "messageTitle": "Message Title Message Title Message Title Message Title",
+      "properties": [
+        {
+          "title": "Properties1",
+          "content": "Content1"
+        },
+        {
+          "title": "Properties2",
+          "content": "Content2",
+          "link": "#"
+        },
+        {
+          "title": "Properties3",
+          "content": "Content3"
+        }
+      ],
+      "multiMenu": {
+        "url": "/{languageCode}/index.html",
+        "items" : [
+          {
+            "languageCode" : "en",
+            "languageName" : "English"
+          },
+          {
+            "languageCode" : "zh_CN",
+            "languageName" : "简体中文"
+          },
+          {
+            "languageCode" : "zh_TW",
+            "languageName" : "繁體中文"
+          }
+        ]
+      },
+      "resourcePath": "images/logo.svg",
+      "mimeType": "image/png",
+      "abstractMessage": "Abstract Message Abstract Message Abstract Message Abstract Message Abstract Message Abstract Message Abstract Message Abstract Message",
+      "contentMessage": "Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content",
+      "resourceList": [
+        {
+          "mimeType": "image/jpg",
+          "resourcePath": "images/slides/1.jpg"
+        },
+        {
+          "mimeType": "image/jpg",
+          "resourcePath": "images/slides/2.jpg"
+        },
+        {
+          "mimeType": "image/jpg",
+          "resourcePath": "images/slides/3.jpg"
+        },
+        {
+          "mimeType": "image/jpg",
+          "resourcePath": "images/slides/4.jpg"
+        }
+      ],
+      "attachList": {
+        "title": "Attach Files",
+        "attachList": [
+          {
+            "resourceName": "Attach File1",
+            "resourcePath": "#File1"
+          },
+          {
+            "resourceName": "Attach File2",
+            "resourcePath": "#File2"
+          },
+          {
+            "resourceName": "Attach File3",
+            "resourcePath": "#File3"
+          },
+          {
+            "resourceName": "Attach File4",
+            "resourcePath": "#File4"
+          },
+          {
+            "resourceName": "Attach File5",
+            "resourcePath": "#File5"
+          }
+        ]
+      },
+      "modelList" : {
+        "title": "Models List",
+        "items": [
+          {
+            "identifyCode": "Model 1",
+            "title": "Model 1",
+            "abstract": "Model 1 Content",
+            "preview": {
+              "resourcePath": "images/logo.svg",
+              "mimeType": "image/png"
+            }
+          },
+          {
+            "identifyCode": "Model 2",
+            "title": "Model 2",
+            "abstract": "Model 2 Content",
+            "preview": {
+              "resourcePath": "images/logo.svg",
+              "mimeType": "image/png"
+            }
+          },
+          {
+            "identifyCode": "Model 3",
+            "title": "Model 3",
+            "abstract": "Model 3 Content",
+            "preview": {
+              "resourcePath": "images/logo.svg",
+              "mimeType": "image/png"
+            }
+          },
+          {
+            "identifyCode": "Model 4",
+            "title": "Model 4",
+            "abstract": "Model 4 Content",
+            "preview": {
+              "resourcePath": "images/logo.svg",
+              "mimeType": "image/png"
+            }
+          },
+          {
+            "identifyCode": "Model 5",
+            "title": "Model 5",
+            "abstract": "Model 5 Content",
+            "preview": {
+              "resourcePath": "images/logo.svg",
+              "mimeType": "image/png"
+            }
+          }
+        ]
+      },
+      "accessoriesList": [
+        {
+          "accessoriesName": "Accessories Name 1",
+          "items": [
+            {
+              "resourcePath": "images/demoVideo.mp4",
+              "mimeType": "video/mp4",
+              "title": "Accessories Item 1"
+            },
+            {
+              "resourcePath": "images/logo.svg",
+              "mimeType": "image/png",
+              "title": "Accessories Item 2"
+            },
+            {
+              "resourcePath": "images/logo_zht.svg",
+              "mimeType": "image/png",
+              "title": "Accessories Item 3"
+            }
+          ]
+        },
+        {
+          "accessoriesName": "Accessories Name 2",
+          "items": [
+            {
+              "resourcePath": "images/logo.svg",
+              "mimeType": "image/png",
+              "title": "Accessories Item 4"
+            },
+            {
+              "resourcePath": "images/logo_zhs.svg",
+              "mimeType": "image/png",
+              "title": "Accessories Item 5"
+            }
+          ]
+        },
+        {
+          "accessoriesName": "Accessories Name 3",
+          "items": [
+            {
+              "resourcePath": "images/logo_zht.svg",
+              "mimeType": "image/png",
+              "title": "Accessories Item 6"
+            },
+            {
+              "resourcePath": "images/logo_zhs.svg",
+              "mimeType": "image/png",
+              "title": "Accessories Item 7"
+            },
+            {
+              "resourcePath": "images/logo.svg",
+              "mimeType": "image/png",
+              "title": "Accessories Item 8"
+            },
+            {
+              "resourcePath": "images/logo_zht.svg",
+              "mimeType": "image/png",
+              "title": "Accessories Item 9"
+            }
+          ]
+        }
+      ],
+      "commentList": {
+        "id": "commentList",
+        "filter": {
+          "action" : "url",
+          "pageLimit" : "pageLimit",
+          "pageNo" : "pageNo"
+        },
+        "title": {
+          "textContent": "Comment List",
+          "styleClass": "view-list",
+          "disableSwitch": true
+        },
+        "grid": {
+          "pageLimit": 20,
+          "header": {
+            "mainTitle": "Title",
+            "operatorTitle": "Operators",
+            "items": [
+              {
+                "mapKey": "key1",
+                "width": "50%",
+                "index": 1,
+                "sort": false,
+                "title": "Column Title 1"
+              },
+              {
+                "mapKey": "key4",
+                "width": "50%",
+                "index": 3,
+                "pattern": "yyyy-MM-dd",
+                "sort": false,
+                "title": "Column Title 4"
+              }
+            ]
+          },
+          "pager": {
+            "totalPage": 20,
+            "currentPage": 5
+          },
+          "itemData": [
+            {
+              "elementId": "elementId",
+              "key4": 1658958745944,
+              "abstract": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+              "title": "Text content Text content Text content Text content Text content Text content Text content Text content",
+              "score": 4.2,
+              "imgPath": "./images/1.jpg",
+              "identifyCode": "1"
+            },
+            {
+              "elementId": "elementId",
+              "score": 3.0,
+              "key4": 1658958745944,
+              "imgPath": "./images/1.jpg",
+              "identifyCode": "2",
+              "abstract": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+              "title": "Text content Text content Text content Text content Text content Text content Text content Text content"
+            },
+            {
+              "elementId": "elementId",
+              "key4": 1658958745944,
+              "abstract": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+              "title": "Text content Text content Text content Text content Text content Text content Text content Text content",
+              "score": 4.2,
+              "imgPath": "./images/1.jpg",
+              "identifyCode": "3"
+            },
+            {
+              "elementId": "elementId",
+              "score": 3.0,
+              "key4": 1658958745944,
+              "imgPath": "./images/1.jpg",
+              "identifyCode": "4",
+              "abstract": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+              "title": "Text content Text content Text content Text content Text content Text content Text content Text content"
+            },
+            {
+              "elementId": "elementId",
+              "key4": 1658958745944,
+              "abstract": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+              "title": "Text content Text content Text content Text content Text content Text content Text content Text content",
+              "score": 4.2,
+              "imgPath": "./images/1.jpg",
+              "identifyCode": "5"
+            },
+            {
+              "elementId": "elementId",
+              "score": 3.0,
+              "key4": 1658958745944,
+              "imgPath": "./images/1.jpg",
+              "identifyCode": "6",
+              "abstract": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+              "title": "Text content Text content Text content Text content Text content Text content Text content Text content"
+            },
+            {
+              "elementId": "elementId",
+              "key4": 1658958745944,
+              "abstract": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+              "title": "Text content Text content Text content Text content Text content Text content Text content Text content",
+              "score": 4.2,
+              "imgPath": "./images/1.jpg",
+              "identifyCode": "7"
+            },
+            {
+              "elementId": "elementId",
+              "score": 3.0,
+              "key4": 1658958745944,
+              "imgPath": "./images/1.jpg",
+              "identifyCode": "8",
+              "abstract": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+              "title": "Text content Text content Text content Text content Text content Text content Text content Text content"
+            },
+            {
+              "elementId": "elementId",
+              "key4": 1658958745944,
+              "abstract": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+              "title": "Text content Text content Text content Text content Text content Text content Text content Text content",
+              "score": 4.2,
+              "imgPath": "./images/1.jpg",
+              "identifyCode": "9"
+            },
+            {
+              "elementId": "elementId",
+              "score": 3.0,
+              "key4": 1658958745944,
+              "imgPath": "./images/1.jpg",
+              "identifyCode": "10",
+              "abstract": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+              "title": "Text content Text content Text content Text content Text content Text content Text content Text content"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

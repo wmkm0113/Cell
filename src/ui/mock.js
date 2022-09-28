@@ -40,88 +40,93 @@ import {BaseInput} from "./input.js";
  *
  */
 class MockElement extends BaseInput {
-    static get observedAttributes() {
-        return ['disabled','checked', 'value'];
-    }
-
     constructor(elementType = "", className = "") {
         super(elementType);
+        super._addSlot("element");
         this._className = className;
+        this._divElement = null;
+        this._inputElement = null;
+        this._spanElement = null;
     }
 
     renderElement(data) {
         if (data.hasOwnProperty("name")) {
             Object.keys(data).forEach(key =>
                 this.dataset[key] = ((typeof data[key]) === "string") ? data[key] : JSON.stringify(data[key]));
-            this._render();
+            this.connectedCallback();
         }
     }
 
     _render() {
         if (this.dataset.name !== undefined && this.dataset.name.length > 0) {
-            super._renderLabel();
-            super._addSlot("element");
-            let divElement = this.querySelector("div[slot='element']");
-            if (divElement === null) {
-                divElement = document.createElement("div");
-                divElement.setAttribute("slot", "element");
-                this.appendChild(divElement);
-            }
-            divElement.setClass(this._className);
-            let inputElement = this.querySelector("div[slot='element'] > input");
-            if (inputElement === null) {
-                inputElement = document.createElement("input");
-                divElement.appendChild(inputElement);
-            }
-            inputElement.setAttribute("type", this._elementType);
-            inputElement.setAttribute("name", this.dataset.name);
+            this._divElement.setClass(this._className);
+            this._inputElement.setAttribute("type", this._elementType);
+            this._inputElement.setAttribute("name", this.dataset.name);
             if (this.dataset.id !== undefined) {
-                inputElement.setAttribute("id", this.dataset.id);
+                this._inputElement.setAttribute("id", this.dataset.id);
             }
             if (this.dataset.value !== undefined) {
-                inputElement.setAttribute("value", this.dataset.value);
+                this._inputElement.setAttribute("value", this.dataset.value);
             }
-            if (this.dataset.checked === "true") {
-                inputElement.checked = true;
+            if (["checkbox", "radio"].indexOf(this._elementType) !== -1 && this.dataset.checked === "true") {
+                this._inputElement.setAttribute("checked", this.dataset.checked);
             }
             this.attrNames().forEach(attributeName => {
                 if (attributeName.startsWith("on")) {
-                    inputElement.setAttribute(attributeName, this.getAttribute(attributeName));
+                    this._inputElement.setAttribute(attributeName, this.getAttribute(attributeName));
                     this.removeAttribute(attributeName);
                 }
             });
             if (this.dataset.buttonId !== undefined) {
-                inputElement.addEventListener("change", (event) => {
+                this._inputElement.addEventListener("change", (event) => {
                     event.stopPropagation();
                     if (this.checked) {
                         $(this.dataset.buttonId).enable();
                     } else {
                         $(this.dataset.buttonId).disable();
                     }
-                })
-            }
-            let labelElement = this.querySelector("div[slot='element'] > label");
-            if (labelElement === null) {
-                labelElement = document.createElement("label");
-                if (this.dataset.id !== undefined) {
-                    labelElement.setAttribute("for", this.dataset.id);
-                }
-                labelElement.appendChild(document.createElement("i"));
-                divElement.appendChild(labelElement);
+                });
             }
 
-            let spanElement = this.querySelector("div[slot='element'] > label > span");
-            if (spanElement === null) {
-                spanElement = document.createElement("span");
-                labelElement.appendChild(spanElement);
-            }
-
-            spanElement.innerText = this.dataset.textButton === undefined ? "" : this.dataset.textButton;
+            this._spanElement.innerText = this.dataset.textButton === undefined ? "" : this.dataset.textButton;
         }
     }
 
     connectedCallback() {
         super._removeProgress();
+        let tipsButton = this.querySelector("tips-button[slot='tips']");
+        if (tipsButton) {
+            this.removeChild(tipsButton);
+        }
+        if (this._divElement === null) {
+            this._divElement = document.createElement("div");
+            this._divElement.setAttribute("slot", "element");
+            this.appendChild(this._divElement);
+            this.addEventListener("click", (event) => {
+                event.stopPropagation();
+                if (this._elementType === "checkbox") {
+                    if (this.checked) {
+                        this._removeAttribute("checked");
+                    } else {
+                        this._updateAttribute("checked", "");
+                    }
+                }
+            });
+        }
+        if (this._inputElement === null) {
+            this._inputElement = document.createElement("input");
+            this._divElement.appendChild(this._inputElement);
+        }
+        if (this._spanElement === null) {
+            let labelElement = document.createElement("label");
+            if (this.dataset.id !== undefined) {
+                labelElement.setAttribute("for", this.dataset.id);
+            }
+            labelElement.appendChild(document.createElement("i"));
+            this._divElement.appendChild(labelElement);
+            this._spanElement = document.createElement("span");
+            labelElement.appendChild(this._spanElement);
+        }
         this._render();
     }
 }
@@ -277,6 +282,7 @@ class NotifyArea extends CustomElement {
                 }
             });
         }
+        this.hide();
     }
 
     notify(data = "") {
@@ -331,9 +337,11 @@ class NotifyArea extends CustomElement {
 
     checkNotify() {
         if (this._notification.querySelectorAll("div").length === 0) {
-            this._floatButton.removeClass("alert");
+            this._floatButton.setClass("icon-bell");
+            this.hide();
         } else {
-            this._floatButton.appendClass("alert");
+            this._floatButton.setClass("icon-bell-ring");
+            this.show();
         }
     }
 
@@ -352,10 +360,11 @@ class FloatWindow extends BaseElement {
         super();
         super._addSlot("floatWindow");
         let floatWindow = this;
-        window.addEventListener("resize", (event) => {
+        this.listenerFunc = (event) => {
             event.stopPropagation();
             floatWindow.resize();
-        });
+        };
+        window.addEventListener("resize", this.listenerFunc);
     }
 
     static tagName() {
@@ -382,6 +391,10 @@ class FloatWindow extends BaseElement {
             this.appendChild(pageElement);
         }
         this.resize();
+    }
+
+    disconnectedCallback() {
+        window.removeEventListener("resize", this.listenerFunc);
     }
 
     resize() {
@@ -438,84 +451,78 @@ class FloatPage extends BaseElement {
         this.render();
     }
 
+    _mouseDown(event, scrollBar) {
+        event.stopPropagation();
+        scrollBar._beginPoint = event.clientY;
+        scrollBar._beginPosition = scrollBar._divElement.scrollTop;
+    }
+
+    _mouseMove(event, scrollBar) {
+        event.stopPropagation();
+        if (scrollBar._beginPoint !== -1) {
+            let movePosition = event.clientY - scrollBar._beginPoint;
+            if (movePosition !== 0) {
+                let movePoint = Math.floor(scrollBar._pageHeight * movePosition / scrollBar._windowHeight);
+                scrollBar._divElement.scroll(0, scrollBar._beginPosition + movePoint);
+            }
+        }
+    }
+
+    _mouseUp(event, scrollBar) {
+        event.stopPropagation();
+        if ((event.clientY - scrollBar._beginPoint) === 0) {
+            let movePosition = 0;
+            let scrollTop = scrollBar._scrollBar.scrollTop();
+            if (event.clientY < scrollTop) {
+                movePosition = scrollBar._windowHeight * -1;
+            } else if (event.clientY > (scrollTop + scrollBar._itemHeight)) {
+                movePosition = scrollBar._windowHeight;
+            }
+
+            let targetPosition = scrollTop + movePosition;
+            if (targetPosition < 0) {
+                scrollBar._divElement.scroll(0, 0);
+            } else if (targetPosition > scrollBar._differentHeight) {
+                scrollBar._divElement.scroll(0, scrollBar._beginPosition + scrollBar._differentHeight);
+            } else {
+                scrollBar._divElement.scroll(0, targetPosition);
+            }
+            scrollBar._beginPosition = scrollBar._divElement.scrollTop;
+        }
+        scrollBar._beginPoint = -1;
+    }
+
+    _scroll(event) {
+        event.stopPropagation();
+        event.target.parentElement.scroll();
+    }
+
     resize() {
         let scrollTop = window.scrollY;
         let height = Math.floor(window.innerHeight * 0.8);
         this.style.height = height + "px";
         let top = Math.floor((window.innerHeight - height) / 2);
         this.style.top = (scrollTop + top - 20) + "px";
-        if (this._divElement !== null) {
-            let computedStyle = window.getComputedStyle(this._divElement);
-            let scrollBarWidth = this._divElement.offsetWidth - this._divElement.clientWidth;
-            let paddingRight = computedStyle.paddingRight.parseInt() + scrollBarWidth + 2;
-            this._divElement.style.paddingRight = paddingRight + "px";
-        }
         if (this._childElement !== null) {
             this._pageHeight = window.getComputedStyle(this._childElement).height.parseInt();
             this._windowHeight = window.getComputedStyle(this._divElement).height.parseInt();
-            let floatPage = this;
             if (this._windowHeight < this._pageHeight) {
                 this._scrollBar.enable();
                 this._itemHeight = Math.floor(this._windowHeight * this._windowHeight / this._pageHeight);
                 this._scrollBar.initHeight(this._itemHeight);
                 this._differentHeight = this._pageHeight - this._windowHeight;
-                this._divElement.addEventListener("scroll", (event) => {
-                    event.stopPropagation();
-                    floatPage.scroll.apply(floatPage);
-                });
-                this._scrollBar.addEventListener("mousedown", (event) => {
-                    event.stopPropagation();
-                    this._beginPoint = event.clientY;
-                    this._beginPosition = this._divElement.scrollTop;
-                });
-                document.addEventListener("mousemove", (event) => {
-                    event.stopPropagation();
-                    if (this._beginPoint !== -1) {
-                        let movePosition = event.clientY - this._beginPoint;
-                        if (movePosition !== 0) {
-                            let movePoint = Math.floor(this._pageHeight * movePosition / this._windowHeight);
-                            this._divElement.scroll(0, this._scrollBar.scrollTop() + movePoint);
-                        }
-                    }
-                });
-                document.addEventListener("mouseup", (event) => {
-                    event.stopPropagation();
-                    if ((event.clientY - this._beginPoint) === 0) {
-                        let movePosition = 0;
-                        let scrollTop = this._scrollBar.scrollTop();
-                        if (event.clientY < scrollTop) {
-                            movePosition = this._windowHeight * -1;
-                        } else if (event.clientY > (scrollTop + this._itemHeight)) {
-                            movePosition = this._windowHeight;
-                        }
-
-                        let targetPosition = scrollTop + movePosition;
-                        if (targetPosition < 0) {
-                            this._divElement.scroll(0, 0);
-                        } else if (targetPosition > this._differentHeight) {
-                            this._divElement.scroll(0, this._beginPosition + this._differentHeight);
-                        } else {
-                            this._divElement.scroll(0, targetPosition);
-                        }
-                        this._beginPosition = this._divElement.scrollTop;
-                    }
-                    this._beginPoint = -1;
-                });
+                this._divElement.addEventListener("scroll", this._scroll);
+                let scrollBar = this;
+                this._scrollBar.addEventListener("mousedown", (event) => this._mouseDown(event, scrollBar));
+                document.addEventListener("mousemove", (event) => this._mouseMove(event, scrollBar));
+                document.addEventListener("mouseup", (event) => this._mouseUp(event, scrollBar));
             } else {
                 this._scrollBar.disable();
-                this._divElement.removeEventListener("scroll", (event) => {
-                    event.stopPropagation();
-                    floatPage.scroll.apply(floatPage);
-                });
-                this._scrollBar.removeEventListener("mousedown", (event) => {
-                    event.stopPropagation();
-                });
-                document.removeEventListener("mousemove", (event) => {
-                    event.stopPropagation();
-                });
-                document.removeEventListener("mouseup", (event) => {
-                    event.stopPropagation();
-                });
+                this._divElement.removeEventListener("scroll", this._scroll);
+                let scrollBar = this;
+                this._scrollBar.removeEventListener("mousedown", (event) => this._mouseDown(event, scrollBar));
+                document.removeEventListener("mousemove", (event) => this._mouseMove(event, scrollBar));
+                document.removeEventListener("mouseup", (event) => this._mouseUp(event, scrollBar));
                 this._beginPoint = -1;
             }
         }
@@ -565,20 +572,11 @@ class FloatPage extends BaseElement {
     }
 
     render() {
+        this._divElement.removeClass("waitingData");
+        document.body.style.overflowY = "hidden";
         if (this.dataset.data !== undefined && this.dataset.data.isJSON()) {
-            this._divElement.removeClass("waitingData");
             let jsonData = this.dataset.data.parseJSON();
-            document.body.style.overflowY = "hidden";
             if (jsonData.hasOwnProperty("tagName") && jsonData.hasOwnProperty("data")) {
-                if (jsonData.hasOwnProperty("title")) {
-                    jsonData.title.setTitle();
-                }
-                if (jsonData.hasOwnProperty("keywords")) {
-                    jsonData.keywords.setKeywords();
-                }
-                if (jsonData.hasOwnProperty("description")) {
-                    jsonData.description.setDescription();
-                }
                 if (this._childElement === null
                     || this._childElement.tagName.toLowerCase() !== jsonData.tagName.toLowerCase()) {
                     //  Remove exists elements

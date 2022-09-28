@@ -1,81 +1,89 @@
 <!DOCTYPE html>
-<html lang="zh-CN" class="initialize">
+<html lang="" class="initialize">
 <head>
+    <title>Test</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <link rel="shortcut icon" href="./favicon.ico" />
+    <link rel="stylesheet" href="../src/styles/Cell.css" />
+    <link rel="stylesheet" href="./styles/style.css" />
     <script type="module">
         import {Config} from "../src/commons/Commons.js";
         Object.assign(Config, {
             resPath: "/src/i18n",
+            languageCode: "en",
             formConfig : {
                 utcDateTime : true
             }
         });
     </script>
     <script src="../src/core/Cell.js" type="module"></script>
-    <title></title>
-    <link rel="shortcut icon" href="./favicon.ico" />
-    <link rel="stylesheet" href="../src/fonts/iconfont.css" />
-    <link rel="stylesheet" href="../src/styles/Cell.css" />
-    <link rel="stylesheet" href="./styles/style.css" />
+    <script src="https://api.map.baidu.com/api?key=&v=3.0&ak={API_KEY}" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={API_KEY}"></script>
     <script type="module">
         import * as Data from "./data.js";
         window.onload = function () {
             window.setTimeout(function () {
-                let indexTopMenu = $("indexTopMenu");
-                if (indexTopMenu) {
-                    indexTopMenu.data = Data.indexTopMenuData;
-                }
-                let socialGroup = $("socialGroup");
-                if (socialGroup) {
-                    socialGroup.data = Data.socialData;
-                }
-                let slideShow = $("slideShow");
-                if (slideShow) {
-                    slideShow.data = Data.slideData;
-                }
-                let messageList = $("messageList");
-                if (messageList) {
-                    messageList.data = Data.listData;
-                }
-                let formInfo = $("formInfo");
-                if (formInfo) {
-                    formInfo.data = Data.formData;
-                }
-                let openWindow = $("openWindow");
-                if (openWindow) {
-                    openWindow.addEventListener("click", function () {
-                        Cell.openWindow(Data.floatData);
-                    });
-                }
-                Cell.notify(`{"textContent" : "Test Notify"}`);
+                $("multiMenu").data = Data.multiMenuData;
+                $("indexTopMenu").data = Data.indexTopMenuData;
+                $("asideMenu").data = Data.indexTopMenuData;
+                $("progressBarNumber").data = Data.progressBarDataNumber;
+                $("progressBarDetails").data = Data.progressBarDataDetails;
+                $("socialGroup").data = Data.socialData;
+                $("slideShow").data = Data.slideData;
+                $("messageList").data = Data.listData;
+                $("contentBanner").data = Data.bannerData;
+                $("formInfo").data = Data.formData;
+                $("detailsInfo").data = Data.detailsData;
+                $("widgetButton").data = Data.widgetData;
+                $("corpDetails").data = Data.corporateData;
+                $("addressDetails").data = Data.addressData;
             }, 1000);
         }
     </script>
 </head>
 <body>
     <header>
-        <span class="logo" style="background-image: url('./images/logo.png');"></span>
-        <span class="title">Nervousync Studio</span>
+        <span class="logo suffix registered"></span>
         <menu-element id="indexTopMenu"></menu-element>
+        <multi-menu id="multiMenu"></multi-menu>
     </header>
+    <slide-show id="slideShow"></slide-show>
     <main>
-        <section id="slideDemo">
-            <h1>Slide Show</h1>
-            <slide-show id="slideShow"></slide-show>
-        </section>
-        <section id="listDemo">
-            <h1>Message List</h1>
-            <message-list id="messageList"></message-list>
-        </section>
-        <section id="formDemo">
-            <h1>Form Info</h1>
-            <form-info id="formInfo"></form-info>
-        </section>
-        <section id="floatWindow">
-            <h1>Open Form In Float Window</h1>
-            <standard-button id="openWindow" value="Form In Float Window"></standard-button>
-        </section>
+        <article>
+            <section id="mockElement">
+                <h1>Mock Elements</h1>
+                <article>
+                    <progress-bar id="progressBarNumber"></progress-bar>
+                    <progress-bar id="progressBarDetails"></progress-bar>
+                    <a href="./notify-data.json" data-target-id="notifyArea" onclick="Cell.sendRequest(event)">Notify</a>
+                    <a href="JavaScript:Cell.alert('Alter message information')">Alter Message</a>
+                    <a href="JavaScript:Cell.confirm('Confirm message information', () => {alert('Confirmed')})">Confirm Dialog</a>
+                </article>
+            </section>
+            <section id="listDemo">
+                <h1>Message List</h1>
+                <message-list id="messageList"></message-list>
+            </section>
+            <content-banner id="contentBanner"></content-banner>
+            <section id="formDemo">
+                <h1>Form Info</h1>
+                <form-info id="formInfo"></form-info>
+            </section>
+            <section id="detailsDemo">
+                <h1>Message Details</h1>
+                <message-details id="detailsInfo"></message-details>
+            </section>
+            <section id="corpDetailsDemo">
+                <h1>Corporate Details</h1>
+                <corporate-details id="corpDetails"></corporate-details>
+            </section>
+        </article>
+        <aside>
+            <menu-element class="asideMenu" id="asideMenu"></menu-element>
+            <widget-button id="widgetButton"></widget-button>
+            <corporate-address id="addressDetails"></corporate-address>
+        </aside>
     </main>
     <footer>
         <social-group id="socialGroup"></social-group>
@@ -83,5 +91,5 @@
             <span id="poweredBy">Powered By Cell.js</span>
         </div>
     </footer>
-    <notify-area></notify-area>
+    <notify-area id="notifyArea"></notify-area>
 </body>

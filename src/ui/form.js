@@ -17,6 +17,8 @@
 "use strict";
 
 import {BaseElement} from "./element.js";
+import {ResetButton, SubmitButton} from "./input.js";
+import {PropertyDetails} from "./details.js";
 
 /**
  * Form item element
@@ -37,6 +39,7 @@ class FormItem extends BaseElement {
     constructor() {
         super();
         this.inputElement = null;
+        this.referenceElement = null;
     }
 
     static tagName() {
@@ -108,7 +111,6 @@ class FormItem extends BaseElement {
                     divElement.appendChild(this.inputElement);
                 }
             }
-
             this.inputElement.data = JSON.stringify(itemData);
         }
     }
@@ -140,8 +142,10 @@ class FormItem extends BaseElement {
 class FormInfo extends BaseElement {
     constructor() {
         super();
-        super._addSlot("formTitle", "formInfo");
+        super._addSlot("formTitle", "formInfo", "formButtons");
         this.formElement = null;
+        this.submitButton = null;
+        this.resetButton = null;
     }
 
     static tagName() {
@@ -187,36 +191,56 @@ class FormInfo extends BaseElement {
     }
 
     connectedCallback() {
-        if (this.formElement === null) {
-            this.formElement = document.createElement("form");
-            this.formElement.setAttribute("slot", "formInfo");
-            this.appendChild(this.formElement);
+        this._appendProgress();
+        let formButtons = this.querySelector("div[slot='formButtons']");
+        if (formButtons === null) {
+            formButtons = document.createElement("div");
+            formButtons.setAttribute("slot", "formButtons");
+            this.appendChild(formButtons);
+        }
+        if (this.submitButton === null) {
+            this.submitButton = new SubmitButton();
+            formButtons.appendChild(this.submitButton);
+        }
+        if (this.resetButton === null) {
+            this.resetButton = new ResetButton();
+            formButtons.appendChild(this.resetButton);
         }
         this._render();
     }
 
     _render() {
         if (this.dataset.items !== undefined && this.dataset.items.isJSON()) {
+            if (this.formElement === null) {
+                this.formElement = document.createElement("form");
+                this.formElement.setAttribute("slot", "formInfo");
+                this.appendChild(this.formElement);
+            }
             this.formElement.setAttribute("action", this.getAttribute("action"));
             if (this.hasAttribute("method")) {
                 this.formElement.setAttribute("method", this.getAttribute("method"));
             }
-            let existsItems = this.formElement.querySelectorAll("form-item");
-            let jsonItem = this.dataset.items.parseJSON();
-            jsonItem.forEach((itemInfo, index) => {
-                if (existsItems.length > index) {
-                    existsItems[index].data = JSON.stringify(itemInfo);
-                } else {
-                    let formItem = new FormItem();
-                    formItem.data = JSON.stringify(itemInfo);
-                    this.formElement.appendChild(formItem);
-                }
-            });
-            if (jsonItem.length < existsItems.length) {
-                for (let i = jsonItem.length ; i < existsItems.length ; i++) {
-                    this.formElement.removeChild(existsItems[i]);
-                }
-            }
+            this.formElement.clearChildNodes();
+            this.dataset.items.parseJSON()
+                .filter(itemInfo => itemInfo.hasOwnProperty("tag"))
+                .forEach(itemInfo => {
+                    if (itemInfo.tag.toLowerCase() === "submit-button") {
+                        this.submitButton.data = JSON.stringify(itemInfo.data);
+                    } else if (itemInfo.tag.toLowerCase() === "reset-button") {
+                        this.resetButton.data = JSON.stringify(itemInfo.data);
+                    } else if (itemInfo.tag.toLowerCase() === "property-details") {
+                        let propertyDetails = new PropertyDetails();
+                        this.formElement.appendChild(propertyDetails);
+                        propertyDetails.data = JSON.stringify(itemInfo.data);
+                    } else {
+                        if (itemInfo.tag.toLowerCase() === "drag-upload") {
+                            this.formElement.setAttribute("enctype", "multipart/form-data");
+                        }
+                        let formItem = new FormItem();
+                        this.formElement.appendChild(formItem);
+                        formItem.data = JSON.stringify(itemInfo);
+                    }
+                });
             this.attrNames().forEach(attributeName => {
                 if (!attributeName.startsWith("data-") && attributeName.toLowerCase() !== "slot") {
                     this.formElement.setAttribute(attributeName, this.getAttribute(attributeName));

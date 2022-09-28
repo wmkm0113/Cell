@@ -1,0 +1,249 @@
+{
+  "title": "Test form",
+  "data": {
+    "tagName": "form-info",
+    "value": "Float Form",
+    "data": {
+      "id": "floatForm",
+      "method": "post",
+      "action": "/#",
+      "title": "Form title",
+      "items": [
+        {
+          "tag": "property-details",
+          "class": "formItem",
+          "data": {
+            "title": "Property Name",
+            "content": "Property Content"
+          }
+        },
+        {
+          "tag": "select-input",
+          "class": "formItem",
+          "data": {
+            "id": "selectElementFloat",
+            "name": "selectElementFloat",
+            "value": "4",
+            "textContent": "Element label text",
+            "tips": {"content": "Tips message"},
+            "options": [
+              {"text":"option0","value":0},{"text":"option1","value":1},
+              {"text":"option2","value":2},{"text":"option3","value":3},
+              {"text":"option4","value":4},{"text":"option5","value":5},
+              {"text":"option6","value":6},{"text":"option7","value":7},
+              {"text":"option8","value":8},{"text":"option9","value":9}
+            ]
+          }
+        },
+        {
+          "tag": "textarea-input",
+          "class": "formItem",
+          "data": {
+            "id": "textareaElementFloat",
+            "name": "textareaElementFloat",
+            "value": "Initialize value",
+            "textContent": "Element label text",
+            "tips": {"content": "Tips message"}
+          }
+        },
+        {
+          "tag": "password-input",
+          "class": "formItem",
+          "data": {
+            "id": "passwordElementFloat",
+            "name": "passwordElementFloat",
+            "placeholder": "Placeholder string",
+            "textContent": "Element label text",
+            "value": "Initialize value",
+            "tips": {"content": "Tips message"}
+          }
+        },
+        {
+          "tag": "hidden-input",
+          "class": "formItem",
+          "data": {
+            "id": "hiddenElementFloat",
+            "name": "hiddenElementFloat",
+            "placeholder": "Placeholder string",
+            "textContent": "Element label text",
+            "value": "Initialize value",
+            "tips": {"content": "Tips message"}
+          }
+        },
+        {
+          "tag": "text-input",
+          "class": "formItem",
+          "data": {
+            "id": "textElementFloat",
+            "name": "textElementFloat",
+            "placeholder": "Placeholder string",
+            "textContent": "Element label text",
+            "value": "Initialize value",
+            "tips": {"content": "Tips message"}
+          }
+        },
+        {
+          "tag": "search-input",
+          "class": "formItem",
+          "data": {
+            "id": "searchFormElementFloat",
+            "name": "searchFormElementFloat",
+            "placeholder": "Placeholder string",
+            "textContent": "Element label text",
+            "value": "Initialize value",
+            "tips": {"content": "Tips message"}
+          }
+        },
+        {
+          "tag": "number-input",
+          "class": "formItem",
+          "data": {
+            "id": "numberElementFloat",
+            "name": "numberElementFloat",
+            "placeholder": "Placeholder string",
+            "textContent": "Element label text",
+            "value": "Initialize value",
+            "tips": {"content": "Tips message"}
+          }
+        },
+        {
+          "tag": "date-input",
+          "class": "formItem",
+          "data": {
+            "id": "dateElementFloat",
+            "name": "dateElementFloat",
+            "placeholder": "Placeholder string",
+            "textContent": "Element label text",
+            "value": "Initialize value",
+            "tips": {"content": "Tips message"}
+          }
+        },
+        {
+          "tag": "time-input",
+          "class": "formItem",
+          "data": {
+            "id": "timeElementFloat",
+            "name": "timeElementFloat",
+            "placeholder": "Placeholder string",
+            "textContent": "Element label text",
+            "value": "Initialize value",
+            "tips": {"content": "Tips message"}
+          }
+        },
+        {
+          "tag": "datetime-input",
+          "class": "formItem",
+          "data": {
+            "id": "datetimeElementFloat",
+            "name": "datetimeElementFloat",
+            "placeholder": "Placeholder string",
+            "textContent": "Element label text",
+            "value": "Initialize value",
+            "tips": {"content": "Tips message"}
+          }
+        },
+        {
+          "tag": "number-interval-input",
+          "class": "formItem",
+          "data": {
+            "id": "numberIntervalElementFloat",
+            "tips": {"content": "Tips message"},
+            "textContent": "Element label text",
+            "beginName": "numberBeginFloat",
+            "beginValue": 10,
+            "endName": "numberEndFloat",
+            "endValue": 100
+          }
+        },
+        {
+          "tag": "date-interval-input",
+          "class": "formItem",
+          "data": {
+            "id": "dateIntervalElementFloat",
+            "tips": {"content": "Tips message"},
+            "textContent": "Element label text",
+            "beginName": "dateBeginFloat",
+            "beginValue": "",
+            "endName": "dateEndFloat",
+            "endValue": ""
+          }
+        },
+        {
+          "tag": "time-interval-input",
+          "class": "formItem",
+          "data": {
+            "id": "timeIntervalElementFloat",
+            "tips": {"content": "Tips message"},
+            "textContent": "Element label text",
+            "beginName": "timeBeginFloat",
+            "beginValue": "",
+            "endName": "timeEndFloat",
+            "endValue": ""
+          }
+        },
+        {
+          "tag": "datetime-interval-input",
+          "class": "formItem",
+          "data": {
+            "id": "datetimeIntervalElementFloat",
+            "tips": {"content": "Tips message"},
+            "textContent": "Element label text",
+            "beginName": "datetimeBeginFloat",
+            "beginValue": "",
+            "endName": "datetimeEndFloat",
+            "endValue": ""
+          }
+        },
+        {
+          "tag": "checkbox-group",
+          "class": "formItem",
+          "data": {
+            "id": "checkBoxGroupElementFloat",
+            "name": "checkBoxGroupElementFloat",
+            "value": ["checkBoxValue2", "checkBoxValue3"],
+            "textContent": "Element label text",
+            "tips": {"content": "Tips message"},
+            "items": [
+              {"id" : "checkBoxFloatButtonId1", "value" : "checkBoxValue1", "textButton" : "checkBox Content"},
+              {"id" : "checkBoxFloatButtonId2", "value" : "checkBoxValue2", "textButton" : "checkBox Content"},
+              {"id" : "checkBoxFloatButtonId3", "value" : "checkBoxValue3", "textButton" : "checkBox Content"},
+              {"id" : "checkBoxFloatButtonId4", "value" : "checkBoxValue4", "textButton" : "checkBox Content"}
+            ]
+          }
+        },
+        {
+          "tag": "radio-group",
+          "class": "formItem",
+          "data": {
+            "id": "radioGroupElementFloat",
+            "name": "radioGroupElementFloat",
+            "value": "radioValue2",
+            "textContent": "Element label text",
+            "tips": {"content": "Tips message"},
+            "items": [
+              {"id" : "radioFloatButtonId1", "value" : "radioValue1", "textButton" : "Radio Content"},
+              {"id" : "radioFloatButtonId2", "value" : "radioValue2", "textButton" : "Radio Content"},
+              {"id" : "radioFloatButtonId3", "value" : "radioValue3", "textButton" : "Radio Content"},
+              {"id" : "radioFloatButtonId4", "value" : "radioValue4", "textButton" : "Radio Content"}
+            ]
+          }
+        },
+        {
+          "tag" : "submit-button",
+          "data" : {
+            "formId" : "floatForm",
+            "intervalTime" : 5,
+            "value" : "Submit Button"
+          }
+        },
+        {
+          "tag" : "reset-button",
+          "data" : {
+            "formId" : "floatForm",
+            "value" : "Reset Button"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -52,6 +52,7 @@ export default class SlideShow extends BaseElement {
             slideType : "scrollLeft"
         };
         Object.seal(this._options);
+        super._addSlot("slide", "sort");
         this.sortElement = null;
     }
 
@@ -78,12 +79,7 @@ export default class SlideShow extends BaseElement {
     }
 
     connectedCallback() {
-        super._addSlot("slide", "sort");
-        if (this.sortElement === null) {
-            this.sortElement = document.createElement("div");
-            this.sortElement.setAttribute("slot", "sort");
-            this.appendChild(this.sortElement);
-        }
+        this._appendProgress();
         if (this.hasAttribute("data") && this.getAttribute("data").isJSON()) {
             this.renderElement(this.getAttribute("data").parseJSON());
         }
@@ -92,6 +88,11 @@ export default class SlideShow extends BaseElement {
     renderSlides() {
         if (this.dataset.items === undefined) {
             return;
+        }
+        if (this.sortElement === null) {
+            this.sortElement = document.createElement("div");
+            this.sortElement.setAttribute("slot", "sort");
+            this.appendChild(this.sortElement);
         }
         this.style.width = this.dataset.width === undefined ? this._options.width : this.dataset.width;
         this.style.height = this.dataset.height === undefined ? this._options.height : this.dataset.height;

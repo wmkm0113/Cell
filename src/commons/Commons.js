@@ -35,7 +35,7 @@ const Comment = {
     TimeZoneOffset : new Date().getTimezoneOffset() * 60 * 1000,
     ISO8601DATEPattern : "yyyy-MM-dd",
     ISO8601TIMEPattern : "HH:mm:ss",
-    ISO8601DATETIMEPattern : "yyyy-MM-ddTHH:mm:ss.SSS",
+    ISO8601DATETIMEPattern : "yyyy-MM-ddTHH:mm:ss",
     BASE16 :    ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'],
     BASE36 : [
         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
@@ -288,8 +288,7 @@ Object.extend(Element.prototype, {
 
     setStyle(_cssText = "") {
         if (_cssText.length > 0) {
-            let _currentStyle = this.hasAttribute("style") ? this.getAttribute("style") : "";
-            this.setAttribute("style", _currentStyle + _cssText);
+            this.setAttribute("style", this.getStyle() + _cssText);
         }
     },
 
@@ -397,8 +396,7 @@ Object.extend(Element.prototype, {
             this.querySelectorAll("input, select, textarea").forEach(input => {
                 _result = _result && input.validate();
             });
-        } else if (this.dataset.validate === "true"
-            && (_tagName === "input" || _tagName === "select" || _tagName === "textarea")) {
+        } else if (this.dataset.validate === "true" && ["input", "select", "textarea"].indexOf(_tagName) !== -1) {
             if (this.value.length > 0) {
                 let _value = this.value;
                 if (this.dataset.regex) {
@@ -663,15 +661,23 @@ Object.extend(String.prototype, {
     },
 
     setKeywords() {
-        Array.from(document.querySelectorAll("meta"))
-            .filter(metaElement => (metaElement.name && metaElement.name.toLowerCase() === "keywords"))
-            .forEach(metaElement => metaElement.setAttribute("content", this));
+        let metaElement = document.head.querySelector("meta[name='keywords']");
+        if (metaElement === null) {
+            metaElement = document.createElement("meta");
+            metaElement.setAttribute("name", "keywords");
+            document.head.appendChild(metaElement);
+        }
+        metaElement.setAttribute("content", this);
     },
 
     setDescription() {
-        Array.from(document.querySelectorAll("meta"))
-            .filter(metaElement => (metaElement.name && metaElement.name.toLowerCase() === "description"))
-            .forEach(metaElement => metaElement.setAttribute("content", this));
+        let metaElement = document.head.querySelector("meta[name='description']");
+        if (metaElement === null) {
+            metaElement = document.createElement("meta");
+            metaElement.setAttribute("name", "description");
+            document.head.appendChild(metaElement);
+        }
+        metaElement.setAttribute("content", this);
     },
 
     encodeBase64() {
@@ -887,7 +893,7 @@ Object.extend(Date.prototype, {
             _fixTime *= -1;
         }
 
-        let _currentUTC = new Date().getTime() + new Date().getTimezoneOffset() * 60 * 1000,
+        let _currentUTC = new Date().getTime() + Comment.TimeZoneOffset,
             _gpsTime = new Date(_currentUTC + _fixTime),
             _gpsMonth = _gpsTime.getMonth() + 1, _gpsDay = _gpsTime.getDate(),
             RD = 180 / Math.PI, B5 = Math.PI * posLat / 180,

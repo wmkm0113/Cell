@@ -51,16 +51,17 @@ class BaseElement extends CustomElement {
         Object.defineProperty(this, "data", {
             set(data) {
                 if (this.renderElement !== undefined && data !== null && data.isJSON()) {
-                    this._removeProgress();
                     let jsonData = data.parseJSON();
                     if (jsonData.hasOwnProperty("elementId")) {
                         this.setAttribute("id", jsonData.elementId);
                     }
+                    this._removeProgress();
                     this.renderElement(jsonData);
                 }
             }
         });
-        this._appendProgress();
+        this._addSlot("loading");
+        this.loadingElement = null;
     }
 
     remove() {
@@ -70,20 +71,61 @@ class BaseElement extends CustomElement {
     }
 
     _appendProgress() {
-        if (this._shadowRoot.querySelector("div[id='waiting']") === null) {
-            let progressElement = document.createElement("div");
-            progressElement.setAttribute("id", "waiting");
-            progressElement.style.width = "100%";
-            progressElement.style.minHeight = "20px";
-            progressElement.setClass("waitingData");
-            this._shadowRoot.appendChild(progressElement);
+        if (this.loadingElement === null) {
+            this.loadingElement = document.createElement("div");
+            this.loadingElement.setAttribute("slot", "loading");
+            this.loadingElement.setClass("loading");
+            this.appendChild(this.loadingElement);
         }
     }
 
     _removeProgress() {
-        let progressElement = this._shadowRoot.querySelector("div[id='waiting']");
-        if (progressElement !== null) {
-            this._shadowRoot.removeChild(progressElement);
+        if (this.loadingElement !== null) {
+            this.removeChild(this.loadingElement);
+            this.loadingElement = null;
+        }
+    }
+}
+
+class TipsElement extends BaseElement {
+    constructor() {
+        super();
+        super._addSlot("tipsButton");
+    }
+
+    static tagName() {
+        return "tips-button";
+    }
+
+    renderElement(data) {
+        if (data.hasOwnProperty("content")) {
+            this.dataset.content = data.content;
+            this.connectedCallback();
+        }
+    }
+
+    connectedCallback() {
+        super._removeProgress();
+        let tipsElement = this.querySelector("span[slot='tipsButton']");
+        if (this.dataset.content === undefined || this.dataset.content.length === 0) {
+            if (tipsElement !== null) {
+                this.removeChild(tipsElement);
+            }
+        } else {
+            if (tipsElement === null) {
+                tipsElement = document.createElement("span");
+                tipsElement.setAttribute("slot", "tipsButton");
+                this.appendChild(tipsElement);
+                let tipsIcon = document.createElement("i");
+                tipsIcon.setClass("icon-help-circle");
+                tipsElement.appendChild(tipsIcon);
+            }
+            let tipsContent = this.querySelector("span > span");
+            if (tipsContent === null) {
+                tipsContent = document.createElement("span");
+                tipsElement.appendChild(tipsContent);
+            }
+            tipsContent.innerText = this.dataset.content;
         }
     }
 }
@@ -91,42 +133,35 @@ class BaseElement extends CustomElement {
 class AbstractElement extends BaseElement {
     constructor() {
         super();
+        super._addSlot("itemName", "tips");
+        this.labelElement = null;
+        this.tipsElement = null;
     }
 
     _renderLabel() {
-        let labelElement = this.querySelector("label[slot='itemName']");
+        if (this.labelElement === null) {
+            this.labelElement = document.createElement("label");
+            this.labelElement.setAttribute("slot", "itemName");
+            this.appendChild(this.labelElement);
+        }
         let textContent = (this.dataset.textContent === undefined) ? "" : this.dataset.textContent;
         if (textContent.length === 0) {
-            if (labelElement !== null) {
-                labelElement.parentElement.removeChild(labelElement);
-            }
+            this.labelElement.hide();
         } else {
-            if (labelElement === null) {
-                labelElement = document.createElement("label");
-                labelElement.setAttribute("slot", "itemName");
-                if (this.dataset.id !== undefined) {
-                    labelElement.setAttribute("for", this.dataset.id);
-                }
-                labelElement.appendChild(document.createElement("i"));
-                this.appendChild(labelElement);
+            this.labelElement.show();
+            if (this.dataset.id !== undefined) {
+                this.labelElement.setAttribute("for", this.dataset.id);
             }
-            let spanElement = this.querySelector("label > span");
-            if (spanElement === null) {
-                spanElement = document.createElement("span");
-                labelElement.appendChild(spanElement);
-            }
-            spanElement.innerText = textContent;
+            this.labelElement.innerText = textContent;
         }
 
-        super._addSlot("itemName", "tips");
-        let tipsButton = this.querySelector("tips-button[slot='tips']");
-        if (tipsButton === null) {
-            tipsButton = document.createElement("tips-button");
-            tipsButton.setAttribute("slot", "tips");
-            this.appendChild(tipsButton);
-        }
         if (this.dataset.tips !== undefined && this.dataset.tips.isJSON()) {
-            tipsButton.data = this.dataset.tips;
+            if (this.tipsElement === null) {
+                this.tipsElement = new TipsElement();
+                this.tipsElement.setAttribute("slot", "tips");
+                this.appendChild(this.tipsElement);
+            }
+            this.tipsElement.data = this.dataset.tips;
         }
     }
 }
@@ -223,10 +258,20 @@ class GroupElement extends AbstractElement {
                 if (tagName === "mock-radio") {
                     itemElement.addEventListener("click", (event) => {
                         event.stopPropagation();
-                        this._shadowRoot.querySelectorAll("radio-button")
+                        let currentValue = "";
+                        Array.from(this.querySelectorAll("div[slot='item'] > mock-radio"))
+                            .filter(radioButton => radioButton.checked)
                             .forEach(radioButton => {
-                                radioButton.checked = (radioButton.getAttribute("value") === itemElement.value);
+                                currentValue = radioButton.value();
+                                radioButton.checked = false;
                             });
+                        if (itemElement.value() !== currentValue) {
+                            Array.from(this.querySelectorAll("div[slot='item'] > mock-radio"))
+                                .filter(radioButton => radioButton.value() === itemElement.value())
+                                .forEach(radioButton => {
+                                    radioButton.checked = true;
+                                });
+                        }
                     });
                 }
                 itemInfo.name = itemName;
@@ -301,12 +346,12 @@ class ProgressBar extends CustomElement {
     }
 
     connectedCallback() {
-        if (this.querySelector("span[slot='progressInfo']") === null) {
+        if (this._progressInfo === null) {
             this._progressInfo = document.createElement("span");
             this._progressInfo.setAttribute("slot", "progressInfo");
             this.appendChild(this._progressInfo);
         }
-        if (this.querySelector("span[slot='progressText']") === null) {
+        if (this._progressText === null) {
             this._progressText = document.createElement("span");
             this._progressText.setAttribute("slot", "progressText");
             this.appendChild(this._progressText);
@@ -353,6 +398,10 @@ class ScrollBar extends CustomElement {
 
     scroll(top = 0) {
         if (this._scrollItem !== null) {
+            let limitTop = this.offsetHeight - this._scrollItem.offsetHeight;
+            if (limitTop < top) {
+                top = limitTop;
+            }
             this._scrollItem.style.top = (top > 0 ? top : 0) + "px";
         }
     }
@@ -416,6 +465,7 @@ class StarScore extends CustomElement {
     constructor() {
         super();
         super._addSlot("starScore");
+        this.scoreElement = null;
     }
 
     static tagName() {
@@ -423,21 +473,22 @@ class StarScore extends CustomElement {
     }
 
     connectedCallback() {
-        if (this.querySelector("div[slot='starScore']") === null) {
-            let divElement = document.createElement("div");
-            divElement.setAttribute("slot", "starScore");
-            this.appendChild(divElement);
+        if (this.scoreElement === null) {
+            this.scoreElement = document.createElement("p");
+            this.scoreElement.setAttribute("slot", "starScore");
+            this.scoreElement.setAttribute("href", "#");
+            this.appendChild(this.scoreElement);
             for (let i = 0 ; i < 5 ; i++) {
                 let spanElement = document.createElement("i");
                 spanElement.setClass("star");
-                divElement.appendChild(spanElement);
+                this.scoreElement.appendChild(spanElement);
             }
         }
     }
 
     set score(score) {
         if ((typeof score) === "number") {
-            let starList = this.querySelectorAll("div[slot='starScore'] > i");
+            let starList = this.scoreElement.querySelectorAll("i");
             if (score <= 0) {
                 starList.forEach(starItem => starItem.setClass("icon-star-outline"));
             } else if (score >= 5) {
@@ -456,8 +507,10 @@ class StarScore extends CustomElement {
                     }
                 }
             }
+            this.scoreElement.setAttribute("title", score);
         }
     }
 }
 
-export {CustomElement, BaseElement, AbstractElement, GroupElement, ProgressBar, ScrollBar, StarRating, StarScore};
+export {TipsElement, CustomElement, BaseElement, AbstractElement, GroupElement,
+    ProgressBar, ScrollBar, StarRating, StarScore};

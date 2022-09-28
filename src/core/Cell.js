@@ -30,17 +30,16 @@ import {Comment, Config, $} from "../commons/Commons.js";
 import RSA from "../crypto/RSA.js";
 import UIRender from "../render/Render.js";
 import {FloatWindow, FloatPage, NotifyArea, MockSwitch, MockDialog, MockCheckBox, MockRadio} from "../ui/mock.js";
-import {StandardButton, SubmitButton, ResetButton} from "../ui/button.js";
 import * as Details from "../ui/details.js";
-import {ProgressBar, ScrollBar, StarRating, StarScore} from "../ui/element.js";
+import {TipsElement, ProgressBar, ScrollBar, StarRating, StarScore} from "../ui/element.js";
+import {BaiduMap, GoogleMap} from "../ui/maps.js";
 import {FormItem, FormInfo} from "../ui/form.js";
 import {ButtonGroup, CheckBoxGroup, RadioGroup} from "../ui/group.js";
 import * as Input from "../ui/input.js";
 import * as List from "../ui/list.js";
 import SlideShow from "../ui/slide.js";
 import SocialGroup from "../ui/social.js";
-import TipsElement from "../ui/tips.js";
-import {MenuElement, MenuItem} from "../ui/menu.js";
+import {MenuElement, MenuItem, MultilingualMenu} from "../ui/menu.js";
 
 class CellJS {
     _languageCode = null;
@@ -83,25 +82,24 @@ class CellJS {
                 }
             },
             elements : [
-                TipsElement, FloatPage, FloatWindow, NotifyArea, MockSwitch, MockDialog, MockCheckBox, MockRadio,
-                StandardButton, SubmitButton, ResetButton, ProgressBar, ScrollBar, StarRating, StarScore,
-                ButtonGroup, CheckBoxGroup, RadioGroup, FormItem, FormInfo,
-                Input.InputElement, Input.BaseInput, Input.AbstractInput, Input.PasswordInput, Input.HiddenInput,
-                Input.TextInput, Input.SearchInput, Input.NumberInput, Input.DateInput, Input.TimeInput,
-                Input.DateTimeInput, Input.SelectInput, Input.TextAreaInput, Input.NumberIntervalInput,
-                Input.DateIntervalInput, Input.TimeIntervalInput, Input.DateTimeIntervalInput, Input.DragUpload,
-                List.ListFilter, List.ListData, List.ListStatistics, List.ListTitle, List.ListRecord,
-                List.RecordOperator, List.ListHeader, List.PropertyItem, List.PropertyDefine, List.MessageList,
-                List.CategoryList, SlideShow, SocialGroup, MenuItem, MenuElement, Details.AttachFiles, Details.MessageDetails,
-                Details.ModelList, Details.CategoryAccessories, Details.AccessoriesList, Details.CorporateAddress,
-                Details.CorporateResource, Details.CorporateDetails, Details.CorporateAbstract, Details.WidgetButton,
-                Details.ContentBanner
+                BaiduMap, GoogleMap, TipsElement, FloatPage, FloatWindow, NotifyArea, MockSwitch, MockDialog, MockCheckBox,
+                MockRadio, ProgressBar, ScrollBar, StarRating, StarScore, ButtonGroup, CheckBoxGroup, RadioGroup,
+                Input.InputElement, Input.BaseInput, Input.AbstractInput, Input.StandardButton, Input.SubmitButton,
+                Input.ResetButton, Input.PasswordInput, Input.HiddenInput, Input.TextInput, Input.SearchInput,
+                Input.NumberInput, Input.DateInput, Input.TimeInput, Input.DateTimeInput, Input.SelectInput,
+                Input.TextAreaInput, Input.NumberIntervalInput, Input.DateIntervalInput, Input.TimeIntervalInput,
+                Input.DateTimeIntervalInput, Input.DragUpload, FormItem, FormInfo,List.ListFilter, List.ListData,
+                List.ListStatistics, List.ListTitle, List.ListRecord, List.RecordOperator, List.ListHeader,
+                List.PropertyItem, List.PropertyDefine, List.MessageList, List.CategoryList, SlideShow, SocialGroup,
+                MenuItem, MenuElement, MultilingualMenu, Details.AttachFiles, Details.ModelDetails, Details.ModelList,
+                Details.AccessoriesDetails, Details.AccessoriesList, Details.ResourceDetails, Details.MessageDetails,
+                Details.PropertyDetails, Details.CorporateAddress, Details.CorporateDetails, Details.CorporateAbstract,
+                Details.WidgetButton, Details.ContentBanner
             ]
         };
         Object.extend(this._config, (Config || {}));
         //  Freeze config
         Object.freeze(this._config);
-        this._languageCode = this._config.languageCode;
 
         this._resources = {};
         this._modules = {};
@@ -122,7 +120,7 @@ class CellJS {
     }
 
     init() {
-        this.language(this._languageCode);
+        this.language = this._config.languageCode;
         if (this._config.security.RSA.exponent.length > 0 && this._config.security.RSA.modulus.length > 0) {
             this._rsaPublic = new RSA(this._config.security.RSA);
         }
@@ -139,8 +137,9 @@ class CellJS {
 
     confirm(message = null, confirmFunc = null) {
         if (message === null || message === undefined) {
-            this.Render.message("confirm", message, confirmFunc);
+            return;
         }
+        this.Render.message("confirm", message, confirmFunc);
     }
 
     notify(message = null) {
@@ -170,38 +169,61 @@ class CellJS {
                 ? target.getAttribute("href")
                 : target.dataset.link;
             if (linkAddress !== undefined && linkAddress.length > 0 && linkAddress !== "#") {
-                if (target.dataset.targetId === undefined || target.dataset.targetId === null
-                    || target.dataset.targetId.length === 0) {
-                    window.location = linkAddress;
-                } else {
+                if (target.dataset.openWindow === "true" ||
+                    (target.dataset.targetId !== undefined && target.dataset.targetId !== null
+                        && target.dataset.targetId.length > 0)) {
                     Cell.Ajax(linkAddress)
                         .then(responseText => {
-                            let _element = $(target.dataset.targetId);
-                            if (_element) {
-                                if (responseText.isJSON()) {
-                                    _element.clearChildNodes();
-                                    let responseData = responseText.parseJSON();
-                                    if (responseData.hasOwnProperty("title")) {
-                                        responseData.title.setTitle();
+                            let title = "";
+                            if (responseText.isJSON()) {
+                                let responseData = responseText.parseJSON();
+                                if (responseData.hasOwnProperty("title")) {
+                                    responseData.title.setTitle();
+                                    title = responseData.title;
+                                }
+                                if (responseData.hasOwnProperty("keywords")) {
+                                    responseData.keywords.setKeywords();
+                                }
+                                if (responseData.hasOwnProperty("description")) {
+                                    responseData.description.setDescription();
+                                }
+                                if (responseData.hasOwnProperty("data")) {
+                                    if (target.dataset.openWindow === "true") {
+                                        Cell.openWindow(JSON.stringify(responseData.data));
+                                    } else {
+                                        Cell.closeWindow();
+                                        let _element = $(target.dataset.targetId);
+                                        if (_element) {
+                                            if (_element.tagName.toLowerCase() === "notify-area") {
+                                                Cell.notify(JSON.stringify(responseData.data));
+                                            } else {
+                                                _element.clearChildNodes();
+                                                Cell._renderElement(_element, responseData);
+                                            }
+                                        }
+                                        history.pushState(null, title, linkAddress);
                                     }
-                                    if (responseData.hasOwnProperty("keywords")) {
-                                        responseData.keywords.setKeywords();
-                                    }
-                                    if (responseData.hasOwnProperty("description")) {
-                                        responseData.description.setDescription();
-                                    }
-                                    if (responseData.hasOwnProperty("data")) {
-                                        Cell._renderElement(_element, responseData);
+                                }
+                            } else {
+                                if (target.dataset.openWindow === "true") {
+                                    if (responseText.isJSON()) {
+                                        Cell.openWindow(responseText);
                                     }
                                 } else {
-                                    _element.innerHTML = ("" + responseText);
+                                    Cell.closeWindow();
+                                    let _element = $(target.dataset.targetId);
+                                    if (_element) {
+                                        _element.innerHTML = ("" + responseText);
+                                    }
+                                    history.pushState(null, title, linkAddress);
                                 }
-                                history.pushState(null, null, linkAddress);
                             }
                         })
                         .catch(errorMsg => {
                             console.error(errorMsg);
                         });
+                } else {
+                    window.location = linkAddress;
                 }
             }
         }
@@ -217,6 +239,13 @@ class CellJS {
             document.body.append(floatWindow);
         }
         floatWindow.data = data;
+    }
+
+    closeWindow() {
+        let floatWindow = document.body.querySelector("float-window");
+        if (floatWindow !== null) {
+            document.body.removeChild(floatWindow);
+        }
     }
 
     _renderElement(element, jsonData = []) {
@@ -341,11 +370,15 @@ class CellJS {
         return bundle + "." + key;
     }
 
-    language(languageCode) {
+    get language() {
+        return this._languageCode;
+    }
+
+    set language(languageCode) {
         if (this._languageCode === languageCode) {
             return;
         }
-
+        document.documentElement.lang = languageCode;
         this._languageCode = languageCode;
         this._resources = {};
         //  Load Core Resource
@@ -552,7 +585,7 @@ class CellJS {
     static _parseResponse(_request, resolve, reject) {
         let languageCode = _request.getResponseHeader("languageCode");
         if (languageCode !== null) {
-            Cell.language(languageCode);
+            Cell.language = languageCode;
         }
         let _jwtToken = _request.getResponseHeader("Authentication");
         if (_jwtToken !== null) {

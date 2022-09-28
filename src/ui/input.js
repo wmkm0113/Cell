@@ -18,6 +18,7 @@
 
 import {Comment} from "../commons/Commons.js";
 import {AbstractElement} from "./element.js";
+import {ResourceDetails} from "./details.js";
 
 /**
  * Base element of input/select/textarea
@@ -28,7 +29,7 @@ class InputElement extends AbstractElement {
     }
 
     _createElement(tagName = "") {
-        if (tagName.length > 0) {
+        if (tagName.length > 0 && tagName.toLowerCase()) {
             let element = document.createElement(tagName);
             element.setAttribute("slot", "element");
             this.appendChild(element);
@@ -41,6 +42,7 @@ class InputElement extends AbstractElement {
         if (data.hasOwnProperty("id") && data.hasOwnProperty("name")) {
             Object.keys(data).forEach(key =>
                 this.dataset[key] = ((typeof data[key]) === "string") ? data[key] : JSON.stringify(data[key]));
+            super._renderLabel();
             this._render();
         }
     }
@@ -86,7 +88,7 @@ class IntervalInput extends AbstractElement {
                         break;
                 }
             });
-            this._render();
+            this.connectedCallback();
         }
     }
 
@@ -166,32 +168,25 @@ class BaseInput extends InputElement {
                     this.dataset[key] = ((typeof data[key]) === "string") ? data[key] : JSON.stringify(data[key]);
                 }
             });
-            this.connectedCallback();
+            super._renderLabel();
+            this._render();
         }
     }
 
-    get disabled() {
+    enable() {
+        this._removeAttribute("disabled");
+    }
+
+    disable() {
+        this._updateAttribute("disabled", true);
+    }
+
+    disabled() {
         return this._checkAttribute("disabled");
     }
 
-    set disabled(value) {
-        if (value !== undefined) {
-            if (Boolean(value)) {
-                this._updateAttribute("disabled", value);
-            } else {
-                this._removeAttribute("disabled");
-            }
-        }
-    }
-
-    get value() {
-        return this._checkAttribute("value");
-    }
-
-    set value(value) {
-        if (this._elementType !== "password" && this._elementType !== "file") {
-            this._updateAttribute("value", value);
-        }
+    value() {
+        return this._attributeValue("value");
     }
 
     get checked() {
@@ -212,6 +207,10 @@ class BaseInput extends InputElement {
     }
 
     addEventListener(type, listener, options) {
+        if (this._elementType === "checkbox" || this._elementType === "radio") {
+            super.addEventListener(type, listener, options);
+            return;
+        }
         let inputElement = this.querySelector("input");
         if (inputElement) {
             inputElement.addEventListener(type, listener, options);
@@ -223,9 +222,17 @@ class BaseInput extends InputElement {
     _checkAttribute(attributeName) {
         let inputElement = this.querySelector("input");
         if (inputElement) {
-            return inputElement[attributeName];
+            return inputElement.hasAttribute(attributeName);
         }
         return false;
+    }
+
+    _attributeValue(attributeName) {
+        let inputElement = this.querySelector("input");
+        if (inputElement) {
+            return inputElement.getAttribute(attributeName);
+        }
+        return null;
     }
 
     _updateAttribute(attributeName, attributeValue) {
@@ -263,46 +270,25 @@ class BaseInput extends InputElement {
 class AbstractInput extends BaseInput {
     constructor(elementType = "") {
         super(elementType);
+        super._addSlot("element", "icon", "reference");
+        this.inputElement = null;
+        this.referenceElement = null;
     }
 
     connectedCallback() {
         super._removeProgress();
-        if (this.dataset.id !== undefined && this.dataset.id.length > 0
-            && this.dataset.name !== undefined && this.dataset.name.length > 0) {
-            if (this._elementType.toLowerCase() !== "hidden") {
-                super._renderLabel();
-            }
-            super._addSlot("element", "icon");
-            let inputElement = this._inputElement();
-            Object.keys(this.dataset)
-                .filter(key => ["id", "name", "placeholder", "value"].indexOf(key.toLowerCase()) !== -1)
-                .forEach(key => {
-                    inputElement.setAttribute(key, this.dataset[key]);
-                });
-            inputElement.addEventListener("blur", (event) => {
-                event.stopPropagation();
-                if (inputElement.validate()) {
-                    inputElement.removeClass("error");
-                } else {
-                    inputElement.appendClass("error");
-                }
-            });
-        }
-    }
-
-    _inputElement() {
-        let inputElement = this.querySelector("input[type='" + this._elementType + "']");
-        if (inputElement === null) {
-            inputElement = document.createElement("input");
-            inputElement.setAttribute("type", this._elementType);
-            inputElement.setAttribute("slot", "element");
-            this.appendChild(inputElement);
+        if (this.inputElement === null) {
+            this.inputElement = (this._elementType.toLowerCase() === "textarea")
+                ? super._createElement("textarea")
+                : super._createElement("input");
+            this.inputElement.setAttribute("type", this._elementType);
+            this.appendChild(this.inputElement);
             switch (this._elementType.toLowerCase()) {
                 case "button":
                 case "submit":
                 case "reset":
                     if (this.dataset.className !== undefined && this.dataset.className.length > 0) {
-                        inputElement.appendClass(this.dataset.className);
+                        this.inputElement.appendClass(this.dataset.className);
                     }
                     break;
                 case "password":
@@ -312,29 +298,188 @@ class AbstractInput extends BaseInput {
                         iconElement.setAttribute("slot", "icon");
                         iconElement.addEventListener("click", function(event) {
                             event.stopPropagation();
-                            if (inputElement.getAttribute("type") === "password") {
-                                inputElement.setAttribute("type", "text");
+                            if (this.inputElement.getAttribute("type") === "password") {
+                                this.inputElement.setAttribute("type", "text");
                             } else {
-                                inputElement.setAttribute("type", "password");
+                                this.inputElement.setAttribute("type", "password");
                             }
-                            inputElement.focus();
+                            this.inputElement.focus();
                         })
                         this.appendChild(iconElement);
                     }
                     break;
             }
         }
-        return inputElement;
+        if (["text", "textarea"].indexOf(this._elementType.toLowerCase()) !== -1) {
+            if (this.referenceElement === null) {
+                this.referenceElement = document.createElement("span");
+                this.referenceElement.setAttribute("slot", "reference");
+                this.appendChild(this.referenceElement);
+            }
+        }
     }
 
-    validate() {
-        let hasError = false;
-        if (this.hasAttribute("regex")) {
-
+    _render() {
+        if (this.dataset.id !== undefined && this.dataset.id.length > 0
+            && this.dataset.name !== undefined && this.dataset.name.length > 0) {
+            if (this._elementType.toLowerCase() !== "hidden") {
+                super._renderLabel();
+            }
+            Object.keys(this.dataset)
+                .forEach(key => {
+                    if (["id", "name", "placeholder", "value"].indexOf(key.toLowerCase()) !== -1) {
+                        this.inputElement.setAttribute(key, this.dataset[key]);
+                    } else if (key.toLowerCase() === "reference"
+                        && ["text", "textarea"].indexOf(this._elementType.toLowerCase()) !== -1) {
+                        this.referenceElement.innerText = this.dataset[key];
+                    }
+                });
+            this.inputElement.addEventListener("blur", (event) => {
+                event.stopPropagation();
+                if (this.inputElement.validate()) {
+                    this.inputElement.removeClass("error");
+                } else {
+                    this.inputElement.appendClass("error");
+                }
+            });
         }
-        if (hasError) {
+    }
+}
 
+class BaseButton extends AbstractInput {
+    constructor(elementType = "button") {
+        if (!["button", "submit", "reset"].includes(elementType.toLowerCase())) {
+            throw new Error("Invalid element type");
         }
+        super(elementType);
+        this._timer = null;
+    }
+
+    set textContent(data) {
+        if (this.inputElement !== null) {
+            this.inputElement.setAttribute("value", data);
+        }
+    }
+
+    set id(id) {
+        super.setAttribute("id", id);
+    }
+
+    renderElement(data) {
+        if (data.hasOwnProperty("value")) {
+            this.textContent = data.value;
+        }
+        if (data.hasOwnProperty("className")) {
+            this.dataset.className = data.className;
+        }
+        if (data.hasOwnProperty("intervalTime")) {
+            this.dataset.intervalTime = data.intervalTime;
+        }
+        if (this._elementType.toLowerCase() === "button") {
+            if (data.hasOwnProperty("link")) {
+                this.dataset.link = data.link;
+            }
+        } else {
+            if (data.hasOwnProperty("formId")) {
+                this.dataset.formId = data.formId;
+            }
+        }
+    }
+
+    connectedCallback() {
+        super.connectedCallback();
+        let buttonElement = this;
+        this.inputElement.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            if (this.dataset.intervalTime !== undefined && this.dataset.intervalTime !== null
+                && this.dataset.intervalTime.isNum()) {
+                if (buttonElement._timer === null) {
+                    buttonElement.dataset.buttonText = this.inputElement.getAttribute("value");
+                    this.inputElement.disable();
+                    let countDown = buttonElement.dataset.intervalTime.parseInt();
+                    buttonElement.dataset.countDown = countDown.toString();
+                    this.inputElement.setAttribute("value", countDown.toString());
+                    buttonElement._timer =
+                        window.setInterval(function () {
+                            buttonElement.disable();
+                        }, 1000);
+                }
+            }
+        });
+        if (this._elementType === "submit" || this._elementType === "reset") {
+            this.inputElement.addEventListener("click", function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                let formElement = $(buttonElement.dataset.formId);
+                if (formElement) {
+                    switch (buttonElement._elementType) {
+                        case "submit":
+                            Cell.submitForm(formElement);
+                            break;
+                        case "reset":
+                            formElement.reset();
+                            break;
+                    }
+                }
+            });
+        }
+    }
+
+    disable() {
+        let countDown;
+        if (this.dataset.countDown === undefined || !this.dataset.countDown.isNum()) {
+            countDown = this.dataset.intervalTime.parseInt();
+        } else {
+            countDown = this.dataset.countDown.parseInt();
+        }
+        countDown--;
+        if (countDown <= 0) {
+            this.enable();
+        } else {
+            this.inputElement.setAttribute("value", countDown.toString());
+            this.dataset.countDown = countDown.toString();
+        }
+    }
+
+    enable() {
+        if (this._timer !== null) {
+            window.clearInterval(this._timer);
+            this._timer = null;
+        }
+        this.dataset.countDown = "";
+        this.inputElement.setAttribute("value", this.dataset.buttonText);
+        this.inputElement.enable();
+    }
+}
+
+class StandardButton extends BaseButton {
+    constructor() {
+        super("button");
+    }
+
+    static tagName() {
+        return "standard-button";
+    }
+}
+
+class SubmitButton extends BaseButton {
+    constructor() {
+        super("submit");
+    }
+
+    static tagName() {
+        return "submit-button";
+    }
+}
+
+class ResetButton extends BaseButton {
+    constructor() {
+        super("reset");
+    }
+
+    static tagName() {
+        return "reset-button";
     }
 }
 
@@ -510,10 +655,12 @@ class DateTimeIntervalInput extends IntervalInput {
 class DragUpload extends AbstractElement {
     constructor() {
         super();
-        super._addSlot("preview", "dragWindow");
+        super._addSlot("itemName", "tips", "dragWindow", "reference");
         this.dragWindow = null;
+        this.dragElement = null;
         this.previewElement = null;
         this.drawFiles = [];
+        this.referenceElement = null;
     }
 
     static tagName() {
@@ -526,7 +673,7 @@ class DragUpload extends AbstractElement {
 
     renderElement(data) {
         if (data !== undefined && data.hasOwnProperty("name")) {
-            Object.keys(data).forEach(key => (this.dataset[key] = data[key]));
+            Object.keys(data).forEach(key => (this.dataset[key] = ((typeof data[key]) === "string") ? data[key] : JSON.stringify(data[key])));
             this._render();
         }
     }
@@ -561,11 +708,11 @@ class DragUpload extends AbstractElement {
             }
             this.drawFiles = newArrays;
             if (this.drawFiles.length === 0) {
-                this.dragWindow.show();
+                this.dragElement.show();
             }
         } else {
             this.drawFiles = [];
-            this.dragWindow.show();
+            this.dragElement.show();
         }
     }
 
@@ -618,8 +765,19 @@ class DragUpload extends AbstractElement {
                                 }
                                 reader.readAsDataURL(fileItem);
                             }
+                        } else if (fileItem.type.indexOf("video") !== -1) {
+                            let imgPreview = this._renderItem(identifyCode);
+                            if (imgPreview) {
+                                this.previewElement.append(imgPreview);
+                                imgPreview.show();
+                                let videoElement = document.createElement("video");
+                                videoElement.setAttribute("controls", "true");
+                                videoElement.src = URL.createObjectURL(fileItem);
+                                videoElement.load();
+                                imgPreview.appendChild(videoElement);
+                            }
                         }
-                        this.dragWindow.hide();
+                        this.dragElement.hide();
                     });
             } else {
                 if (event.dataTransfer.files.length > 0) {
@@ -627,24 +785,29 @@ class DragUpload extends AbstractElement {
                     if (this._checkType(fileItem)) {
                         this.drawFiles = [];
                         this.drawFiles.push(fileItem);
-                        if (fileItem.type.indexOf("image") !== -1) {
-                            let imgPreview = this.previewElement.querySelector("span");
-                            if (imgPreview === null) {
-                                imgPreview = this._renderItem();
-                                if (imgPreview) {
-                                    this.previewElement.append(imgPreview);
-                                }
-                            }
+                        let imgPreview = this.previewElement.querySelector("span");
+                        if (imgPreview === null) {
+                            imgPreview = this._renderItem();
                             if (imgPreview) {
-                                let reader = new FileReader();
-                                reader.onload = function(event) {
-                                    imgPreview.style.backgroundImage = ("url('" + event.currentTarget.result + "')");
-                                    imgPreview.show();
-                                }
-                                reader.readAsDataURL(fileItem);
+                                this.previewElement.append(imgPreview);
                             }
                         }
-                        this.dragWindow.hide();
+                        if (fileItem.type.indexOf("image") !== -1) {
+                            imgPreview.clearChildNodes();
+                            let reader = new FileReader();
+                            reader.onload = function(event) {
+                                imgPreview.style.backgroundImage = ("url('" + event.currentTarget.result + "')");
+                                imgPreview.show();
+                            }
+                            reader.readAsDataURL(fileItem);
+                        } else if (fileItem.type.indexOf("video") !== -1) {
+                            imgPreview.style.backgroundImage = "";
+                            let videoElement = document.createElement("video");
+                            videoElement.setAttribute("controls", "true");
+                            videoElement.src = URL.createObjectURL(fileItem);
+                            videoElement.load();
+                        }
+                        this.dragElement.hide();
                     }
                 }
             }
@@ -666,18 +829,42 @@ class DragUpload extends AbstractElement {
         return true;
     }
 
-    _render() {
-        if (this.previewElement === null) {
-            this.previewElement = document.createElement("div");
-            this.previewElement.setAttribute("slot", "preview");
-            this.appendChild(this.previewElement);
+    _renderReference() {
+        if (this.referenceElement === null && this.dataset.multilingual === "true"
+            && this.dataset.reference !== undefined && this.dataset.reference.isJSON()) {
+            this.referenceElement = document.createElement("div");
+            this.referenceElement.setAttribute("slot", "reference");
+            this.appendChild(this.referenceElement);
+
+            Array.from(this.dataset.reference.parseJSON())
+                .forEach(refData => {
+                    let refItem = new ResourceDetails();
+                    this.referenceElement.appendChild(refItem);
+                    refItem.data = JSON.stringify(refData);
+                });
         }
+    }
+
+    _render() {
+        super._renderLabel();
+        this._renderReference();
         if (this.dragWindow === null) {
             this.dragWindow = document.createElement("div");
             this.dragWindow.setAttribute("slot", "dragWindow");
             this.appendChild(this.dragWindow);
         }
+        if (this.previewElement === null) {
+            this.previewElement = document.createElement("div");
+            this.previewElement.setAttribute("id", "preview");
+            this.dragWindow.appendChild(this.previewElement);
+        }
+        if (this.dragElement === null) {
+            this.dragElement = document.createElement("div");
+            this.dragElement.setAttribute("id", "dragElement");
+            this.dragWindow.appendChild(this.dragElement);
+        }
         this.drawFiles = [];
+
     }
 }
 
@@ -719,7 +906,6 @@ class SelectInput extends InputElement {
     }
 
     _render() {
-        super._renderLabel();
         let currentValue = this.dataset.value;
         super._addSlot("element");
         let selectElement = this.querySelector("select");
@@ -758,9 +944,9 @@ class SelectInput extends InputElement {
  * Attention: "id" and "name" is required
  *
  */
-class TextAreaInput extends InputElement {
+class TextAreaInput extends AbstractInput {
     constructor() {
-        super();
+        super("textarea");
     }
 
     static tagName() {
@@ -769,6 +955,7 @@ class TextAreaInput extends InputElement {
 
     connectedCallback() {
         super._removeProgress();
+        super.connectedCallback();
         this._render();
     }
 
@@ -776,32 +963,31 @@ class TextAreaInput extends InputElement {
         if (this.dataset.name === undefined) {
             return;
         }
-        super._renderLabel();
-        super._addSlot("element");
-        let textareaElement = this.querySelector("textarea");
-        if (textareaElement === null) {
-            textareaElement = this._createElement("textarea");
-        }
-
         if (this.dataset.id !== undefined) {
-            textareaElement.setAttribute("id", this.dataset.id);
+            this.inputElement.setAttribute("id", this.dataset.id);
         }
-        textareaElement.setAttribute("name", this.dataset.name);
-        if (this.dataset.placeHolder !== undefined) {
-            textareaElement.setAttribute("placeholder", this.dataset.placeHolder);
+        this.inputElement.setAttribute("name", this.dataset.name);
+        if (this.dataset.placeholder !== undefined) {
+            this.inputElement.setAttribute("placeholder", this.dataset.placeholder);
         }
         let height = 200;
         let attributeValue = this.getAttribute("height");
         if (attributeValue !== null && attributeValue.isNum()) {
             height = attributeValue.parseInt();
         }
-        textareaElement.style.minHeight = height + "px";
+        this.inputElement.style.minHeight = height + "px";
         if (this.dataset.value !== undefined) {
-            textareaElement.innerHTML = this.dataset.value.decodeByRegExp();
+            this.inputElement.innerHTML = this.dataset.value.decodeByRegExp();
+        }
+        if (this.dataset.multilingual === "true" && this.dataset.reference !== undefined) {
+            this.referenceElement.innerText = this.dataset.reference;
+            this.appendClass("multilingual");
+        } else {
+            this.removeClass("multilingual");
         }
     }
 }
 
-export {InputElement, BaseInput, AbstractInput, PasswordInput, HiddenInput, TextInput, SearchInput, NumberInput,
-    DateInput, TimeInput, DateTimeInput, SelectInput, TextAreaInput, DragUpload,
+export {InputElement, BaseInput, AbstractInput, StandardButton, SubmitButton, ResetButton, PasswordInput, HiddenInput,
+    TextInput, SearchInput, NumberInput, DateInput, TimeInput, DateTimeInput, SelectInput, TextAreaInput, DragUpload,
     NumberIntervalInput, DateIntervalInput, TimeIntervalInput, DateTimeIntervalInput};

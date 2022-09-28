@@ -18,8 +18,7 @@
 
 import {BaseElement, StarScore} from "./element.js";
 import {MockCheckBox} from "./mock.js";
-import {StandardButton} from "./button.js";
-import {HiddenInput} from "./input.js";
+import {StandardButton, HiddenInput} from "./input.js";
 
 /**
  * Message List Filter Form
@@ -292,56 +291,31 @@ class ListStatistics extends BaseElement {
         }
 
         if (data instanceof Array) {
-            let idList = [], updateList = [];
-            data.forEach(statisticsItem => idList.push(statisticsItem.id));
-            this.statisticsElement.querySelectorAll("div")
-                .forEach(existsItem => {
-                    let index = idList.indexOf(existsItem.getAttribute("id"));
-                    if (index === -1) {
-                        this.statisticsElement.removeChild(existsItem);
-                    } else {
-                        let statisticsItem = data[index];
-                        if (statisticsItem.hasOwnProperty("title")) {
-                            let titleElement = existsItem.querySelector("span[id='title']");
-                            if (titleElement !== null) {
-                                titleElement.innerText = statisticsItem.title;
-                            }
-                        }
-                        if (statisticsItem.hasOwnProperty("data")) {
-                            let dataElement = existsItem.querySelector("span[id='data']");
-                            if (dataElement !== null) {
-                                dataElement.innerText = statisticsItem.data;
-                            }
-                        }
-                        existsItem.dataset.index = index.toString();
-                        updateList.push(idList[index]);
-                    }
-                });
-            for (let i = 0 ; i < data.length ; i++) {
-                let dataItem = data[i];
-                if (dataItem.hasOwnProperty("id") && (updateList.indexOf(dataItem.id) === -1)
-                    && dataItem.hasOwnProperty("title") && dataItem.hasOwnProperty("data")) {
-                    let statisticsItem = document.createElement("div");
-                    statisticsItem.setAttribute("id", dataItem.id);
-                    this.statisticsElement.appendChild(statisticsItem);
+            this.statisticsElement.clearChildNodes();
+            data.forEach(dataItem => {
+                if (dataItem.hasOwnProperty("id") && dataItem.hasOwnProperty("title")
+                    && dataItem.hasOwnProperty("data")) {
+                    let itemElement = document.createElement("div");
+                    itemElement.setAttribute("id", dataItem.id);
+                    itemElement.dataset.index = dataItem.hasOwnProperty("index") ? dataItem.index.toString() : "0";
+                    this.statisticsElement.appendChild(itemElement);
                     let titleElement = document.createElement("span");
                     titleElement.setAttribute("id", "title");
                     titleElement.innerText = dataItem.title;
-                    statisticsItem.appendChild(titleElement);
+                    itemElement.appendChild(titleElement);
                     let dataElement = document.createElement("span");
                     dataElement.setAttribute("id", "data");
                     dataElement.innerText = dataItem.data;
-                    statisticsItem.appendChild(dataElement);
-                    if (dataItem.hasOwnProperty("index")) {
-                        statisticsItem.dataset.index = dataItem.index.toString();
-                    }
-                    statisticsItem.removeClass("error");
-                    statisticsItem.removeClass("warning");
+                    itemElement.appendChild(dataElement);
                     if (dataItem.hasOwnProperty("className")) {
-                        statisticsItem.appendClass(dataItem.className);
+                        itemElement.appendClass(dataItem.className);
+                    }
+                    if (dataItem.hasOwnProperty("link")) {
+                        itemElement.dataset.link = dataItem.link;
+                        itemElement.addEventListener("click", (event) => Cell.sendRequest(event));
                     }
                 }
-            }
+            });
             this.statisticsElement.sortChildrenBy("div", "data-index", true);
             if (data.length > 0) {
                 this.show();
@@ -373,7 +347,6 @@ class ListTitle extends BaseElement {
         super._addSlot("title", "btnGroup");
         this.titleElement = null;
         this.btnGroup = null;
-        this.importBtn = null;
     }
 
     static tagName() {
@@ -391,13 +364,6 @@ class ListTitle extends BaseElement {
             this.btnGroup = document.createElement("div");
             this.btnGroup.setAttribute("slot", "btnGroup");
             this.appendChild(this.btnGroup);
-
-            this.importBtn = document.createElement("a");
-            this.importBtn.setClass("icon icon-upload");
-            this.btnGroup.appendChild(this.importBtn);
-            this.importBtn.dataset.targetId = this.dataset.targetId;
-            this.importBtn.addEventListener("click", (event) => Cell.sendRequest(event));
-            this.importBtn.hide();
 
             ["text-list", "view-list", "image-list"].forEach(listType => {
                 let styleBtn = document.createElement("i");
@@ -438,10 +404,6 @@ class ListTitle extends BaseElement {
             this.titleElement.show();
         } else {
             this.titleElement.hide();
-        }
-        if (data.hasOwnProperty("importUrl")) {
-            this.importBtn.setAttribute("href", data.importUrl);
-            this.importBtn.show();
         }
         if (data.hasOwnProperty("disableSwitch") && data.disableSwitch) {
             this.btnGroup.querySelectorAll(":scope > i").forEach(itemBtn => {
@@ -497,6 +459,7 @@ class PropertyItem extends BaseElement {
             this.appendChild(this.valueElement);
         }
         this.valueElement.innerText = value;
+        this.valueElement.setAttribute("title", value);
     }
 
     connectedCallback() {
@@ -557,8 +520,8 @@ class PropertyDefine {
             }
         }
         if (data.hasOwnProperty("sort")) {
-            if (this.sort !== Boolean(data.sort)) {
-                this.sort = Boolean(data.sort);
+            if (this.sort !== data.sort) {
+                this.sort = data.sort;
                 updateCount++;
             }
         }
@@ -617,7 +580,6 @@ class ListHeader extends BaseElement {
     }
 
     connectedCallback() {
-        super._removeProgress();
         this._render();
     }
 
@@ -638,6 +600,7 @@ class ListHeader extends BaseElement {
             this.appendChild(this.operatorElement);
         }
         this.mainElement.innerText = this.dataset.mainTitle;
+        this.mainElement.setAttribute("title", this.dataset.mainTitle);
         if (this.dataset.operatorTitle !== undefined) {
             this.operatorElement.innerText = this.dataset.operatorTitle;
         }
@@ -664,6 +627,7 @@ class ListHeader extends BaseElement {
                 }
                 itemElement.dataset.sortCode = itemData.index;
                 itemElement.innerText = itemData.title;
+                itemElement.setAttribute("title", itemData.title);
                 if (itemData.sort) {
                     itemElement.style.cursor = "pointer";
                     itemElement.addEventListener("click", (event) => {
@@ -739,8 +703,11 @@ class RecordOperator extends BaseElement {
         if (data.hasOwnProperty("textContent")) {
             this.textElement.innerHTML = data.textContent;
         }
-        if (this.dataset.targetId !== null) {
-            this.linkElement.dataset.targetId = this.dataset.targetId;
+        if (data.hasOwnProperty("openWindow")) {
+            this.linkElement.dataset.openWindow = data.openWindow;
+        }
+        if (data.hasOwnProperty("targetId")) {
+            this.linkElement.dataset.targetId = data.targetId;
         }
     }
 }
@@ -784,6 +751,7 @@ class ListRecord extends BaseElement {
             && this.dataset.recordData !== undefined && this.dataset.recordData.isJSON()) {
             let jsonData = this.dataset.recordData.parseJSON();
             let data = {
+                "id": jsonData.hasOwnProperty(selectAll) ? jsonData[selectAll] : "",
                 "name": selectAll,
                 "value": jsonData.hasOwnProperty(selectAll) ? jsonData[selectAll] : ""
             };
@@ -791,30 +759,37 @@ class ListRecord extends BaseElement {
         }
     }
 
-    selected() {
-        return this.selectElement.checked;
-    }
-
     _render() {
         if (this.dataset.recordData !== undefined && this.dataset.recordData.isJSON()) {
             let jsonData = this.dataset.recordData.parseJSON();
-            if (jsonData.hasOwnProperty("link") && jsonData.hasOwnProperty("title")) {
-                this.dataset.link = jsonData.link;
+            if (jsonData.hasOwnProperty("title")) {
+                this.dataset.link = jsonData.hasOwnProperty("link") ? jsonData.link : "#";
                 if (this.selectElement === null) {
                     this.selectElement = new MockCheckBox();
                     this.selectElement.setAttribute("slot", "selectAll");
-                    this.appendChild(this.selectElement);
                     this.selectElement.addEventListener("click", (event) => {
                         event.stopPropagation();
-                        this.selectElement.checked = !this.selectElement.checked;
-                        this.parentElement.parentElement.parentElement.checkSelectAll();
+                        let currentCheckbox = event.target.parentElement.parentElement.parentElement;
+                        let listData = this.parentElement.parentElement.parentElement;
+                        let count = Array.from(listData.querySelectorAll("mock-checkbox[slot='selectAll']"))
+                            .filter(mockCheckbox =>
+                                (mockCheckbox.dataset.value !== currentCheckbox.dataset.value) && !mockCheckbox.checked)
+                            .length;
+                        if (currentCheckbox.checked) {
+                            count++;
+                        }
+                        listData.switchSelectAll(count);
                     });
+                    this.appendChild(this.selectElement);
                 }
                 if (this.previewImg === null) {
                     this.previewImg = document.createElement("span");
                     this.previewImg.setAttribute("slot", "preview");
                     this.appendChild(this.previewImg);
                     this.previewImg.dataset.link = jsonData.link;
+                    if (jsonData.hasOwnProperty("openWindow")) {
+                        this.previewImg.dataset.openWindow = jsonData.openWindow;
+                    }
                     if (this.dataset.targetId !== null && this.dataset.targetId !== undefined) {
                         this.previewImg.dataset.targetId = this.dataset.targetId;
                     }
@@ -845,6 +820,9 @@ class ListRecord extends BaseElement {
                     linkElement = document.createElement("a");
                     this.mainTitle.appendChild(linkElement);
                     linkElement.addEventListener("click", (event) => Cell.sendRequest(event));
+                    if (jsonData.hasOwnProperty("openWindow")) {
+                        linkElement.dataset.openWindow = jsonData.openWindow;
+                    }
                 }
                 linkElement.innerText = jsonData.title;
                 linkElement.setAttribute("title", jsonData.title);
@@ -912,13 +890,19 @@ class ListRecord extends BaseElement {
                                 recordOperator = new RecordOperator();
                                 this.operatorsElement.appendChild(recordOperator);
                             }
-                            recordOperator.dataset.targetId = this.dataset.targetId;
                             recordOperator.data = JSON.stringify(operatorItem);
                         });
                     while (i < existsCount) {
                         this.operatorsElement.removeChild(operatorList[i]);
                         i++;
                     }
+                }
+
+                let operatorCount = this.operatorsElement.querySelectorAll("record-operator").length;
+                if (operatorCount > 0) {
+                    this.operatorsElement.show();
+                } else {
+                    this.operatorsElement.hide();
                 }
 
                 this.removeClass("error");
@@ -928,6 +912,18 @@ class ListRecord extends BaseElement {
                     this.appendClass(jsonData.className);
                 }
             }
+        }
+    }
+
+    enableAll() {
+        if (this.selectElement !== null) {
+            this.selectElement.show();
+        }
+    }
+
+    disableAll() {
+        if (this.selectElement !== null) {
+            this.selectElement.hide();
         }
     }
 }
@@ -1036,22 +1032,12 @@ class ListData extends BaseElement {
         }
     }
 
-    checkSelectAll() {
-        if (this.contentElement !== null) {
-            let recordList = this.contentElement.querySelectorAll("list-record"),
-                recordCount = recordList.length;
-            let checkedCount = 0;
-            for (let i = 0 ; i < recordCount ; i++) {
-                if (recordList[i].selected()) {
-                    checkedCount++;
-                }
-            }
-            this.headerElement.checked = (checkedCount === recordCount);
-        }
-    }
-
     sortQuery(sortBy = "", asc = false) {
         this.parentElement.sortQuery(sortBy, asc);
+    }
+
+    switchSelectAll(count) {
+        this.selectAllBtn.dataset.selectAll = "" + (count === 0);
     }
 
     _renderBatchOperators() {
@@ -1061,7 +1047,7 @@ class ListData extends BaseElement {
         }
         if (this.selectAllBtn === null) {
             this.selectAllBtn = document.createElement("i");
-            this.selectAllBtn.setClass("icon-checkbox-multiple-marked");
+            this.selectAllBtn.setClass("icon");
             this.batchElement.appendChild(this.selectAllBtn);
             this.selectAllBtn.addEventListener("click", (event) => {
                 event.stopPropagation();
@@ -1167,8 +1153,12 @@ class ListData extends BaseElement {
             rowElement.dataset[this.selectName] = rowData[this.selectName];
         }
         rowElement.data = JSON.stringify(rowData);
-        rowElement.selectAll = this.selectName;
-        rowElement.enableSelectAll = this.selectAll;
+        if (this.selectAll) {
+            rowElement.selectAll = this.selectName;
+            rowElement.enableAll();
+        } else {
+            rowElement.disableAll();
+        }
     }
 
     _renderPager() {
@@ -1328,6 +1318,18 @@ class MessageList extends BaseElement {
     }
 
     connectedCallback() {
+        this._appendProgress();
+        let initData = this.getAttribute("data");
+        if (initData !== undefined && initData !== null && initData.isJSON()) {
+            this.renderElement(initData.parseJSON());
+        }
+    }
+
+    renderElement(data) {
+        if (data === null) {
+            return;
+        }
+        super._removeProgress();
         if (this.filterElement === null) {
             this.filterElement = new ListFilter();
             this.filterElement.setAttribute("slot", "filter");
@@ -1351,16 +1353,6 @@ class MessageList extends BaseElement {
             this.appendChild(this.gridElement);
         }
 
-        let initData = this.getAttribute("data");
-        if (initData !== undefined && initData !== null && initData.isJSON()) {
-            this.renderElement(initData.parseJSON());
-        }
-    }
-
-    renderElement(data) {
-        if (data === null) {
-            return;
-        }
         if (data.hasOwnProperty("className")) {
             this.setClass(data.className);
         }

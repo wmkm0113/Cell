@@ -5,11 +5,7 @@
     margin: 0 auto;
     padding: 0;
 }
-.hidden {
-    display: none;
-}
 html {
-    font-size: 12px;
     float: none;
     font-family: sans-serif;
     color: rgb(var(--text-color));
@@ -21,54 +17,96 @@ body {
     background-color: rgb(var(--notify-bg-color));
     overflow-y: scroll;
 }
-a {
-    text-decoration: none;
-    font-size: 1.2rem;
-    color: inherit;
-}
 body > header {
     width: 100%;
-    height: 10rem;
+    height: 2rem;
     background-color: #FFFFFF;
 }
 body > header > span.logo {
-    width: 12rem;
-    height: 9rem;
+    width: 8rem;
+    height: 2rem;
+    background-image: url("../images/logo.svg");
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-    margin: 0.5rem 1rem;
+    margin: 0 0.5rem;
 }
 body > header > span.title {
-    width: calc(-14rem + 100%);
-    height: 7rem;
-    line-height: 7rem;
-    font-size: 3rem;
+    width: calc(-16rem + 100%);
+    height: 4rem;
+    line-height: 4rem;
+    font-size: 2rem;
     font-family: "Microsoft YaHei", PingFang, sans-serif;
     font-weight: bolder;
     color: rgb(var(--bg-color));
 }
 body > header > menu-element {
-    width: calc(-14rem + 100%);
-    height: 3rem;
+    margin-left: 1rem;
 }
 body > header > menu-element > div > menu-item > div {
-    top: 10rem;
     color: #FFFFFF;
+}
+body > header > multi-menu {
+    width: 1.5rem;
+    height: 1.5rem;
+    position: absolute;
+    overflow: hidden;
+    top: 0.25rem;
+    right: 1rem;
+}
+body > header > multi-menu:hover {
+    width: auto;
+    overflow: unset;
 }
 body > main {
     width: 100%;
+}
+body > main > article {
+    width: calc(-20rem + 100%);
     min-height: calc(-300px + 100%);
 }
-body > main > section {
+body > main > article > section {
     width: 100%;
 }
-body > main > section > h1 {
+body > main > article > section > h1 {
     width: calc(-2rem + 100%);
-    height: 6rem;
-    line-height: 6rem;
+    height: 4rem;
+    line-height: 4rem;
     padding: 0 1rem;
-    font-size: 3rem;
+    font-size: 2rem;
+    color: rgb(var(--title-color));
+}
+body > main > article > section > article {
+    width: calc(-6rem + 100%);
+    margin: 1rem;
+    padding: 2rem;
+    background-color: #FFFFFF;
+    border-radius: 1rem;
+}
+body > main > article > section > article > a {
+    padding: 0 1rem;
+    height: 2rem;
+    line-height: 2rem;
+    margin: 0 0.5rem;
+    background-color: rgb(var(--btn-bg-color));
+    border-radius: 1rem;
+    box-shadow: 0 2px 5px rgba(var(--text-color), 0.4);
+}
+body > main > article > section > article > a:hover {
+    background-color: rgb(var(--bg-color));
+    color: #FFFFFF;
+    box-shadow: none;
+}
+body > main > article > content-banner {
+    width: calc(-2rem + 100%);
+    height: 10rem;
+    margin: 0 1rem;
+}
+body > main > aside {
+    width: 19rem;
+    min-height: calc(-2rem + 100%);
+    margin-right: 1rem;
+    float: right;
 }
 body > footer {
     width: calc(-6rem + 100%);
@@ -78,7 +116,7 @@ body > footer {
     color: #F2F2F7;
 }
 body > footer > social-group {
-    width: 30rem;
+    width: 18rem;
     float: right;
     margin-bottom: 1rem;
 }
@@ -91,7 +129,24 @@ body > footer > div#copyRight {
     border-top: 1px solid #FFFFFF;
 }
 body > footer > div#copyRight > span#poweredBy {
-    height: 3rem;
-    line-height: 3rem;
-    font-size: 1.6rem;
+    height: 2rem;
+    line-height: 2rem;
+}
+html[lang="en"] {
+    font-family: sans-serif;
+}
+html[lang="en"] > body > header > span.logo {
+    background-image: url("../images/logo_en.svg");
+}
+html[lang="zh-CN"] {
+    font-family: sans-serif;
+}
+html[lang="zh-CN"] > body > header > span.logo {
+    background-image: url("../images/logo_zhs.svg");
+}
+html[lang="zh-TW"] {
+    font-family: sans-serif;
+}
+html[lang="zh-TW"] > body > header > span.logo {
+    background-image: url("../images/logo_zht.svg");
 }
