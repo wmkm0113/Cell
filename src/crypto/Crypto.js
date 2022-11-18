@@ -58,7 +58,7 @@ class Int64 {
         return new Int64(~this._high, ~this._low);
     }
 
-    static add(x, ...args) {
+    static ADD(x, ...args) {
         let _a = x._low & 0xFFFF, _b = x._low >>> 16, _c = x._high & 0xFFFF, _d = x._high >>> 16;
         let _length = args.length;
         for (let i = 0 ; i < _length ; i++) {
@@ -94,16 +94,26 @@ class Int64 {
     }
 }
 
-class Crypto {
-    static safeAdd(x = 0, y = 0) {
+class CryptoUtils {
+    static SAFE_ADD(x = 0, y = 0) {
         if ((typeof x).toLowerCase() === "number" && (typeof y).toLowerCase() === "number") {
             let _low = (x & 0xFFFF) + (y & 0xFFFF);
             let _high = (x >> 16) + (y >> 16) + (_low >> 16);
             return (_high << 16) | (_low & 0xFFFF);
         } else {
-            return Int64.add(x, y)
+            return Int64.ADD(x, y)
         }
+    }
+
+}
+
+class Crypto {
+    static get CryptoName() {
+        return "";
+    }
+
+    static initialize() {
     }
 }
 
-export {Int64, Crypto}
+export {Int64, Crypto, CryptoUtils}

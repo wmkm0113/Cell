@@ -10,7 +10,7 @@
     <script type="module">
         import {Config} from "../src/commons/Commons.js";
         Object.assign(Config, {
-            resPath: "/src/i18n",
+            developmentMode: true,
             languageCode: "en",
             formConfig : {
                 utcDateTime : true
@@ -18,8 +18,8 @@
         });
     </script>
     <script src="../src/core/Cell.js" type="module"></script>
-    <script src="https://api.map.baidu.com/api?key=&v=3.0&ak={API_KEY}" type="text/javascript" charset="utf-8"></script>
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={API_KEY}"></script>
+<!--    <script src="https://api.map.baidu.com/api?key=&v=3.0&ak={API_KEY}" type="text/javascript" charset="utf-8"></script>-->
+<!--    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={API_KEY}"></script>-->
     <script type="module">
         import * as Data from "./data.js";
         window.onload = function () {
@@ -36,8 +36,8 @@
                 $("formInfo").data = Data.formData;
                 $("detailsInfo").data = Data.detailsData;
                 $("widgetButton").data = Data.widgetData;
-                $("corpDetails").data = Data.corporateData;
-                $("addressDetails").data = Data.addressData;
+                // $("corpDetails").data = Data.corporateData;
+                // $("addressDetails").data = Data.addressData;
             }, 1000);
         }
     </script>

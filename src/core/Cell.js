@@ -27,7 +27,10 @@
 'use strict';
 
 import {Comment, Config, $} from "../commons/Commons.js";
+import CRC from "../crypto/CRC.js";
+import MD5 from "../crypto/MD5.js";
 import RSA from "../crypto/RSA.js";
+import SHA from "../crypto/SHA.js";
 import UIRender from "../render/Render.js";
 import {FloatWindow, FloatPage, NotifyArea, MockSwitch, MockDialog, MockCheckBox, MockRadio} from "../ui/mock.js";
 import * as Details from "../ui/details.js";
@@ -48,7 +51,6 @@ class CellJS {
         this._config = {
             developmentMode: false,
             contextPath : "",
-            resPath : "/src/i18n",
             languageCode : Comment.Language,
             //  Config the dark mode by sunrise and sunset
             darkMode : {
@@ -63,6 +65,7 @@ class CellJS {
                 utcDateTime : false
             },
             security : {
+                providers : [MD5, CRC, SHA, RSA],
                 //  Encrypt value of input[type='password']
                 encryptPassword : true,
                 //  Encrypt method for input[type='password']
@@ -72,7 +75,7 @@ class CellJS {
                 encryptMethod : "MD5",
                 //  RSA Key Config
                 RSA : {
-                    //  Public Key data
+                    //  RSA Key data
                     exponent : "",
                     modulus : "",
                     //  Exponent and modulus data radix, default is 16
@@ -101,9 +104,6 @@ class CellJS {
         //  Freeze config
         Object.freeze(this._config);
 
-        this._resources = {};
-        this._modules = {};
-
         if (this._config.darkMode.enabled && Comment.GPS) {
             try {
                 navigator.geolocation.getCurrentPosition(function (position) {
@@ -116,14 +116,11 @@ class CellJS {
             }
         }
         this._darkMode = false;
-        this._rsaPublic = null;
     }
 
     init() {
         this.language = this._config.languageCode;
-        if (this._config.security.RSA.exponent.length > 0 && this._config.security.RSA.modulus.length > 0) {
-            this._rsaPublic = new RSA(this._config.security.RSA);
-        }
+        this._initCrypto();
         this.Render = new UIRender();
         this.Render.init(this._config.elements);
     }
@@ -339,37 +336,6 @@ class CellJS {
         }
     }
 
-    loadResource(bundle = "", initFunc = null) {
-        let _url = this.contextPath() + this._config.resPath;
-        _url += this._config.resPath.endsWith("/") ? "" : "/";
-        _url += bundle + "/" + this._languageCode + ".json";
-        Cell.Ajax(_url).then(responseData => {
-            this._resources[bundle] = responseData.parseJSON();
-            if (initFunc != null) {
-                initFunc.apply(this);
-            }
-        }).catch(errorMsg => {
-            console.log(errorMsg);
-            this._resources[bundle] = {};
-        });
-    }
-
-    message(bundle = "", key = "", ...args) {
-        if ((typeof bundle) !== "string") {
-            throw new Error(Cell.message("Core", "Multi.Bundle.Type"));
-        }
-        if (this._resources.hasOwnProperty(bundle)) {
-            if (this._resources[bundle].hasOwnProperty(key)) {
-                let _resource = this._resources[bundle][key];
-                for (let i = 0 ; i < args.length ; i++) {
-                    _resource = _resource.replace("{" + i + "}", args[i]);
-                }
-                return _resource;
-            }
-        }
-        return bundle + "." + key;
-    }
-
     get language() {
         return this._languageCode;
     }
@@ -380,47 +346,32 @@ class CellJS {
         }
         document.documentElement.lang = languageCode;
         this._languageCode = languageCode;
-        this._resources = {};
-        //  Load Core Resource
-        this.loadResource("Core");
-        for (let bundle in this._modules) {
-            if (this._modules.hasOwnProperty(bundle) && this._modules[bundle]) {
-                this.loadResource(bundle)
-            }
-        }
     }
 
-    registerModule(bundle, module, loadResource = false, initFunc = null) {
-        if (Object.hasOwnProperty(bundle)) {
-            if (initFunc != null) {
-                initFunc.apply(this);
-            }
-            return;
-        }
-        this[bundle] = module;
-        if (!this._modules.hasOwnProperty(bundle)) {
-            this._modules[bundle] = loadResource;
-            if (loadResource) {
-                this.loadResource(bundle, initFunc);
-            }
-        }
+    _initCrypto() {
+        this._config.security.providers.forEach(provider => {
+            let bundle = provider.CryptoName;
+            this[bundle] = bundle;
+            provider.initialize();
+        })
     }
 
-    encryptPassword(password) {
-        if (this._config.security.encryptPassword) {
-            if (this._config.security.encryptMethod === "RSA") {
-                if (this._rsaPublic === null) {
-                    console.error("RSA key not initialized");
-                    return "";
-                }
-                return this._rsaPublic.encrypt(password);
-            }
-            return this.calculateData(this._config.security.encryptMethod, password);
-        }
-        return password;
+    encData(data) {
+        return this.calculateData("RSA", data);
+    }
+
+    decData(data) {
+        return this.calculateData("RSA", data, "true");
     }
 
     calculateData(method, data, key = "") {
+        if (method === "RSA") {
+            if (Boolean(key)) {
+                return Cell["RSA"].newInstance(this._config.security.RSA).decrypt(data);
+            } else {
+                return Cell["RSA"].newInstance(this._config.security.RSA).encrypt(data);
+            }
+        }
         let encryptor;
         if (method.startsWith("CRC")) {
             encryptor = Cell["CRC"].newInstance(method);
@@ -549,7 +500,6 @@ class CellJS {
             }
 
             _request.ontimeout = function () {
-                console.log(Cell.message("Core", "HttpClient.TimeOut", url));
                 reject(_request);
             };
             if (_options.userName !== null && _options.passWord !== null) {

@@ -47,6 +47,9 @@ class MenuElement extends BaseElement {
         if (data.hasOwnProperty("targetId")) {
             this.dataset.targetId = data.targetId;
         }
+        if (data.hasOwnProperty("languageCode")) {
+            this.dataset.languageCode = data.languageCode;
+        }
         if (data.hasOwnProperty("data")) {
             this.dataset.menuData = JSON.stringify(data.data);
         }
@@ -70,6 +73,9 @@ class MenuElement extends BaseElement {
                     }
                     if (this.dataset.targetId !== undefined) {
                         menuItem.dataset.targetId = this.dataset.targetId;
+                    }
+                    if (this.dataset.languageCode !== undefined) {
+                        menuItem.dataset.languageCode = this.dataset.languageCode;
                     }
                     menuItem.data = JSON.stringify(itemData);
                     i++;

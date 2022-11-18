@@ -355,7 +355,7 @@ Object.extend(Element.prototype, {
                         if (input.tagName.toLowerCase() === "input") {
                             switch (input.type.toLowerCase()) {
                                 case "password":
-                                    _inputValue = Cell.encryptPassword(_inputValue);
+                                    _inputValue = Cell.calculateData(this._config.security.encryptMethod, _inputValue);
                                     break;
                                 case "date":
                                 case "time":
@@ -601,18 +601,17 @@ Object.extend(String.prototype, {
 
     parseJSON() {
         if (!this.isJSON()) {
-            throw new Error(Cell.message("Core", "Data.Invalid.JSON"));
+            throw new Error("Data invalid");
         }
-        let _string = this.replace(/'/g, '"');
         if (typeof JSON !== 'undefined') {
-            return JSON.parse(_string);
+            return JSON.parse(this);
         }
 
         if (Comment.Browser.Gecko) {
-            return new Function("return " + _string)();
+            return new Function("return " + this)();
         }
 
-        return eval('(' + _string + ')');
+        return eval('(' + this + ')');
     },
 
     parseXml() {
@@ -629,7 +628,7 @@ Object.extend(String.prototype, {
                             }
                         } catch (e) {
                             _xmlDoc = null;
-                            console.log(Cell.message("Core", "Data.Invalid.XML") + e);
+                            console.log("XML data invalid" + e);
                         }
                     }
                 });
@@ -637,7 +636,7 @@ Object.extend(String.prototype, {
             try {
                 _xmlDoc = new DOMParser().parseFromString(this, "text/xml");
             } catch (e) {
-                console.log(Cell.message("Core", "Data.Invalid.XML") + e);
+                console.log("XML data invalid" + e);
             }
         }
 
@@ -882,7 +881,7 @@ Object.extend(Date.prototype, {
     sunTime(posLon, posLat) {
         if (posLon === null || posLon < -180 || posLon > 180
             || posLat === null || posLat < -90 || posLat > 90) {
-            throw new Error(Cell.message("Core", "Location.GPS.Unknown"));
+            throw new Error("GPS location unknown");
         }
 
         let _fixTime = Math.floor(Math.abs(posLon) / 15) * 60 * 60 * 1000;

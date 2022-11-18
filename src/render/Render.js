@@ -34,9 +34,6 @@ export default class UIRender {
                 let tagName = element.tagName();
                 if (tagName !== null) {
                     if (customElements.get(tagName) === undefined) {
-                        if (Cell.developmentMode()) {
-                            console.log("Register custom tag: " + tagName);
-                        }
                         customElements.define(tagName, element);
                     }
                 }
