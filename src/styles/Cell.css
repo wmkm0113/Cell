@@ -6,6 +6,9 @@
     url('../fonts/iconfont.woff?t=1651372046520') format('woff'),
     url('../fonts/iconfont.ttf?t=1651372046520') format('truetype');
 }
+* {
+    font-family: "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Georgia, Helvetica, sans-serif !important;
+}
 .icon, i {
     font-family: "iconfont", "Microsoft YaHei", PingFang, sans-serif !important;
     font-size: 1rem;
@@ -13,6 +16,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
+.icon-img-lost:before {content: "\e694";}
 .icon-check:before {content: "\e69c";}
 .icon-close:before {content: "\e6b7";}
 .icon-qq-chat:before {content: "\e866";}
@@ -223,7 +227,7 @@
         width: calc(-1.5rem - 2px + 50%);
     }
 }
-@media screen and (min-width: 577px) and (max-width: 1024px) {
+@media screen and (min-width: 577px) and (max-width: 1440px) {
     html {
         font-size: 12px;
     }
@@ -231,40 +235,32 @@
         width: calc(-1.25rem - 2px + 25%);
     }
 }
-@media screen and (min-width: 1025px) and (max-width: 1440px) {
-    html {
-        font-size: 14px;
-    }
-    message-list > list-data > .image-list > #content > list-record {
-        width: calc(-1.2rem - 2px + 20%);
-    }
-}
 @media screen and (min-width: 1441px) and (max-width: 1920px) {
     html {
         font-size: 16px;
     }
     message-list > list-data > .image-list > #content > list-record {
-        width: calc(-1.167rem - 2px + 16.67%);
+        width: calc(-1.2rem - 2px + 20%);
     }
 }
 @media screen and (min-width: 1921px) and (max-width: 2560px) {
     html {
-        font-size: 18px;
+        font-size: 20px;
+    }
+    message-list > list-data > .image-list > #content > list-record {
+        width: calc(-1.167rem - 2px + 16.67%);
+    }
+}
+@media screen and (min-width: 2561px) {
+    html {
+        font-size: 24px;
     }
     message-list > list-data > .image-list > #content > list-record {
         width: calc(-1.125rem - 2px + 12.5%);
     }
 }
-@media screen and (min-width: 2561px) {
-    html {
-        font-size: 20px;
-    }
-    message-list > list-data > .image-list > #content > list-record {
-        width: calc(-1.1rem - 2px + 10%);
-    }
-}
 /* Default style config */
-html > body {
+html {
     --bright-bg-color: 255, 255, 255;
     --dark-bg-color: 0, 0, 0;
     --bg-color: 5, 110, 183;
@@ -382,25 +378,84 @@ button.icon-close::before {
 }
 standard-button,
 submit-button,
-reset-button {
+reset-button,
+like-button,
+favorite-button {
     height: 2rem;
     border: none;
     border-radius: 1rem;
     margin: 0 1rem;
     cursor: pointer;
+    background-color: rgb(var(--btn-bg-color));
+    box-shadow: 0 2px 5px rgba(var(--text-color), 0.4);
 }
 standard-button > input[slot="element"],
 submit-button > input[slot="element"],
-reset-button > input[slot="element"] {
+reset-button > input[slot="element"],
+like-button > input[slot="element"],
+favorite-button > input[slot="element"] {
     width: 100%;
     min-width: 8rem;
     height: 2rem;
     padding: 0 0.5rem;
-    background-color: rgb(var(--btn-bg-color));
     border: none;
     border-radius: 1rem;
     cursor: pointer;
-    box-shadow: 0 2px 5px rgba(var(--text-color), 0.4);
+    font-weight: bolder;
+    float: right;
+}
+like-button > i,
+favorite-button > i {
+    height: 2rem;
+    line-height: 2rem;
+    border-radius: 50%;
+    text-align: center;
+}
+like-button > i,
+favorite-button > i {
+    width: 2rem;
+    float: left;
+}
+like-button > input[slot="element"],
+favorite-button > input[slot="element"] {
+    width: auto;
+    min-width: auto;
+    padding-left: 0;
+}
+like-button > input[slot="element"][value="0"],
+favorite-button > input[slot="element"][value="0"] {
+    display: none;
+}
+like-button > i:before {
+    content: "\eafa";
+}
+like-button:hover > i:before,
+like-button[data-checked="true"] > i:before {
+    content: "\eb0d";
+}
+favorite-button > i:before {
+    content: "\eac2";
+}
+favorite-button:hover > i:before,
+favorite-button[data-checked="true"] > i:before {
+    content: "\eab5";
+}
+like-button:hover,
+favorite-button:hover,
+like-button[data-checked="true"],
+favorite-button[data-checked="true"] {
+    box-shadow: unset;
+    background-color: rgb(var(--bg-color));
+}
+like-button:hover > i:before,
+like-button[data-checked="true"] > i:before,
+favorite-button:hover > i:before,
+favorite-button[data-checked="true"] > i:before,
+like-button:hover > input[slot="element"],
+like-button[data-checked="true"] > input[slot="element"],
+favorite-button:hover > input[slot="element"],
+favorite-button[data-checked="true"] > input[slot="element"] {
+    color: #FFFFFF;
 }
 textarea-input > textarea {
     width: calc(-1rem - 2px + 100%);
@@ -565,12 +620,12 @@ reset-button:hover > input[slot="element"] {
     background-color: rgb(var(--bg-color));
     color: rgb(var(--bright-bg-color));
     box-shadow: none;
+    font-weight: bolder;
 }
 mock-switch > div,
 mock-checkbox > div,
 mock-radio > div {
     float: left;
-    margin-right: 0.5rem;
 }
 mock-switch > div > input,
 mock-checkbox > div > input,
@@ -611,7 +666,7 @@ mock-radio > div > input + label > i {
     cursor: pointer;
     outline: none;
     user-select: none;
-    margin: 0 0.5rem 0 0;
+    margin-right: 0.25rem;
 }
 mock-radio > div > input + label > i:before,
 mock-radio > div > input + label > i:after {
@@ -638,10 +693,10 @@ mock-radio > div > input + label > i:after {
     margin: calc(4px + 20%);
     border-radius: 100%;
 }
-mock-radio > div > input:checked + label > i:before {
+mock-radio > div > input[checked] + label > i:before {
     background-color: rgb(var(--bg-color));
 }
-mock-radio > div > input:checked + label > i:after {
+mock-radio > div > input[checked] + label > i:after {
     background-color: rgb(var(--bright-bg-color));
 }
 mock-switch > div > input + label > i,
@@ -684,10 +739,10 @@ mock-switch > div > input + label > i:after {
     box-shadow: 0 2px 5px rgba(var(--border-color), 0.4);
     transition: margin 0.4s;
 }
-mock-switch > div > input:checked + label > i:before {
+mock-switch > div > input[checked] + label > i:before {
     background-color: rgb(var(--bg-color));
 }
-mock-switch > div > input:checked + label > i:after {
+mock-switch > div > input[checked] + label > i:after {
     margin-left: 1.7rem;
 }
 mock-switch > div > input:disabled + label > i {
@@ -700,7 +755,7 @@ mock-switch > div > input:disabled + label > i:after {
     background-color: rgb(var(--disabled-switch-btn-color));
     box-shadow: none;
 }
-mock-switch > div > input:disabled:checked + label > i:after {
+mock-switch > div > input[checked]:disabled + label > i:after {
     background-color: rgb(var(--disabled-switch-btn-color));
     margin-left: 21px;
     box-shadow: none;
@@ -717,16 +772,16 @@ mock-checkbox > div > input + label > i {
     background-color: rgb(var(--bright-bg-color));
     margin: 0.3rem 0.25rem 0.2rem 0.25rem;
 }
-mock-checkbox > div > input + label > i:after {
+mock-checkbox > div[slot="element"] > input + label > i:after {
     height: calc(-2px + 1rem);
     line-height: calc(-2px + 1rem);
     content: "";
     text-align: center;
 }
-mock-checkbox > div > input:checked + label > i {
+mock-checkbox > div[slot="element"] > input[checked] + label > i {
     background-color: rgb(var(--bg-color));
 }
-mock-checkbox > div > input:checked + label > i:after {
+mock-checkbox > div[slot="element"] > input[checked] + label > i:after {
     width: calc(-2px + 1rem);
     display: block;
     position: absolute;
@@ -738,7 +793,6 @@ form-info {
     margin: 1rem;
     padding: 2rem 0;
     background-color: rgb(var(--bright-bg-color));
-    border-radius: 1rem;
 }
 form-info > form {
     width: calc(-4rem + 100%);
@@ -779,6 +833,40 @@ form-info > form > form-item,
 form-info > form > form-item > div {
     width: 100%;
     float: left;
+}
+textarea-input > span[slot="error"],
+select-input > span[slot="error"],
+radio-group > span[slot="error"],
+checkbox-group > span[slot="error"],
+text-input > span[slot="error"],
+number-input > span[slot="error"],
+search-input > span[slot="error"],
+password-input > span[slot="error"],
+number-interval-input > span[slot="error"] {
+    display: none;
+}
+textarea-input.error > textarea,
+select-input.error > select,
+radio-group.error > input[slot="element"],
+checkbox-group.error > input[slot="element"],
+text-input.error > input[slot="element"],
+number-input.error > input[slot="element"],
+search-input.error > input[slot="element"],
+password-input.error > input[slot="element"],
+number-interval-input.error > input[slot="element"] {
+    background-color: rgba(255, 0, 0, 0.4);
+}
+textarea-input.error > span[slot="error"],
+select-input.error > span[slot="error"],
+radio-group.error > span[slot="error"],
+checkbox-group.error > span[slot="error"],
+text-input.error > span[slot="error"],
+number-input.error > span[slot="error"],
+search-input.error > span[slot="error"],
+password-input.error > span[slot="error"],
+number-interval-input.error > span[slot="error"] {
+    display: block;
+    color: rgb(255, 0, 0);
 }
 form-info > form > form-item,
 form-info > form > property-details {
@@ -937,51 +1025,82 @@ menu-element > div > menu-item.current > div[name="items"] > a.current > span[na
 menu-element > div > menu-item > div > menu-item:hover > a > span[name="textContent"] {
     color: rgb(var(--text-color));
 }
-menu-element.asideMenu {
-    width: 100%;
-}
-menu-element.asideMenu > div[slot="menuList"] {
-    display: block;
-}
-menu-element.asideMenu > div[slot="menuList"] > menu-item {
+category-menu {
     width: 100%;
     height: auto;
-    margin-top: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    background-color: #FFFFFF;
 }
-menu-element.asideMenu > div[slot="menuList"] > menu-item > a {
+category-menu > h4 {
     width: calc(-2rem + 100%);
     height: 3rem;
     line-height: 3rem;
     background-color: rgb(var(--bg-color));
     color: #FFFFFF;
-    border-radius: 0.5rem 0.5rem 0 0;
+    padding: 0 1rem;
+    text-align: center;
 }
-menu-element.asideMenu > div[slot="menuList"] > menu-item > div[slot="menuList"] {
+category-menu > div[slot="menuList"] {
     width: 100%;
-    position: unset;
-    background-color: #FFFFFF;
-    display: block;
+    height: auto;
 }
-menu-element.asideMenu > div[slot="menuList"] > menu-item:hover {
-    background-color: transparent;
-}
-menu-element.asideMenu > div[slot="menuList"] > menu-item > div[slot="menuList"] > menu-item {
-    width: 100%;
-}
-menu-element.asideMenu > div[slot="menuList"] > menu-item > div[slot="menuList"] > menu-item > a {
+category-menu > div[slot="menuList"] > record-operator {
     width: calc(-2rem + 100%);
+    height: 2.5rem;
+    line-height: 2.5rem;
     padding: 0 1rem;
 }
-widget-button {
+category-menu > div[slot="menuList"] > record-operator:hover {
+    background-color: rgb(var(--btn-bg-color));
+}
+body > main > aside > menu-element > div[slot="menuList"] > menu-item > div[slot="menuList"] > menu-item > a > span {
+    font-size: 1rem;
+}
+link-avatar {
     width: 100%;
     height: 15rem;
+    margin-bottom: 1rem;
 }
-widget-button > a,
-widget-button > a > resource-details,
-widget-button > a > resource-details > span[slot="image"],
-widget-button > a > resource-details > video {
+link-avatar > a,
+link-avatar > a > resource-details {
     width: 100%;
     height: 100%;
+}
+link-avatar > a > resource-details::before {
+    height: 10rem;
+    line-height: 10rem;
+    padding: 2.5rem 0;
+    font-size: 10rem;
+}
+resource-details {
+    position: relative;
+}
+resource-details::before {
+    position: absolute;
+    width: 100%;
+    height: 12rem;
+    line-height: 12rem;
+    padding: calc(-6rem + 50%) 0;
+    text-align: center;
+    font-family: iconfont, sans-serif;
+    font-size: 12rem;
+    color: rgb(var(--disabled-bg-color));
+}
+resource-details > span[slot="image"],
+resource-details > video[slot="video"] {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+resource-details > span[slot="image"] {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: #FFFFFF;
+}
+resource-details > video[slot="video"] {
+    object-fit: fill;
 }
 multi-menu {
     height: 1.5rem;
@@ -1010,10 +1129,9 @@ multi-menu > div {
     z-index: 100;
 }
 multi-menu > div > a {
-    min-width: 6rem;
+    min-width: 8rem;
     min-height: 1.5rem;
     line-height: 1.5rem;
-    padding: 0 1rem;
     text-align: center;
     color: rgb(var(--bg-color));
     font-size: 0.75rem;
@@ -1051,7 +1169,6 @@ message-list > list-statistics,
 message-list > list-title,
 message-list > list-data {
     background-color: rgb(var(--bright-bg-color));
-    border-radius: 1rem;
 }
 message-list > list-filter {
     width: calc(-4rem + 100%);
@@ -1063,7 +1180,6 @@ message-list > list-statistics {
 }
 message-list > list-title {
     width: calc(-2.5rem + 100%);
-    border-radius: 1rem 1rem 0 0;
     padding: 1rem 1.5rem 0 1rem;
 }
 message-list > list-data {
@@ -1103,7 +1219,7 @@ message-list > list-data > div[slot="dataInfo"] > list-header {
 }
 message-list > list-filter,
 message-list > list-statistics {
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 message-list > list-filter > form > * {
     width: 100%;
@@ -1168,16 +1284,16 @@ message-list > list-filter > form > checkbox-group > div > mock-checkbox > div {
 }
 message-list > list-filter > form > radio-group > div > mock-radio,
 message-list > list-filter > form > checkbox-group > div > mock-checkbox {
-    margin: 0.25rem 0;
+    margin: 0.25rem;
 }
 message-list > list-filter > form > radio-group > div > mock-radio > div > label > span,
 message-list > list-filter > form > checkbox-group > div > mock-checkbox > div > label > span {
     padding: 0 1rem;
 }
 message-list > list-filter > form > radio-group > div > mock-radio > div > label:hover > span,
-message-list > list-filter > form > radio-group > div > mock-radio > div > input:checked + label > span,
+message-list > list-filter > form > radio-group > div > mock-radio > div > input[checked] + label > span,
 message-list > list-filter > form > checkbox-group > div > mock-checkbox > div > label:hover > span,
-message-list > list-filter > form > checkbox-group > div > mock-checkbox > div > input:checked + label > span {
+message-list > list-filter > form > checkbox-group > div > mock-checkbox > div > input[checked] + label > span {
     border-radius: 0.75rem;
     color: rgb(var(--bright-bg-color));
     background-color: rgb(var(--bg-color));
@@ -1194,11 +1310,6 @@ message-list > list-filter > submit-button,
 message-list > list-filter > reset-button {
     width: auto;
     float: right;
-}
-message-list > list-filter > standard-button:hover > input[slot="element"],
-message-list > list-filter > submit-button:hover > input[slot="element"],
-message-list > list-filter > reset-button:hover > input[slot="element"] {
-    font-weight: normal;
 }
 message-list > list-statistics > div > div {
     width: calc(-4.5rem + 25%);
@@ -1250,7 +1361,11 @@ message-list > list-title > div[slot="btnGroup"] {
     margin: 0.5rem;
     float: right;
 }
-message-list > list-data > div[slot="batchOperators"] > a,
+comment-list > div[slot="listPager"] > i,
+comment-list > div[slot="listPager"] > div > i,
+message-list > list-data > div[slot="batchOperators"] > record-operator,
+message-list > list-data > div[slot="batchOperators"] > record-operator > a,
+message-list > list-data > div[slot="batchOperators"] > record-operator > a > i,
 message-list > list-data > div[slot="batchOperators"] > i,
 message-list > list-data > div[slot="listPager"] > i,
 message-list > list-data > div[slot="listPager"] > div > i {
@@ -1266,15 +1381,19 @@ message-list > list-data > div[slot="listPager"] > div > i {
     margin: 0 0.2rem;
     font-size: 1.2rem;
 }
-message-list > list-data > div[slot="batchOperators"] > a,
+message-list > list-data > div[slot="batchOperators"] > record-operator > a,
+message-list > list-data > div[slot="batchOperators"] > record-operator > a > i {
+    margin: 0 auto;
+}
+message-list > list-data > div[slot="batchOperators"] > record-operator,
 message-list > list-data > div[slot="batchOperators"] > i,
-message-list > list-title > div[slot="btnGroup"] > a,
+message-list > list-title > div[slot="btnGroup"] > record-operator,
 message-list > list-title > div[slot="btnGroup"] > i {
     margin-left: 0.5rem;
     box-shadow: 0 2px 5px rgba(var(--border-color), 0.4);
     color: rgb(var(--bg-color));
 }
-message-list > list-title > div[slot="btnGroup"] > a,
+message-list > list-title > div[slot="btnGroup"] > record-operator,
 message-list > list-title > div[slot="btnGroup"] > i {
     width: 1.6rem;
     height: 1.6rem;
@@ -1286,31 +1405,34 @@ message-list > list-title > div[slot="btnGroup"] > i {
     background-color: rgb(var(--btn-bg-color));
     cursor: pointer;
 }
-message-list > list-data > div[slot="batchOperators"] > a:hover,
+message-list > list-data > div[slot="batchOperators"] > record-operator:hover,
 message-list > list-data > div[slot="batchOperators"] > i:hover,
 message-list > list-title > div[slot="btnGroup"] > i.current,
-message-list > list-title > div[slot="btnGroup"] > a:hover,
+message-list > list-title > div[slot="btnGroup"] > record-operator:hover,
 message-list > list-title > div[slot="btnGroup"] > i:hover {
     box-shadow: none;
 }
-message-list > list-data > div[slot="batchOperators"] > a:hover,
+message-list > list-data > div[slot="batchOperators"] > record-operator:hover > a > i,
 message-list > list-data > div[slot="batchOperators"] > i:hover,
-message-list > list-title > div[slot="btnGroup"] > a:hover,
+message-list > list-title > div[slot="btnGroup"] > record-operator:hover > a > i,
 message-list > list-title > div[slot="btnGroup"] > i:hover,
 message-list > list-title > div[slot="btnGroup"] > i.current,
 message-list > list-data > div[slot="listPager"] > i:hover,
 message-list > list-data > div[slot="listPager"] > #pageGroup > i:hover,
-message-list > list-data > div[slot="listPager"] > #pageGroup > .current {
+message-list > list-data > div[slot="listPager"] > #pageGroup > .current,
+comment-list > div[slot="listPager"] > i:hover,
+comment-list > div[slot="listPager"] > #pageGroup > i:hover,
+comment-list > div[slot="listPager"] > #pageGroup > .current {
     background-color: rgb(var(--bg-color));
     color: rgb(var(--bright-bg-color));
+}
+message-list > list-data > div[slot="dataInfo"] > #content > list-record > mock-checkbox {
+    z-index: 27;
 }
 message-list > list-data[data-select-all="false"] > div[slot="dataInfo"] > #content > list-record > mock-checkbox {
     visibility: hidden;
 }
-message-list > list-data > div[slot="dataInfo"] > #content > list-record > span[slot="preview"] {
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+message-list > list-data > div[slot="dataInfo"] > #content > list-record > resource-details {
     cursor: pointer;
 }
 message-list > list-data > div[slot="dataInfo"] > #content > list-record > div[slot="operators"] > record-operator {
@@ -1345,23 +1467,19 @@ message-list > list-data > div[slot="dataInfo"] > #content > list-record {
     transition: box-shadow 0.4s, background-color 0.4s linear;
 }
 message-list > list-data > div[slot="dataInfo"] > #content > list-record:hover {
-    box-shadow: 0 0 0.25rem 0.25rem rgba(var(--border-color), 0.5);
+    box-shadow: 0 0 0.5rem 0.5rem rgba(var(--border-color), 0.5);
+}
+message-list > list-data > div[slot="dataInfo"] > #content > list-record.warning {
+    background-color: rgba(var(--warning-bg-color), 0.3);
 }
 message-list > list-data > div[slot="dataInfo"] > #content > list-record.warning:hover {
     background-color: rgb(var(--warning-bg-color));
 }
-message-list > list-data > div[slot="dataInfo"] > #content > list-record.warning {
-    background-color: rgba(var(--warning-bg-color), 0.2);
+message-list > list-data > div[slot="dataInfo"] > #content > list-record.error {
+    background-color: rgba(var(--error-bg-color), 0.3);
 }
 message-list > list-data > div[slot="dataInfo"] > #content > list-record.error:hover {
     background-color: rgb(var(--error-bg-color));
-}
-message-list > list-data > .text-list > #content > list-record.error:hover,
-message-list > list-data > .view-list > #content > list-record.error:hover {
-    border-bottom-color: rgb(var(--error-bg-color));
-}
-message-list > list-data > div[slot="dataInfo"] > #content > list-record.error {
-    background-color: rgba(var(--error-bg-color), 0.2);
 }
 message-list > list-data > div[slot="dataInfo"] > #content > list-record > span[slot="mainTitle"] > a {
     height: 2rem;
@@ -1369,6 +1487,10 @@ message-list > list-data > div[slot="dataInfo"] > #content > list-record > span[
     text-decoration: none;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+message-list > list-data > .text-list > #content > list-record.error:hover,
+message-list > list-data > .view-list > #content > list-record.error:hover {
+    border-bottom-color: rgb(var(--error-bg-color));
 }
 message-list > list-data > .text-list > #content > list-record > span[slot="mainTitle"] > a,
 message-list > list-data > .view-list > #content > list-record > span[slot="mainTitle"] > a {
@@ -1411,7 +1533,7 @@ message-list > list-data > .text-list > #content > list-record > mock-checkbox >
     margin: 0.25rem;
     background-color: rgb(var(--bright-bg-color));
 }
-message-list > list-data > .text-list > #content > list-record > mock-checkbox > div[slot="element"] > input:checked + label > i::after {
+message-list > list-data > .text-list > #content > list-record > mock-checkbox > div[slot="element"] > input[checked] + label > i::after {
     color: rgb(var(--bg-color));
 }
 message-list > list-data > .text-list > list-header > span[slot="mainTitle"],
@@ -1492,17 +1614,16 @@ message-list > list-data > .image-list > #content > list-record > mock-checkbox 
     left: 0.5rem;
     top: 0.5rem;
 }
-message-list > list-data > .view-list > #content > list-record > mock-checkbox > div > input + label > i,
-message-list > list-data > .image-list > #content > list-record > mock-checkbox > div > input + label > i {
+message-list > list-data > .view-list > #content > list-record > mock-checkbox > div[slot="element"] > input + label > i,
+message-list > list-data > .image-list > #content > list-record > mock-checkbox > div[slot="element"] > input + label > i {
     background-color: rgb(var(--bright-bg-color));
 }
-message-list > list-data > .view-list > #content > list-record > mock-checkbox > div > input:checked + label > i,
-message-list > list-data > .image-list > #content > list-record > mock-checkbox > div > input:checked + label > i {
+message-list > list-data > .view-list > #content > list-record > mock-checkbox > div[slot="element"] > input[checked] + label > i,
+message-list > list-data > .image-list > #content > list-record > mock-checkbox > div[slot="element"] > input[checked] + label > i {
     background-color: rgb(var(--bg-color));
 }
 message-list > list-data > .view-list > #content > list-record > span[slot="mainTitle"] > a,
 message-list > list-data > .image-list > #content > list-record > span[slot="mainTitle"] > a {
-    font-size: 1rem;
     font-weight: bolder;
 }
 message-list > list-data > .image-list > div {
@@ -1511,7 +1632,7 @@ message-list > list-data > .image-list > div {
 message-list > list-data > .image-list > #content > list-record {
     margin: 1rem 0 0 1rem;
     padding-bottom: 0.5rem;
-    border-radius: 1rem;
+    border-radius: 0.5rem;
     position: relative;
     border: 1px solid rgba(var(--border-color), 0.4);
 }
@@ -1552,13 +1673,18 @@ message-list > list-data > .image-list > #content > list-record > star-score > p
     text-align: center;
     font-size: 1rem;
 }
-message-list > list-data > .view-list > #content > list-record > span[slot="preview"] {
-    width: 16rem;
-    height: 12rem;
-    margin: 0 0.5rem 0 0.5rem;
+message-list > list-data > .view-list > #content > list-record > resource-details {
+    width: 15rem;
+    height: 15rem;
+    margin: 0 1rem 0 0.5rem;
+}
+message-list > list-data > .view-list > #content > list-record > resource-details:before {
+    content: "\e694";
+    font-size: 10rem;
+    line-height: 10rem;
 }
 message-list > list-data > .view-list > #content > list-record > span[slot="mainTitle"] {
-    max-width: calc(-23rem + 100%);
+    max-width: calc(-22.5rem + 100%);
     height: 2rem;
     line-height: 2rem;
     padding: 0 0.5rem 0 0;
@@ -1566,9 +1692,9 @@ message-list > list-data > .view-list > #content > list-record > span[slot="main
 }
 message-list > list-data > .view-list > #content > list-record > span[slot="abstract"] {
     width: calc(-17.5rem + 100%);
-    height: 4.5rem;
+    height: 7.5rem;
     line-height: 1.5rem;
-    margin: 0.25rem 0.5rem 0.25rem 0;
+    margin: 0.25rem 0.5rem;
     font-size: 0.8rem;
     overflow: hidden;
     text-indent: 2rem;
@@ -1580,7 +1706,7 @@ message-list > list-data > .view-list > #content > list-record > span[slot="abst
 }
 message-list > list-data > .view-list > #content > list-record > div[slot="items"],
 message-list > list-data > .view-list > #content > list-record > div[slot="operators"] {
-    width: calc(-17.5rem + 100%);
+    width: calc(-16.5rem + 100%);
     line-height: 1.5rem;
     overflow: hidden;
     float: left;
@@ -1637,13 +1763,15 @@ message-list > list-data > .text-list > #content > list-record > div[slot="opera
     line-height: 1.5rem;
     font-size: 0.75rem;
 }
-message-list > list-data > .image-list > #content > list-record > span[slot="preview"] {
+message-list > list-data > .image-list > #content > list-record > resource-details {
     width: 100%;
-    margin-bottom: 1rem;
+    margin-bottom: 0;
     padding-bottom: 100%;
 }
-message-list > list-data > .image-list > #content > list-record > span[slot="preview"] {
-    margin-bottom: 0;
+message-list > list-data > .image-list > #content > list-record > resource-details,
+message-list > list-data > .image-list > #content > list-record > resource-details > span[slot="image"],
+message-list > list-data > .image-list > #content > list-record > resource-details > video[slot="video"] {
+    border-radius: 0.5rem 0.5rem 0 0;
 }
 message-list > list-data > .image-list > #content > list-record > span[slot="mainTitle"] {
     height: 2rem;
@@ -1662,7 +1790,8 @@ message-list > list-data > .image-list > #content > list-record > div[slot="oper
     margin-top: 0.6rem;
 }
 message-list > list-data > div[slot="batchOperators"],
-message-list > list-data > div[slot="listPager"] {
+message-list > list-data > div[slot="listPager"],
+comment-list > div[slot="listPager"] {
     width: auto;
     height: 2rem;
     margin: 0.5rem 0;
@@ -1670,7 +1799,7 @@ message-list > list-data > div[slot="listPager"] {
 message-list > list-data > div[slot="batchOperators"] {
     float: left;
 }
-message-list > list-data > div[slot="batchOperators"] > a,
+message-list > list-data > div[slot="batchOperators"] > record-operator,
 message-list > list-data > div[slot="batchOperators"] > i {
     padding: 0;
     text-decoration: none;
@@ -1689,13 +1818,103 @@ message-list > list-data > div[slot="dataInfo"].view-list + div[slot="batchOpera
 message-list > list-data > div[slot="dataInfo"].image-list + div[slot="batchOperators"] > i[data-select-all="true"]::before {
     content: "\e721";
 }
+comment-list > div[slot="listPager"],
 message-list > list-data > div[slot="listPager"] {
     float: right;
 }
+comment-list > div[slot="listPager"] > i,
+comment-list > div[slot="listPager"] > div > i,
 message-list > list-data > div[slot="listPager"] > i,
 message-list > list-data > div[slot="listPager"] > div > i {
     font-size: 0.9rem;
     margin: 0 0.5rem;
+}
+user-info > resource-details::before {
+    font-family: iconfont, sans-serif;
+    position: absolute;
+    text-align: center;
+    border-radius: 50%;
+    background-color: rgb(var(--notify-bg-color));
+    color: rgb(var(--disabled-bg-color));
+}
+comment-list {
+    margin: 0;
+}
+comment-list > h3 {
+    width: calc(-1rem + 100%);
+    height: 3rem;
+    line-height: 3rem;
+    margin-left: 1rem;
+}
+comment-list > div[slot="commentList"] {
+    width: 100%;
+    border: 1px solid rgb(var(--bg-color));
+    margin-bottom: 1rem;
+}
+comment-list > div[slot="commentList"] > comment-data {
+    width: 100%;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgb(var(--bg-color));
+    position: relative;
+}
+comment-list > div[slot="commentList"] > comment-data:last-child {
+    border-bottom: none;
+}
+comment-list > div[slot="commentList"] > comment-data > user-info {
+    width: 10rem;
+    float: left;
+}
+comment-list > div[slot="commentList"] > comment-data > user-info > resource-details {
+    width: 8rem;
+    height: 8rem;
+    margin: 0.5rem 1rem;
+}
+comment-list > div[slot="commentList"] > comment-data > user-info > resource-details > span[slot="image"] {
+    border-radius: 50%;
+}
+comment-list > div[slot="commentList"] > comment-data > user-info > resource-details.icon::before {
+    width: 6rem;
+    height: 6rem;
+    line-height: 6rem;
+    font-size: 6rem;
+    padding: calc(-3rem + 50%);
+}
+comment-list > div[slot="commentList"] > comment-data > user-info > span,
+comment-list > div[slot="commentList"] > comment-data > user-info > star-score {
+    width: 9rem;
+    height: 1.5rem;
+    line-height: 1.5rem;
+    padding: 0 0.5rem;
+    text-align: center;
+    font-size: 0.8rem;
+}
+comment-list > div[slot="commentList"] > comment-data > user-info > star-score {
+    width: 5rem;
+    margin: 0 2rem;
+}
+comment-list > div[slot="commentList"] > comment-data > span {
+    width: calc(-10rem + 100%);
+    float: right;
+}
+comment-list > div[slot="commentList"] > comment-data > span[slot="title"] {
+    height: 3rem;
+    line-height: 3rem;
+    font-weight: bolder;
+}
+comment-list > div[slot="commentList"] > comment-data > span[slot="content"] {
+    line-height: 1.5rem;
+    font-size: 0.8rem;
+    margin-bottom: 3rem;
+}
+comment-list > div[slot="commentList"] > comment-data > span[slot="operators"] {
+    height: 2rem;
+    position: absolute;
+    bottom: 0.5rem;
+}
+comment-list > div[slot="commentList"] > comment-data > span[slot="operators"] > like-button,
+comment-list > div[slot="commentList"] > comment-data > span[slot="operators"] > favorite-button {
+    box-shadow: unset;
+    margin-left: 0;
 }
 resource-details > span {
     background-repeat: no-repeat;
@@ -1745,16 +1964,17 @@ message-details > div[slot="properties"] > property-details > span[slot="title"]
 message-details > resource-details[slot="avatar"],
 message-details > resource-details[slot="avatar"] > span {
     width: 20rem;
-    height: 15rem;
+    height: 20rem;
 }
 message-details > resource-details[slot="avatar"] > video {
     max-width: 20rem;
-    max-height: 15rem;
+    max-height: 20rem;
 }
 message-details > resource-details[slot="avatar"] > span {
     background-repeat: no-repeat;
     background-size: contain;
     background-position: center;
+    background-color: rgb(var(--bright-bg-color));
 }
 message-details > div[slot="msgAbstract"] {
     width: calc(-22rem + 100%);
@@ -1781,12 +2001,12 @@ message-details > div[slot="msgContent"] > span{
 }
 message-details > div[slot="resourceList"] > resource-details {
     width: calc(-0.8rem + 20%);
-    margin-top: 1rem;
+    padding-bottom: calc(-0.8rem + 20%);
+    margin-bottom: 1rem;
     margin-right: 1rem;
 }
-message-details > div[slot="resourceList"] > resource-details > span {
+message-details > div[slot="resourceList"] > resource-details > span[slot="image"] {
     width: 100%;
-    padding-bottom: 75%;
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -1800,9 +2020,10 @@ message-details > div[slot="resourceList"] > resource-details:nth-child(5n) {
 }
 message-details > attach-list[slot="attachFiles"] > h3,
 message-details > model-list > h3 {
-    width: 100%;
+    width: calc(-1rem + 100%);
     height: 3rem;
     line-height: 3rem;
+    margin-left: 1rem;
 }
 message-details > attach-list[slot="attachFiles"] > div[slot="attachList"] {
     width: 100%;
@@ -1822,7 +2043,7 @@ message-details > model-list > div[slot="listItems"] {
 }
 message-details > model-list > div[slot="listItems"] > model-details {
     width: calc(-1.5rem + 50%);
-    height: 6rem;
+    height: 8rem;
     margin-top: 1rem;
     cursor: pointer;
 }
@@ -1836,23 +2057,32 @@ message-details > model-list > div[slot="listItems"] > model-details:nth-child(e
 }
 message-details > model-list > div[slot="listItems"] > model-details > resource-details {
     width: 8rem;
-    height: 6rem;
+    height: 8rem;
     margin-right: 1rem;
 }
+message-details > model-list > div[slot="listItems"] > model-details > resource-details::before,
 message-details > model-list > div[slot="listItems"] > model-details > resource-details > span[slot="image"],
 message-details > model-list > div[slot="listItems"] > model-details > resource-details > video[slot="video"] {
     width: 8rem;
-    height: 6rem;
+    height: 8rem;
 }
-message-details > model-list > div[slot="listItems"] > model-details > h4,
-message-details > model-list > div[slot="listItems"] > model-details > span[slot="modelAbstract"] {
+message-details > model-list > div[slot="listItems"] > model-details > resource-details > span[slot="image"] {
+    background-size: contain;
+}
+message-details > model-list > div[slot="listItems"] > model-details > resource-details::before {
+    line-height: 8rem;
+    font-size: 6rem;
+    padding: calc(-3rem + 50%) 0;
+}
+message-details > model-list > div[slot="listItems"] > model-details > h5,
+message-details > model-list > div[slot="listItems"] > model-details > span[slot="modelContent"] {
     width: calc(-9rem + 100%);
 }
-message-details > model-list > div[slot="listItems"] > model-details > h4 {
+message-details > model-list > div[slot="listItems"] > model-details > h5 {
     height: 2rem;
     line-height: 2rem;
 }
-message-details > model-list > div[slot="listItems"] > model-details > span[slot="modelAbstract"] {
+message-details > model-list > div[slot="listItems"] > model-details > span[slot="modelContent"] {
     height: 3rem;
     line-height: 1.5rem;
     margin: 0.5rem 0;
@@ -1863,6 +2093,7 @@ message-details > model-list > div[slot="listItems"] > model-details > span[slot
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
+    font-size: 0.8rem;
 }
 message-details > accessories-list >div[slot="accessoriesItems"],
 message-details > accessories-list >div[slot="accessoriesItems"] > accessories-details,
@@ -1891,18 +2122,9 @@ message-details > accessories-list >div[slot="accessoriesItems"] > accessories-d
     line-height: 2rem;
     text-align: center;
 }
-message-details > message-list {
-    margin: 0;
-}
-message-details > message-list > list-data,
-message-details > message-list > list-title {
-    width: 100%;
-    padding-left: 0;
-    padding-right: 0;
-}
-message-details > message-list > list-data > .view-list > #content > list-record > span[slot="preview"] {
+message-details > message-list > list-data > .view-list > #content > list-record > resource-details {
     width: 12rem;
-    height: 9rem;
+    height: 12rem;
 }
 message-details > message-list > list-data > .view-list > #content > list-record > div[slot="items"] {
     height: 2rem;
@@ -1916,16 +2138,20 @@ message-details > message-list > list-data > .view-list > #content > list-record
 }
 message-details > message-list > list-data > .view-list > #content > list-record > div[slot="items"],
 message-details > message-list > list-data > .view-list > #content > list-record > span[slot="abstract"] {
-    width: calc(-13.5rem + 100%);
+    width: calc(-14.5rem + 100%);
+}
+message-details > message-list > list-data > .view-list > #content > list-record > div[slot="operators"] {
+    width: calc(-14.5rem + 100%);
+    margin-right: 0.5rem;
+    float: right;
 }
 slide-show {
     margin: 0 auto;
-    padding: 0;
+    padding: 0 0 1rem;
+    position: relative;
 }
 slide-show > div[slot="slide"] {
-    width: 100%;
-    height: 100%;
-    position: relative;
+    position: absolute;
     overflow: hidden;
 }
 slide-show > div[slot="slide"] > div {
@@ -1936,7 +2162,7 @@ slide-show > div[slot="slide"] > div {
     left: 0;
     display: flex;
 }
-slide-show > div[slot="slide"] > div > a {
+slide-show > div[slot="slide"] > div > resource-details {
     position: relative;
     background-position: center;
     background-size: cover;
@@ -1945,10 +2171,10 @@ slide-show > div[slot="slide"] > div > a {
     float: left;
     display: block;
 }
-slide-show > div[slot="slide"] > div > a.hidden {
+slide-show > div[slot="slide"] > div > resource-details.hidden {
     display: none;
 }
-slide-show > div[slot="slide"] > div > a > span {
+slide-show > div[slot="slide"] > div > resource-details > span[slot="title"] {
     width: 100%;
     height: 4rem;
     line-height: 4rem;
@@ -1959,13 +2185,13 @@ slide-show > div[slot="slide"] > div > a > span {
     color: rgb(var(--text-color));
     display: block;
 }
-slide-show > div[slot="slide"] > div > a > span.hidden {
+slide-show > div[slot="slide"] > div > resource-details > span.hidden {
     display: none;
 }
 slide-show > div[slot="sort"] {
     width: 100%;
     height: 0.5rem;
-    position: relative;
+    position: absolute;
     bottom: 5.5rem;
     display: flex;
     justify-content: center;
@@ -2241,7 +2467,7 @@ star-rating > div > label::before {
     content: "\e79d";
     color: rgb(var(--bg-color));
 }
-star-rating > div > input:checked ~ label::before,
+star-rating > div > input[checked] ~ label::before,
 star-rating > div:not(:checked) > label:hover::before,
 star-rating > div:not(:checked) > label:hover ~ label::before {
     content: "\e79e";
@@ -2342,14 +2568,13 @@ drag-upload > div[slot="reference"] > resource-details {
     width: calc(-0.8rem - 2px + 20%);
     margin-top: 1rem;
     margin-right: 1rem;
-    height: auto;
+    padding-bottom: calc(-0.8rem - 2px + 20%);
     border: 1px dashed rgb(var(--disabled-bg-color));
 }
 drag-upload > div[slot="reference"] > resource-details > span {
     width: 100%;
-    padding-bottom: 75%;
     background-position: center;
-    background-size: contain;
+    background-size: cover;
     background-repeat: no-repeat;
 }
 drag-upload > div[slot="dragWindow"] > div#preview > span {
@@ -2393,24 +2618,24 @@ drag-upload > div[slot="dragWindow"] > div#dragElement {
     height: 298px;
     border: 2px dashed rgb(var(--disabled-bg-color));
 }
-content-banner {
+link-banner {
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
 }
-content-banner > span[slot="background"] {
+link-banner > resource-details {
     width: 100%;
     height: 100%;
     opacity: 0.5;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
     position: absolute;
     top: 0;
     left: 0;
 }
-content-banner > span[slot="title"] {
+link-banner > resource-details > span[slot="image"] {
+    background-size: cover;
+}
+link-banner > span[slot="title"] {
     font-size: 3rem;
 }
 corporate-details > article {
@@ -2420,30 +2645,19 @@ corporate-details > article {
 corporate-details > article:last-child {
     margin-bottom: 0;
 }
-corporate-details > article[slot="contentInfo"] {
-    width: calc(-1rem + 75%);
-    margin-right: 1rem;
-}
-corporate-details > article[slot="resourceList"] {
-    width: 25%;
-    float: right;
-}
+corporate-details > article[slot="contentInfo"],
+corporate-details > article[slot="resourceList"],
 corporate-details > article[slot="resourceList"] > div {
     width: 100%;
 }
 corporate-details > article[slot="resourceList"] > div > resource-details {
-    width: 100%;
-    height: auto;
+    width: calc(-0.8rem + 20%);
+    padding-bottom: calc(-0.8rem + 20%);
     position: relative;
-    margin-bottom: 1rem;
+    margin: 0 1rem 1rem 0;
 }
-corporate-details > article[slot="resourceList"] > div > resource-details > span[slot="image"] {
-    width: 100%;
-    padding-bottom: 75%;
-}
-corporate-details > article[slot="resourceList"] > div > resource-details > video {
-    max-width: 100%;
-    max-height: 100%;
+corporate-details > article[slot="resourceList"] > div > resource-details:nth-child(5n) {
+    margin-right: 0;
 }
 corporate-details > article[slot="addressList"] > corporate-address {
     width: calc(-6rem + 25%);

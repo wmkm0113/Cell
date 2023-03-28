@@ -16,8 +16,8 @@
  */
 "use strict";
 
-import {BaseElement, TipsElement} from "./element.js";
-import {MessageList} from "./list.js";
+import {BaseElement, StarScore, TipsElement} from "./element.js";
+import {CommentList} from "./list.js";
 import {StandardButton} from "./input.js";
 import {MultilingualMenu} from "./menu.js";
 
@@ -166,7 +166,7 @@ class MessageDetails extends BaseElement {
             this.accessoriesElement.hide();
         }
         if (this.commentList === null) {
-            this.commentList = new MessageList();
+            this.commentList = new CommentList();
             this.commentList.setAttribute("slot", "commentList");
             this.appendChild(this.commentList);
             this.commentList.hide();
@@ -205,11 +205,16 @@ class MessageDetails extends BaseElement {
                 propertyDetails.data = JSON.stringify(propertyItem);
             });
         }
-        if (data.hasOwnProperty("resourcePath") && data.hasOwnProperty("mimeType")) {
-            this.avatarElement.data = JSON.stringify(data);
+        if (data.hasOwnProperty("avatar")) {
+            this.avatarElement.data = JSON.stringify(data.avatar);
+        } else {
+            this.avatarElement.setClass("icon icon-account");
         }
         if (data.hasOwnProperty("abstractMessage")) {
             this.abstractElement.innerHTML = data.abstractMessage;
+            this.abstractElement.show();
+        } else {
+            this.abstractElement.hide();
         }
         if (data.hasOwnProperty("contentMessage")) {
             this.contentElement.innerHTML = data.contentMessage;
@@ -235,9 +240,9 @@ class MessageDetails extends BaseElement {
         } else {
             this.modelsElement.hide();
         }
-        if (data.hasOwnProperty("accessoriesList")) {
+        if (data.hasOwnProperty("accessories")) {
             this.accessoriesElement.show();
-            this.accessoriesElement.data = JSON.stringify(data.accessoriesList);
+            this.accessoriesElement.data = JSON.stringify(data.accessories);
         } else {
             this.accessoriesElement.hide();
         }
@@ -262,7 +267,7 @@ class MessageDetails extends BaseElement {
                 .forEach(action => {
                     let actionButton = new StandardButton();
                     this.operators.appendChild(actionButton);
-                    actionButton.textContent = action.value;
+                    actionButton.value = action.value;
                     actionButton.dataset.link = action.link;
                     if (action.hasOwnProperty("className")) {
                         actionButton.dataset.className = action.className;
@@ -317,19 +322,17 @@ class PropertyDetails extends BaseElement {
             this.tipsButton.setAttribute("slot", "tips");
             this.appendChild(this.tipsButton);
         }
-        if (data.hasOwnProperty("title")) {
-            this.titleElement.innerText = data.title;
+        if (data.hasOwnProperty("textContent")) {
+            this.titleElement.innerText = data.textContent;
         }
-        if (data.hasOwnProperty("content")) {
-            let textContent;
+        if (data.hasOwnProperty("value")) {
+            let textValue;
             if (data.hasOwnProperty("pattern")) {
-                textContent = data.hasOwnProperty("utc")
-                    ? Cell.millisecondsToDate(data.content, data.pattern, data.utc)
-                    : Cell.millisecondsToDate(data.content, data.pattern);
+                textValue = Cell.millisecondsToDate(data.value, data.pattern, Boolean(data.hasOwnProperty("utc")));
             } else {
-                textContent = data.content;
+                textValue = data.value;
             }
-            this.contentElement.innerText = textContent;
+            this.contentElement.innerText = textValue;
         }
         if (data.hasOwnProperty("link")) {
             this.contentElement.dataset.link = data.link;
@@ -346,10 +349,10 @@ class PropertyDetails extends BaseElement {
 class ModelDetails extends BaseElement {
     constructor() {
         super();
-        super._addSlot("modelPreview", "modelTitle", "modelAbstract");
+        super._addSlot("modelAvatar", "modelTitle", "modelContent");
         this.previewElement = null;
         this.titleElement = null;
-        this.abstractElement = null;
+        this.contentElement = null;
     }
 
     static tagName() {
@@ -363,20 +366,19 @@ class ModelDetails extends BaseElement {
     connectedCallback() {
         if (this.previewElement === null) {
             this.previewElement = new ResourceDetails();
-            this.previewElement.setAttribute("slot", "modelPreview");
+            this.previewElement.setAttribute("slot", "modelAvatar");
             this.appendChild(this.previewElement);
         }
         if (this.titleElement === null) {
-            this.titleElement = document.createElement("h4");
+            this.titleElement = document.createElement("h5");
             this.titleElement.setAttribute("slot", "modelTitle");
             this.appendChild(this.titleElement);
         }
-        if (this.abstractElement === null) {
-            this.abstractElement = document.createElement("span");
-            this.abstractElement.setAttribute("slot", "modelAbstract");
-            this.appendChild(this.abstractElement);
+        if (this.contentElement === null) {
+            this.contentElement = document.createElement("span");
+            this.contentElement.setAttribute("slot", "modelContent");
+            this.appendChild(this.contentElement);
         }
-        this.dataset.link = "#";
         this.addEventListener("click", (event) => Cell.sendRequest(event));
         if (this.hasAttribute("data") && this.getAttribute("data").isJSON()) {
             this._renderElement(this.getAttribute("data").parseJSON());
@@ -391,13 +393,15 @@ class ModelDetails extends BaseElement {
         if (data.hasOwnProperty("title")) {
             this.titleElement.innerText = data.title;
         }
-        if (data.hasOwnProperty("abstract")) {
-            this.abstractElement.innerText = data.abstract;
+        if (data.hasOwnProperty("content")) {
+            this.contentElement.innerText = data.content;
+        }
+        if (data.hasOwnProperty("link")) {
+            this.dataset.link = data.link;
         }
         if (data.hasOwnProperty("preview")) {
             this.previewElement.data = JSON.stringify(data.preview);
         }
-        this.dataset.link = data.hasOwnProperty("linkAddress") ? data.linkAddress : "#";
     }
 }
 
@@ -443,7 +447,7 @@ class ModelList extends BaseElement {
             if (data.items.length > 0) {
                 data.items.forEach(itemInfo => {
                     if (itemInfo.hasOwnProperty("identifyCode") && itemInfo.hasOwnProperty("title")
-                        && itemInfo.hasOwnProperty("abstract")) {
+                        && itemInfo.hasOwnProperty("content")) {
                         let itemElement = new ModelDetails();
                         this.itemsElement.appendChild(itemElement);
                         itemElement.data = JSON.stringify(itemInfo);
@@ -494,8 +498,8 @@ class AccessoriesDetails extends BaseElement {
 
     _renderElement(data) {
         super._removeProgress();
-        if (data.hasOwnProperty("accessoriesName")) {
-            this.titleElement.innerText = data.accessoriesName;
+        if (data.hasOwnProperty("categoryName")) {
+            this.titleElement.innerText = data.categoryName;
         }
         if (data.hasOwnProperty("items")) {
             this.itemsElement.clearChildNodes();
@@ -590,16 +594,16 @@ class CorporateAddress extends BaseElement {
 
     _renderElement(data) {
         super._removeProgress();
-        if (data.hasOwnProperty("addressTitle") && data.hasOwnProperty("addressContent")) {
-            this.titleElement.innerText = data.addressTitle;
-            this.contentElement.innerText = data.addressContent;
+        if (data.hasOwnProperty("title") && data.hasOwnProperty("content")) {
+            this.titleElement.innerText = data.title;
+            this.contentElement.innerText = data.content;
         }
-        if (data.hasOwnProperty("location") && data.location.hasOwnProperty("provider")) {
+        if (data.hasOwnProperty("location") && data.hasOwnProperty("provider")) {
             if (this.mapElement === null) {
-                this._newMap(data.location.provider);
-            } else if (data.location.provider !== this.mapElement.tagName()) {
+                this._newMap(data.provider);
+            } else if (data.provider !== this.mapElement.tagName()) {
                 this.removeChild(this.mapElement);
-                this._newMap(data.location.provider);
+                this._newMap(data.provider);
             }
             this.mapElement.data = JSON.stringify(data.location);
         }
@@ -691,6 +695,7 @@ class ResourceDetails extends BaseElement {
     constructor() {
         super();
         super._addSlot("image", "video", "title");
+        this.imgLoad = null;
         this.imgElement = null;
         this.videoElement = null;
         this.titleElement = null;
@@ -701,16 +706,26 @@ class ResourceDetails extends BaseElement {
     }
 
     connectedCallback() {
+        this.setClass("icon icon-img-lost");
         if (this.imgElement === null) {
             this.imgElement = document.createElement("span");
             this.imgElement.setAttribute("slot", "image");
             this.appendChild(this.imgElement);
             this.imgElement.hide();
+            if (this.imgLoad === null) {
+                this.imgLoad = document.createElement("img");
+                this.imgLoad.addEventListener("error", (event) => event.target.parentElement.style.opacity = "0");
+                this.imgLoad.addEventListener("load", (event) => {
+                    event.target.parentElement.style.opacity = "1";
+                    event.target.parentElement.style.backgroundImage = 'url("' + event.target.src + '")';
+                });
+                this.imgLoad.hide();
+                this.imgElement.appendChild(this.imgLoad);
+            }
         }
         if (this.videoElement === null) {
             this.videoElement = document.createElement("video");
             this.videoElement.setAttribute("slot", "video");
-            this.videoElement.setAttribute("controls", "");
             this.appendChild(this.videoElement);
             this.videoElement.hide();
         }
@@ -722,25 +737,64 @@ class ResourceDetails extends BaseElement {
         }
         this.dataset.link = "#";
         this.addEventListener("click", (event) => Cell.sendRequest(event));
+        let resourceDetails = this;
+        this.addEventListener("mouseover", () => resourceDetails.playVideo());
+        this.addEventListener("mouseout", () => resourceDetails.pauseVideo());
         if (this.hasAttribute("data") && this.getAttribute("data").isJSON()) {
             this.renderElement(this.getAttribute("data").parseJSON());
         }
     }
 
+    playVideo() {
+        if (this.videoElement != null && this.videoElement.hasChildNodes()) {
+            this.videoElement.muted = true;
+            this.videoElement.play();
+        }
+    }
+
+    pauseVideo() {
+        if (this.videoElement != null && this.videoElement.hasChildNodes()) {
+            this.videoElement.pause();
+        }
+    }
+
     renderElement(data) {
         if (data.hasOwnProperty("resourcePath") && data.hasOwnProperty("mimeType")) {
+            let resPath = Cell.contextPath() + data.resourcePath;
             if (data.mimeType.startsWith("image")) {
                 this.imgElement.show();
-                this.imgElement.style.backgroundImage = "url('" + Cell.contextPath() + data.resourcePath + "')";
+                this.imgLoad.src = resPath;
                 this.videoElement.hide();
             } else {
+                if (data.hasOwnProperty("disableDownload") && Boolean(data.disableDownload)) {
+                    this.videoElement.setAttribute("controlslist", "nodownload");
+                    this.videoElement.addEventListener("contextmenu", () => {return false;});
+                    this.videoElement.disablePictureInPicture = true;
+                } else {
+                    this.videoElement.removeAttribute("controlslist");
+                    this.videoElement.removeEventListener("contextmenu", () => {return false;});
+                    this.videoElement.disablePictureInPicture = false;
+                }
                 this.videoElement.clearChildNodes();
                 let sourceElement = document.createElement("source");
-                sourceElement.setAttribute("src", Cell.contextPath() + data.resourcePath);
+                sourceElement.setAttribute("src", resPath);
                 sourceElement.setAttribute("type", data.mimeType);
                 this.videoElement.appendChild(sourceElement);
                 this.videoElement.show();
                 this.imgElement.hide();
+                if (data.hasOwnProperty("controls") && Boolean(data.controls)) {
+                    this.videoElement.setAttribute("controls", "");
+                } else {
+                    this.videoElement.removeAttribute("controls");
+                }
+                if (data.hasOwnProperty("loop") && Boolean(data.loop)) {
+                    this.videoElement.setAttribute("loop", "");
+                } else {
+                    this.videoElement.removeAttribute("loop");
+                }
+                if (data.hasOwnProperty("autoplay") && Boolean(data.autoplay)) {
+                    this.playVideo();
+                }
             }
         }
         if (data.hasOwnProperty("title")) {
@@ -753,7 +807,7 @@ class ResourceDetails extends BaseElement {
     }
 }
 
-class CorporateAbstract extends BaseElement {
+class CorporatePreview extends BaseElement {
     constructor() {
         super();
         super._addSlot("content", "resource");
@@ -762,7 +816,7 @@ class CorporateAbstract extends BaseElement {
     }
 
     static tagName() {
-        return "corporate-abstract";
+        return "corporate-preview";
     }
 
     connectedCallback() {
@@ -776,8 +830,9 @@ class CorporateAbstract extends BaseElement {
             this.resourceDetails.setAttribute("slot", "resource");
             this.appendChild(this.resourceDetails);
         }
-        if (this.hasAttribute("data") && this.getAttribute("data").isJSON())
+        if (this.hasAttribute("data") && this.getAttribute("data").isJSON()) {
             this.renderElement(this.getAttribute("data").parseJSON());
+        }
     }
 
     renderElement(data) {
@@ -790,31 +845,31 @@ class CorporateAbstract extends BaseElement {
         if (data.hasOwnProperty("id")) {
             this.setAttribute("id", data.id);
         }
-        if (data.hasOwnProperty("profileAbstract")) {
-            this.contentElement.innerHTML = data.profileAbstract;
+        if (data.hasOwnProperty("content")) {
+            this.contentElement.innerHTML = data.content;
         }
-        if (data.hasOwnProperty("resourcePath") && data.hasOwnProperty("mimeType")) {
-            this.resourceDetails.data = JSON.stringify(data);
+        if (data.hasOwnProperty("resource")) {
+            this.resourceDetails.data = JSON.stringify(data.resource);
         }
     }
 }
 
-class WidgetButton extends BaseElement {
+class LinkAvatar extends BaseElement {
     constructor() {
         super();
-        super._addSlot("widget");
+        super._addSlot("link");
         this.linkElement = null;
         this.resourceDetails = null;
     }
 
     static tagName() {
-        return "widget-button";
+        return "link-avatar";
     }
 
     connectedCallback() {
         if (this.linkElement === null) {
             this.linkElement = document.createElement("a");
-            this.linkElement.setAttribute("slot", "widget");
+            this.linkElement.setAttribute("slot", "link");
             this.appendChild(this.linkElement);
         }
         if (this.resourceDetails === null) {
@@ -837,7 +892,7 @@ class WidgetButton extends BaseElement {
     }
 }
 
-class ContentBanner extends BaseElement {
+class LinkBanner extends BaseElement {
     constructor() {
         super();
         super._addSlot("background", "title");
@@ -846,12 +901,12 @@ class ContentBanner extends BaseElement {
     }
 
     static tagName() {
-        return "content-banner";
+        return "link-banner";
     }
 
     connectedCallback() {
         if (this.backgroundElement === null) {
-            this.backgroundElement = document.createElement("span");
+            this.backgroundElement = new ResourceDetails();
             this.backgroundElement.setAttribute("slot", "background");
             this.appendChild(this.backgroundElement);
         }
@@ -860,6 +915,7 @@ class ContentBanner extends BaseElement {
             this.titleElement.setAttribute("slot", "title");
             this.appendChild(this.titleElement);
         }
+        this.addEventListener("click", (event) => Cell.sendRequest(event));
         if (this.hasAttribute("data") && this.getAttribute("data").isJSON()) {
             this.renderElement(this.getAttribute("data").parseJSON());
         }
@@ -869,14 +925,64 @@ class ContentBanner extends BaseElement {
         if (data === null) {
             return;
         }
-        if (data.hasOwnProperty("resourcePath")) {
-            this.backgroundElement.style.backgroundImage = "url('" + Cell.contextPath() + data.resourcePath + "')";
+        if (data.hasOwnProperty("resource")) {
+            this.backgroundElement.data = JSON.stringify(data.resource);
         }
-        if (data.hasOwnProperty("bannerTitle")) {
-            this.titleElement.innerText = data.bannerTitle;
+        if (data.hasOwnProperty("title")) {
+            this.titleElement.innerText = data.title;
+        }
+        this.dataset.link = data.hasOwnProperty("linkAddress") ? data.linkAddress : "#";
+    }
+}
+
+class UserDetails extends BaseElement {
+    constructor() {
+        super();
+        super._addSlot("avatar", "starScore", "userName");
+        this.avatar = null;
+        this.starScore = null;
+        this.userName = null;
+        this.addEventListener("click", (event) => Cell.sendRequest(event));
+    }
+
+    static tagName() {
+        return "user-info";
+    }
+
+    connectedCallback() {
+        if (this.avatar === null) {
+            this.avatar = new ResourceDetails();
+            this.avatar.setAttribute("slot", "avatar");
+            this.appendChild(this.avatar);
+            this.avatar.setClass("icon icon-account");
+        }
+        if (this.starScore === null) {
+            this.starScore = new StarScore();
+            this.starScore.setAttribute("slot", "starScore");
+            this.appendChild(this.starScore);
+        }
+        if (this.userName === null) {
+            this.userName = document.createElement("span");
+            this.userName.setAttribute("slot", "userName");
+            this.appendChild(this.userName);
+        }
+    }
+
+    renderElement(data) {
+        if (data.hasOwnProperty("avatar")) {
+            this.avatar.data = JSON.stringify(data.avatar);
+        }
+        if (data.hasOwnProperty("score")) {
+            this.starScore.score = data.score;
+        }
+        if (data.hasOwnProperty("userName")) {
+            this.userName.innerHTML = data.userName;
+        }
+        if (data.hasOwnProperty("linkAddress")) {
+            this.dataset.link = data.linkAddress;
         }
     }
 }
 
 export {AttachFiles, ResourceDetails, ModelDetails, ModelList, AccessoriesDetails, AccessoriesList, MessageDetails,
-    PropertyDetails, CorporateAddress, CorporateDetails, CorporateAbstract, WidgetButton, ContentBanner};
+    PropertyDetails, CorporateAddress, CorporateDetails, CorporatePreview, LinkAvatar, LinkBanner, UserDetails};

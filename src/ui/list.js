@@ -19,6 +19,8 @@
 import {BaseElement, StarScore} from "./element.js";
 import {MockCheckBox} from "./mock.js";
 import {StandardButton, HiddenInput} from "./input.js";
+import {ResourceDetails, UserDetails} from "./details.js";
+import {FormInfo} from "./form.js";
 
 /**
  * Message List Filter Form
@@ -174,7 +176,7 @@ class ListFilter extends BaseElement {
                 event.stopPropagation();
                 this._submitForm();
             });
-            searchBtn.setAttribute("value", "Search");
+            searchBtn.value = "Search";
             this.appendChild(searchBtn);
         }
         if (this.dataset.searchText !== undefined && this.dataset.searchText.length > 0) {
@@ -213,12 +215,9 @@ class ListFilter extends BaseElement {
         this._submitForm();
     }
 
-    pageQuery(pageNo = 1, pageLimit = 20) {
+    pageQuery(pageNo = 1) {
         if (this.pageNoElement !== null) {
             this.pageNoElement.value = pageNo;
-        }
-        if (this.pageLimitElement !== null) {
-            this.pageLimitElement.value = pageLimit;
         }
         this._submitForm();
     }
@@ -297,7 +296,8 @@ class ListStatistics extends BaseElement {
                     && dataItem.hasOwnProperty("data")) {
                     let itemElement = document.createElement("div");
                     itemElement.setAttribute("id", dataItem.id);
-                    itemElement.dataset.index = dataItem.hasOwnProperty("index") ? dataItem.index.toString() : "0";
+                    itemElement.dataset.sortCode =
+                        dataItem.hasOwnProperty("sortCode") ? dataItem.sortCode.toString() : "0";
                     this.statisticsElement.appendChild(itemElement);
                     let titleElement = document.createElement("span");
                     titleElement.setAttribute("id", "title");
@@ -316,7 +316,7 @@ class ListStatistics extends BaseElement {
                     }
                 }
             });
-            this.statisticsElement.sortChildrenBy("div", "data-index", true);
+            this.statisticsElement.sortChildrenBy("div", "data-sort-code", true);
             if (data.length > 0) {
                 this.show();
             } else {
@@ -406,13 +406,11 @@ class ListTitle extends BaseElement {
             this.titleElement.hide();
         }
         if (data.hasOwnProperty("disableSwitch") && data.disableSwitch) {
-            this.btnGroup.querySelectorAll(":scope > i").forEach(itemBtn => {
-                itemBtn.hide();
-            });
+            this.btnGroup.querySelectorAll(":scope > i")
+                .forEach(itemBtn => itemBtn.hide());
         } else {
-            this.btnGroup.querySelectorAll(":scope > i").forEach(itemBtn => {
-                itemBtn.show();
-            });
+            this.btnGroup.querySelectorAll(":scope > i")
+                .forEach(itemBtn => itemBtn.show());
         }
         if (data.hasOwnProperty("styleClass")) {
             this.btnGroup.querySelectorAll(":scope > i")
@@ -608,11 +606,11 @@ class ListHeader extends BaseElement {
             let itemList = this.itemElement.querySelectorAll("span");
             let itemCount = this.itemDefines.length;
             if (itemCount < itemList.length) {
-                for (let i = itemCount ; i < itemList.length ; i++) {
+                for (let i = itemCount; i < itemList.length; i++) {
                     this.removeChild(itemList[i]);
                 }
             }
-            for (let i = 0 ; i < itemCount ; i++) {
+            for (let i = 0; i < itemCount; i++) {
                 let itemData = this.itemDefines[i];
                 let itemElement;
                 if (i < itemList.length) {
@@ -697,8 +695,8 @@ class RecordOperator extends BaseElement {
         if (data.hasOwnProperty("title")) {
             this.linkElement.setAttribute("title", data.title);
         }
-        if (data.hasOwnProperty("iconClass")) {
-            this.iconElement.setClass(data.iconClass);
+        if (data.hasOwnProperty("icon")) {
+            this.iconElement.setClass(data.icon);
         }
         if (data.hasOwnProperty("textContent")) {
             this.textElement.innerHTML = data.textContent;
@@ -715,7 +713,7 @@ class RecordOperator extends BaseElement {
 class ListRecord extends BaseElement {
     propertyDefines = [];
     selectElement = null;
-    previewImg = null;
+    avatarElement = null;
     mainTitle = null;
     abstractElement = null;
     itemsElement = null;
@@ -737,13 +735,31 @@ class ListRecord extends BaseElement {
     }
 
     renderElement(data) {
-        this.dataset.recordData = JSON.stringify(data);
-        this._render();
+        this._renderData(data);
     }
 
     connectedCallback() {
         super._removeProgress();
         this._render();
+        let listRecord = this;
+        this.addEventListener("mouseover", () => {
+            listRecord.avatarPlay();
+        });
+        this.addEventListener("mouseout", () => {
+            listRecord.avatarPause();
+        });
+    }
+
+    avatarPlay() {
+        if (this.avatarElement !== null) {
+            this.avatarElement.playVideo();
+        }
+    }
+
+    avatarPause() {
+        if (this.avatarElement !== null) {
+            this.avatarElement.pauseVideo();
+        }
     }
 
     set selectAll(selectAll) {
@@ -759,93 +775,92 @@ class ListRecord extends BaseElement {
         }
     }
 
-    _render() {
-        if (this.dataset.recordData !== undefined && this.dataset.recordData.isJSON()) {
-            let jsonData = this.dataset.recordData.parseJSON();
-            if (jsonData.hasOwnProperty("title")) {
-                this.dataset.link = jsonData.hasOwnProperty("link") ? jsonData.link : "#";
-                if (this.selectElement === null) {
-                    this.selectElement = new MockCheckBox();
-                    this.selectElement.setAttribute("slot", "selectAll");
-                    this.selectElement.addEventListener("click", (event) => {
-                        event.stopPropagation();
-                        let currentCheckbox = event.target.parentElement.parentElement.parentElement;
-                        let listData = this.parentElement.parentElement.parentElement;
-                        let count = Array.from(listData.querySelectorAll("mock-checkbox[slot='selectAll']"))
-                            .filter(mockCheckbox =>
-                                (mockCheckbox.dataset.value !== currentCheckbox.dataset.value) && !mockCheckbox.checked)
-                            .length;
-                        if (currentCheckbox.checked) {
-                            count++;
-                        }
-                        listData.switchSelectAll(count);
-                    });
-                    this.appendChild(this.selectElement);
-                }
-                if (this.previewImg === null) {
-                    this.previewImg = document.createElement("span");
-                    this.previewImg.setAttribute("slot", "preview");
-                    this.appendChild(this.previewImg);
-                    this.previewImg.dataset.link = jsonData.link;
-                    if (jsonData.hasOwnProperty("openWindow")) {
-                        this.previewImg.dataset.openWindow = jsonData.openWindow;
+    _renderData(jsonData = {}) {
+        if (jsonData.hasOwnProperty("title")) {
+            this.dataset.link = jsonData.hasOwnProperty("link") ? jsonData.link : "#";
+            if (this.selectElement === null) {
+                this.selectElement = new MockCheckBox();
+                this.selectElement.setAttribute("slot", "selectAll");
+                this.selectElement.addEventListener("click", (event) => {
+                    event.stopPropagation();
+                    let currentCheckbox = event.target.parentElement.parentElement.parentElement;
+                    let listData = this.parentElement.parentElement.parentElement;
+                    let count = Array.from(listData.querySelectorAll("mock-checkbox[slot='selectAll']"))
+                        .filter(mockCheckbox =>
+                            (mockCheckbox.dataset.value !== currentCheckbox.dataset.value) && !mockCheckbox.checked)
+                        .length;
+                    if (currentCheckbox.checked) {
+                        count++;
                     }
-                    if (this.dataset.targetId !== null && this.dataset.targetId !== undefined) {
-                        this.previewImg.dataset.targetId = this.dataset.targetId;
-                    }
-                    this.previewImg.addEventListener("click", (event) => Cell.sendRequest(event));
+                    listData.switchSelectAll(count);
+                });
+                this.appendChild(this.selectElement);
+            }
+            if (this.avatarElement === null) {
+                this.avatarElement = new ResourceDetails();
+                this.avatarElement.setAttribute("slot", "preview");
+                this.appendChild(this.avatarElement);
+                this.avatarElement.dataset.link = jsonData.link;
+                if (jsonData.hasOwnProperty("openWindow")) {
+                    this.avatarElement.dataset.openWindow = jsonData.openWindow;
                 }
-                if (jsonData.hasOwnProperty("imgPath")) {
-                    this.previewImg.style.backgroundImage = "url('" + jsonData.imgPath + "')";
-                } else {
-                    this.previewImg.style.backgroundImage = "";
-                }
-                if (this.mainTitle === null) {
-                    this.mainTitle = document.createElement("span");
-                    this.mainTitle.setAttribute("slot", "mainTitle");
-                    this.appendChild(this.mainTitle);
-                }
-                if (this.abstractElement === null) {
-                    this.abstractElement = document.createElement("span");
-                    this.abstractElement.setAttribute("slot", "abstract");
-                    this.appendChild(this.abstractElement);
-                }
-                if (this.scoreElement === null) {
-                    this.scoreElement = new StarScore();
-                    this.scoreElement.setAttribute("slot", "score");
-                    this.appendChild(this.scoreElement);
-                }
-                let linkElement = this.mainTitle.querySelector("a");
-                if (linkElement === null) {
-                    linkElement = document.createElement("a");
-                    this.mainTitle.appendChild(linkElement);
-                    linkElement.addEventListener("click", (event) => Cell.sendRequest(event));
-                    if (jsonData.hasOwnProperty("openWindow")) {
-                        linkElement.dataset.openWindow = jsonData.openWindow;
-                    }
-                }
-                linkElement.innerText = jsonData.title;
-                linkElement.setAttribute("title", jsonData.title);
-                linkElement.setAttribute("href", jsonData.link);
                 if (this.dataset.targetId !== null && this.dataset.targetId !== undefined) {
-                    linkElement.dataset.targetId = this.dataset.targetId;
+                    this.avatarElement.dataset.targetId = this.dataset.targetId;
                 }
+                this.avatarElement.addEventListener("click", (event) => Cell.sendRequest(event));
+            }
+            if (jsonData.hasOwnProperty("avatar")) {
+                this.avatarElement.data = JSON.stringify(jsonData.avatar);
+                this.avatarElement.dataset.link = this.dataset.link;
+            }
+            if (this.mainTitle === null) {
+                this.mainTitle = document.createElement("span");
+                this.mainTitle.setAttribute("slot", "mainTitle");
+                this.appendChild(this.mainTitle);
+            }
+            if (this.abstractElement === null) {
+                this.abstractElement = document.createElement("span");
+                this.abstractElement.setAttribute("slot", "abstract");
+                this.appendChild(this.abstractElement);
+            }
+            if (this.scoreElement === null) {
+                this.scoreElement = new StarScore();
+                this.scoreElement.setAttribute("slot", "score");
+                this.appendChild(this.scoreElement);
+            }
+            let linkElement = this.mainTitle.querySelector("a");
+            if (linkElement === null) {
+                linkElement = document.createElement("a");
+                this.mainTitle.appendChild(linkElement);
+                linkElement.addEventListener("click", (event) => Cell.sendRequest(event));
+                if (jsonData.hasOwnProperty("openWindow")) {
+                    linkElement.dataset.openWindow = jsonData.openWindow;
+                }
+            }
+            linkElement.innerText = jsonData.title;
+            linkElement.setAttribute("title", jsonData.title);
+            linkElement.setAttribute("href", this.dataset.link);
+            if (this.dataset.targetId !== null && this.dataset.targetId !== undefined) {
+                linkElement.dataset.targetId = this.dataset.targetId;
+            }
 
-                this.abstractElement.innerHTML = jsonData.hasOwnProperty("abstract") ? jsonData.abstract : "";
+            this.abstractElement.innerHTML = jsonData.hasOwnProperty("abstract") ? jsonData.abstract : "";
 
-                if (this.itemsElement === null) {
-                    this.itemsElement = document.createElement("div");
-                    this.itemsElement.setAttribute("slot", "items");
-                    this.appendChild(this.itemsElement);
+            if (this.itemsElement === null) {
+                this.itemsElement = document.createElement("div");
+                this.itemsElement.setAttribute("slot", "items");
+                this.appendChild(this.itemsElement);
+            }
+            let propertyList = this.itemsElement.querySelectorAll("property-item");
+            let propertyCount = this.propertyDefines.length, existsCount = propertyList.length;
+            if (propertyCount < existsCount) {
+                for (let i = propertyCount; i < existsCount; i++) {
+                    this.itemsElement.removeChild(propertyList[i]);
                 }
-                let propertyList = this.itemsElement.querySelectorAll("property-item");
-                let propertyCount = this.propertyDefines.length, existsCount = propertyList.length;
-                if (propertyCount < existsCount) {
-                    for (let i = propertyCount ; i < existsCount ; i++) {
-                        this.itemsElement.removeChild(propertyList[i]);
-                    }
-                }
-                for (let i = 0 ; i < propertyCount ; i++) {
+            }
+            if (jsonData.hasOwnProperty("properties")) {
+                let properties = jsonData.properties;
+                for (let i = 0; i < propertyCount; i++) {
                     let propertyDefine = this.propertyDefines[i], propertyItem;
                     if (i < existsCount) {
                         propertyItem = propertyList[i];
@@ -854,64 +869,61 @@ class ListRecord extends BaseElement {
                         this.itemsElement.appendChild(propertyItem);
                     }
                     propertyItem.itemName(propertyDefine.title);
-                    let itemValue = null;
-                    if (jsonData.hasOwnProperty(propertyDefine.mapKey)) {
-                        let dataValue = jsonData[propertyDefine.mapKey];
+                    if (properties.hasOwnProperty(propertyDefine.mapKey)) {
+                        let dataValue = properties[propertyDefine.mapKey];
                         propertyItem.dataset.data = dataValue;
                         if (propertyDefine.pattern.length > 0) {
-                            itemValue = Cell.millisecondsToDate(dataValue, propertyDefine.pattern, propertyDefine.utc);
-                        }
-                        if (itemValue === null) {
-                            itemValue = dataValue;
+                            propertyItem.itemValue(
+                                Cell.millisecondsToDate(dataValue, propertyDefine.pattern, propertyDefine.utc));
+                        } else {
+                            propertyItem.itemValue(dataValue);
                         }
                     }
-                    propertyItem.itemValue(itemValue);
                     propertyItem.setStyle("--width:" + propertyDefine.width);
                 }
-                if (jsonData.hasOwnProperty("score")) {
-                    this.scoreElement.score = jsonData.score;
-                }
-                if (this.operatorsElement === null) {
-                    this.operatorsElement = document.createElement("div");
-                    this.operatorsElement.setAttribute("slot", "operators");
-                    this.appendChild(this.operatorsElement);
-                }
-                if (jsonData.hasOwnProperty("operators") && (jsonData.operators instanceof Array)) {
-                    let operatorList = this.operatorsElement.querySelectorAll("record-operator"),
-                        existsCount = operatorList.length;
-                    let i = 0;
-                    jsonData.operators
-                        .filter(operatorItem => operatorItem.hasOwnProperty("link"))
-                        .forEach(operatorItem => {
-                            let recordOperator;
-                            if (i < existsCount) {
-                                recordOperator = operatorList[i];
-                            } else {
-                                recordOperator = new RecordOperator();
-                                this.operatorsElement.appendChild(recordOperator);
-                            }
-                            recordOperator.data = JSON.stringify(operatorItem);
-                        });
-                    while (i < existsCount) {
-                        this.operatorsElement.removeChild(operatorList[i]);
-                        i++;
-                    }
-                }
-
-                let operatorCount = this.operatorsElement.querySelectorAll("record-operator").length;
-                if (operatorCount > 0) {
-                    this.operatorsElement.show();
-                } else {
-                    this.operatorsElement.hide();
-                }
-
-                this.removeClass("error");
-                this.removeClass("warning");
-
-                if (jsonData.hasOwnProperty("className")) {
-                    this.appendClass(jsonData.className);
+            }
+            if (jsonData.hasOwnProperty("score")) {
+                this.scoreElement.score = jsonData.score;
+            }
+            if (this.operatorsElement === null) {
+                this.operatorsElement = document.createElement("div");
+                this.operatorsElement.setAttribute("slot", "operators");
+                this.appendChild(this.operatorsElement);
+            }
+            if (jsonData.hasOwnProperty("operators") && (jsonData.operators instanceof Array)) {
+                let operatorList = this.operatorsElement.querySelectorAll("record-operator"),
+                    existsCount = operatorList.length;
+                let i = 0;
+                jsonData.operators
+                    .filter(operatorItem => operatorItem.hasOwnProperty("link"))
+                    .forEach(operatorItem => {
+                        let recordOperator;
+                        if (i < existsCount) {
+                            recordOperator = operatorList[i];
+                        } else {
+                            recordOperator = new RecordOperator();
+                            this.operatorsElement.appendChild(recordOperator);
+                        }
+                        recordOperator.data = JSON.stringify(operatorItem);
+                    });
+                while (i < existsCount) {
+                    this.operatorsElement.removeChild(operatorList[i]);
+                    i++;
                 }
             }
+
+            this.removeClass("error");
+            this.removeClass("warning");
+
+            if (jsonData.hasOwnProperty("className")) {
+                this.appendClass(jsonData.className);
+            }
+        }
+    }
+
+    _render() {
+        if (this.dataset.recordData !== undefined && this.dataset.recordData.isJSON()) {
+            this._renderData(this.dataset.recordData.parseJSON());
         }
     }
 
@@ -928,11 +940,162 @@ class ListRecord extends BaseElement {
     }
 }
 
-class ListData extends BaseElement {
+class PagerList extends BaseElement {
+    constructor() {
+        super();
+        this.pagerElement = null;
+    }
+
+    connectedCallback() {
+        if (this.pagerElement === null) {
+            this.pagerElement = document.createElement("div");
+            this.pagerElement.setAttribute("id", "pager");
+            this.pagerElement.setAttribute("slot", "listPager");
+            this.appendChild(this.pagerElement);
+        }
+    }
+
+    _renderPager(jsonData = {}) {
+        let totalPage = 0, currentPage = 1;
+        if (jsonData.hasOwnProperty("totalPage") && ((typeof jsonData.totalPage) === "number")) {
+            totalPage = jsonData.totalPage;
+        }
+        if (totalPage <= 0) {
+            this.pagerElement.hide();
+            return;
+        }
+        this.pagerElement.show();
+        if (jsonData.hasOwnProperty("currentPage") && ((typeof jsonData.currentPage) === "number")) {
+            currentPage = jsonData.currentPage;
+            if (currentPage < 1) {
+                currentPage = 1;
+            }
+        }
+
+        let firstPageBtn = this.pagerElement.querySelector("i[id='firstPage']");
+        if (firstPageBtn === null) {
+            firstPageBtn = document.createElement("i");
+            firstPageBtn.setAttribute("id", "firstPage");
+            firstPageBtn.setClass("icon-chevron-double-left");
+            firstPageBtn.dataset.currentPage = "1";
+            this.pagerElement.appendChild(firstPageBtn);
+            firstPageBtn.addEventListener("click", (event) => {
+                event.stopPropagation();
+                this.pageQuery(firstPageBtn.dataset.currentPage.parseInt());
+            });
+        }
+        if (currentPage === 1) {
+            firstPageBtn.hide();
+        } else {
+            firstPageBtn.show();
+        }
+
+        let previousPage = currentPage - 1;
+        if (previousPage < 1) {
+            previousPage = 1;
+        }
+
+        let previousPageBtn = this.pagerElement.querySelector("i[id='previousPage']");
+        if (previousPageBtn === null) {
+            previousPageBtn = document.createElement("i");
+            previousPageBtn.setAttribute("id", "previousPage");
+            previousPageBtn.setClass("icon-chevron-left");
+            this.pagerElement.appendChild(previousPageBtn);
+            previousPageBtn.addEventListener("click", (event) => {
+                event.stopPropagation();
+                this.pageQuery(previousPageBtn.dataset.currentPage.parseInt());
+            });
+        }
+        if (previousPage === 1) {
+            previousPageBtn.hide();
+        } else {
+            previousPageBtn.dataset.currentPage = previousPage.toString();
+            previousPageBtn.show();
+        }
+
+        let pageGroup = this.pagerElement.querySelector("div[id='pageGroup']");
+        if (pageGroup === null) {
+            pageGroup = document.createElement("div");
+            pageGroup.setAttribute("id", "pageGroup");
+            this.pagerElement.appendChild(pageGroup);
+        }
+        let pageBtnList = pageGroup.querySelectorAll("i");
+        if (totalPage < pageBtnList.length) {
+            for (let i = pageBtnList.length; i < totalPage; i++) {
+                pageGroup.removeChild(pageBtnList[i]);
+            }
+        } else if (pageBtnList.length < totalPage) {
+            for (let i = pageBtnList.length; i < totalPage; i++) {
+                let pageBtn = document.createElement("i");
+                pageBtn.dataset.currentPage = (i + 1).toString();
+                pageBtn.innerText = (i + 1).toString();
+                pageGroup.appendChild(pageBtn);
+                pageBtn.addEventListener("click", (event) => {
+                    event.stopPropagation();
+                    this.pageQuery(pageBtn.dataset.currentPage.parseInt());
+                });
+            }
+        }
+
+        let beginPage = Math.max(1, currentPage - 2), endPage = Math.min(totalPage, currentPage + 2);
+        pageGroup.querySelectorAll("i").forEach(pageBtn => {
+            let pageNo = pageBtn.dataset.currentPage.parseInt();
+            if (pageNo === currentPage) {
+                pageBtn.appendClass("current");
+            } else {
+                pageBtn.removeClass("current");
+            }
+            if (pageNo < beginPage || pageNo > endPage) {
+                pageBtn.hide();
+            } else {
+                pageBtn.show();
+            }
+        })
+        let nextPage = currentPage + 1;
+        if (totalPage < nextPage) {
+            nextPage = totalPage;
+        }
+        let nextPageBtn = this.pagerElement.querySelector("i[id='nextPage']");
+        if (nextPageBtn === null) {
+            nextPageBtn = document.createElement("i");
+            nextPageBtn.setAttribute("id", "nextPage");
+            nextPageBtn.setClass("icon-chevron-right");
+            this.pagerElement.appendChild(nextPageBtn);
+            nextPageBtn.addEventListener("click", (event) => {
+                event.stopPropagation();
+                this.pageQuery(nextPageBtn.dataset.currentPage.parseInt());
+            });
+        }
+        if (nextPage === totalPage) {
+            nextPageBtn.hide();
+        } else {
+            nextPageBtn.dataset.currentPage = nextPage.toString();
+            nextPageBtn.show();
+        }
+        let lastPageBtn = this.pagerElement.querySelector("i[id='lastPage']");
+        if (lastPageBtn === null) {
+            lastPageBtn = document.createElement("i");
+            lastPageBtn.setAttribute("id", "lastPage");
+            lastPageBtn.setClass("icon-chevron-double-right");
+            lastPageBtn.dataset.currentPage = totalPage.toString();
+            this.pagerElement.appendChild(lastPageBtn);
+            lastPageBtn.addEventListener("click", (event) => {
+                event.stopPropagation();
+                this.pageQuery(lastPageBtn.dataset.currentPage.parseInt());
+            });
+        }
+        if (currentPage === totalPage) {
+            lastPageBtn.hide();
+        } else {
+            lastPageBtn.show();
+        }
+    }
+}
+
+class ListData extends PagerList {
     constructor() {
         super();
         super._addSlot("dataInfo", "batchOperators", "listPager");
-        this.pageLimit = 20;
         this.selectAll = false;
         this.selectName = "";
         this.listElement = null;
@@ -940,7 +1103,6 @@ class ListData extends BaseElement {
         this.contentElement = null;
         this.selectAllBtn = null;
         this.batchElement = null;
-        this.pagerElement = null;
     }
 
     static tagName() {
@@ -969,12 +1131,7 @@ class ListData extends BaseElement {
             this.batchElement.setAttribute("slot", "batchOperators");
             this.appendChild(this.batchElement);
         }
-        if (this.pagerElement === null) {
-            this.pagerElement = document.createElement("div");
-            this.pagerElement.setAttribute("id", "pager");
-            this.pagerElement.setAttribute("slot", "listPager");
-            this.appendChild(this.pagerElement);
-        }
+        super.connectedCallback();
     }
 
     renderElement(data) {
@@ -999,15 +1156,9 @@ class ListData extends BaseElement {
         }
         this._renderData();
         if (data.hasOwnProperty("pager")) {
-            this.pagerElement.dataset.itemData = JSON.stringify(data.pager);
+            super._renderPager(data.pager);
         } else {
-            this.pagerElement.dataset.itemData = JSON.stringify({});
-        }
-        this._renderPager();
-        if (data.hasOwnProperty("pageLimit") && ((typeof data.pageLimit) === "number")) {
-            this.pageLimit = data.pageLimit;
-        } else {
-            this.pageLimit = 20;
+            super._renderPager({});
         }
         if (this.selectAllBtn !== null) {
             if (this.selectName === "") {
@@ -1034,6 +1185,12 @@ class ListData extends BaseElement {
 
     sortQuery(sortBy = "", asc = false) {
         this.parentElement.sortQuery(sortBy, asc);
+    }
+
+    pageQuery(pageNo = 1) {
+        if (this.parentElement !== null) {
+            this.parentElement.pageQuery(pageNo);
+        }
     }
 
     switchSelectAll(count) {
@@ -1066,28 +1223,20 @@ class ListData extends BaseElement {
             });
         }
         let jsonData = this.batchElement.dataset.batchOperators.parseJSON();
-        let existsOperators = this.batchElement.querySelectorAll("a"),
+        let existsOperators = this.batchElement.querySelectorAll("record-operator"),
             existsCount = existsOperators.length, operatorCount = jsonData.length, i;
-        for (i = 0 ; i < operatorCount ; i++) {
+        for (i = 0; i < operatorCount; i++) {
             let operatorData = jsonData[i];
             if (operatorData.hasOwnProperty("link") && operatorData.hasOwnProperty("title")) {
                 let operator;
                 if (i < existsCount) {
                     operator = existsOperators[i];
                 } else {
-                    operator = document.createElement("a");
+                    operator = new RecordOperator();
                     this.batchElement.appendChild(operator);
                     operator.addEventListener("click", (event) => Cell.sendRequest(event));
                 }
-                operator.setAttribute("href", operatorData.link);
-                operator.setAttribute("title",
-                    operatorData.hasOwnProperty("title") ? operatorData.title : operatorData.textContent);
-                if (operatorData.hasOwnProperty("icon")) {
-                    operator.setClass("icon " + operatorData.icon);
-                }
-                if (operatorData.hasOwnProperty("elementId")) {
-                    operator.dataset.elementId = operatorData.elementId;
-                }
+                operator.data = JSON.stringify(operatorData);
             }
         }
 
@@ -1160,146 +1309,6 @@ class ListData extends BaseElement {
             rowElement.disableAll();
         }
     }
-
-    _renderPager() {
-        if (this.pagerElement.dataset.itemData === undefined || !this.pagerElement.dataset.itemData.isJSON()) {
-            return;
-        }
-        let jsonData = this.pagerElement.dataset.itemData.parseJSON();
-        let totalPage = 0, currentPage = 1;
-        if (jsonData.hasOwnProperty("totalPage") && ((typeof jsonData.totalPage) === "number")) {
-            totalPage = jsonData.totalPage;
-        }
-        if (totalPage <= 0) {
-            this.pagerElement.hide();
-            return;
-        }
-        this.pagerElement.show();
-        if (jsonData.hasOwnProperty("currentPage") && ((typeof jsonData.currentPage) === "number")) {
-            currentPage = jsonData.currentPage;
-            if (currentPage < 1) {
-                currentPage = 1;
-            }
-        }
-
-        let firstPageBtn = this.pagerElement.querySelector("i[id='firstPage']");
-        if (firstPageBtn === null) {
-            firstPageBtn = document.createElement("i");
-            firstPageBtn.setAttribute("id", "firstPage");
-            firstPageBtn.setClass("icon-chevron-double-left");
-            firstPageBtn.dataset.currentPage = "1";
-            this.pagerElement.appendChild(firstPageBtn);
-            firstPageBtn.addEventListener("click", (event) => {
-                event.stopPropagation();
-                this.parentElement.pageQuery(firstPageBtn.dataset.currentPage.parseInt(), this.pageLimit);
-            });
-        }
-        if (currentPage === 1) {
-            firstPageBtn.hide();
-        } else {
-            firstPageBtn.show();
-        }
-
-        let previousPage = currentPage - 1;
-        if (previousPage < 1) {
-            previousPage = 1;
-        }
-
-        let previousPageBtn = this.pagerElement.querySelector("i[id='previousPage']");
-        if (previousPageBtn === null) {
-            previousPageBtn = document.createElement("i");
-            previousPageBtn.setAttribute("id", "previousPage");
-            previousPageBtn.setClass("icon-chevron-left");
-            this.pagerElement.appendChild(previousPageBtn);
-            previousPageBtn.addEventListener("click", (event) => {
-                event.stopPropagation();
-                this.parentElement.pageQuery(previousPageBtn.dataset.currentPage.parseInt(), this.pageLimit);
-            });
-        }
-        if (previousPage === 1) {
-            previousPageBtn.hide();
-        } else {
-            previousPageBtn.dataset.currentPage = previousPage.toString();
-            previousPageBtn.show();
-        }
-
-        let pageGroup = this.pagerElement.querySelector("div[id='pageGroup']");
-        if (pageGroup === null) {
-            pageGroup = document.createElement("div");
-            pageGroup.setAttribute("id", "pageGroup");
-            this.pagerElement.appendChild(pageGroup);
-        }
-        let pageBtnList = pageGroup.querySelectorAll("i");
-        if (totalPage < pageBtnList.length) {
-            for (let i = pageBtnList.length ; i < totalPage ; i++) {
-                pageGroup.removeChild(pageBtnList[i]);
-            }
-        } else if (pageBtnList.length < totalPage) {
-            for (let i = pageBtnList.length ; i < totalPage ; i++) {
-                let pageBtn = document.createElement("i");
-                pageBtn.dataset.currentPage = (i + 1).toString();
-                pageBtn.innerText = (i + 1).toString();
-                pageGroup.appendChild(pageBtn);
-                pageBtn.addEventListener("click", (event) => {
-                    event.stopPropagation();
-                    this.parentElement.pageQuery(pageBtn.dataset.currentPage.parseInt(), this.pageLimit);
-                });
-            }
-        }
-
-        let beginPage = Math.max(1, currentPage - 2), endPage = Math.min(totalPage, currentPage + 2);
-        pageGroup.querySelectorAll("i").forEach(pageBtn => {
-            let pageNo = pageBtn.dataset.currentPage.parseInt();
-            if (pageNo === currentPage) {
-                pageBtn.appendClass("current");
-            } else {
-                pageBtn.removeClass("current");
-            }
-            if (pageNo < beginPage || pageNo > endPage) {
-                pageBtn.hide();
-            } else {
-                pageBtn.show();
-            }
-        })
-        let nextPage = currentPage + 1;
-        if (totalPage < nextPage) {
-            nextPage = totalPage;
-        }
-        let nextPageBtn = this.pagerElement.querySelector("i[id='nextPage']");
-        if (nextPageBtn === null) {
-            nextPageBtn = document.createElement("i");
-            nextPageBtn.setAttribute("id", "nextPage");
-            nextPageBtn.setClass("icon-chevron-right");
-            this.pagerElement.appendChild(nextPageBtn);
-            nextPageBtn.addEventListener("click", (event) => {
-                event.stopPropagation();
-                this.parentElement.pageQuery(nextPageBtn.dataset.currentPage.parseInt(), this.pageLimit);
-            });
-        }
-        if (nextPage === totalPage) {
-            nextPageBtn.hide();
-        } else {
-            nextPageBtn.dataset.currentPage = nextPage.toString();
-            nextPageBtn.show();
-        }
-        let lastPageBtn = this.pagerElement.querySelector("i[id='lastPage']");
-        if (lastPageBtn === null) {
-            lastPageBtn = document.createElement("i");
-            lastPageBtn.setAttribute("id", "lastPage");
-            lastPageBtn.setClass("icon-chevron-double-right");
-            lastPageBtn.dataset.currentPage = totalPage.toString();
-            this.pagerElement.appendChild(lastPageBtn);
-            lastPageBtn.addEventListener("click", (event) => {
-                event.stopPropagation();
-                this.parentElement.pageQuery(lastPageBtn.dataset.currentPage.parseInt(), this.pageLimit);
-            });
-        }
-        if (currentPage === totalPage) {
-            lastPageBtn.hide();
-        } else {
-            lastPageBtn.show();
-        }
-    }
 }
 
 class MessageList extends BaseElement {
@@ -1358,14 +1367,7 @@ class MessageList extends BaseElement {
         }
         if (data.hasOwnProperty("id")) {
             this.setAttribute("id", data.id);
-        }
-        if (data.hasOwnProperty("targetId")) {
-            this.dataset.targetId = data.targetId;
-        }
-        if (this.dataset.targetId !== null && this.dataset.targetId !== undefined) {
-            this.filterElement.dataset.targetId = this.dataset.targetId;
-            this.titleEleemnt.dataset.targetId = this.dataset.targetId;
-            this.gridElement.dataset.targetId = this.dataset.targetId;
+            this.filterElement.dataset.targetId = data.id;
         }
         if (data.hasOwnProperty("filter")) {
             this.filterElement.data = JSON.stringify(data.filter);
@@ -1407,73 +1409,174 @@ class MessageList extends BaseElement {
         }
     }
 
-    pageQuery(pageNo = 1, pageLimit = 15) {
+    pageQuery(pageNo = 1) {
         if (this.filterElement !== null) {
-            this.filterElement.pageQuery(pageNo, pageLimit);
+            this.filterElement.pageQuery(pageNo);
         }
     }
 }
 
-class CategoryList extends BaseElement {
+class CommentList extends PagerList {
     constructor() {
         super();
-        super._addSlot("title", "itemList");
+        super._addSlot("listTitle", "filter", "commentList", "listPager", "commentForm");
         this.titleElement = null;
-        this.itemElement = null;
+        this.filterElement = null;
+        this.listElement = null;
+        this.formElement = null;
+        this.pageNoElement = null;
+        this.pageLimitElement = null;
     }
 
     static tagName() {
-        return "category-list";
+        return "comment-list";
     }
 
     connectedCallback() {
         if (this.titleElement === null) {
             this.titleElement = document.createElement("h3");
-            this.titleElement.setAttribute("slot", "title");
+            this.titleElement.setAttribute("slot", "listTitle");
             this.appendChild(this.titleElement);
+            this.titleElement.hide();
         }
-        if (this.itemElement === null) {
-            this.itemElement = document.createElement("div");
-            this.itemElement.setAttribute("slot", "itemList");
-            this.appendChild(this.itemElement);
+        if (this.filterElement === null) {
+            this.filterElement = document.createElement("form");
+            this.filterElement.setAttribute("slot", "filter");
+            this.appendChild(this.filterElement);
+            this.filterElement.hide();
+            if (this.pageNoElement === null) {
+                this.pageNoElement = document.createElement("input");
+                this.pageNoElement.setAttribute("id", "pageNo");
+                this.pageNoElement.setAttribute("name", "page");
+                this.pageNoElement.setAttribute("type", "number");
+                this.filterElement.appendChild(this.pageNoElement);
+            }
+            if (this.pageLimitElement === null) {
+                this.pageLimitElement = document.createElement("input");
+                this.pageLimitElement.setAttribute("id", "pageLimit");
+                this.pageLimitElement.setAttribute("name", "limit");
+                this.pageLimitElement.setAttribute("type", "number");
+                this.filterElement.appendChild(this.pageLimitElement);
+            }
         }
-        if (this.hasAttribute("data") && this.getAttribute("data").isJSON())
-            this.renderElement(this.getAttribute("data").parseJSON());
+        if (this.listElement === null) {
+            this.listElement = document.createElement("div");
+            this.listElement.setAttribute("slot", "commentList");
+            this.appendChild(this.listElement);
+        }
+        super.connectedCallback();
+        if (this.formElement === null) {
+            this.formElement = new FormInfo();
+            this.formElement.setAttribute("slot", "commentForm");
+            this.appendChild(this.formElement);
+            this.formElement.hide();
+        }
+        if (this.dataset.hasOwnProperty("data")) {
+            this.renderElement(this.dataset.data.parseJSON());
+        }
     }
 
     renderElement(data) {
-        if (data === null) {
-            return;
-        }
-        if (data.hasOwnProperty("className")) {
-            this.setClass(data.className);
-        }
-        if (data.hasOwnProperty("id")) {
-            this.setAttribute("id", data.id);
-        }
-        if (data.hasOwnProperty("titleContent")) {
-            this.titleElement.innerText = data.titleContent;
-        }
-        let targetId;
-        if (this.dataset.targetId !== null && this.dataset.targetId !== undefined) {
-            targetId = this.dataset.targetId;
+        if (data.hasOwnProperty("title")) {
+            this.titleElement.innerHTML = data.title;
+            this.titleElement.show();
         } else {
-            targetId = "";
+            this.titleElement.hide();
         }
-        this.itemElement.clearChildNodes();
-        Array.from(data.hasOwnProperty("itemList") ? data.itemList : [])
-            .forEach(itemInfo => {
-                let itemText = itemInfo.hasOwnProperty("itemText") ? itemInfo.itemText : "";
-                let linkElement = document.createElement("a");
-                linkElement.setAttribute("href", itemInfo.hasOwnProperty("linkAddress") ? itemInfo.linkAddress : "#");
-                linkElement.setAttribute("title", itemText);
-                linkElement.innerText = itemText;
-                linkElement.dataset.targetId = targetId;
-                linkElement.addEventListener("click", Cell.sendRequest);
-                this.itemElement.appendChild(linkElement);
+        if (data.hasOwnProperty("items") && (data.items instanceof Array)) {
+            this.listElement.clearChildNodes();
+            data.items.forEach(dataItem => {
+                let commentData = new CommentData();
+                this.listElement.appendChild(commentData);
+                commentData.data = JSON.stringify(dataItem);
             });
+        }
+        if (data.hasOwnProperty("pager") && data.hasOwnProperty("url")) {
+            this.filterElement.setAttribute("action", data.url);
+            super._renderPager(data.pager);
+        }
+        if (data.hasOwnProperty("formData")) {
+            this.formElement.data = JSON.stringify(data.formData);
+            this.formElement.show();
+        } else {
+            this.formElement.hide();
+        }
+    }
+
+    pageQuery(pageNo = 1) {
+        if (this.filterElement !== null) {
+            this.pageNoElement.value = pageNo;
+            Cell.submitForm(this.filterElement);
+        }
     }
 }
 
-export {ListFilter, ListData, ListStatistics, ListTitle, ListRecord,
-    RecordOperator, ListHeader, MessageList, PropertyItem, PropertyDefine, CategoryList};
+class CommentData extends BaseElement {
+    constructor() {
+        super();
+        super._addSlot("userInfo", "title", "content", "operators");
+        this.userInfo = null;
+        this.titleElement = null;
+        this.contentElement = null;
+        this.operators = null;
+    }
+
+    static tagName() {
+        return "comment-data";
+    }
+
+    connectedCallback() {
+        if (this.userInfo === null) {
+            this.userInfo = new UserDetails();
+            this.userInfo.setAttribute("slot", "userInfo");
+            this.appendChild(this.userInfo);
+        }
+        if (this.titleElement === null) {
+            this.titleElement = document.createElement("span");
+            this.titleElement.setAttribute("slot", "title");
+            this.appendChild(this.titleElement);
+        }
+        if (this.contentElement === null) {
+            this.contentElement = document.createElement("span");
+            this.contentElement.setAttribute("slot", "content");
+            this.appendChild(this.contentElement);
+        }
+        if (this.operators === null) {
+            this.operators = document.createElement("span");
+            this.operators.setAttribute("slot", "operators");
+            this.appendChild(this.operators);
+        }
+    }
+
+    renderElement(data) {
+        if (data.hasOwnProperty("userDetails") && data.hasOwnProperty("title") && data.hasOwnProperty("content")) {
+            this.userInfo.data = JSON.stringify(data.userDetails);
+            this.titleElement.innerHTML = data.title;
+            this.contentElement.innerHTML = data.content;
+            if (data.hasOwnProperty("operators")) {
+                this.operators.clearChildNodes();
+                Array.from(data.operators)
+                    .filter(operator => operator.hasOwnProperty("tagName"))
+                    .forEach(operator => {
+                        let operatorBtn = document.createElement(operator.tagName);
+                        this.operators.appendChild(operatorBtn);
+                        operatorBtn.addEventListener("click", (event) => Cell.sendRequest(event));
+                        if (operator.hasOwnProperty("link")) {
+                            operatorBtn.dataset.link = operator.link;
+                        }
+                        if (operator.hasOwnProperty("value")) {
+                            operatorBtn.value = operator.value;
+                        } else {
+                            operatorBtn.value = "0";
+                        }
+                        operatorBtn.dataset.checked = Boolean(operator.checked).toString();
+                    });
+            }
+        }
+    }
+}
+
+export {
+    ListFilter, ListData, ListStatistics, ListTitle, ListRecord, RecordOperator, ListHeader, MessageList, PropertyItem,
+    PropertyDefine, CommentList, CommentData
+};

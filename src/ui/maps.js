@@ -52,14 +52,21 @@ class BaiduMap extends MapElement {
     _renderElement(data) {
         super._removeProgress();
         if (data.hasOwnProperty("latitude") && data.hasOwnProperty("longitude")) {
-            if (this.mapInstance === null) {
-                this.mapInstance = new BMap.Map(this.containerElement.getAttribute("id"));
-                this.mapInstance.enableScrollWheelZoom(true);
-                this.mapInstance.addControl(new BMap.NavigationControl());
-                this.mapInstance.addControl(new BMap.ScaleControl());
-                this.mapInstance.addControl(new BMap.OverviewMapControl());
+            if ((typeof BMap) !== "undefined") {
+                if (this.mapInstance === null) {
+                    this.mapInstance = new BMap.Map(this.containerElement.getAttribute("id"));
+                    this.mapInstance.enableScrollWheelZoom(true);
+                    this.mapInstance.addControl(new BMap.NavigationControl());
+                    this.mapInstance.addControl(new BMap.ScaleControl());
+                    this.mapInstance.addControl(new BMap.OverviewMapControl());
+                }
+                this.mapInstance.centerAndZoom(new BMap.Point(data.longitude, data.latitude), 15);
+                this.show();
+            } else {
+                this.hide();
             }
-            this.mapInstance.centerAndZoom(new BMap.Point(data.longitude, data.latitude), 15);
+        } else {
+            this.hide();
         }
     }
 }
@@ -67,10 +74,11 @@ class BaiduMap extends MapElement {
 class GoogleMap extends MapElement {
     constructor() {
         super();
-        this.mapOptions = {
+        this._mapOptions = {
             zoom: 16,
             center: null,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
+            initialized: ((typeof google) !== "undefined"),
+            mapTypeId: null
         };
     }
 
@@ -80,14 +88,18 @@ class GoogleMap extends MapElement {
 
     _renderElement(data) {
         super._removeProgress();
-        if (data.hasOwnProperty("latitude") && data.hasOwnProperty("longitude")) {
+        if (this._mapOptions.initialized && data.hasOwnProperty("latitude") && data.hasOwnProperty("longitude")) {
             let mapPoint = new google.maps.LatLng(data.latitude, data.longitude);
-            this.mapOptions.center = mapPoint;
+            this._mapOptions.center = mapPoint;
+            this._mapOptions.mapTypeId = google.maps.MapTypeId.ROADMAP;
             this.mapInstance = new google.maps.Map(this.containerElement, this.mapOptions);
             new google.maps.Marker({
                 position: mapPoint,
                 map: this.mapInstance
             });
+            this.show();
+        } else {
+            this.hide();
         }
     }
 }

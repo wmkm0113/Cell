@@ -117,6 +117,9 @@ class IntervalInput extends AbstractElement {
         if (this.dataset.beginValue !== undefined) {
             this.beginElement.setAttribute("value", this.dataset.beginValue);
         }
+        if (this.dataset.beginPlaceHolder !== undefined) {
+            this.beginElement.setAttribute("placeholder", this.dataset.beginPlaceHolder);
+        }
         if (this.endElement === null) {
             this.endElement = document.createElement("input");
             this.elementGroup.appendChild(this.endElement);
@@ -125,6 +128,9 @@ class IntervalInput extends AbstractElement {
         this.endElement.setAttribute("name", this.dataset.endName);
         if (this.dataset.endValue !== undefined) {
             this.endElement.setAttribute("value", this.dataset.endValue);
+        }
+        if (this.dataset.endPlaceHolder !== undefined) {
+            this.endElement.setAttribute("placeholder", this.dataset.endPlaceHolder);
         }
         if (this.querySelector("span[id='concat']") === null) {
             let concatElement = document.createElement("span");
@@ -270,9 +276,10 @@ class BaseInput extends InputElement {
 class AbstractInput extends BaseInput {
     constructor(elementType = "") {
         super(elementType);
-        super._addSlot("element", "icon", "reference");
+        super._addSlot("element", "icon", "error", "reference");
         this.inputElement = null;
         this.referenceElement = null;
+        this.errorElement = null;
     }
 
     connectedCallback() {
@@ -296,7 +303,7 @@ class AbstractInput extends BaseInput {
                     if (iconElement === null) {
                         iconElement = document.createElement("span");
                         iconElement.setAttribute("slot", "icon");
-                        iconElement.addEventListener("click", function(event) {
+                        iconElement.addEventListener("click", function (event) {
                             event.stopPropagation();
                             if (this.inputElement.getAttribute("type") === "password") {
                                 this.inputElement.setAttribute("type", "text");
@@ -317,32 +324,39 @@ class AbstractInput extends BaseInput {
                 this.appendChild(this.referenceElement);
             }
         }
+        if (this.errorElement === null) {
+            this.errorElement = document.createElement("span");
+            this.errorElement.setAttribute("slot", "error");
+            this.appendChild(this.errorElement);
+        }
+        this._render();
     }
 
     _render() {
-        if (this.dataset.id !== undefined && this.dataset.id.length > 0
-            && this.dataset.name !== undefined && this.dataset.name.length > 0) {
-            if (this._elementType.toLowerCase() !== "hidden") {
-                super._renderLabel();
-            }
-            Object.keys(this.dataset)
-                .forEach(key => {
-                    if (["id", "name", "placeholder", "value"].indexOf(key.toLowerCase()) !== -1) {
-                        this.inputElement.setAttribute(key, this.dataset[key]);
-                    } else if (key.toLowerCase() === "reference"
-                        && ["text", "textarea"].indexOf(this._elementType.toLowerCase()) !== -1) {
-                        this.referenceElement.innerText = this.dataset[key];
-                    }
-                });
-            this.inputElement.addEventListener("blur", (event) => {
-                event.stopPropagation();
-                if (this.inputElement.validate()) {
-                    this.inputElement.removeClass("error");
+        if (this._elementType.toLowerCase() !== "hidden") {
+            super._renderLabel();
+        }
+        Object.keys(this.dataset)
+            .forEach(key => {
+                if (["id", "name", "placeholder", "value"].indexOf(key.toLowerCase()) !== -1) {
+                    this.inputElement.setAttribute(key, this.dataset[key]);
+                } else if (key.toLowerCase() === "reference"
+                    && ["text", "textarea"].indexOf(this._elementType.toLowerCase()) !== -1) {
+                    this.referenceElement.innerText = this.dataset[key];
+                } else if (key.toLowerCase() === "error") {
+                    this.errorElement.innerText = this.dataset[key];
                 } else {
-                    this.inputElement.appendClass("error");
+                    this.inputElement.dataset[key] = this.dataset[key];
                 }
             });
-        }
+        this.inputElement.addEventListener("blur", (event) => {
+            event.stopPropagation();
+            if (this.inputElement.validate()) {
+                this.removeClass("error");
+            } else {
+                this.appendClass("error");
+            }
+        });
     }
 }
 
@@ -355,7 +369,7 @@ class BaseButton extends AbstractInput {
         this._timer = null;
     }
 
-    set textContent(data) {
+    set value(data) {
         if (this.inputElement !== null) {
             this.inputElement.setAttribute("value", data);
         }
@@ -384,6 +398,10 @@ class BaseButton extends AbstractInput {
                 this.dataset.formId = data.formId;
             }
         }
+        this.renderCustom(data);
+    }
+
+    renderCustom(data) {
     }
 
     connectedCallback() {
@@ -450,6 +468,61 @@ class BaseButton extends AbstractInput {
         this.dataset.countDown = "";
         this.inputElement.setAttribute("value", this.dataset.buttonText);
         this.inputElement.enable();
+    }
+}
+
+class LikeButton extends BaseButton {
+    constructor() {
+        super("button");
+        super._addSlot("icon");
+        this.iconElement = null;
+    }
+
+    static tagName() {
+        return "like-button";
+    }
+
+    connectedCallback() {
+        if (this.iconElement === null) {
+            this.iconElement = document.createElement("i");
+            this.iconElement.setAttribute("slot", "icon");
+            this.appendChild(this.iconElement);
+        }
+        super.connectedCallback();
+    }
+
+    renderElement(data) {
+        if (data.hasOwnProperty("checked")) {
+            this.dataset.checked = Boolean(data.checked).toString();
+        }
+        super.renderElement(data);
+    }
+}
+
+class FavoriteButton extends BaseButton {
+    constructor() {
+        super("button");
+        super._addSlot("icon");
+        this.iconElement = null;
+    }
+
+    static tagName() {
+        return "favorite-button";
+    }
+
+    connectedCallback() {
+        if (this.iconElement === null) {
+            this.iconElement = document.createElement("i");
+            this.iconElement.setAttribute("slot", "icon");
+            this.appendChild(this.iconElement);
+        }
+        super.connectedCallback();
+    }
+
+    renderElement(data) {
+        if (data.hasOwnProperty("checked")) {
+            this.dataset.checked = Boolean(data.checked).toString();
+        }
     }
 }
 
@@ -759,7 +832,7 @@ class DragUpload extends AbstractElement {
                             if (imgPreview) {
                                 this.previewElement.append(imgPreview);
                                 let reader = new FileReader();
-                                reader.onload = function(event) {
+                                reader.onload = function (event) {
                                     imgPreview.style.backgroundImage = "url('" + event.currentTarget.result + "')";
                                     imgPreview.show();
                                 }
@@ -795,7 +868,7 @@ class DragUpload extends AbstractElement {
                         if (fileItem.type.indexOf("image") !== -1) {
                             imgPreview.clearChildNodes();
                             let reader = new FileReader();
-                            reader.onload = function(event) {
+                            reader.onload = function (event) {
                                 imgPreview.style.backgroundImage = ("url('" + event.currentTarget.result + "')");
                                 imgPreview.show();
                             }
@@ -988,6 +1061,8 @@ class TextAreaInput extends AbstractInput {
     }
 }
 
-export {InputElement, BaseInput, AbstractInput, StandardButton, SubmitButton, ResetButton, PasswordInput, HiddenInput,
-    TextInput, SearchInput, NumberInput, DateInput, TimeInput, DateTimeInput, SelectInput, TextAreaInput, DragUpload,
-    NumberIntervalInput, DateIntervalInput, TimeIntervalInput, DateTimeIntervalInput};
+export {
+    InputElement, BaseInput, AbstractInput, StandardButton, SubmitButton, ResetButton, LikeButton, FavoriteButton,
+    PasswordInput, HiddenInput, TextInput, SearchInput, NumberInput, DateInput, TimeInput, DateTimeInput, SelectInput,
+    TextAreaInput, DragUpload, NumberIntervalInput, DateIntervalInput, TimeIntervalInput, DateTimeIntervalInput
+};

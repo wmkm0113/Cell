@@ -16,7 +16,130 @@
  */
 "use strict";
 
-import {GroupElement} from "./element.js";
+import {AbstractElement} from "./element.js";
+import {MockCheckBox, MockRadio, MockSwitch} from "./mock.js";
+
+class GroupElement extends AbstractElement {
+    constructor() {
+        super();
+    }
+
+    renderElement(data) {
+        if (data.hasOwnProperty("name")) {
+            Object.keys(data).forEach(key => {
+                switch (key.toLowerCase()) {
+                    case "textcontent":
+                        this.dataset.textContent = data[key];
+                        break;
+                    case "tips":
+                        this.dataset.tips = JSON.stringify(data[key]);
+                        break;
+                    case "value":
+                        if (data[key] instanceof Array) {
+                            this.dataset.value = JSON.stringify(data[key]);
+                        } else {
+                            this.dataset.value = data[key];
+                        }
+                        break;
+                    case "items":
+                        this.dataset.items = JSON.stringify(data[key]);
+                        break;
+                    default:
+                        this.setAttribute(key, data[key]);
+                        break;
+                }
+            });
+            this.connectedCallback();
+        }
+    }
+
+    _renderItem(tagName = "") {
+        let itemName = this.getAttribute("name");
+        let itemList = this.dataset.items;
+        if (itemName && itemList && itemList.isJSON()) {
+            super._renderLabel();
+            super._addSlot("item");
+            let checkValue = [];
+            if (this.dataset.value !== undefined && this.dataset.value.length > 0) {
+                if (this.dataset.value.isJSON()) {
+                    checkValue = this.dataset.value.parseJSON();
+                } else {
+                    checkValue[0] = this.dataset.value;
+                }
+            }
+            let eventMap = [];
+            this.attrNames().forEach(attributeName => {
+                if (attributeName.startsWith("on")) {
+                    eventMap.push([attributeName, this.getAttribute(attributeName)]);
+                    this.removeAttribute(attributeName);
+                }
+            });
+            let divElement = this.querySelector("div[slot='item']");
+            if (divElement === null) {
+                divElement = document.createElement("div");
+                divElement.setAttribute("slot", "item");
+                this.appendChild(divElement);
+            }
+            let existsItems = this.querySelectorAll("div > " + tagName);
+            let jsonItems = itemList.parseJSON();
+            jsonItems.forEach((itemInfo, index) => {
+                let itemElement;
+                if (index < existsItems.length) {
+                    itemElement = existsItems[index];
+                } else {
+                    switch (tagName) {
+                        case "mock-switch":
+                            itemElement = new MockSwitch();
+                            break;
+                        case "mock-radio":
+                            itemElement = new MockRadio();
+                            break;
+                        case "mock-checkbox":
+                            itemElement = new MockCheckBox();
+                            break;
+                        default:
+                            return;
+                    }
+                    divElement.appendChild(itemElement);
+                }
+                itemElement.attrNames().forEach(attributeName => {
+                    if (attributeName.startsWith("on")) {
+                        itemElement.removeAttribute(attributeName);
+                    }
+                });
+                eventMap.forEach(eventInfo => itemElement.setAttribute(eventInfo[0], eventInfo[1]));
+                if (tagName === "mock-radio") {
+                    itemElement.addEventListener("click", (event) => {
+                        event.stopPropagation();
+                        let currentValue = "";
+                        Array.from(this.querySelectorAll("div[slot='item'] > mock-radio"))
+                            .filter(radioButton => radioButton.checked)
+                            .forEach(radioButton => {
+                                currentValue = radioButton.value();
+                                radioButton.checked = false;
+                            });
+                        if (itemElement.value() !== currentValue) {
+                            Array.from(this.querySelectorAll("div[slot='item'] > mock-radio"))
+                                .filter(radioButton => radioButton.value() === itemElement.value())
+                                .forEach(radioButton => {
+                                    radioButton.checked = true;
+                                });
+                        }
+                    });
+                }
+                itemInfo.name = itemName;
+                itemInfo.checked = (checkValue.indexOf(itemInfo.value) !== -1);
+                itemElement.data = JSON.stringify(itemInfo);
+            });
+
+            if (jsonItems.length < existsItems.length) {
+                for (let i = jsonItems.length ; i < existsItems.length ; i++) {
+                    divElement.removeChild(existsItems[i]);
+                }
+            }
+        }
+    }
+}
 
 /**
  * Mock button group

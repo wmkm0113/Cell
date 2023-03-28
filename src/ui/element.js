@@ -16,12 +16,10 @@
  */
 "use strict";
 
-import {MockCheckBox, MockRadio, MockSwitch} from "./mock.js";
-
 class CustomElement extends HTMLElement {
     constructor() {
         super();
-        this._shadowRoot = this.attachShadow({ mode : "closed" });
+        this._shadowRoot = this.attachShadow({mode: "closed"});
     }
 
     static tagName() {
@@ -50,18 +48,28 @@ class BaseElement extends CustomElement {
         super();
         Object.defineProperty(this, "data", {
             set(data) {
-                if (this.renderElement !== undefined && data !== null && data.isJSON()) {
-                    let jsonData = data.parseJSON();
-                    if (jsonData.hasOwnProperty("elementId")) {
-                        this.setAttribute("id", jsonData.elementId);
+                this._removeProgress();
+                if (this.renderElement !== undefined && data !== null) {
+                    if (data.isJSON()) {
+                        let jsonData = data.parseJSON();
+                        if (jsonData.hasOwnProperty("elementId")) {
+                            this.setAttribute("id", jsonData.elementId);
+                        }
+                        this.renderElement(jsonData);
+                    } else {
+                        this.renderElement(data);
                     }
-                    this._removeProgress();
-                    this.renderElement(jsonData);
                 }
             }
         });
         this._addSlot("loading");
         this.loadingElement = null;
+    }
+
+    loadData() {
+        if (this.dataset.hasOwnProperty("code")) {
+            window.setTimeout(() => Cell.initData(this.dataset.code, this), 100);
+        }
     }
 
     remove() {
@@ -98,10 +106,8 @@ class TipsElement extends BaseElement {
     }
 
     renderElement(data) {
-        if (data.hasOwnProperty("content")) {
-            this.dataset.content = data.content;
-            this.connectedCallback();
-        }
+        this.dataset.content = data;
+        this.connectedCallback();
     }
 
     connectedCallback() {
@@ -162,128 +168,6 @@ class AbstractElement extends BaseElement {
                 this.appendChild(this.tipsElement);
             }
             this.tipsElement.data = this.dataset.tips;
-        }
-    }
-}
-
-class GroupElement extends AbstractElement {
-    constructor() {
-        super();
-    }
-
-    renderElement(data) {
-        if (data.hasOwnProperty("name")) {
-            Object.keys(data).forEach(key => {
-                switch (key.toLowerCase()) {
-                    case "textcontent":
-                        this.dataset.textContent = data[key];
-                        break;
-                    case "tips":
-                        this.dataset.tips = JSON.stringify(data[key]);
-                        break;
-                    case "value":
-                        if (data[key] instanceof Array) {
-                            this.dataset.value = JSON.stringify(data[key]);
-                        } else {
-                            this.dataset.value = data[key];
-                        }
-                        break;
-                    case "items":
-                        this.dataset.items = JSON.stringify(data[key]);
-                        break;
-                    default:
-                        this.setAttribute(key, data[key]);
-                        break;
-                }
-            });
-            this.connectedCallback();
-        }
-    }
-
-    _renderItem(tagName = "") {
-        let itemName = this.getAttribute("name");
-        let itemList = this.dataset.items;
-        if (itemName && itemList && itemList.isJSON()) {
-            super._renderLabel();
-            super._addSlot("item");
-            let checkValue = [];
-            if (this.dataset.value !== undefined && this.dataset.value.length > 0) {
-                if (this.dataset.value.isJSON()) {
-                    checkValue = this.dataset.value.parseJSON();
-                } else {
-                    checkValue[0] = this.dataset.value;
-                }
-            }
-            let eventMap = [];
-            this.attrNames().forEach(attributeName => {
-                if (attributeName.startsWith("on")) {
-                    eventMap.push([attributeName, this.getAttribute(attributeName)]);
-                    this.removeAttribute(attributeName);
-                }
-            });
-            let divElement = this.querySelector("div[slot='item']");
-            if (divElement === null) {
-                divElement = document.createElement("div");
-                divElement.setAttribute("slot", "item");
-                this.appendChild(divElement);
-            }
-            let existsItems = this.querySelectorAll("div > " + tagName);
-            let jsonItems = itemList.parseJSON();
-            jsonItems.forEach((itemInfo, index) => {
-                let itemElement;
-                if (index < existsItems.length) {
-                    itemElement = existsItems[index];
-                } else {
-                    switch (tagName) {
-                        case "mock-switch":
-                            itemElement = new MockSwitch();
-                            break;
-                        case "mock-radio":
-                            itemElement = new MockRadio();
-                            break;
-                        case "mock-checkbox":
-                            itemElement = new MockCheckBox();
-                            break;
-                        default:
-                            return;
-                    }
-                    divElement.appendChild(itemElement);
-                }
-                itemElement.attrNames().forEach(attributeName => {
-                    if (attributeName.startsWith("on")) {
-                        itemElement.removeAttribute(attributeName);
-                    }
-                });
-                eventMap.forEach(eventInfo => itemElement.setAttribute(eventInfo[0], eventInfo[1]));
-                if (tagName === "mock-radio") {
-                    itemElement.addEventListener("click", (event) => {
-                        event.stopPropagation();
-                        let currentValue = "";
-                        Array.from(this.querySelectorAll("div[slot='item'] > mock-radio"))
-                            .filter(radioButton => radioButton.checked)
-                            .forEach(radioButton => {
-                                currentValue = radioButton.value();
-                                radioButton.checked = false;
-                            });
-                        if (itemElement.value() !== currentValue) {
-                            Array.from(this.querySelectorAll("div[slot='item'] > mock-radio"))
-                                .filter(radioButton => radioButton.value() === itemElement.value())
-                                .forEach(radioButton => {
-                                    radioButton.checked = true;
-                                });
-                        }
-                    });
-                }
-                itemInfo.name = itemName;
-                itemInfo.checked = (checkValue.indexOf(itemInfo.value) !== -1);
-                itemElement.data = JSON.stringify(itemInfo);
-            });
-
-            if (jsonItems.length < existsItems.length) {
-                for (let i = jsonItems.length ; i < existsItems.length ; i++) {
-                    divElement.removeChild(existsItems[i]);
-                }
-            }
         }
     }
 }
@@ -440,7 +324,7 @@ class StarRating extends CustomElement {
             let divElement = document.createElement("div");
             divElement.setAttribute("slot", "starRating");
             this.appendChild(divElement);
-            for (let i = 5 ; i > 0 ; i--) {
+            for (let i = 5; i > 0; i--) {
                 let id = "star" + i;
                 let inputElement = document.createElement("input");
                 inputElement.setAttribute("type", "radio");
@@ -478,7 +362,7 @@ class StarScore extends CustomElement {
             this.scoreElement.setAttribute("slot", "starScore");
             this.scoreElement.setAttribute("href", "#");
             this.appendChild(this.scoreElement);
-            for (let i = 0 ; i < 5 ; i++) {
+            for (let i = 0; i < 5; i++) {
                 let spanElement = document.createElement("i");
                 spanElement.setClass("star");
                 this.scoreElement.appendChild(spanElement);
@@ -495,7 +379,7 @@ class StarScore extends CustomElement {
                 starList.forEach(starItem => starItem.setClass("icon-star-half"));
             } else {
                 let fillCount = score | 0;
-                for (let i = 1 ; i <= 5 ; i++) {
+                for (let i = 1; i <= 5; i++) {
                     if (i <= fillCount) {
                         starList[i - 1].setClass("icon-star");
                     } else {
@@ -512,5 +396,4 @@ class StarScore extends CustomElement {
     }
 }
 
-export {TipsElement, CustomElement, BaseElement, AbstractElement, GroupElement,
-    ProgressBar, ScrollBar, StarRating, StarScore};
+export {TipsElement, CustomElement, BaseElement, AbstractElement, ProgressBar, ScrollBar, StarRating, StarScore};

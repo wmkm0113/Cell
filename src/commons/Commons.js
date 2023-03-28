@@ -26,61 +26,61 @@
 'use strict';
 
 const Comment = {
-    Version:    "1.0.1",
-    Language:   navigator.language,
-    Html5:      ((typeof Worker) !== "undefined"),
-    MaxWidth :  Math.max(document.documentElement.scrollWidth, document.documentElement.clientWidth),
-    MaxHeight : Math.max(document.documentElement.scrollHeight, document.documentElement.clientHeight),
-    GPS :       !!navigator.geolocation,
-    TimeZoneOffset : new Date().getTimezoneOffset() * 60 * 1000,
-    ISO8601DATEPattern : "yyyy-MM-dd",
-    ISO8601TIMEPattern : "HH:mm:ss",
-    ISO8601DATETIMEPattern : "yyyy-MM-ddTHH:mm:ss",
-    BASE16 :    ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'],
-    BASE36 : [
+    Version: "1.0.1",
+    Language: navigator.language,
+    Html5: ((typeof Worker) !== "undefined"),
+    MaxWidth: Math.max(document.documentElement.scrollWidth, document.documentElement.clientWidth),
+    MaxHeight: Math.max(document.documentElement.scrollHeight, document.documentElement.clientHeight),
+    GPS: !!navigator.geolocation,
+    TimeZoneOffset: new Date().getTimezoneOffset() * 60 * 1000,
+    ISO8601DATEPattern: "yyyy-MM-dd",
+    ISO8601TIMEPattern: "HH:mm:ss",
+    ISO8601DATETIMEPattern: "yyyy-MM-ddTHH:mm:ss",
+    BASE16: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'],
+    BASE36: [
         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
         'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
     ],
-    BASE64 :    [
+    BASE64: [
         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
         'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
         'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
         'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/', '='
     ],
-    MONTH : ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-    SocialCreditCode : [
+    MONTH: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    SocialCreditCode: [
         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
         'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'T', 'U', 'W', 'X', 'Y'
     ],
     Browser: {
-        Version:	-1,
+        Version: -1,
         //	Internet Explorer
-        IE:     	!!window.ActiveXObject || "ActiveXObject" in window,
+        IE: !!window.ActiveXObject || "ActiveXObject" in window,
         //	Internet Explorer 11
-        IE11:		(!(navigator.userAgent.toUpperCase().indexOf('TRIDENT') > -1
+        IE11: (!(navigator.userAgent.toUpperCase().indexOf('TRIDENT') > -1
             && navigator.userAgent.toUpperCase().indexOf('RV:') > -1)),
         //	Microsoft Edge
-        Edge:		navigator.userAgent.toUpperCase().indexOf('EDGE') > -1,
+        Edge: navigator.userAgent.toUpperCase().indexOf('EDGE') > -1,
         //	Opera Explorer
-        Opera:  	navigator.userAgent.toUpperCase().indexOf('OPERA') > -1,
+        Opera: navigator.userAgent.toUpperCase().indexOf('OPERA') > -1,
         //	Firefox Explorer
-        Firefox: 	navigator.userAgent.toUpperCase().indexOf('FIREFOX') > -1,
+        Firefox: navigator.userAgent.toUpperCase().indexOf('FIREFOX') > -1,
         // 	Apple Safari Explorer
-        Safari:		!!window.openDatabase && navigator.userAgent.toUpperCase().indexOf('SAFARI') > -1,
+        Safari: !!window.openDatabase && navigator.userAgent.toUpperCase().indexOf('SAFARI') > -1,
         //	Chrome Explorer
-        Chrome:		!!window.MessageEvent && navigator.userAgent.toUpperCase().indexOf('CHROME') > -1,
+        Chrome: !!window.MessageEvent && navigator.userAgent.toUpperCase().indexOf('CHROME') > -1,
         //	Apple Safari and Google Chrome
-        WebKit: 	navigator.userAgent.indexOf('AppleWebKit/') > -1,
+        WebKit: navigator.userAgent.indexOf('AppleWebKit/') > -1,
         //	Mozilla Firefox, Apple Safari and Google Chrome
-        Gecko:  	navigator.userAgent.indexOf('Gecko') > -1 && navigator.userAgent.indexOf('KHTML') === -1,
+        Gecko: navigator.userAgent.indexOf('Gecko') > -1 && navigator.userAgent.indexOf('KHTML') === -1,
         //  QQBrowser
-        QQBrowser:  /QQBROWSER/.test(navigator.userAgent.toUpperCase()),
+        QQBrowser: /QQBROWSER/.test(navigator.userAgent.toUpperCase()),
         //  WeiXinBrowser
-        WXBrowser:  /MICROMESSENGER/i.test(navigator.userAgent.toUpperCase())
+        WXBrowser: /MICROMESSENGER/i.test(navigator.userAgent.toUpperCase())
     },
     Author: [
-        {"Name":"Steven Wee", "EMail":"wmkm0113@gmail.com", "ORG":"Nervousync Studio"}
+        {"Name": "Steven Wee", "EMail": "wmkm0113@gmail.com", "ORG": "Nervousync Studio"}
     ]
 };
 Object.freeze(Comment);
@@ -114,7 +114,7 @@ Comment.Browser.Version = () => {
 }
 
 const TagDefine = {
-    HtmlTag : [
+    HtmlTag: [
         "a", "abbr", "acronym", "address", "applet", "area", "b", "base", "bdo", "big", "blockquote", "body", "br",
         "button", "caption", "center", "cite", "code", "col", "colgroup", "dd", "del", "div", "dfn", "dl", "dt", "em",
         "embed", "fieldset", "form", "frame", "frameset", "h1", "h2", "h3", "h4", "h5", "h6", "head", "html", "i",
@@ -123,7 +123,7 @@ const TagDefine = {
         "span", "strong", "style", "sub", "sup", "table", "tbody", "td", "textarea", "tfoot", "th", "thead", "title",
         "tr", "tt", "ul", "var"
     ],
-    Html5Tag : [
+    Html5Tag: [
         "a", "abbr", "address", "area", "article", "aside", "audio", "b", "base", "bdi", "bdo", "big", "blockquote",
         "body", "br", "button", "canvas", "caption", "center", "cite", "code", "col", "colgroup", "data", "datalist",
         "dd", "del", "details", "div", "dfn", "dialog", "dl", "dt", "em", "embed", "fieldset", "figcaption", "figure",
@@ -133,56 +133,69 @@ const TagDefine = {
         "picture", "pre", "progress", "q", "rp", "rt", "ruby", "s", "samp", "script", "section", "select", "small",
         "source", "span", "strong", "style", "sub", "summary", "sup", "table", "tbody", "td", "textarea", "template",
         "tfoot", "th", "thead", "time", "title", "tr", "track", "tt", "ul", "var", "video", "wbr"
-    ],
-    CustomTag : []
+    ]
 }
 Object.seal(TagDefine);
 
 const RegexLibrary = {
-    E_Mail : /^([A-Za-z\d_\-.])+@([A-Za-z\d_\-.])+\.([A-Za-z]{2,4})$/i,
-    UUID : /^([\da-f]{8}((-[\da-f]{4}){3})-[\da-f]{12})|([\da-f]{32})\b/g,
-    BlankText : /\s+/ig,
-    Number : /^\b\d+\b$/g,
-    Color : /^#[\dA-F]{6}$/i,
-    XML : /<[a-zA-Z\d]+[^>]*>(?:.|[\r\n])*?<\/[a-zA-Z\d]+>/ig,
-    HtmlTag : /<[a-zA-Z\d]+[^>]*>/ig,
-    CHN_ID_Card : /^[1-9](\d{17}|(\d{16}X))$/g,
-    CHN_Social_Credit : /^([1-9]|A|N|Y)[\dA-Z]{17}$/g
+    E_Mail: /^([A-Za-z\d_\-.])+@([A-Za-z\d_\-.])+\.([A-Za-z]{2,4})$/i,
+    UUID: /^([\da-f]{8}((-[\da-f]{4}){3})-[\da-f]{12})|([\da-f]{32})\b/g,
+    BlankText: /\s+/ig,
+    Number: /^\b\d+\b$/g,
+    Color: /^#[\dA-F]{6}$/i,
+    XML: /<[a-zA-Z\d]+[^>]*>(?:.|[\r\n])*?<\/[a-zA-Z\d]+>/ig,
+    HtmlTag: /<[a-zA-Z\d]+[^>]*>/ig,
+    Luhn: /^[0-9]+/g,
+    CHN_ID_Card: /^[1-9](\d{17}|(\d{16}X))$/g,
+    CHN_Social_Credit: /^([1-9]|A|N|Y)[\dA-Z]{17}$/g
 };
 
+const DarkMode = {
+    Light: 0,
+    Dark: 1,
+    Sun: 2,
+    System: 3
+}
+Object.freeze(DarkMode);
+
 const Config = {
-    developmentMode: false,
-    contextPath : "",
-    resPath : "/i18n",
-    languageCode : Comment.Language,
+    contextPath: "",
+    componentPath: "",
+    languageCode: Comment.Language,
+    scrollHeader: {
+        enabled: false,
+        selectors: [],
+        styleClass: "fixed"
+    },
     //  Config the dark mode by sunrise and sunset
-    darkMode : {
-        enabled : false,
-        styleClass : "darkMode"
+    darkMode: {
+        mode: DarkMode.Light,
+        styleClass: "darkMode"
     },
     //  Config for form data
-    formConfig : {
+    formConfig: {
         //  Convert date/time from 'yyyy-MM-dd [HH:mm]' to number of milliseconds between that date and midnight, January 1, 1970.
-        convertDateTime : false,
+        convertDateTime: false,
         //  Convert value is UTC number of milliseconds between that date and midnight, January 1, 1970.
-        utcDateTime : false
+        utcDateTime: false
     },
-    security : {
+    security: {
+        providers: [],
         //  Encrypt value of input[type='password']
-        encryptPassword : true,
+        encryptPassword: true,
         //  Encrypt method for input[type='password']
         //  Options:    MD5/RSA/SHA1/SHA224/SHA256/SHA384/SHA512/SHA512_224/SHA512_256
         //              SHA3_224/SHA3_256/SHA3_384/SHA3_512/SHAKE128/SHAKE256
         //              Keccak224/Keccak256/Keccak384/Keccak512
-        encryptMethod : "SHA256",
+        encryptMethod: "SHA256",
         //  RSA Key Config
-        RSA : {
-            exponent : "",
-            modulus : "",
+        RSA: {
+            exponent: "",
+            modulus: "",
             //  Exponent and modulus data radix, default is 16
-            radix : 16,
+            radix: 16,
             //  Public Key Size
-            keySize : 1024
+            keySize: 1024
         }
     }
 };
@@ -197,7 +210,7 @@ function $() {
             return document.getElementById(arguments[0]);
         } else {
             let returnElements = [];
-            for (let i = 0 ; i < argCount ; i++) {
+            for (let i = 0; i < argCount; i++) {
                 let element = null;
                 let elementId = arguments[i];
                 if (typeof elementId === 'string') {
@@ -210,21 +223,9 @@ function $() {
     }
 }
 
-export {Comment, Config, $};
+export {Comment, Config, DarkMode, $};
 
-Object.extend = function(destination, source) {
-    for (let _property in source) {
-        if (source.hasOwnProperty(_property)
-            && (typeof source[_property]).toString().toLowerCase() === 'object') {
-            Object.extend(destination[_property], source[_property]);
-        } else {
-            destination[_property] = source[_property];
-        }
-    }
-    return destination;
-};
-
-Object.extend(Element.prototype, {
+Object.assign(Element.prototype, {
     getClass() {
         let _className;
         if (Comment.Browser.IE && !Comment.Browser.IE11) {
@@ -301,6 +302,25 @@ Object.extend(Element.prototype, {
         this.addEventListener(_eventName, _operateFunc, false);
     },
 
+    scrollOut() {
+        if (this.dataset.hasOwnProperty("offsetTop")) {
+            let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+            return scrollTop > this.dataset.offsetTop;
+        }
+        return false;
+    },
+
+    scrollInView() {
+        return  this.getBoundingClientRect().top >= 0;
+    },
+
+    inViewPort() {
+        let viewPortHeight = window.innerHeight || document.documentElement.clientHeight;
+        let viewPortWidth = window.innerWidth || document.documentElement.clientWidth;
+        let {top, left, bottom, right} = this.getBoundingClientRect();
+        return (top >= 0 && left >= 0 && bottom <= viewPortHeight && right <= viewPortWidth);
+    },
+
     removeEvent(_eventName, _operateFunc) {
         this.removeEventListener(_eventName, _operateFunc, false);
     },
@@ -338,9 +358,9 @@ Object.extend(Element.prototype, {
     },
 
     formData() {
-        let jsonData = {};
+        let formData = {};
         if (this.tagName.toLowerCase() === "form") {
-            jsonData.uploadFile = false;
+            formData.uploadFile = false;
             let _formData = new FormData();
             let _inputName, _inputValue;
             this.querySelectorAll("input, select, textarea").forEach(input => {
@@ -355,7 +375,7 @@ Object.extend(Element.prototype, {
                         if (input.tagName.toLowerCase() === "input") {
                             switch (input.type.toLowerCase()) {
                                 case "password":
-                                    _inputValue = Cell.calculateData(this._config.security.encryptMethod, _inputValue);
+                                    _inputValue = Cell.encData(_inputValue);
                                     break;
                                 case "date":
                                 case "time":
@@ -363,7 +383,7 @@ Object.extend(Element.prototype, {
                                     _inputValue = Cell.dateToMilliseconds(_inputValue);
                                     break;
                                 case "file":
-                                    jsonData.uploadFile = true;
+                                    formData.uploadFile = true;
                                     break;
                             }
                             _formData.append(_inputName, _inputValue);
@@ -375,18 +395,17 @@ Object.extend(Element.prototype, {
                     }
                 }
             });
-            this.querySelectorAll("drag-upload").forEach(drawUpload => {
+            this.querySelectorAll("drag-upload").forEach(drawUpload =>
                 drawUpload.uploadFiles().forEach(fileItem => {
                     _formData.append(drawUpload.getAttribute("name"), fileItem, fileItem.name);
-                    jsonData.uploadFile = true;
-                })
-            });
-            if (jsonData.uploadFile && this.dataset.uploadProgress) {
-                jsonData.uploadProgress = this.dataset.uploadProgress;
+                    formData.uploadFile = true;
+                }));
+            if (formData.uploadFile && this.dataset.uploadProgress) {
+                formData.uploadProgress = this.dataset.uploadProgress;
             }
-            jsonData.formData = _formData;
+            formData.data = _formData;
         }
-        return jsonData;
+        return formData;
     },
 
     validate() {
@@ -417,11 +436,14 @@ Object.extend(Element.prototype, {
                 if (this.dataset.email === "true") {
                     _result = _result && _value.isEmail();
                 }
-                if (this.dataset.idCard === "true") {
-                    _result = _result && _value.isIDCardCode();
+                if (this.dataset.luhn === "true") {
+                    _result = _result && _value.isLuhn();
                 }
-                if (this.dataset.socialCredit === "true") {
-                    _result = _result && _value.isSocialCreditCode();
+                if (this.dataset.CHNID === "true") {
+                    _result = _result && _value.isCHNID();
+                }
+                if (this.dataset.CHNSocialCredit === "true") {
+                    _result = _result && _value.isCHNSocialCredit();
                 }
             } else {
                 _result = (this.dataset.notNull === undefined || this.dataset.notNull === "false");
@@ -447,7 +469,7 @@ Object.extend(Element.prototype, {
                             return _sortDesc ? bValue.length > aValue.length : bValue.length < aValue.length;
                         }
 
-                        return  _sortDesc ? bValue.localeCompare(aValue) : aValue.localeCompare(bValue);
+                        return _sortDesc ? bValue.localeCompare(aValue) : aValue.localeCompare(bValue);
                     } catch (e) {
                         return 0;
                     }
@@ -461,7 +483,7 @@ Object.extend(Element.prototype, {
     attrNames() {
         if (Comment.Browser.IE || Comment.Browser.IE11) {
             let _attrNames = [], _attrList = this.attributes, _length = _attrList.length, i;
-            for (i = 0 ; i < _length ; i++) {
+            for (i = 0; i < _length; i++) {
                 _attrNames.push(_attrList[i].name);
             }
             return _attrNames;
@@ -473,7 +495,7 @@ Object.extend(Element.prototype, {
     childList() {
         if (Comment.Browser.IE || Comment.Browser.IE11) {
             let _children = [], _nodeList = this.childNodes, _length = _nodeList.length, i;
-            for (i = 0 ; i < _length ; i++) {
+            for (i = 0; i < _length; i++) {
                 if (_nodeList[i].nodeType === 1) {
                     _children.push(_nodeList[i]);
                 }
@@ -488,7 +510,7 @@ Object.extend(Element.prototype, {
         if (Comment.Browser.IE || Comment.Browser.IE11) {
             let _html = "<" + this.tagName;
             let _attributes = this.attributes, _attrLength = _attributes.length, i;
-            for (i = 0 ; i < _attrLength ; i++) {
+            for (i = 0; i < _attrLength; i++) {
                 _html += (" " + _attributes[i].name + "=\"" + this.getAttribute(_attributes[i].name) + "\"");
             }
 
@@ -498,7 +520,7 @@ Object.extend(Element.prototype, {
                 _html += ">";
                 let _childList = this.childList(), _childLength = _childList.length;
                 if (_childLength > 0) {
-                    for (i = 0 ; i < _childLength ; i++) {
+                    for (i = 0; i < _childLength; i++) {
                         _html += _childList[i].render();
                     }
                 } else if (this.innerHTML !== undefined) {
@@ -513,7 +535,7 @@ Object.extend(Element.prototype, {
     }
 });
 
-Object.extend(String.prototype, {
+Object.assign(String.prototype, {
     reverse() {
         return Array.from(this).reverse().join('');
     },
@@ -530,10 +552,29 @@ Object.extend(String.prototype, {
         return RegexLibrary.E_Mail.test(this.cleanBlank());
     },
 
-    isIDCardCode() {
+    isLuhn() {
+        if (this.trim().search(RegexLibrary.Luhn) !== -1) {
+            let _numArray = this.trim().split('').reverse();
+            let _result = 0;
+            for (let _index = 0 ; _index < _numArray.length ; _index++) {
+                let _current = _numArray[_index].parseInt();
+                if (_index % 2) {
+                    _current *= 2;
+                    if (_current > 9) {
+                        _current -= 9;
+                    }
+                }
+                _result += _current;
+            }
+            return (_result % 10) === 0;
+        }
+        return false;
+    },
+
+    isCHNID() {
         if (this.trim().search(RegexLibrary.CHN_ID_Card) !== -1) {
             let _sigma = 0, _code, i;
-            for (i = 0 ; i < 17 ; i++) {
+            for (i = 0; i < 17; i++) {
                 _code = this.charAt(i).parseInt();
                 if (_code !== 0) {
                     _sigma += _code * (Math.pow(2, 17 - i) % 11);
@@ -545,10 +586,10 @@ Object.extend(String.prototype, {
         return false;
     },
 
-    isSocialCreditCode() {
+    isCHNSocialCredit() {
         if (this.trim().search(RegexLibrary.CHN_Social_Credit) !== -1) {
-            let _sigma = 0, _validateCode = Comment.SocialCreditCode.indexOf(this.charAt(17)),_code, i;
-            for (i = 0 ; i < 17 ; i++) {
+            let _sigma = 0, _validateCode = Comment.SocialCreditCode.indexOf(this.charAt(17)), _code, i;
+            for (i = 0; i < 17; i++) {
                 _code = Comment.SocialCreditCode.indexOf(this.charAt(i));
                 if (_code !== 0) {
                     _sigma += _code * (Math.pow(3, i) % 31);
@@ -581,7 +622,7 @@ Object.extend(String.prototype, {
         let _matchResult = this.isXml();
         if (_matchResult) {
             let _length = RegexLibrary.HtmlTag.length, _tagName;
-            for (let i = 0 ; i < _length ; i++) {
+            for (let i = 0; i < _length; i++) {
                 _tagName = this.match(RegexLibrary.HtmlTag[i]);
                 if (_tagName !== null) {
                     _tagName = _tagName.substring(1, _tagName.length - 1);
@@ -592,7 +633,6 @@ Object.extend(String.prototype, {
                     _matchResult = Comment.Html5
                         ? TagDefine.Html5Tag.indexOf(_tagName) !== -1
                         : TagDefine.HtmlTag.indexOf(_tagName) !== -1;
-                    _matchResult |= (TagDefine.CustomTag.indexOf(_tagName) !== -1);
                 }
             }
         }
@@ -703,46 +743,46 @@ Object.extend(String.prototype, {
         return _result;
     },
 
-    encodeByRegExp () {
+    encodeByRegExp() {
         let _result = "";
-        if(this.length > 0) {
-            _result = this.replace(/&/g,"&amp;");
-            _result = _result.replace(/</g,"&lt;");
-            _result = _result.replace(/>/g,"&gt;");
-            _result = _result.replace(/ /g,"&nbsp;");
-            _result = _result.replace(/'/g,"&#39;");
-            _result = _result.replace(/"/g,"&quot;");
+        if (this.length > 0) {
+            _result = this.replace(/&/g, "&amp;");
+            _result = _result.replace(/</g, "&lt;");
+            _result = _result.replace(/>/g, "&gt;");
+            _result = _result.replace(/ /g, "&nbsp;");
+            _result = _result.replace(/'/g, "&#39;");
+            _result = _result.replace(/"/g, "&quot;");
         }
         return _result;
     },
 
-    decodeByRegExp () {
+    decodeByRegExp() {
         let _result = "";
-        if(this.length > 0) {
-            _result = this.replace(/&amp;/g,"&");
-            _result = _result.replace(/&lt;/g,"<");
-            _result = _result.replace(/&gt;/g,">");
-            _result = _result.replace(/&nbsp;/g," ");
-            _result = _result.replace(/&#39;/g,"\'");
-            _result = _result.replace(/&quot;/g,"\"");
+        if (this.length > 0) {
+            _result = this.replace(/&amp;/g, "&");
+            _result = _result.replace(/&lt;/g, "<");
+            _result = _result.replace(/&gt;/g, ">");
+            _result = _result.replace(/&nbsp;/g, " ");
+            _result = _result.replace(/&#39;/g, "\'");
+            _result = _result.replace(/&quot;/g, "\"");
         }
         return _result;
     },
 
-    toUTF8 : function() {
+    toUTF8: function () {
         return /[\u0080-\uFFFF]/.test(this) ? decodeURI(encodeURIComponent(this)) : this;
     },
 
     toByteArray(bigEndian = false) {
         let _array = this.split(''), _length = _array.length, _result = [], _tmp, i, j;
-        for (i = 0 ; i < _length ; i++) {
+        for (i = 0; i < _length; i++) {
             _tmp = encodeURI(_array[i]);
             if (_tmp.length === 1) {
                 _result.push(_tmp.charCodeAt(0));
             } else {
                 _tmp = _tmp.split('%');
                 let _itemLen = _tmp.length;
-                for (j = 0 ; j < _itemLen ; j++) {
+                for (j = 0; j < _itemLen; j++) {
                     if (_tmp[j].length > 0) {
                         _result.push(parseInt('0x' + _tmp[j]));
                     }
@@ -751,7 +791,7 @@ Object.extend(String.prototype, {
         }
         if (bigEndian) {
             let _convResult = [];
-            for (let position = 0 ; position < _result.length ; position += 4) {
+            for (let position = 0; position < _result.length; position += 4) {
                 _convResult[position + 3] = _result[position];
                 _convResult[position + 2] = ((position + 1) < _result.length) ? _result[position + 1] : 0;
                 _convResult[position + 1] = ((position + 2) < _result.length) ? _result[position + 2] : 0;
@@ -766,7 +806,7 @@ Object.extend(String.prototype, {
         let _dataBytes = [];
         let _charCode, _cnt = 0, _intOffset;
         let _length = this.length * 8;
-        for (let _index = 0 ; _index < _length ; _index += 8) {
+        for (let _index = 0; _index < _length; _index += 8) {
             let _tmpBytes = [];
             _charCode = this.charCodeAt(_index / 8);
             if (_charCode < 0x80) {
@@ -805,7 +845,7 @@ Object.extend(String.prototype, {
     }
 });
 
-Object.extend(Number.prototype, {
+Object.assign(Number.prototype, {
     parseTime(utc = false) {
         let _date = new Date();
         if (utc) {
@@ -829,17 +869,17 @@ Object.extend(Number.prototype, {
     }
 });
 
-Object.extend(Date.prototype, {
+Object.assign(Date.prototype, {
     format(pattern = "MM/dd/yyyy") {
         let Pattern = {
-            "y+" : this.getFullYear(),
-            "M+" : this.getMonth() + 1,
-            "d+" : this.getDate(),
-            "H+" : this.getHours(),
-            "m+" : this.getMinutes(),
-            "s+" : this.getSeconds(),
-            "S+"  : this.getMilliseconds(),
-            "q+" : Math.floor((this.getMonth() + 3) / 3)
+            "y+": this.getFullYear(),
+            "M+": this.getMonth() + 1,
+            "d+": this.getDate(),
+            "H+": this.getHours(),
+            "m+": this.getMinutes(),
+            "s+": this.getSeconds(),
+            "S+": this.getMilliseconds(),
+            "q+": Math.floor((this.getMonth() + 3) / 3)
         };
 
         let returnValue = pattern;
@@ -941,12 +981,12 @@ Object.extend(Date.prototype, {
     }
 });
 
-Object.extend(Array.prototype, {
+Object.assign(Array.prototype, {
     toHex(littleEndian = true) {
         let _result = "", _byte;
-        for (let i = 0 ; i < this.length ; i++) {
+        for (let i = 0; i < this.length; i++) {
             _byte = this[i];
-            for (let j = 0 ; j < 4 ; j++) {
+            for (let j = 0; j < 4; j++) {
                 if (littleEndian) {
                     _result += Comment.BASE16[(_byte >> ((2 * j + 1) * 4)) & 0x0F]
                         + Comment.BASE16[(_byte >> ((2 * j) * 4)) & 0x0F];
@@ -961,7 +1001,7 @@ Object.extend(Array.prototype, {
 
     encodeBase64(padding = "") {
         let _result = "", _length = this.length, i;
-        for (i = 0 ; i < _length ; i += 3) {
+        for (i = 0; i < _length; i += 3) {
             _result += (Comment.BASE64[this[i] >> 2] + Comment.BASE64[((this[i] & 0x3) << 4) | (this[i + 1] >> 4)]);
             if (i + 1 < _length) {
                 _result += Comment.BASE64[((this[i + 1] & 0xF) << 2) | (this[i + 2] >> 6)];

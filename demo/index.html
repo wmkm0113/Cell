@@ -8,14 +8,11 @@
     <link rel="stylesheet" href="../src/styles/Cell.css" />
     <link rel="stylesheet" href="./styles/style.css" />
     <script type="module">
-        import {Config} from "../src/commons/Commons.js";
-        Object.assign(Config, {
-            developmentMode: true,
-            languageCode: "en",
-            formConfig : {
-                utcDateTime : true
-            }
-        });
+        import * as Commons from "../src/commons/Commons.js";
+        Commons.Config.languageCode = "zh-CN";
+        Commons.Config.scrollHeader.enabled = true;
+        Commons.Config.scrollHeader.selectors = ["aside[id=\"aside\"]"];
+        Commons.Config.formConfig.utcDateTime = true;
     </script>
     <script src="../src/core/Cell.js" type="module"></script>
 <!--    <script src="https://api.map.baidu.com/api?key=&v=3.0&ak={API_KEY}" type="text/javascript" charset="utf-8"></script>-->
@@ -23,10 +20,11 @@
     <script type="module">
         import * as Data from "./data.js";
         window.onload = function () {
+            $("notifyBtn").addEventListener("click", Cell.sendRequest);
             window.setTimeout(function () {
                 $("multiMenu").data = Data.multiMenuData;
                 $("indexTopMenu").data = Data.indexTopMenuData;
-                $("asideMenu").data = Data.indexTopMenuData;
+                $("asideMenu").data = Data.categoryList;
                 $("progressBarNumber").data = Data.progressBarDataNumber;
                 $("progressBarDetails").data = Data.progressBarDataDetails;
                 $("socialGroup").data = Data.socialData;
@@ -36,14 +34,15 @@
                 $("formInfo").data = Data.formData;
                 $("detailsInfo").data = Data.detailsData;
                 $("widgetButton").data = Data.widgetData;
-                // $("corpDetails").data = Data.corporateData;
-                // $("addressDetails").data = Data.addressData;
+                //  Uncomment this must replace {API_KEY} with your Baidu Map/Google map api key
+                $("corpDetails").data = Data.corporateData;
+                $("addressDetails").data = Data.addressData;
             }, 1000);
         }
     </script>
 </head>
 <body>
-    <header>
+    <header id="topic">
         <span class="logo suffix registered"></span>
         <menu-element id="indexTopMenu"></menu-element>
         <multi-menu id="multiMenu"></multi-menu>
@@ -56,16 +55,18 @@
                 <article>
                     <progress-bar id="progressBarNumber"></progress-bar>
                     <progress-bar id="progressBarDetails"></progress-bar>
-                    <a href="./notify-data.json" data-target-id="notifyArea" onclick="Cell.sendRequest(event)">Notify</a>
+                    <a id="notifyBtn" href="./notify-data.json" data-target-id="notifyArea">Notify</a>
                     <a href="JavaScript:Cell.alert('Alter message information')">Alter Message</a>
                     <a href="JavaScript:Cell.confirm('Confirm message information', () => {alert('Confirmed')})">Confirm Dialog</a>
+                    <like-button data-value="2"></like-button>
+                    <favorite-button></favorite-button>
                 </article>
             </section>
             <section id="listDemo">
                 <h1>Message List</h1>
                 <message-list id="messageList"></message-list>
             </section>
-            <content-banner id="contentBanner"></content-banner>
+            <link-banner id="contentBanner"></link-banner>
             <section id="formDemo">
                 <h1>Form Info</h1>
                 <form-info id="formInfo"></form-info>
@@ -79,9 +80,9 @@
                 <corporate-details id="corpDetails"></corporate-details>
             </section>
         </article>
-        <aside>
-            <menu-element class="asideMenu" id="asideMenu"></menu-element>
-            <widget-button id="widgetButton"></widget-button>
+        <aside id="aside">
+            <category-menu class="asideMenu" id="asideMenu"></category-menu>
+            <link-avatar id="widgetButton"></link-avatar>
             <corporate-address id="addressDetails"></corporate-address>
         </aside>
     </main>

@@ -196,13 +196,13 @@ class MockDialog extends CustomElement {
         let confirmBtn = document.createElement("button");
         confirmBtn.setAttribute("id", "confirm-btn");
         dialogElement.appendChild(confirmBtn);
-        confirmBtn.innerText = Cell.message("Core", "Dialog.Confirm");
+        confirmBtn.innerText = "OK";
 
         if (type === "confirm") {
             let cancelBtn = document.createElement("button");
             cancelBtn.setAttribute("id", "cancel-btn");
             dialogElement.appendChild(cancelBtn);
-            cancelBtn.innerText = Cell.message("Core", "Dialog.Cancel");
+            cancelBtn.innerText = "Cancel";
             cancelBtn.addEventListener("click", (event) => {
                 event.stopPropagation();
                 this._remove(dialogElement);
@@ -339,6 +339,8 @@ class NotifyArea extends CustomElement {
         if (this._notification.querySelectorAll("div").length === 0) {
             this._floatButton.setClass("icon-bell");
             this.hide();
+            this._floatButton.click();
+            document.body.style.overflow = "auto";
         } else {
             this._floatButton.setClass("icon-bell-ring");
             this.show();

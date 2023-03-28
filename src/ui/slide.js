@@ -17,6 +17,7 @@
 "use strict";
 
 import {BaseElement} from "./element.js";
+import {ResourceDetails} from "./details.js";
 
 /**
  * Slide show element
@@ -44,12 +45,10 @@ export default class SlideShow extends BaseElement {
         super();
         this._timer = null;
         this._options = {
-            width: "1000px",
-            height: "300px",
             transitionTime: 1000,
-            openWindow : false,
-            timeOut : 5000,
-            slideType : "scrollLeft"
+            openWindow: false,
+            timeOut: 5000,
+            slideType: "scrollLeft"
         };
         Object.seal(this._options);
         super._addSlot("slide", "sort");
@@ -61,8 +60,6 @@ export default class SlideShow extends BaseElement {
     }
 
     renderElement(data) {
-        this.dataset.width = data.width === undefined ? this.dataset.width : data.width;
-        this.dataset.height = data.height === undefined ? this.dataset.height : data.height;
         this.dataset.transitionTime =
             data.transitionTime === undefined ? this.dataset.transitionTime : data.transitionTime;
         this.dataset.openWindow = data.openWindow === undefined ? this.dataset.openWindow : data.openWindow;
@@ -94,8 +91,6 @@ export default class SlideShow extends BaseElement {
             this.sortElement.setAttribute("slot", "sort");
             this.appendChild(this.sortElement);
         }
-        this.style.width = this.dataset.width === undefined ? this._options.width : this.dataset.width;
-        this.style.height = this.dataset.height === undefined ? this._options.height : this.dataset.height;
         if (this._timer !== null) {
             window.clearInterval(this._timer);
             this._timer = null;
@@ -110,12 +105,14 @@ export default class SlideShow extends BaseElement {
                 frameElement.setAttribute("slot", "slide");
                 this.appendChild(frameElement);
             }
+            frameElement.style.width = (this.offsetWidth + "px");
+            frameElement.style.height = (this.offsetHeight + "px");
             let slideElement = this.querySelector("div > div");
             if (slideElement === null) {
                 slideElement = document.createElement("div");
                 frameElement.appendChild(slideElement);
             }
-            let existsItems = slideElement.querySelectorAll("a");
+            let existsItems = slideElement.querySelectorAll("resource-details");
             let existsDots = this.sortElement.querySelectorAll("span");
             let slideType = this.dataset.slideType === undefined ? this._options.slideType : this.dataset.slideType;
             let transitionTime = (this.dataset.transitionTime === undefined || !this.dataset.transitionTime.isNum())
@@ -151,8 +148,9 @@ export default class SlideShow extends BaseElement {
                 if (index < existsItems.length) {
                     slideItem = existsItems[index];
                 } else {
-                    slideItem = document.createElement("a");
+                    slideItem = new ResourceDetails();
                     slideElement.appendChild(slideItem);
+                    slideItem.addEventListener("click", (event) => Cell.sendRequest(event));
                 }
                 slideItem.style.zIndex = "" + indexValue;
                 indexValue--;
@@ -198,26 +196,16 @@ export default class SlideShow extends BaseElement {
                 if (transitionTime > 0) {
                     slideItem.style.transition = "all " + transitionTime + "ms";
                 }
-                slideItem.style.width = this.style.width;
-                slideItem.style.height = this.style.height;
+                slideItem.style.width = (this.offsetWidth + "px");
+                slideItem.style.height = (this.offsetHeight + "px");
                 if (!slideType.startsWith("scroll")) {
                     slideItem.style.position = "absolute";
                     slideItem.style.top = "0";
                     slideItem.style.left = "0";
                 }
-                slideItem.setAttribute("href",
-                    itemInfo.hasOwnProperty("href") ? itemInfo.href : "#");
-                if (itemInfo.hasOwnProperty("imagePath") && itemInfo.imagePath.length > 0) {
-                    slideItem.style.backgroundImage = ("url('" + itemInfo.imagePath + "')");
-                } else {
-                    slideItem.style.backgroundColor = "#FFFFFF";
-                }
-                if (itemInfo.hasOwnProperty("title")) {
-                    spanElement.innerHTML = itemInfo.title;
-                    spanElement.show();
-                } else {
-                    spanElement.innerHTML = "";
-                    spanElement.hide();
+                slideItem.dataset.link = itemInfo.hasOwnProperty("href") ? itemInfo.href : "#";
+                if (itemInfo.hasOwnProperty("resource")) {
+                    slideItem.data = JSON.stringify(itemInfo.resource);
                 }
 
                 let dotItem;
@@ -233,12 +221,12 @@ export default class SlideShow extends BaseElement {
                 }
             });
             if (jsonItems.length < existsItems.length) {
-                for (let i = jsonItems.length ; i < existsItems.length ; i++) {
+                for (let i = jsonItems.length; i < existsItems.length; i++) {
                     slideElement.removeChild(existsItems[i]);
                 }
             }
             if (jsonItems.length < existsDots.length) {
-                for (let i = jsonItems.length ; i < existsDots.length ; i++) {
+                for (let i = jsonItems.length; i < existsDots.length; i++) {
                     this.sortElement.removeChild(existsDots[i]);
                 }
             }
@@ -251,7 +239,7 @@ export default class SlideShow extends BaseElement {
     process() {
         let slideElement = this.querySelector("div > div");
         if (slideElement !== null) {
-            let existsItems = this.querySelectorAll("div > div > a");
+            let existsItems = this.querySelectorAll("div > div > resource-details");
             if (existsItems.length > 1) {
                 let currentIndex =
                     this.dataset.index === undefined ? 0 : this.dataset.index.parseInt(), nextIndex;
@@ -334,10 +322,10 @@ export default class SlideShow extends BaseElement {
     }
 
     sortIndex(currentIndex) {
-        let existsItems = this.querySelectorAll("div > div > a");
+        let existsItems = this.querySelectorAll("div > div > resource-details");
         if (existsItems.length > 1) {
             let itemCount = existsItems.length, indexValue = itemCount;
-            for (let i = 0 ; i < itemCount ; i++) {
+            for (let i = 0; i < itemCount; i++) {
                 let itemIndex = currentIndex + i;
                 if (itemIndex >= itemCount) {
                     itemIndex -= itemCount;
@@ -349,7 +337,7 @@ export default class SlideShow extends BaseElement {
     }
 
     resetItems() {
-        let existsItems = this.querySelectorAll("div > div > a");
+        let existsItems = this.querySelectorAll("div > div > resource-details");
         if (existsItems.length > 1) {
             let currentIndex = this.dataset.index.parseInt();
             Array.from(existsItems)
@@ -385,7 +373,7 @@ export default class SlideShow extends BaseElement {
 
     resume() {
         if (this._timer === null) {
-            let existsItems = this.querySelectorAll("div > div > a");
+            let existsItems = this.querySelectorAll("div > div > resource-details");
             if (existsItems.length > 1) {
                 let timeOut;
                 if (this.dataset.timeOut === undefined || !this.dataset.timeOut.isNum()) {

@@ -1,4 +1,5 @@
 const multiMenuData = `{
+    "url": "./index.html?lang={languageCode}",
     "items" : [
         {
             "languageCode" : "en",
@@ -11,6 +12,42 @@ const multiMenuData = `{
         {
             "languageCode" : "zh_TW",
             "languageName" : "繁體中文"
+        }
+    ]
+}`;
+
+const categoryList = `{
+    "title": "Category Name",
+    "items": [
+        {
+            "tagName": "a",
+            "textContent": "Category 1",
+            "link": "#1",
+            "icon": "icon-pencil"
+        },
+        {
+            "tagName": "a",
+            "textContent": "Category 2",
+            "link": "#1",
+            "icon": "icon-pencil"
+        },
+        {
+            "tagName": "a",
+            "textContent": "Category 3",
+            "link": "#1",
+            "icon": "icon-pencil"
+        },
+        {
+            "tagName": "a",
+            "textContent": "Category 4",
+            "link": "#1",
+            "icon": "icon-pencil"
+        },
+        {
+            "tagName": "a",
+            "textContent": "Category 5",
+            "link": "#1",
+            "icon": "icon-pencil"
         }
     ]
 }`;
@@ -278,28 +315,30 @@ const listData = `{
         },
         "itemData" : [
             {
-                "key1" : "Column 1 Text",
                 "elementId" : "elementId",
-                "key2" : "Column 2 Text",
-                "key5" : "Column 5 Text",
-                "key6" : "Column 6 Text",
-                "key3" : "Column 3 Text",
-                "key4" : 1658958745944,
                 "link" : "details-data.json",
                 "openWindow": true,
-                "key9" : "Column 9 Text",
-                "key7" : "Column 7 Text",
-                "key8" : "Column 8 Text",
                 "abstract" : "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
                 "title" : "Text content Text content Text content Text content Text content Text content Text content Text content",
                 "score" : 4.2,
+                "properties": {
+                    "key1" : "Column 1 Text",
+                    "key2" : "Column 2 Text",
+                    "key5" : "Column 5 Text",
+                    "key6" : "Column 6 Text",
+                    "key3" : "Column 3 Text",
+                    "key4" : 1658958745944,
+                    "key9" : "Column 9 Text",
+                    "key7" : "Column 7 Text",
+                    "key8" : "Column 8 Text"
+                },
                 "operators" : [
                     {
                         "link" : "form-data.json",
                         "index" : 3,
                         "textContent" : "Edit",
                         "title" : "Edit",
-                        "iconClass" : "icon-pencil",
+                        "icon" : "icon-pencil",
                         "openWindow": true
                     },
                     {
@@ -307,26 +346,34 @@ const listData = `{
                         "index" : 2,
                         "textContent" : "Delete",
                         "title" : "Delete",
-                        "iconClass" : "icon-delete"
+                        "icon" : "icon-delete"
                     },
                     {
                         "link" : "MultiLink",
                         "index" : 1,
                         "textContent" : "Multilingual",
                         "title" : "Multilingual",
-                        "iconClass" : "icon-earth"
+                        "icon" : "icon-earth"
                     }
                 ],
-                "imgPath" : "./images/1.jpg",
+                "avatar": {
+                    "mimeType": "video/mp4",
+                    "resourcePath" : "./images/demoVideo.mp4"
+                },
                 "identifyCode" : "1"
             },
             {
-                "key1" : "Column 1 Text",
                 "elementId" : "elementId",
-                "key2" : "Column 2 Text",
                 "score" : 3.0,
-                "key3" : "Column 3 Text",
-                "imgPath" : "./images/1.jpg",
+                "properties": {
+                    "key1" : "Column 1 Text",
+                    "key2" : "Column 2 Text",
+                    "key3" : "Column 3 Text"
+                },
+                "avatar": {
+                    "mimeType": "image/jpg",
+                    "resourcePath" : "./images/1.jpg"
+                },
                 "link" : "details-data.json",
                 "openWindow": true,
                 "className" : "warning",
@@ -334,16 +381,14 @@ const listData = `{
                 "title" : "Text content Text content Text content Text content Text content Text content Text content Text content"
             },
             {
-                "key1" : "Column 1 Text",
                 "elementId" : "elementId",
-                "key2" : "Column 2 Text",
                 "operators" : [
                     {
                         "link" : "form-data.json",
                         "index" : 3,
                         "textContent" : "Edit",
                         "title" : "Edit",
-                        "iconClass" : "icon-pencil",
+                        "icon" : "icon-pencil",
                         "openWindow": true
                     },
                     {
@@ -351,11 +396,18 @@ const listData = `{
                         "index" : 1,
                         "textContent" : "Multilingual",
                         "title" : "Multilingual",
-                        "iconClass" : "icon-earth"
+                        "icon" : "icon-earth"
                     }
                 ],
-                "key3" : "Column 3 Text",
-                "imgPath" : "./images/1.jpg",
+                "avatar": {
+                    "mimeType": "video/mp4",
+                    "resourcePath" : "./images/demoVideo.mp4"
+                },
+                "properties": {
+                    "key1" : "Column 1 Text",
+                    "key2" : "Column 2 Text",
+                    "key3" : "Column 3 Text"
+                },
                 "link" : "details-data.json",
                 "openWindow": true,
                 "identifyCode" : "3",
@@ -363,18 +415,21 @@ const listData = `{
                 "title" : "Text content Text content Text content Text content Text content Text content Text content Text content"
             },
             {
-                "key1" : "Column 1 Text",
                 "elementId" : "elementId",
-                "key2" : "Column 2 Text",
-                "key5" : "Column 5 Text",
-                "key6" : "Column 6 Text",
-                "key3" : "Column 3 Text",
                 "key4" : "1658958745944",
                 "link" : "details-data.json",
                 "openWindow": true,
-                "key9" : "Column 9 Text",
-                "key7" : "Column 7 Text",
-                "key8" : "Column 8 Text",
+                "properties": {
+                    "key1" : "Column 1 Text",
+                    "key2" : "Column 2 Text",
+                    "key5" : "Column 5 Text",
+                    "key6" : "Column 6 Text",
+                    "key3" : "Column 3 Text",
+                    "key4" : 1658958745944,
+                    "key9" : "Column 9 Text",
+                    "key7" : "Column 7 Text",
+                    "key8" : "Column 8 Text"
+                },
                 "abstract" : "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
                 "title" : "Text content Text content Text content Text content Text content Text content Text content Text content",
                 "score" : 3.2,
@@ -384,42 +439,48 @@ const listData = `{
                         "index" : 2,
                         "textContent" : "Delete",
                         "title" : "Delete",
-                        "iconClass" : "icon-delete"
+                        "icon" : "icon-delete"
                     },
                     {
                         "link" : "MultiLink",
                         "index" : 1,
                         "textContent" : "Multilingual",
                         "title" : "Multilingual",
-                        "iconClass" : "icon-earth"
+                        "icon" : "icon-earth"
                     }
                 ],
-                "imgPath" : "./images/1.jpg",
+                "avatar": {
+                    "mimeType": "image/jpg",
+                    "resourcePath" : "./images/1.jpg"
+                },
                 "identifyCode" : "4"
             },
             {
-                "key1" : "Column 1 Text",
                 "elementId" : "elementId",
-                "key2" : "Column 2 Text",
                 "score" : 3.0,
-                "key3" : "Column 3 Text",
-                "imgPath" : "./images/1.jpg",
+                "avatar": {
+                    "mimeType": "video/mp4",
+                    "resourcePath" : "./images/demoVideo.mp4"
+                },
+                "properties": {
+                    "key1" : "Column 1 Text",
+                    "key2" : "Column 2 Text",
+                    "key3" : "Column 3 Text"
+                },
                 "link" : "details-data.json",
                 "openWindow": true,
                 "identifyCode" : "5",
                 "title" : "Text content Text content Text content Text content Text content Text content Text content Text content"
             },
             {
-                "key1" : "Column 1 Text",
                 "elementId" : "elementId",
-                "key7" : "Column 2 Text",
                 "operators" : [
                     {
                         "link" : "form-data.json",
                         "index" : 3,
                         "textContent" : "Edit",
                         "title" : "Edit",
-                        "iconClass" : "icon-pencil",
+                        "icon" : "icon-pencil",
                         "openWindow": true
                     },
                     {
@@ -427,11 +488,18 @@ const listData = `{
                         "index" : 2,
                         "textContent" : "Delete",
                         "title" : "Delete",
-                        "iconClass" : "icon-delete"
+                        "icon" : "icon-delete"
                     }
                 ],
-                "key3" : "Column 3 Text",
-                "imgPath" : "./images/1.jpg",
+                "avatar": {
+                    "mimeType": "image/jpg",
+                    "resourcePath" : "./images/1.jpg"
+                },
+                "properties": {
+                    "key1" : "Column 1 Text",
+                    "key2" : "Column 2 Text",
+                    "key3" : "Column 3 Text"
+                },
                 "link" : "details-data.json",
                 "openWindow": true,
                 "className" : "error",
@@ -440,18 +508,20 @@ const listData = `{
                 "title" : "Text content Text content Text content Text content Text content Text content Text content Text content"
             },
             {
-                "key1" : "Column 1 Text",
                 "elementId" : "elementId",
-                "key2" : "Column 2 Text",
-                "key5" : "Column 5 Text",
-                "key6" : "Column 6 Text",
-                "key3" : "Column 3 Text",
-                "key4" : "Column 4 Text",
                 "link" : "details-data.json",
                 "openWindow": true,
-                "key9" : "Column 9 Text",
-                "key7" : "Column 7 Text",
-                "key8" : "Column 8 Text",
+                "properties": {
+                    "key1" : "Column 1 Text",
+                    "key2" : "Column 2 Text",
+                    "key5" : "Column 5 Text",
+                    "key6" : "Column 6 Text",
+                    "key3" : "Column 3 Text",
+                    "key4" : 1658958745944,
+                    "key9" : "Column 9 Text",
+                    "key7" : "Column 7 Text",
+                    "key8" : "Column 8 Text"
+                },
                 "abstract" : "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
                 "title" : "Text content Text content Text content Text content Text content Text content Text content Text content",
                 "score" : 4.2,
@@ -461,7 +531,7 @@ const listData = `{
                         "index" : 3,
                         "textContent" : "Edit",
                         "title" : "Edit",
-                        "iconClass" : "icon-pencil",
+                        "icon" : "icon-pencil",
                         "openWindow": true
                     },
                     {
@@ -469,42 +539,48 @@ const listData = `{
                         "index" : 2,
                         "textContent" : "Delete",
                         "title" : "Delete",
-                        "iconClass" : "icon-delete"
+                        "icon" : "icon-delete"
                     },
                     {
                         "link" : "MultiLink",
                         "index" : 1,
                         "textContent" : "Multilingual",
                         "title" : "Multilingual",
-                        "iconClass" : "icon-earth"
+                        "icon" : "icon-earth"
                     }
                 ],
-                "imgPath" : "./images/1.jpg",
+                "avatar": {
+                    "mimeType": "image/jpg",
+                    "resourcePath" : "./images/1.jpg"
+                },
                 "identifyCode" : "7"
             },
             {
-                "key1" : "Column 1 Text",
                 "elementId" : "elementId",
-                "key2" : "Column 2 Text",
                 "score" : 3.0,
-                "key3" : "Column 3 Text",
-                "imgPath" : "./images/1.jpg",
+                "avatar": {
+                    "mimeType": "image/jpg",
+                    "resourcePath" : "./images/1.jpg"
+                },
+                "properties": {
+                    "key1" : "Column 1 Text",
+                    "key2" : "Column 2 Text",
+                    "key3" : "Column 3 Text"
+                },
                 "link" : "details-data.json",
                 "openWindow": true,
                 "identifyCode" : "8",
                 "title" : "Text content Text content Text content Text content Text content Text content Text content Text content"
             },
             {
-                "key1" : "Column 1 Text",
                 "elementId" : "elementId",
-                "key2" : "Column 2 Text",
                 "operators" : [
                     {
                         "link" : "form-data.json",
                         "index" : 3,
                         "textContent" : "Edit",
                         "title" : "Edit",
-                        "iconClass" : "icon-pencil",
+                        "icon" : "icon-pencil",
                         "openWindow": true
                     },
                     {
@@ -512,11 +588,18 @@ const listData = `{
                         "index" : 1,
                         "textContent" : "Multilingual",
                         "title" : "Multilingual",
-                        "iconClass" : "icon-earth"
+                        "icon" : "icon-earth"
                     }
                 ],
-                "key3" : "Column 3 Text",
-                "imgPath" : "./images/1.jpg",
+                "avatar": {
+                    "mimeType": "image/jpg",
+                    "resourcePath" : "./images/1.jpg"
+                },
+                "properties": {
+                    "key1" : "Column 1 Text",
+                    "key2" : "Column 2 Text",
+                    "key3" : "Column 3 Text"
+                },
                 "link" : "details-data.json",
                 "openWindow": true,
                 "identifyCode" : "9",
@@ -524,12 +607,17 @@ const listData = `{
                 "title" : "Text content Text content Text content Text content Text content Text content Text content Text content"
             },
             {
-                "key1" : "Column 1 Text",
                 "elementId" : "elementId",
-                "key2" : "Column 2 Text",
                 "score" : 3.0,
-                "key3" : "Column 3 Text",
-                "imgPath" : "./images/1.jpg",
+                "avatar": {
+                    "mimeType": "image/jpg",
+                    "resourcePath" : "./images/1.jpg"
+                },
+                "properties": {
+                    "key1" : "Column 1 Text",
+                    "key2" : "Column 2 Text",
+                    "key3" : "Column 3 Text"
+                },
                 "link" : "details-data.json",
                 "openWindow": true,
                 "className" : "warning",
@@ -537,12 +625,17 @@ const listData = `{
                 "title" : "Text content Text content Text content Text content Text content Text content Text content Text content"
             },
             {
-                "key1" : "Column 1 Text",
                 "elementId" : "elementId",
-                "key2" : "Column 2 Text",
                 "score" : 3.0,
-                "key3" : "Column 3 Text",
-                "imgPath" : "./images/1.jpg",
+                "avatar": {
+                    "mimeType": "image/jpg",
+                    "resourcePath" : "./images/1.jpg"
+                },
+                "properties": {
+                    "key1" : "Column 1 Text",
+                    "key2" : "Column 2 Text",
+                    "key3" : "Column 3 Text"
+                },
                 "link" : "details-data.json",
                 "openWindow": true,
                 "className" : "warning",
@@ -550,12 +643,17 @@ const listData = `{
                 "title" : "Text content Text content Text content Text content Text content Text content Text content Text content"
             },
             {
-                "key1" : "Column 1 Text",
                 "elementId" : "elementId",
-                "key2" : "Column 2 Text",
                 "score" : 3.0,
-                "key3" : "Column 3 Text",
-                "imgPath" : "./images/1.jpg",
+                "avatar": {
+                    "mimeType": "image/jpg",
+                    "resourcePath" : "./images/1.jpg"
+                },
+                "properties": {
+                    "key1" : "Column 1 Text",
+                    "key2" : "Column 2 Text",
+                    "key3" : "Column 3 Text"
+                },
                 "link" : "details-data.json",
                 "openWindow": true,
                 "className" : "warning",
@@ -563,12 +661,17 @@ const listData = `{
                 "title" : "Text content Text content Text content Text content Text content Text content Text content Text content"
             },
             {
-                "key1" : "Column 1 Text",
                 "elementId" : "elementId",
-                "key2" : "Column 2 Text",
                 "score" : 3.0,
-                "key3" : "Column 3 Text",
-                "imgPath" : "./images/1.jpg",
+                "avatar": {
+                    "mimeType": "image/jpg",
+                    "resourcePath" : "./images/1.jpg"
+                },
+                "properties": {
+                    "key1" : "Column 1 Text",
+                    "key2" : "Column 2 Text",
+                    "key3" : "Column 3 Text"
+                },
                 "link" : "details-data.json",
                 "openWindow": true,
                 "className" : "warning",
@@ -576,12 +679,17 @@ const listData = `{
                 "title" : "Text content Text content Text content Text content Text content Text content Text content Text content"
             },
             {
-                "key1" : "Column 1 Text",
                 "elementId" : "elementId",
-                "key2" : "Column 2 Text",
                 "score" : 3.0,
-                "key3" : "Column 3 Text",
-                "imgPath" : "./images/1.jpg",
+                "avatar": {
+                    "mimeType": "image/jpg",
+                    "resourcePath" : "./images/1.jpg"
+                },
+                "properties": {
+                    "key1" : "Column 1 Text",
+                    "key2" : "Column 2 Text",
+                    "key3" : "Column 3 Text"
+                },
                 "link" : "details-data.json",
                 "openWindow": true,
                 "className" : "warning",
@@ -607,13 +715,14 @@ const listData = `{
 }`;
 
 const bannerData = `{
-    "bannerTitle": "Banner Title",
-    "resourcePath": "./images/slides/1.jpg"
+    "title": "Banner Title",
+    "resource": {
+        "mimeType": "image/jpg",
+        "resourcePath": "./images/slides/1.jpg"
+    }
 }`;
 
 const slideData = `{
-    "width": "100%",
-    "height": "600px",
     "transitionTime": 1000,
     "openWindow" : false,
     "timeOut" : 5000,
@@ -621,23 +730,42 @@ const slideData = `{
     "items" : [
         {
             "href" : "#",
-            "imagePath" : "./images/slides/1.jpg",
-            "title" : "Title 1"
+            "resource" : {
+                "mimeType" : "image/jpg",
+                "resourcePath" : "./images/slides/1.jpg",
+                "title" : "Title 1"
+            }
         },
         {
             "href" : "#",
-            "imagePath" : "./images/slides/2.jpg",
-            "title" : "Title 2"
+            "resource" : {
+                "mimeType" : "image/jpg",
+                "resourcePath" : "./images/slides/2.jpg",
+                "title" : "Title 2"
+            }
         },
         {
             "href" : "#",
-            "imagePath" : "./images/slides/3.jpg",
-            "title" : "Title 3"
+            "resource" : {
+                "mimeType" : "image/jpg",
+                "resourcePath" : "./images/slides/3.jpg",
+                "title" : "Title 3"
+            }
         },
         {
             "href" : "#",
-            "imagePath" : "./images/slides/4.jpg",
-            "title" : "Title 4"
+            "resource" : {
+                "mimeType" : "image/jpg",
+                "resourcePath" : "./images/slides/4.jpg",
+                "title" : "Title 4"
+            }
+        },
+        {
+            "href" : "#",
+            "resource" : {
+                "mimeType": "video/mp4",
+                "resourcePath" : "./images/demoVideo.mp4"
+            }
         }
     ]
 }`;
@@ -646,13 +774,14 @@ const formData = `{
     "method": "post",
     "action": "/#",
     "title": "Form title",
+    "validate": "true",
     "items": [
         {
             "tag": "property-details",
             "class": "formItem",
             "data": {
-                "title": "Property Name",
-                "content": "Property Content",
+                "textContent": "Property Name",
+                "value": "Property Content",
                 "tips": {"content": "Tips message"}
             }
         },
@@ -749,6 +878,19 @@ const formData = `{
                 "placeholder": "Placeholder string",
                 "textContent": "Element label text",
                 "value": "Initialize value",
+                "tips": {"content": "Tips message"}
+            }
+        },
+        {
+            "tag": "number-input",
+            "class": "formItem",
+            "data": {
+                "id": "luhnElement",
+                "name": "luhnElement",
+                "placeholder": "Bank card number",
+                "textContent": "Bank card number",
+                "error": "Bank card number invalid",
+                "luhn": "true",
                 "tips": {"content": "Tips message"}
             }
         },
@@ -902,20 +1044,25 @@ const detailsData = `{
     "messageTitle": "Message Title Message Title Message Title Message Title",
     "properties": [
         {
-            "title": "Properties1",
-            "content": "Content1"
+            "textContent": "Properties1",
+            "value": "Content1"
         },
         {
-            "title": "Properties2",
-            "content": "Content2"
+            "textContent": "Properties2",
+            "value": "Content2"
         },
         {
-            "title": "Properties3",
-            "content": "Content3"
+            "textContent": "Properties3",
+            "value": "Content3"
         }
     ],
-    "resourcePath": "images/logo.svg",
-    "mimeType": "image/png",
+    "avatar": {
+        "resourcePath": "images/demoVideo.mp4",
+        "mimeType": "video/mp4",
+        "controls": true,
+        "autoplay": true,
+        "loop": true
+    },
     "abstractMessage": "Abstract Message Abstract Message Abstract Message Abstract Message Abstract Message Abstract Message Abstract Message Abstract Message",
     "contentMessage": "Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content",
     "resourceList": [
@@ -964,10 +1111,10 @@ const detailsData = `{
 }`;
 
 const addressData = `{
-    "addressTitle" : "Address Title",
-    "addressContent" : "Room 909, Building A, Broadtec International Plaza, Chaoyang District, Beijing, China",
+    "title" : "Address Title",
+    "content" : "Room 909, Building A, Broadtec International Plaza, Chaoyang District, Beijing, China",
+    "provider" : "baidu-map",
     "location" : {
-        "provider" : "baidu-map",
         "latitude" : "40.009068571369137",
         "longitude" : "116.4790988860714"
     }
@@ -991,32 +1138,48 @@ const corporateData = `{
         {
             "mimeType": "video/mp4",
             "resourcePath": "images/demoVideo.mp4"
+        },
+        {
+            "mimeType": "image/jpg",
+            "resourcePath": "images/1.jpg"
+        },
+        {
+            "mimeType": "video/mp4",
+            "resourcePath": "images/demoVideo.mp4"
+        },
+        {
+            "mimeType": "image/jpg",
+            "resourcePath": "images/1.jpg"
+        },
+        {
+            "mimeType": "video/mp4",
+            "resourcePath": "images/demoVideo.mp4"
         }
     ],
     "addressList": [
         {
-            "addressTitle" : "Address Title 1",
-            "addressContent" : "Room 909, Building A, Broadtec International Plaza, Chaoyang District, Beijing, China",
+            "title" : "Address Title 1",
+            "content" : "Room 909, Building A, Broadtec International Plaza, Chaoyang District, Beijing, China",
+            "provider" : "google-map",
             "location" : {
-                "provider" : "baidu-map",
                 "latitude" : "40.009068571369137",
                 "longitude" : "116.4790988860714"
             }
         },
         {
-            "addressTitle" : "Address Title 2",
-            "addressContent" : "Room 909, Building A, Broadtec International Plaza, Chaoyang District, Beijing, China",
+            "title" : "Address Title 2",
+            "content" : "Room 909, Building A, Broadtec International Plaza, Chaoyang District, Beijing, China",
+            "provider" : "baidu-map",
             "location" : {
-                "provider" : "baidu-map",
                 "latitude" : "40.009068571369137",
                 "longitude" : "116.4790988860714"
             }
         },
         {
-            "addressTitle" : "Address Title 3",
-            "addressContent" : "Room 909, Building A, Broadtec International Plaza, Chaoyang District, Beijing, China",
+            "title" : "Address Title 3",
+            "content" : "Room 909, Building A, Broadtec International Plaza, Chaoyang District, Beijing, China",
+            "provider" : "baidu-map",
             "location" : {
-                "provider" : "baidu-map",
                 "latitude" : "40.009068571369137",
                 "longitude" : "116.4790988860714"
             }
@@ -1024,5 +1187,7 @@ const corporateData = `{
     ]
 }`;
 
-export {multiMenuData, indexTopMenuData, progressBarDataNumber, progressBarDataDetails, bannerData,
-    formData, listData, slideData, socialData, detailsData, addressData, widgetData, corporateData}
+export {
+    multiMenuData, categoryList, indexTopMenuData, progressBarDataNumber, progressBarDataDetails, bannerData,
+    formData, listData, slideData, socialData, detailsData, addressData, widgetData, corporateData
+}

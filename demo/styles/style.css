@@ -7,7 +7,6 @@
 }
 html {
     float: none;
-    font-family: sans-serif;
     color: rgb(var(--text-color));
 }
 body {
@@ -19,12 +18,17 @@ body {
 }
 body > header {
     width: 100%;
-    height: 2rem;
+    height: 3rem;
     background-color: #FFFFFF;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 200;
+    box-shadow: 0 5px 10px rgba(var(--bg-color), 0.4);
 }
 body > header > span.logo {
     width: 8rem;
-    height: 2rem;
+    height: 3rem;
     background-image: url("../images/logo.svg");
     background-size: contain;
     background-position: center;
@@ -43,26 +47,57 @@ body > header > span.title {
 body > header > menu-element {
     margin-left: 1rem;
 }
+body > header > menu-element > div > menu-item,
+body > header > menu-element > div > menu-item > a,
+body > header > menu-element > div > menu-item > a > span {
+    height: 3rem;
+    line-height: 3rem;
+}
 body > header > menu-element > div > menu-item > div {
+    top: 3rem;
     color: #FFFFFF;
 }
 body > header > multi-menu {
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 3rem;
+    height: 3rem;
     position: absolute;
     overflow: hidden;
-    top: 0.25rem;
-    right: 1rem;
+    right: 0;
+    border-radius: unset;
+}
+body > header > multi-menu > i {
+    width: 2rem;
+    height: 2rem;
+    line-height: 2rem;
+    padding: 0.5rem;
+    font-size: 1.8rem;
+}
+body > header > multi-menu > div {
+    top: 3rem;
+}
+body > header > multi-menu > div > a {
+    min-height: 2rem;
+    line-height: 2rem;
+    font-size: 1rem;
 }
 body > header > multi-menu:hover {
-    width: auto;
     overflow: unset;
+    background-color: rgb(var(--bg-color));
+}
+body > header > multi-menu:hover > i {
+    color: #FFFFFF;
+}
+body > slide-show {
+    width: 100%;
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+    padding-bottom: 600px;
 }
 body > main {
     width: 100%;
 }
 body > main > article {
-    width: calc(-20rem + 100%);
+    width: calc(-21rem + 100%);
     min-height: calc(-300px + 100%);
 }
 body > main > article > section {
@@ -83,8 +118,9 @@ body > main > article > section > article {
     background-color: #FFFFFF;
     border-radius: 1rem;
 }
-body > main > article > section > article > a {
-    padding: 0 1rem;
+body > main > article > section > article > a,
+body > main > article > section > article > like-button,
+body > main > article > section > article > favorite-button {
     height: 2rem;
     line-height: 2rem;
     margin: 0 0.5rem;
@@ -92,31 +128,82 @@ body > main > article > section > article > a {
     border-radius: 1rem;
     box-shadow: 0 2px 5px rgba(var(--text-color), 0.4);
 }
-body > main > article > section > article > a:hover {
+body > main > article > section > article > a:hover,
+body > main > article > section > article > like-button:hover,
+body > main > article > section > article > favorite-button:hover {
     background-color: rgb(var(--bg-color));
     color: #FFFFFF;
     box-shadow: none;
 }
-body > main > article > content-banner {
+body > main > article > section > article > like-button:hover > input[slot="element"] {
+    color: #FFFFFF;
+}
+body > main > article > section > article > a {
+    padding: 0 1rem;
+    font-weight: bolder;
+    font-size: 0.8rem;
+}
+body > main > article > section > article > favorite-button {
+    width: 2rem;
+}
+body > main > article > section > article > like-button > input[slot="element"] {
+    border-bottom: none;
+    float: right;
+}
+body > main > article > section > article > favorite-button > input[slot="element"] {
+    display: none;
+}
+body > main > article > section > message-list > list-filter,
+body > main > article > section > message-list > list-statistics,
+body > main > article > section > message-list > list-title,
+body > main > article > section > form-info,
+body > main > article > section > message-details,
+body > main > article > section > corporate-details {
+    border-radius: 1rem;
+}
+body > main > article > section > message-list > list-title {
+    border-radius: 1rem 1rem 0 0;
+}
+body > main > article > section > message-list > list-data {
+    border-radius: 0 0 1rem 1rem;
+}
+body > main > article > link-banner {
     width: calc(-2rem + 100%);
     height: 10rem;
     margin: 0 1rem;
 }
+body > main > article > link-banner > resource-details::before {
+    width: 100%;
+    height: 10rem;
+    line-height: 10rem;
+    padding: 0;
+    font-size: 10rem;
+}
 body > main > aside {
-    width: 19rem;
+    width: 20rem;
     min-height: calc(-2rem + 100%);
     margin-right: 1rem;
     float: right;
 }
+body > main > aside.fixed {
+    position: -webkit-sticky; /* Safari support */
+    position: sticky;
+    top: 4rem;
+    right: 0;
+    margin-bottom: 1rem;
+}
+body > main > aside > * {
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
 body > footer {
     width: calc(-6rem + 100%);
-    min-height: 200px;
-    padding: 0 3rem;
+    padding: 1rem 3rem 0 3rem;
     background-color: rgb(var(--bg-color));
     color: #F2F2F7;
 }
 body > footer > social-group {
-    width: 18rem;
+    width: 15rem;
     float: right;
     margin-bottom: 1rem;
 }

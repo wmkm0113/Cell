@@ -111,6 +111,9 @@ class FormItem extends BaseElement {
                     divElement.appendChild(this.inputElement);
                 }
             }
+            if (this.dataset.validate) {
+                this.inputElement.dataset.validate = this.dataset.validate;
+            }
             this.inputElement.data = JSON.stringify(itemData);
         }
     }
@@ -238,6 +241,9 @@ class FormInfo extends BaseElement {
                         }
                         let formItem = new FormItem();
                         this.formElement.appendChild(formItem);
+                        if (this.hasAttribute("validate")) {
+                            formItem.dataset.validate = this.getAttribute("validate");
+                        }
                         formItem.data = JSON.stringify(itemInfo);
                     }
                 });

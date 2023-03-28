@@ -40,7 +40,7 @@ export default class UIRender {
             });
     }
 
-    message(type = "", message = null, confirmFunc = null) {
+    message(type = "", message = "", confirmFunc = null) {
         if (message === null || message.length === 0) {
             return;
         }

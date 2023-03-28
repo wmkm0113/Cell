@@ -17,6 +17,7 @@
 "use strict";
 
 import {BaseElement} from "./element.js";
+import {RecordOperator} from "./list.js";
 
 class MenuElement extends BaseElement {
     constructor() {
@@ -122,10 +123,10 @@ class MenuItem extends BaseElement {
 
     renderElement(data) {
         if (data.hasOwnProperty("title")) {
-            if (data.hasOwnProperty("sortIndex") && data.sortIndex.isNum()) {
-                this.dataset.sortIndex = data.sortIndex;
+            if (data.hasOwnProperty("sortCode") && data.sortCode.isNum()) {
+                this.dataset.sortCode = data.sortCode;
             } else {
-                this.dataset.sortIndex = "0";
+                this.dataset.sortCode = "0";
             }
             let languageCode;
             if (this.dataset.languageCode !== undefined) {
@@ -161,7 +162,7 @@ class MenuItem extends BaseElement {
                     this._menuList.removeChild(itemList[i]);
                     i++;
                 }
-                this._menuList.sortChildrenBy(":scope > menu-item", "data-sort-index", true);
+                this._menuList.sortChildrenBy(":scope > menu-item", "data-sort-code", true);
             }
         }
     }
@@ -215,38 +216,43 @@ class MultilingualMenu extends BaseElement {
     }
 
     renderElement(data) {
-        let urlAddress = (data.hasOwnProperty("url") && data.url.length > 0) ? data.url : "/{languageCode}/index.shtml";
-        this.menuItems.clearChildNodes();
-        if (data.hasOwnProperty("items") && data.items instanceof Array) {
-            data.items.forEach(itemData => {
-                if (itemData.hasOwnProperty("languageCode") && itemData.hasOwnProperty("languageName")) {
-                    let linkUrl = urlAddress.replaceAll("{languageCode}", itemData.languageCode);
-                    let itemButton = document.createElement("a");
-                    this.menuItems.appendChild(itemButton);
-                    itemButton.dataset.languageCode = itemData.languageCode;
-                    itemButton.setAttribute("title", itemData.languageName);
-                    itemButton.setAttribute("href", Cell.contextPath() + linkUrl);
-                    itemButton.innerText = itemData.languageName;
-                }
-            });
-        } else {
-            this.menuItems.querySelectorAll("a").forEach(itemButton => {
-                let linkUrl = urlAddress.replaceAll("{languageCode}", itemButton.dataset.languageCode);
-                itemButton.setAttribute("href", Cell.contextPath() + linkUrl);
-            });
-        }
-        if (this.menuItems.querySelectorAll("a").length > 0) {
-            let currentLanguage = data.hasOwnProperty("current") ? data.current : Cell.language;
-            this.menuItems.querySelectorAll("a")
-                .forEach(itemButton => {
-                    if (itemButton.dataset.languageCode === currentLanguage) {
-                        itemButton.setClass("current");
-                        this.currentItem.innerText = itemButton.innerText;
+        if (data.hasOwnProperty("url") && data.url.length > 0) {
+            this.menuItems.clearChildNodes();
+            let urlTemplate = Cell.contextPath() + data.url;
+            if (data.hasOwnProperty("items") && data.items instanceof Array) {
+                data.items.forEach(itemData => {
+                    if (itemData.hasOwnProperty("languageCode") && itemData.hasOwnProperty("languageName")) {
+                        let itemButton = document.createElement("a");
+                        this.menuItems.appendChild(itemButton);
+                        itemButton.dataset.languageCode = itemData.languageCode;
+                        itemButton.setAttribute("title", itemData.languageName);
+                        itemButton.setAttribute("href",
+                            urlTemplate.replace("{languageCode}", itemData.languageCode));
+                        itemButton.innerText = itemData.languageName;
                     }
                 });
-            this.show();
-        } else {
-            this.hide();
+            } else {
+                this.menuItems.querySelectorAll("a")
+                    .forEach(itemButton => {
+                        itemButton.setAttribute("href",
+                            urlTemplate.replace("{languageCode}", itemButton.dataset.languageCode));
+                    });
+            }
+            if (this.menuItems.querySelectorAll("a").length > 0) {
+                let currentLanguage = data.hasOwnProperty("current") ? data.current : Cell.language;
+                this.menuItems.querySelectorAll("a")
+                    .forEach(itemButton => {
+                        if (itemButton.dataset.languageCode === currentLanguage) {
+                            itemButton.setClass("current");
+                            this.currentItem.innerText = itemButton.innerText;
+                        } else {
+                            itemButton.removeClass("current");
+                        }
+                    });
+                this.show();
+            } else {
+                this.hide();
+            }
         }
     }
 
@@ -273,4 +279,49 @@ class MultilingualMenu extends BaseElement {
     }
 }
 
-export {MenuElement, MenuItem, MultilingualMenu};
+class CategoryMenu extends BaseElement {
+    constructor() {
+        super();
+        super._addSlot("menuTitle", "menuList");
+        this._menuTitle = null;
+        this._menuList = null;
+    }
+
+    static tagName() {
+        return "category-menu";
+    }
+
+    connectedCallback() {
+        if (this._menuTitle === null) {
+            this._menuTitle = document.createElement("h4");
+            this._menuTitle.setAttribute("slot", "menuTitle");
+            this.appendChild(this._menuTitle);
+        }
+        if (this._menuList === null) {
+            this._menuList = document.createElement("div");
+            this._menuList.setAttribute("slot", "menuList");
+            this.appendChild(this._menuList);
+        }
+    }
+
+    renderElement(data) {
+        if (data.hasOwnProperty("className")) {
+            this.setClass(data.className);
+        }
+        if (data.hasOwnProperty("title")) {
+            this._menuTitle.innerHTML = data.title;
+        }
+        if (data.hasOwnProperty("items")) {
+            this._menuList.clearChildNodes();
+            data.items
+                .filter(itemData => itemData.hasOwnProperty("link") && itemData.hasOwnProperty("textContent"))
+                .forEach(itemData => {
+                    let menuItem = new RecordOperator();
+                    this._menuList.appendChild(menuItem);
+                    menuItem.data = JSON.stringify(itemData);
+                })
+        }
+    }
+}
+
+export {MenuElement, MenuItem, MultilingualMenu, CategoryMenu};
