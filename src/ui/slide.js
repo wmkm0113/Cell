@@ -206,6 +206,9 @@ export default class SlideShow extends BaseElement {
                 slideItem.dataset.link = itemInfo.hasOwnProperty("href") ? itemInfo.href : "#";
                 if (itemInfo.hasOwnProperty("resource")) {
                     slideItem.data = JSON.stringify(itemInfo.resource);
+                    if (index === 0) {
+                        slideItem.loadResource();
+                    }
                 }
 
                 let dotItem;
@@ -249,6 +252,7 @@ export default class SlideShow extends BaseElement {
                     } else {
                         nextIndex = currentIndex + 1;
                     }
+                    existsItems[nextIndex].loadResource();
                     switch (this.dataset.slideType) {
                         case "scrollTop":
                             slideElement.style.top = (nextIndex * -100) + "%";
@@ -271,6 +275,7 @@ export default class SlideShow extends BaseElement {
                     if (this.dataset.slideType.endsWith("In")) {
                         this.sortIndex(nextIndex);
                     }
+                    existsItems[nextIndex].loadResource();
                     let moveItem =
                         this.dataset.slideType.endsWith("Out") ? existsItems[currentIndex] : existsItems[nextIndex];
                     if (this.dataset.slideType.endsWith("Out")) {

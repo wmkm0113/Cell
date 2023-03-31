@@ -228,7 +228,7 @@ class MessageDetails extends BaseElement {
                     let resourceDetails = new ResourceDetails();
                     this.resourceElement.appendChild(resourceDetails);
                     resourceDetails.data = JSON.stringify(resourceItem);
-            });
+                });
         }
         if (data.hasOwnProperty("attachList")) {
             this.attachElement.show();
@@ -740,6 +740,14 @@ class ResourceDetails extends BaseElement {
         let resourceDetails = this;
         this.addEventListener("mouseover", () => resourceDetails.playVideo());
         this.addEventListener("mouseout", () => resourceDetails.pauseVideo());
+        window.addEventListener("scroll", () => {
+            document.querySelectorAll("resource-details")
+                .forEach(resource => {
+                    if (resource.scrollInView()) {
+                        resource.loadResource();
+                    }
+                });
+        })
         if (this.hasAttribute("data") && this.getAttribute("data").isJSON()) {
             this.renderElement(this.getAttribute("data").parseJSON());
         }
@@ -758,28 +766,45 @@ class ResourceDetails extends BaseElement {
         }
     }
 
+    loadResource() {
+        if (this.dataset.loaded === "true") {
+            return;
+        }
+        if (this.dataset.hasOwnProperty("mimeType") && this.dataset.hasOwnProperty("resourcePath")) {
+            if (this.dataset.mimeType.startsWith("image")) {
+                this.imgLoad.src = this.dataset.resourcePath;
+            } else {
+                let sourceElement = document.createElement("source");
+                sourceElement.setAttribute("src", this.dataset.resourcePath);
+                sourceElement.setAttribute("type", this.dataset.mimeType);
+                this.videoElement.appendChild(sourceElement);
+            }
+            this.dataset.loaded = "true";
+        }
+    }
+
     renderElement(data) {
         if (data.hasOwnProperty("resourcePath") && data.hasOwnProperty("mimeType")) {
-            let resPath = Cell.contextPath() + data.resourcePath;
+            this.dataset.resourcePath = Cell.contextPath() + data.resourcePath;
+            this.dataset.mimeType = data.mimeType;
             if (data.mimeType.startsWith("image")) {
                 this.imgElement.show();
-                this.imgLoad.src = resPath;
                 this.videoElement.hide();
             } else {
                 if (data.hasOwnProperty("disableDownload") && Boolean(data.disableDownload)) {
                     this.videoElement.setAttribute("controlslist", "nodownload");
-                    this.videoElement.addEventListener("contextmenu", () => {return false;});
+                    this.videoElement.addEventListener("contextmenu", () => {
+                        return false;
+                    });
                     this.videoElement.disablePictureInPicture = true;
                 } else {
                     this.videoElement.removeAttribute("controlslist");
-                    this.videoElement.removeEventListener("contextmenu", () => {return false;});
+                    this.videoElement.removeEventListener("contextmenu", () => {
+                        return false;
+                    });
                     this.videoElement.disablePictureInPicture = false;
                 }
                 this.videoElement.clearChildNodes();
-                let sourceElement = document.createElement("source");
-                sourceElement.setAttribute("src", resPath);
-                sourceElement.setAttribute("type", data.mimeType);
-                this.videoElement.appendChild(sourceElement);
                 this.videoElement.show();
                 this.imgElement.hide();
                 if (data.hasOwnProperty("controls") && Boolean(data.controls)) {
@@ -795,6 +820,9 @@ class ResourceDetails extends BaseElement {
                 if (data.hasOwnProperty("autoplay") && Boolean(data.autoplay)) {
                     this.playVideo();
                 }
+            }
+            if (this.inViewPort()) {
+                this.loadResource();
             }
         }
         if (data.hasOwnProperty("title")) {
@@ -984,5 +1012,7 @@ class UserDetails extends BaseElement {
     }
 }
 
-export {AttachFiles, ResourceDetails, ModelDetails, ModelList, AccessoriesDetails, AccessoriesList, MessageDetails,
-    PropertyDetails, CorporateAddress, CorporateDetails, CorporatePreview, LinkAvatar, LinkBanner, UserDetails};
+export {
+    AttachFiles, ResourceDetails, ModelDetails, ModelList, AccessoriesDetails, AccessoriesList, MessageDetails,
+    PropertyDetails, CorporateAddress, CorporateDetails, CorporatePreview, LinkAvatar, LinkBanner, UserDetails
+};

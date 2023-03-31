@@ -2390,6 +2390,7 @@ notify-area > div[slot="notification"] {
 }
 notify-area.notify > div[slot="notification"] {
     visibility: visible;
+    overflow-y: scroll;
 }
 notify-area > div[slot="floatNotify"] > div:first-child {
     margin-top: 2rem;

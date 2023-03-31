@@ -1,5 +1,19 @@
 {
-  "notify": {
-    "textContent" : "Test Notify"
-  }
+  "notify": [
+    {
+      "textContent": "Test Notify 1"
+    },
+    {
+      "textContent": "Test Notify 2"
+    },
+    {
+      "textContent": "Test Notify 3"
+    },
+    {
+      "textContent": "Test Notify 4"
+    },
+    {
+      "textContent": "Test Notify 5"
+    }
+  ]
 }

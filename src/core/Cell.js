@@ -27,10 +27,6 @@
 'use strict';
 
 import * as Commons from "../commons/Commons.js";
-import CRC from "../crypto/CRC.js";
-import MD5 from "../crypto/MD5.js";
-import RSA from "../crypto/RSA.js";
-import SHA from "../crypto/SHA.js";
 import UIRender from "../render/Render.js";
 import {FloatWindow, FloatPage, NotifyArea, MockSwitch, MockDialog, MockCheckBox, MockRadio} from "../ui/mock.js";
 import * as Details from "../ui/details.js";
@@ -45,67 +41,25 @@ import SocialGroup from "../ui/social.js";
 import {MenuElement, MenuItem, MultilingualMenu, CategoryMenu} from "../ui/menu.js";
 
 class CellJS {
+    static ELEMENTS = [
+        BaiduMap, GoogleMap, TipsElement, FloatPage, FloatWindow, NotifyArea, MockSwitch, MockDialog, MockCheckBox,
+        MockRadio, ProgressBar, ScrollBar, StarRating, StarScore, ButtonGroup, CheckBoxGroup, RadioGroup,
+        Input.InputElement, Input.BaseInput, Input.StandardButton, Input.SubmitButton, Input.FavoriteButton, Input.LikeButton,
+        Input.ResetButton, Input.PasswordInput, Input.HiddenInput, Input.TextInput, Input.SearchInput,
+        Input.NumberInput, Input.DateInput, Input.TimeInput, Input.DateTimeInput, Input.SelectInput,
+        Input.TextAreaInput, Input.NumberIntervalInput, Input.DateIntervalInput, Input.TimeIntervalInput,
+        Input.DateTimeIntervalInput, Input.DragUpload, FormItem, FormInfo, List.ListFilter, List.ListData,
+        List.ListStatistics, List.ListTitle, List.ListRecord, List.RecordOperator, List.ListHeader,
+        List.PropertyItem, List.PropertyDefine, List.MessageList, Details.UserDetails, List.CommentList,
+        List.CommentData, SlideShow, SocialGroup, MenuItem, MenuElement, MultilingualMenu, CategoryMenu,
+        Details.AttachFiles, Details.ModelDetails, Details.ModelList, Details.AccessoriesDetails, Details.AccessoriesList,
+        Details.ResourceDetails, Details.MessageDetails, Details.PropertyDetails, Details.CorporateAddress,
+        Details.CorporateDetails, Details.CorporatePreview, Details.LinkAvatar, Details.LinkBanner
+    ];
     _languageCode = null;
 
     constructor() {
-        this._config = {
-            contextPath: "",
-            componentPath: "",
-            languageCode: Comment.Language,
-            scrollHeader: {
-                enabled: false,
-                selectors: [],
-                styleClass: "fixed"
-            },
-            //  Config the dark mode by sunrise and sunset
-            darkMode: {
-                mode: Commons.DarkMode.Sun,
-                styleClass: "darkMode"
-            },
-            //  Config for form data
-            formConfig: {
-                //  Convert date/time from 'yyyy-MM-dd [HH:mm]' to number of milliseconds between that date and midnight, January 1, 1970.
-                convertDateTime: false,
-                //  Convert value is UTC number of milliseconds between that date and midnight, January 1, 1970.
-                utcDateTime: false
-            },
-            security: {
-                providers: [MD5, CRC, SHA, RSA],
-                //  Encrypt value of input[type='password']
-                encryptPassword: true,
-                //  Encrypt method for input[type='password']
-                //  Options:    MD5/RSA/SHA1/SHA224/SHA256/SHA384/SHA512/SHA512_224/SHA512_256
-                //              SHA3_224/SHA3_256/SHA3_384/SHA3_512/SHAKE128/SHAKE256
-                //              Keccak224/Keccak256/Keccak384/Keccak512
-                encryptMethod: "MD5",
-                //  RSA Key Config
-                RSA: {
-                    //  RSA Key data
-                    exponent: "",
-                    modulus: "",
-                    //  Exponent and modulus data radix, default is 16
-                    radix: 16,
-                    //  Public Key Size
-                    keySize: 1024
-                }
-            },
-            elements: [
-                BaiduMap, GoogleMap, TipsElement, FloatPage, FloatWindow, NotifyArea, MockSwitch, MockDialog, MockCheckBox,
-                MockRadio, ProgressBar, ScrollBar, StarRating, StarScore, ButtonGroup, CheckBoxGroup, RadioGroup,
-                Input.InputElement, Input.BaseInput, Input.StandardButton, Input.SubmitButton, Input.FavoriteButton, Input.LikeButton,
-                Input.ResetButton, Input.PasswordInput, Input.HiddenInput, Input.TextInput, Input.SearchInput,
-                Input.NumberInput, Input.DateInput, Input.TimeInput, Input.DateTimeInput, Input.SelectInput,
-                Input.TextAreaInput, Input.NumberIntervalInput, Input.DateIntervalInput, Input.TimeIntervalInput,
-                Input.DateTimeIntervalInput, Input.DragUpload, FormItem, FormInfo, List.ListFilter, List.ListData,
-                List.ListStatistics, List.ListTitle, List.ListRecord, List.RecordOperator, List.ListHeader,
-                List.PropertyItem, List.PropertyDefine, List.MessageList, Details.UserDetails, List.CommentList,
-                List.CommentData, SlideShow, SocialGroup, MenuItem, MenuElement, MultilingualMenu, CategoryMenu,
-                Details.AttachFiles, Details.ModelDetails, Details.ModelList, Details.AccessoriesDetails, Details.AccessoriesList,
-                Details.ResourceDetails, Details.MessageDetails, Details.PropertyDetails, Details.CorporateAddress,
-                Details.CorporateDetails, Details.CorporatePreview, Details.LinkAvatar, Details.LinkBanner
-            ]
-        };
-        Object.assign(this._config, (Commons.Config || {}));
+        this._config = Commons.Config;
         //  Freeze config
         Object.freeze(this._config);
 
@@ -125,11 +79,17 @@ class CellJS {
         this.language = this._config.languageCode;
         this._initCrypto();
         this.Render = new UIRender();
+        this.Render.init(CellJS.ELEMENTS);
         this.Render.init(this._config.elements);
         if (this._config.scrollHeader.enabled) {
             window.onload = this.scrollPage;
             window.onscroll = this.scrollPage;
         }
+
+        if (this._config.notify.dataPath.length > 0) {
+            window.setTimeout(Cell._scheduleNotify, this._config.notify.period);
+        }
+
         switch (this._config.darkMode.mode) {
             case Commons.DarkMode.Light:
                 document.body.removeClass(this._config.darkMode.styleClass);
@@ -151,6 +111,21 @@ class CellJS {
                 matchMedia.addEventListener("change", (event) => this.systemDarkMode(event));
                 this.systemDarkMode(matchMedia);
                 break;
+        }
+    }
+
+    _scheduleNotify() {
+        if (this._config.notify.dataPath.length > 0) {
+            Cell.Ajax(this._config.notify.dataPath)
+                .then(responseText => {
+                    if (responseText.isJSON()) {
+                        let _jsonData = responseText.parseJSON();
+                        if (_jsonData.hasOwnProperty("notify")) {
+                            _jsonData.notify.forEach(notifyItem => Cell.notify(JSON.stringify(notifyItem)));
+                        }
+                    }
+                });
+            window.setTimeout(Cell._scheduleNotify, this._config.notify.period);
         }
     }
 
@@ -206,7 +181,7 @@ class CellJS {
             history.pushState(null, title, linkAddress);
         }
         if (responseData.hasOwnProperty("notify")) {
-            Cell.notify(JSON.stringify(responseData.notify));
+            responseData.notify.forEach(notifyItem => Cell.notify(JSON.stringify(notifyItem)));
         }
     }
 

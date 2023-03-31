@@ -25,6 +25,11 @@
  */
 'use strict';
 
+import CRC from "../crypto/CRC.js";
+import MD5 from "../crypto/MD5.js";
+import RSA from "../crypto/RSA.js";
+import SHA from "../crypto/SHA.js";
+
 const Comment = {
     Version: "1.0.1",
     Language: navigator.language,
@@ -161,6 +166,10 @@ Object.freeze(DarkMode);
 const Config = {
     contextPath: "",
     componentPath: "",
+    notify: {
+        dataPath: "",
+        period: 15 * 1000
+    },
     languageCode: Comment.Language,
     scrollHeader: {
         enabled: false,
@@ -180,7 +189,7 @@ const Config = {
         utcDateTime: false
     },
     security: {
-        providers: [],
+        providers: [MD5, CRC, SHA, RSA],
         //  Encrypt value of input[type='password']
         encryptPassword: true,
         //  Encrypt method for input[type='password']
@@ -197,7 +206,8 @@ const Config = {
             //  Public Key Size
             keySize: 1024
         }
-    }
+    },
+    elements: []
 };
 Object.seal(Config);
 
@@ -311,7 +321,7 @@ Object.assign(Element.prototype, {
     },
 
     scrollInView() {
-        return  this.getBoundingClientRect().top >= 0;
+        return this.getBoundingClientRect().top >= 0;
     },
 
     inViewPort() {
@@ -439,6 +449,9 @@ Object.assign(Element.prototype, {
                 if (this.dataset.luhn === "true") {
                     _result = _result && _value.isLuhn();
                 }
+                if (this.dataset.color === "true") {
+                    _result = _result && _value.isColorCode();
+                }
                 if (this.dataset.CHNID === "true") {
                     _result = _result && _value.isCHNID();
                 }
@@ -556,7 +569,7 @@ Object.assign(String.prototype, {
         if (this.trim().search(RegexLibrary.Luhn) !== -1) {
             let _numArray = this.trim().split('').reverse();
             let _result = 0;
-            for (let _index = 0 ; _index < _numArray.length ; _index++) {
+            for (let _index = 0; _index < _numArray.length; _index++) {
                 let _current = _numArray[_index].parseInt();
                 if (_index % 2) {
                     _current *= 2;

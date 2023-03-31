@@ -8,11 +8,11 @@
     <link rel="stylesheet" href="../src/styles/Cell.css" />
     <link rel="stylesheet" href="./styles/style.css" />
     <script type="module">
-        import * as Commons from "../src/commons/Commons.js";
-        Commons.Config.languageCode = "zh-CN";
-        Commons.Config.scrollHeader.enabled = true;
-        Commons.Config.scrollHeader.selectors = ["aside[id=\"aside\"]"];
-        Commons.Config.formConfig.utcDateTime = true;
+        import {Config} from "../src/commons/Commons.js";
+        Config.languageCode = "zh-CN";
+        Config.scrollHeader.enabled = true;
+        Config.scrollHeader.selectors = ["aside[id=\"aside\"]"];
+        Config.formConfig.utcDateTime = true;
     </script>
     <script src="../src/core/Cell.js" type="module"></script>
 <!--    <script src="https://api.map.baidu.com/api?key=&v=3.0&ak={API_KEY}" type="text/javascript" charset="utf-8"></script>-->

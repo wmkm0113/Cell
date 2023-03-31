@@ -23,7 +23,7 @@ body > header {
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 200;
+    z-index: 10;
     box-shadow: 0 5px 10px rgba(var(--bg-color), 0.4);
 }
 body > header > span.logo {
