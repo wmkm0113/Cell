@@ -67,11 +67,11 @@ const K = [
     new Int64(0x5FCB6FAB, 0x3AD6FAEC), new Int64(0x6C44198C, 0x4A475817)
 ];
 const R = [
-    [ 0, 36,  3, 41, 18],
-    [ 1, 44, 10, 45,  2],
-    [62,  6, 43, 15, 61],
+    [0, 36, 3, 41, 18],
+    [1, 44, 10, 45, 2],
+    [62, 6, 43, 15, 61],
     [28, 55, 25, 21, 56],
-    [27, 20, 39,  8, 14]
+    [27, 20, 39, 8, 14]
 ];
 const RC = [
     new Int64(0x00000000, 0x00000001), new Int64(0x00000000, 0x00008082),
@@ -113,7 +113,7 @@ export default class SHA extends Crypto {
                 _keyBytes[this._blockLength - 1] &= 0xFFFFFF00;
             }
 
-            for (let i = 0 ; i < this._blockLength ; i++) {
+            for (let i = 0; i < this._blockLength; i++) {
                 this._inPad[i] = (_keyBytes[i] | 0) ^ 0x36363636;
                 this._outPad[i] = (_keyBytes[i] | 0) ^ 0x5C5C5C5C;
             }
@@ -210,15 +210,15 @@ export default class SHA extends Crypto {
                 break;
             case 512:
                 this._words = new Array(80);
-                for (let i = 0 ; i < 80 ; i++) {
+                for (let i = 0; i < 80; i++) {
                     this._words[i] = new Int64(0, 0);
                 }
                 break;
             case 1600:
                 this._words = new Array(5);
-                for (let x = 0 ; x < 5 ; x++) {
+                for (let x = 0; x < 5; x++) {
                     this._words[x] = new Array(5);
-                    for (let y = 0 ; y < 5 ; y++) {
+                    for (let y = 0; y < 5; y++) {
                         this._words[x][y] = new Int64(0, 0);
                     }
                 }
@@ -243,40 +243,40 @@ export default class SHA extends Crypto {
                 switch (this._outBit) {
                     case 224:
                         return [
-                            new Int64(0x8C3D37C8, 0x19544DA2),  new Int64(0x73E19966, 0x89DCD4D6),
-                            new Int64(0x1DFAB7AE, 0x32FF9C82),  new Int64(0x679DD514, 0x582F9FCF),
-                            new Int64(0x0F6D2B69, 0x7BD44DA8),  new Int64(0x77E36F73, 0x04C48942),
-                            new Int64(0x3F9D85A8, 0x6A1D36C8),  new Int64(0x1112E6AD, 0x91D692A1)
+                            new Int64(0x8C3D37C8, 0x19544DA2), new Int64(0x73E19966, 0x89DCD4D6),
+                            new Int64(0x1DFAB7AE, 0x32FF9C82), new Int64(0x679DD514, 0x582F9FCF),
+                            new Int64(0x0F6D2B69, 0x7BD44DA8), new Int64(0x77E36F73, 0x04C48942),
+                            new Int64(0x3F9D85A8, 0x6A1D36C8), new Int64(0x1112E6AD, 0x91D692A1)
                         ];
                     case 256:
                         return [
-                            new Int64(0x22312194, 0xFC2BF72C),  new Int64(0x9F555FA3, 0xC84C64C2),
-                            new Int64(0x2393B86B, 0x6F53B151),  new Int64(0x96387719, 0x5940EABD),
-                            new Int64(0x96283EE2, 0xA88EFFE3),  new Int64(0xBE5E1E25, 0x53863992),
-                            new Int64(0x2B0199FC, 0x2C85B8AA),  new Int64(0x0EB72DDC, 0x81C52CA2)
+                            new Int64(0x22312194, 0xFC2BF72C), new Int64(0x9F555FA3, 0xC84C64C2),
+                            new Int64(0x2393B86B, 0x6F53B151), new Int64(0x96387719, 0x5940EABD),
+                            new Int64(0x96283EE2, 0xA88EFFE3), new Int64(0xBE5E1E25, 0x53863992),
+                            new Int64(0x2B0199FC, 0x2C85B8AA), new Int64(0x0EB72DDC, 0x81C52CA2)
                         ];
                     case 384:
                         return [
-                            new Int64(0xCBBB9D5D, 0xC1059ED8),  new Int64(0x629A292A, 0x367CD507),
-                            new Int64(0x9159015A, 0x3070DD17),  new Int64(0x152FECD8, 0xF70E5939),
-                            new Int64(0x67332667, 0xFFC00B31),  new Int64(0x8EB44A87, 0x68581511),
-                            new Int64(0xDB0C2E0D, 0x64F98FA7),  new Int64(0x47B5481D, 0xBEFA4FA4)
+                            new Int64(0xCBBB9D5D, 0xC1059ED8), new Int64(0x629A292A, 0x367CD507),
+                            new Int64(0x9159015A, 0x3070DD17), new Int64(0x152FECD8, 0xF70E5939),
+                            new Int64(0x67332667, 0xFFC00B31), new Int64(0x8EB44A87, 0x68581511),
+                            new Int64(0xDB0C2E0D, 0x64F98FA7), new Int64(0x47B5481D, 0xBEFA4FA4)
                         ];
                     case 512:
                         return [
-                            new Int64(0x6A09E667, 0xF3BCC908),  new Int64(0xBB67AE85, 0x84CAA73B),
-                            new Int64(0x3C6EF372, 0xFE94F82B),  new Int64(0xA54FF53A, 0x5F1D36F1),
-                            new Int64(0x510E527F, 0xADE682D1),  new Int64(0x9B05688C, 0x2B3E6C1F),
-                            new Int64(0x1F83D9AB, 0xFB41BD6B),  new Int64(0x5BE0CD19, 0x137E2179)
+                            new Int64(0x6A09E667, 0xF3BCC908), new Int64(0xBB67AE85, 0x84CAA73B),
+                            new Int64(0x3C6EF372, 0xFE94F82B), new Int64(0xA54FF53A, 0x5F1D36F1),
+                            new Int64(0x510E527F, 0xADE682D1), new Int64(0x9B05688C, 0x2B3E6C1F),
+                            new Int64(0x1F83D9AB, 0xFB41BD6B), new Int64(0x5BE0CD19, 0x137E2179)
                         ];
                     default:
                         throw new Error("Not support bit");
                 }
             case 1600:
                 let _hash = new Array(5);
-                for (let x = 0 ; x < 5 ; x++) {
+                for (let x = 0; x < 5; x++) {
                     _hash[x] = new Array(5);
-                    for (let y = 0 ; y < 5 ; y++) {
+                    for (let y = 0; y < 5; y++) {
                         _hash[x][y] = new Int64(0, 0);
                     }
                 }
@@ -298,11 +298,11 @@ export default class SHA extends Crypto {
     _calculate(dataBytes) {
         switch (this._bit) {
             case 160:
-                for (let i = 0 ; i < dataBytes.length ; i += this._blockLength) {
+                for (let i = 0; i < dataBytes.length; i += this._blockLength) {
                     let _tmp = this._hash.slice();
                     let _num = [];
                     let _length = this._words.length;
-                    for (let j = 0 ; j < _length ; j++) {
+                    for (let j = 0; j < _length; j++) {
                         if (j < 16) {
                             this._words[j] = dataBytes[i + j] | 0;
                         } else {
@@ -329,17 +329,17 @@ export default class SHA extends Crypto {
                         _tmp[1] = _tmp[0];
                         _tmp[0] = _t;
                     }
-                    for (let i = 0 ; i < this._hash.length ; i++) {
+                    for (let i = 0; i < this._hash.length; i++) {
                         this._hash[i] = CryptoUtils.SAFE_ADD(_tmp[i], this._hash[i]);
                     }
                 }
                 break;
             case 256:
-                for (let i = 0 ; i < dataBytes.length ; i += this._blockLength) {
+                for (let i = 0; i < dataBytes.length; i += this._blockLength) {
                     let _tmp = this._hash.slice(0);
                     let _num = [];
                     let _length = this._words.length;
-                    for (let j = 0 ; j < _length ; j++) {
+                    for (let j = 0; j < _length; j++) {
                         if (j < 16) {
                             this._words[j] = dataBytes[i + j] | 0;
                         } else {
@@ -368,17 +368,17 @@ export default class SHA extends Crypto {
                         _tmp[1] = _tmp[0];
                         _tmp[0] = CryptoUtils.SAFE_ADD(_num[0], _num[1]);
                     }
-                    for (let i = 0 ; i < this._hash.length ; i++) {
+                    for (let i = 0; i < this._hash.length; i++) {
                         this._hash[i] = CryptoUtils.SAFE_ADD(_tmp[i], this._hash[i]);
                     }
                 }
                 break;
             case 512:
-                for (let i = 0 ; i < dataBytes.length ; i += this._blockLength) {
+                for (let i = 0; i < dataBytes.length; i += this._blockLength) {
                     let _tmp = this._hash.slice(0);
                     let _num = [];
                     let _length = this._words.length;
-                    for (let j = 0 ; j < _length ; j++) {
+                    for (let j = 0; j < _length; j++) {
                         if (j < 16) {
                             this._words[j]._high = dataBytes[i + 2 * j];
                             this._words[j]._low = dataBytes[i + 2 * j + 1];
@@ -393,7 +393,7 @@ export default class SHA extends Crypto {
                                     this._words[j - 16]);
                         }
                     }
-                    for (let j = 0 ; j < _length ; j++) {
+                    for (let j = 0; j < _length; j++) {
                         _num[0] = new Int64(((_tmp[4]._high & _tmp[5]._high) ^ (~_tmp[4]._high & _tmp[6]._high)),
                             ((_tmp[4]._low & _tmp[5]._low) ^ (~_tmp[4]._low & _tmp[6]._low)));
                         _num[1] = Int64.XOR(_tmp[4].safeRotateRight(14), _tmp[4].safeRotateRight(18), _tmp[4].reverseAndRotate(9));
@@ -413,7 +413,7 @@ export default class SHA extends Crypto {
                         _tmp[1] = _tmp[0].clone();
                         _tmp[0] = CryptoUtils.SAFE_ADD(_num[4], _num[5]);
                     }
-                    for (let i = 0 ; i < this._hash.length ; i++) {
+                    for (let i = 0; i < this._hash.length; i++) {
                         this._hash[i] = Int64.ADD(_tmp[i], this._hash[i]);
                     }
                 }
@@ -421,7 +421,7 @@ export default class SHA extends Crypto {
             case 1600:
                 if (dataBytes !== null) {
                     let _length = dataBytes.length;
-                    for (let x = 0 ; x < _length ;  x += 2) {
+                    for (let x = 0; x < _length; x += 2) {
                         this._hash[(x >>> 1) % 5][((x >>> 1) / 5) | 0] =
                             Int64.XOR(this._hash[(x >>> 1) % 5][((x >>> 1) / 5) | 0],
                                 new Int64(dataBytes[x + 1], dataBytes[x]));
@@ -429,7 +429,7 @@ export default class SHA extends Crypto {
                 }
 
                 // Rounds
-                for (let  j = 0; j < 24; j++) {
+                for (let j = 0; j < 24; j++) {
                     this._reset();
 
                     let _tmp = [];
@@ -448,7 +448,7 @@ export default class SHA extends Crypto {
 
                     // Rho Pi
                     for (let x = 0; x < 5; x++) {
-                        for (let y = 0 ; y < 5 ; y++) {
+                        for (let y = 0; y < 5; y++) {
                             this._words[y][(2 * x + 3 * y) % 5] = this._hash[x][y].safeRotateLeft(R[x][y]);
                         }
                     }
@@ -477,7 +477,7 @@ export default class SHA extends Crypto {
                 return this._hash.slice(0, Math.floor(this._outBit / 32));
             case 512:
                 let _length = this._hash.length;
-                for (let i = 0 ; i < _length && _result.length < _limit ; i++) {
+                for (let i = 0; i < _length && _result.length < _limit; i++) {
                     _result[i * 2] = this._hash[i]._high;
                     _result[i * 2 + 1] = this._hash[i]._low;
                 }
@@ -498,71 +498,44 @@ export default class SHA extends Crypto {
         }
     }
 
-    static SHA1(key = "") {
-        return new SHA(160, 160, 0x80, 64, 16, key);
-    }
-
-    static SHA224(key = "") {
-        return new SHA(256, 224, 0x80, 64, 16, key);
-    }
-
-    static SHA256(key) {
-        return new SHA(256, 256, 0x80, 64, 16, key);
-    }
-
-    static SHA384(key) {
-        return new SHA(512,384, 0x80, 128, 32, key);
-    }
-
-    static SHA512(key) {
-        return new SHA(512,512,  0x80, 128, 32, key);
-    }
-
-    static SHA512_224(key) {
-        return new SHA(512,224,  0x80, 128, 32, key);
-    }
-
-    static SHA512_256(key) {
-        return new SHA(512,256,  0x80, 128, 32, key);
-    }
-
-    static Keccak224(key) {
-        return new SHA(1600, 224, 0x01, 1152, 36, key);
-    }
-
-    static Keccak256(key) {
-        return new SHA(1600, 256, 0x01, 1088, 34, key);
-    }
-
-    static Keccak384(key) {
-        return new SHA(1600, 384, 0x01, 832, 26, key);
-    }
-
-    static Keccak512(key) {
-        return new SHA(1600, 512, 0x01, 576, 18, key);
-    }
-
-    static SHA3_224(key) {
-        return new SHA(1600, 224, 0x06, 1152, 36, key);
-    }
-
-    static SHA3_256(key) {
-        return new SHA(1600, 256, 0x06, 1088, 34, key);
-    }
-
-    static SHA3_384(key) {
-        return new SHA(1600, 384, 0x06, 832, 26, key);
-    }
-
-    static SHA3_512(key) {
-        return new SHA(1600, 512, 0x06, 576, 18, key);
-    }
-
-    static SHAKE128(outBit = 256) {
-        return new SHA(1600, outBit, 0x1F, 1344, 42);
-    }
-
-    static SHAKE256(outBit = 512) {
-        return new SHA(1600, outBit, 0x1F, 1088, 34);
+    static newInstance(method = "SHA1", key = "", outBit = -1) {
+        switch (method.toUpperCase()) {
+            case "SHA1":
+                return new SHA(160, 160, 0x80, 64, 16, key);
+            case "SHA224":
+                return new SHA(256, 224, 0x80, 64, 16, key);
+            case "SHA256":
+                return new SHA(256, 256, 0x80, 64, 16, key);
+            case "SHA384":
+                return new SHA(512, 384, 0x80, 128, 32, key);
+            case "SHA512":
+                return new SHA(512, 512, 0x80, 128, 32, key);
+            case "SHA512_224":
+                return new SHA(512, 224, 0x80, 128, 32, key);
+            case "SHA512_256":
+                return new SHA(512, 256, 0x80, 128, 32, key);
+            case "Keccak224":
+                return new SHA(1600, 224, 0x01, 1152, 36, key);
+            case "Keccak256":
+                return new SHA(1600, 256, 0x01, 1088, 34, key);
+            case "Keccak384":
+                return new SHA(1600, 384, 0x01, 832, 26, key);
+            case "Keccak512":
+                return new SHA(1600, 512, 0x01, 576, 18, key);
+            case "SHA3_224":
+                return new SHA(1600, 224, 0x06, 1152, 36, key);
+            case "SHA3_256":
+                return new SHA(1600, 256, 0x06, 1088, 34, key);
+            case "SHA3_384":
+                return new SHA(1600, 384, 0x06, 832, 26, key);
+            case "SHA3_512":
+                return new SHA(1600, 512, 0x06, 576, 18, key);
+            case "SHAKE128":
+                return new SHA(1600, outBit === -1 ? 256 : outBit, 0x1F, 1344, 42);
+            case "SHAKE256":
+                return new SHA(1600, outBit === -1 ? 512 : outBit, 0x1F, 1088, 34);
+            default:
+                return null;
+        }
     }
 }

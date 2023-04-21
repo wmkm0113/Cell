@@ -824,7 +824,7 @@ class DragUpload extends AbstractElement {
                 Array.from(event.dataTransfer.files)
                     .filter(fileItem => this._checkType(fileItem))
                     .forEach(fileItem => {
-                        let identifyCode = Cell.calculateData("md5", fileItem.name);
+                        let identifyCode = Cell.digestData("MD5", fileItem.name);
                         fileItem.identifyCode = identifyCode;
                         this.drawFiles.push(fileItem);
                         if (fileItem.type.indexOf("image") !== -1) {
@@ -995,7 +995,7 @@ class SelectInput extends InputElement {
                 selectElement.options.add(
                     new Option(optionItem.text, optionItem.value,
                         currentValue ? false : index === 0,
-                        optionItem.value.toString() === currentValue));
+                        optionItem.value === currentValue));
             });
         }
     }

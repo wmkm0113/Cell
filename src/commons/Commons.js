@@ -25,11 +25,6 @@
  */
 'use strict';
 
-import CRC from "../crypto/CRC.js";
-import MD5 from "../crypto/MD5.js";
-import RSA from "../crypto/RSA.js";
-import SHA from "../crypto/SHA.js";
-
 const Comment = {
     Version: "1.0.1",
     Language: navigator.language,
@@ -147,6 +142,7 @@ const RegexLibrary = {
     UUID: /^([\da-f]{8}((-[\da-f]{4}){3})-[\da-f]{12})|([\da-f]{32})\b/g,
     BlankText: /\s+/ig,
     Number: /^\b\d+\b$/g,
+    Zero_Number: /^-?0*$/g,
     Color: /^#[\dA-F]{6}$/i,
     XML: /<[a-zA-Z\d]+[^>]*>(?:.|[\r\n])*?<\/[a-zA-Z\d]+>/ig,
     HtmlTag: /<[a-zA-Z\d]+[^>]*>/ig,
@@ -189,14 +185,17 @@ const Config = {
         utcDateTime: false
     },
     security: {
-        providers: [MD5, CRC, SHA, RSA],
-        //  Encrypt value of input[type='password']
-        encryptPassword: true,
-        //  Encrypt method for input[type='password']
-        //  Options:    MD5/RSA/SHA1/SHA224/SHA256/SHA384/SHA512/SHA512_224/SHA512_256
-        //              SHA3_224/SHA3_256/SHA3_384/SHA3_512/SHAKE128/SHAKE256
-        //              Keccak224/Keccak256/Keccak384/Keccak512
-        encryptMethod: "SHA256",
+        providers: [],
+        password: {
+            //  Encrypt value of input[type='password']
+            encrypt: true,
+            //  Digest method for input[type='password']
+            //  Options:    MD5(*)/SHA1(*)/CRC/SHA224/SHA256/SHA384/SHA512/SHA512_224/SHA512_256
+            //              SHA3_224/SHA3_256/SHA3_384/SHA3_512/SHAKE128/SHAKE256
+            //              Keccak224/Keccak256/Keccak384/Keccak512
+            //  *: Low security level, just using for compatible old system
+            digest: "SHA256"
+        },
         //  RSA Key Config
         RSA: {
             exponent: "",
@@ -204,7 +203,8 @@ const Config = {
             //  Exponent and modulus data radix, default is 16
             radix: 16,
             //  Public Key Size
-            keySize: 1024
+            keySize: 1024,
+            padding: "NoPadding"
         }
     },
     elements: []
@@ -233,7 +233,7 @@ function $() {
     }
 }
 
-export {Comment, Config, DarkMode, $};
+export {Comment, RegexLibrary, Config, DarkMode, $};
 
 Object.assign(Element.prototype, {
     getClass() {
@@ -385,7 +385,7 @@ Object.assign(Element.prototype, {
                         if (input.tagName.toLowerCase() === "input") {
                             switch (input.type.toLowerCase()) {
                                 case "password":
-                                    _inputValue = Cell.encData(_inputValue);
+                                    _inputValue = Cell.digest(_inputValue);
                                     break;
                                 case "date":
                                 case "time":
@@ -395,13 +395,18 @@ Object.assign(Element.prototype, {
                                 case "file":
                                     formData.uploadFile = true;
                                     break;
+                                case "text":
+                                case "search":
+                                case "url":
+                                    if (input.dataset.encrypt === "true") {
+                                        _inputValue = Cell.encData(_inputValue);
+                                    }
+                                    break;
                             }
-                            _formData.append(_inputName, _inputValue);
-                        } else if (input.tagName.toLowerCase() === "select") {
-                            _formData.append(_inputName, _inputValue);
-                        } else {
-                            _formData.append(_inputName, _inputValue.encodeByRegExp());
+                        } else if (input.tagName.toLowerCase() !== "select") {
+                            _inputValue = _inputValue.encodeByRegExp();
                         }
+                        _formData.append(_inputName, _inputValue);
                     }
                 }
             });
@@ -733,13 +738,10 @@ Object.assign(String.prototype, {
     },
 
     encodeBase64() {
-        return (typeof btoa === "function") ? btoa(decodeURI(encodeURIComponent(this))) : this.toByteArray().encodeBase64();
+        return this.toByteArray().encodeBase64();
     },
 
     decodeBase64() {
-        if (typeof atob === "function") {
-            return decodeURIComponent(decodeURI(atob(this)));
-        }
         let _result = [], i = 0, _length = this.length;
         while (i < _length) {
             _result.push((Comment.BASE64.indexOf(this.charAt(i)) << 2) | (Comment.BASE64.indexOf(this.charAt(i + 1)) >> 4));
@@ -815,46 +817,19 @@ Object.assign(String.prototype, {
         return _result;
     },
 
-    getBytes(littleEndian = true) {
+    getBytes() {
+        let encode = encodeURIComponent(this);
         let _dataBytes = [];
-        let _charCode, _cnt = 0, _intOffset;
-        let _length = this.length * 8;
-        for (let _index = 0; _index < _length; _index += 8) {
-            let _tmpBytes = [];
-            _charCode = this.charCodeAt(_index / 8);
-            if (_charCode < 0x80) {
-                _tmpBytes.push(_charCode);
-            } else if (_charCode < 0x800) {
-                _tmpBytes.push((_charCode >>> 6) | 0xC0);
-                _tmpBytes.push((_charCode & 0x3F) | 0x80);
-            } else if ((_charCode < 0xD800) || (_charCode >= 0xE000)) {
-                _tmpBytes.push((_charCode >>> 12) | 0xE0);
-                _tmpBytes.push(((_charCode >>> 6) & 0x3F) | 0x80);
-                _tmpBytes.push((_charCode & 0x3F) | 0x80);
+        for (let _i = 0; _i < encode.length ; _i++) {
+            let ch = encode.charAt(_i);
+            if (ch === '%') {
+                _dataBytes.push(parseInt(encode.charAt(_i + 1) + encode.charAt(_i + 2), 16));
+                _i += 2;
             } else {
-                //  Using for UTF-16
-                _index += 1;
-                _charCode = 0x10000 + (((_charCode & 0x3FF) << 10) | (this.charCodeAt(_index) & 0x3FF));
-                _tmpBytes.push((_charCode >>> 18) | 0xF0);
-                _tmpBytes.push(((_charCode >>> 12) & 0x3F) | 0x80);
-                _tmpBytes.push(((_charCode >>> 6) & 0x3F) | 0x80);
-                _tmpBytes.push((_charCode & 0x3F) | 0x80);
-            }
-
-            for (let j = 0; j < _tmpBytes.length; j++) {
-                _intOffset = _cnt >>> 2;
-                while (_dataBytes.length <= _intOffset) {
-                    _dataBytes.push(0);
-                }
-                if (littleEndian) {
-                    _dataBytes[_intOffset] |= _tmpBytes[j] << (24 - (8 * (_cnt % 4)));
-                } else {
-                    _dataBytes[_intOffset] |= _tmpBytes[j] << (8 * (_cnt % 4));
-                }
-                _cnt++;
+                _dataBytes.push(ch.charCodeAt(0));
             }
         }
-        return _dataBytes;
+        return _dataBytes.reverse();
     }
 });
 
@@ -1024,30 +999,9 @@ Object.assign(Array.prototype, {
             }
         }
         while (_result.length % 4 !== 0) {
-            _result += ((padding.length === 0) ? padding : Comment.BASE64[64]);
+            _result += ((padding.length === 0) ? Comment.BASE64[64] : padding);
         }
 
-        return _result;
-    },
-
-    toString() {
-        let _result = "", i = 0, _length = this.length;
-        while (i < _length) {
-            if (this[i] < 0x80) {
-                _result += String.fromCharCode(this[i]);
-                i++;
-            } else if (this[i] >= 0xC0 && this[i] < 0xE0) {
-                _result += String.fromCharCode(((this[i] & 0x1F) << 6) | (this[i + 1] & 0x80));
-                i += 2;
-            } else if (this[i] >= 0xE0 && this[i] < 0xF0) {
-                _result += String.fromCharCode(((this[i] & 0xF) << 12) | ((this[i + 1] & 0x3F) << 6) | (this[i + 2] & 0x3F));
-                i += 3;
-            } else {
-                //  Using for UTF-16
-                _result += String.fromCharCode(((this[i] & 0x7) << 18) | ((this[i + 1] & 0x3F) << 12) | ((this[i + 2] & 0x3F) << 6) | (this[i + 3] & 0x3F));
-                i += 4;
-            }
-        }
         return _result;
     }
 });

@@ -27,6 +27,10 @@
 'use strict';
 
 import * as Commons from "../commons/Commons.js";
+import CRC from "../crypto/CRC.js";
+import MD5 from "../crypto/MD5.js";
+import RSA from "../crypto/RSA.js";
+import SHA from "../crypto/SHA.js";
 import UIRender from "../render/Render.js";
 import {FloatWindow, FloatPage, NotifyArea, MockSwitch, MockDialog, MockCheckBox, MockRadio} from "../ui/mock.js";
 import * as Details from "../ui/details.js";
@@ -328,84 +332,39 @@ class CellJS {
         this._languageCode = languageCode;
     }
 
+    digest(data) {
+        return this._config.security.password.encrypt
+            ? this.digestData(this._config.security.password.digest, data)
+            : data;
+    }
+
     encData(data) {
-        return this.calculateData(this._config.security.encryptMethod, data);
+        return this._rsaInitialized()
+            ? RSA.newInstance(this._config.security.RSA).encrypt(data)
+            : data;
     }
 
     decData(data) {
-        return this.calculateData(this._config.security.encryptMethod, data, "true");
+        return this._rsaInitialized()
+            ? RSA.newInstance(this._config.security.RSA).decrypt(data)
+            : data;
     }
 
-    calculateData(method, data, key = "") {
-        if (method === "RSA") {
-            if (Boolean(key)) {
-                return Cell["RSA"].newInstance(this._config.security.RSA).decrypt(data);
-            } else {
-                return Cell["RSA"].newInstance(this._config.security.RSA).encrypt(data);
-            }
-        }
+    _rsaInitialized() {
+        return this._config.security.RSA.exponent.length > 0 && this._config.security.RSA.modulus.length > 0;
+    }
+
+    digestData(method, data, key = "", outBit = -1) {
         let encryptor;
         if (method.startsWith("CRC")) {
-            encryptor = Cell["CRC"].newInstance(method);
-        } else {
-            switch (method) {
-                case "MD5":
-                    encryptor = Cell["MD5"].newInstance(key);
-                    break;
-                case "SHA1":
-                    encryptor = Cell["SHA"].SHA1(key);
-                    break;
-                case "SHA224":
-                    encryptor = Cell["SHA"].SHA224(key);
-                    break;
-                case "SHA256":
-                    encryptor = Cell["SHA"].SHA256(key);
-                    break;
-                case "SHA384":
-                    encryptor = Cell["SHA"].SHA384(key);
-                    break;
-                case "SHA512":
-                    encryptor = Cell["SHA"].SHA512(key);
-                    break;
-                case "SHA512_224":
-                    encryptor = Cell["SHA"].SHA512_224(key);
-                    break;
-                case "SHA512_256":
-                    encryptor = Cell["SHA"].SHA512_256(key);
-                    break;
-                case "SHA3_224":
-                    encryptor = Cell["SHA"].SHA3_224(key);
-                    break;
-                case "SHA3_256":
-                    encryptor = Cell["SHA"].SHA3_256(key);
-                    break;
-                case "SHA3_384":
-                    encryptor = Cell["SHA"].SHA3_384(key);
-                    break;
-                case "SHA3_512":
-                    encryptor = Cell["SHA"].SHA3_512(key);
-                    break;
-                case "SHAKE128":
-                    encryptor = Cell["SHA"].SHAKE128();
-                    break;
-                case "SHAKE256":
-                    encryptor = Cell["SHA"].SHAKE256();
-                    break;
-                case "Keccak224":
-                    encryptor = Cell["SHA"].Keccak224(key);
-                    break;
-                case "Keccak256":
-                    encryptor = Cell["SHA"].Keccak256(key);
-                    break;
-                case "Keccak384":
-                    encryptor = Cell["SHA"].Keccak384(key);
-                    break;
-                case "Keccak512":
-                    encryptor = Cell["SHA"].Keccak512(key);
-                    break;
-                default:
-                    return data;
-            }
+            encryptor = CRC.newInstance(method);
+        } else if (method.toUpperCase().indexOf("MD5") !== -1) {
+            encryptor = MD5.newInstance(key);
+        } else if (method.toUpperCase().indexOf("SHA") !== -1) {
+            encryptor = SHA.newInstance(method, key, outBit);
+        }
+        if (encryptor === null) {
+            return data;
         }
         encryptor.append(data);
         return encryptor.finish();
@@ -536,9 +495,9 @@ class CellJS {
                     }
                     if (dataItem.hasOwnProperty("data")) {
                         bindElement.data = JSON.stringify(dataItem.data);
-                    } else if (dataItem.hasOwnProperty("dataCode") && bindElement.dataLoad !== undefined) {
+                    } else if (dataItem.hasOwnProperty("dataCode") && bindElement.loadData !== undefined) {
                         bindElement.dataset.code = dataItem.dataCode;
-                        bindElement.dataLoad();
+                        bindElement.loadData();
                     }
                 }
             }
@@ -546,11 +505,12 @@ class CellJS {
     }
 
     _initCrypto() {
-        this._config.security.providers.forEach(provider => {
-            let bundle = provider.CryptoName;
-            this[bundle] = bundle;
-            provider.initialize();
-        })
+        [MD5, CRC, RSA, SHA].concat(this._config.security.providers)
+            .forEach(provider => {
+                let bundle = provider.CryptoName;
+                this[bundle] = bundle;
+                provider.initialize();
+            });
     }
 
     static _parseResponse(_request, resolve, reject) {
@@ -574,7 +534,11 @@ class CellJS {
                 reject(_request);
             }
         } else if (_request.status === 200) {
-            resolve(_request.responseText);
+            let _responseText = _request.responseText;
+            if (Boolean(_request.getResponseHeader("Data-Encrypted"))) {
+                _responseText = Cell.decData(_responseText);
+            }
+            resolve(_responseText);
         } else {
             reject(_request.status);
         }

@@ -13,6 +13,11 @@
         Config.scrollHeader.enabled = true;
         Config.scrollHeader.selectors = ["aside[id=\"aside\"]"];
         Config.formConfig.utcDateTime = true;
+        // Config.security.RSA.modulus = "b03d0b864320ffd2f3ebe84e3e59217ab4a3691262931634ab308b69ae1cb158c8affd02bbc3ab87e923804f7a135078b73cffafc8c1b557403fd96b0e22cec65c2767f9a6f028d80c64bdc601caaf2b74f1d0dac9ecf3837b0222ea9aa46a5b4613eb9b1a9dec2ec88d75653606085658e7858a2b0fc039de85213ef3b51dd3";
+        // Config.security.RSA.exponent = "1f51b1df19c5df009f9d604aab54ce98ce4a2ded78fc1799a3847c79fad99980a425764a8a90a2c683dd6dbb71ffc5b0b62b8e6ab03c105c618c1738a9a9f0e1ce2779294edb5df516bfd88e13f55eec0efc48f100034eca1553008fafb9d78af9811a5a82c3a67cea7b886a108112e00f2aa55597b042004033170839729f0d";
+        Config.security.RSA.modulus = "b03d0b864320ffd2f3ebe84e3e59217ab4a3691262931634ab308b69ae1cb158c8affd02bbc3ab87e923804f7a135078b73cffafc8c1b557403fd96b0e22cec65c2767f9a6f028d80c64bdc601caaf2b74f1d0dac9ecf3837b0222ea9aa46a5b4613eb9b1a9dec2ec88d75653606085658e7858a2b0fc039de85213ef3b51dd3";
+        Config.security.RSA.exponent = "10001";
+        Config.security.RSA.padding = "PKCS1Padding";
     </script>
     <script src="../src/core/Cell.js" type="module"></script>
 <!--    <script src="https://api.map.baidu.com/api?key=&v=3.0&ak={API_KEY}" type="text/javascript" charset="utf-8"></script>-->
@@ -37,6 +42,9 @@
                 //  Uncomment this must replace {API_KEY} with your Baidu Map/Google map api key
                 $("corpDetails").data = Data.corporateData;
                 $("addressDetails").data = Data.addressData;
+                // console.log(new TextEncoder().encode("Test测试TestTest测试TestTestTest测试TestTestTestTest测试TestTestTestTestTest测试TestTestTestTestTestTest测试TestTestTestTestTestTestTest测试TestTestTestTestTest测试"));
+            console.log(Cell.decData("3382ce65a1d4690c8392d773432244490dc5a13e2f04f14de7635abe1ce38823b375300b6358660c74294fb84da3e99c984c5068a2c0c0ab005173a8ba4fda8093ee7e45c6e948989090d40d6c2aa8985e30c4d53313df1adf51542fe189867e076e48b6c235a773389774b3716859fa6b35dcd6dbba17acf74e20e662475ab88a8071d8a94078c2caae8af553d57f575b84d69e57cc3be445f6b45b8750a7b0d343bf06442fd44c8b9d9771e14da5daa9e668fdba4fa2f2ec97dd4ee2439f609a0d340704554de6308432b3c315a020a9015541e3bf3ecd37c5a2786eb6e6f269ae5fa0bfc0460e5f4161b2350974c7907140c47bd51469dc7e8879ac1d0c18"));
+                // console.log(Cell.encData("Test测试TestTest测试TestTestTest测试TestTestTestTest测试TestTestTestTestTest测试TestTestTestTestTestTest测试TestTestTestTestTestTestTest测试TestTestTestTestTest测试"));
             }, 1000);
         }
     </script>
