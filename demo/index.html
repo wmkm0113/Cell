@@ -2,14 +2,18 @@
 <html lang="" class="initialize">
 <head>
     <title>Test</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <link rel="shortcut icon" href="./favicon.ico" />
-    <link rel="stylesheet" href="../src/styles/Cell.css" />
-    <link rel="stylesheet" href="./styles/style.css" />
+    <meta charset="utf-8"/>
+    <meta name="viewport"
+          content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+    <link rel="shortcut icon" href="./favicon.ico"/>
+    <link rel="stylesheet" href="../src/styles/Cell.css"/>
+    <link rel="stylesheet" href="./styles/style.css"/>
     <script type="module">
-        import {Config} from "../src/commons/Commons.js";
+        import {Config, DebugMode} from "../src/commons/Commons.js";
+
+        Config.debugMode = DebugMode.DEBUG;
         Config.languageCode = "zh-CN";
+        Config.multiPath = "../src/multi/{languageCode}.json";
         Config.scrollHeader.enabled = true;
         Config.scrollHeader.selectors = ["aside[id=\"aside\"]"];
         Config.formConfig.utcDateTime = true;
@@ -20,11 +24,12 @@
         Config.security.RSA.padding = "PKCS1Padding";
     </script>
     <script src="../src/core/Cell.js" type="module"></script>
-<!--    <script src="https://api.map.baidu.com/api?key=&v=3.0&ak={API_KEY}" type="text/javascript" charset="utf-8"></script>-->
-<!--    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={API_KEY}"></script>-->
+    <!--    <script src="https://api.map.baidu.com/api?key=&v=3.0&ak={API_KEY}" type="text/javascript" charset="utf-8"></script>-->
+    <!--    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={API_KEY}"></script>-->
     <script type="module">
         import * as Data from "./data.js";
-        window.onload = function () {
+
+        window.onload = () => {
             $("notifyBtn").addEventListener("click", Cell.sendRequest);
             window.setTimeout(function () {
                 $("multiMenu").data = Data.multiMenuData;
@@ -43,62 +48,63 @@
                 $("corpDetails").data = Data.corporateData;
                 $("addressDetails").data = Data.addressData;
                 // console.log(new TextEncoder().encode("Test测试TestTest测试TestTestTest测试TestTestTestTest测试TestTestTestTestTest测试TestTestTestTestTestTest测试TestTestTestTestTestTestTest测试TestTestTestTestTest测试"));
-            console.log(Cell.decData("3382ce65a1d4690c8392d773432244490dc5a13e2f04f14de7635abe1ce38823b375300b6358660c74294fb84da3e99c984c5068a2c0c0ab005173a8ba4fda8093ee7e45c6e948989090d40d6c2aa8985e30c4d53313df1adf51542fe189867e076e48b6c235a773389774b3716859fa6b35dcd6dbba17acf74e20e662475ab88a8071d8a94078c2caae8af553d57f575b84d69e57cc3be445f6b45b8750a7b0d343bf06442fd44c8b9d9771e14da5daa9e668fdba4fa2f2ec97dd4ee2439f609a0d340704554de6308432b3c315a020a9015541e3bf3ecd37c5a2786eb6e6f269ae5fa0bfc0460e5f4161b2350974c7907140c47bd51469dc7e8879ac1d0c18"));
+                Cell.info("Result.Decrypt.RSA", Cell.decData("3382ce65a1d4690c8392d773432244490dc5a13e2f04f14de7635abe1ce38823b375300b6358660c74294fb84da3e99c984c5068a2c0c0ab005173a8ba4fda8093ee7e45c6e948989090d40d6c2aa8985e30c4d53313df1adf51542fe189867e076e48b6c235a773389774b3716859fa6b35dcd6dbba17acf74e20e662475ab88a8071d8a94078c2caae8af553d57f575b84d69e57cc3be445f6b45b8750a7b0d343bf06442fd44c8b9d9771e14da5daa9e668fdba4fa2f2ec97dd4ee2439f609a0d340704554de6308432b3c315a020a9015541e3bf3ecd37c5a2786eb6e6f269ae5fa0bfc0460e5f4161b2350974c7907140c47bd51469dc7e8879ac1d0c18"));
                 // console.log(Cell.encData("Test测试TestTest测试TestTestTest测试TestTestTestTest测试TestTestTestTestTest测试TestTestTestTestTestTest测试TestTestTestTestTestTestTest测试TestTestTestTestTest测试"));
             }, 1000);
         }
     </script>
 </head>
 <body>
-    <header id="topic">
-        <span class="logo suffix registered"></span>
-        <menu-element id="indexTopMenu"></menu-element>
-        <multi-menu id="multiMenu"></multi-menu>
-    </header>
-    <slide-show id="slideShow"></slide-show>
-    <main>
-        <article>
-            <section id="mockElement">
-                <h1>Mock Elements</h1>
-                <article>
-                    <progress-bar id="progressBarNumber"></progress-bar>
-                    <progress-bar id="progressBarDetails"></progress-bar>
-                    <a id="notifyBtn" href="./notify-data.json" data-target-id="notifyArea">Notify</a>
-                    <a href="JavaScript:Cell.alert('Alter message information')">Alter Message</a>
-                    <a href="JavaScript:Cell.confirm('Confirm message information', () => {alert('Confirmed')})">Confirm Dialog</a>
-                    <like-button data-value="2"></like-button>
-                    <favorite-button></favorite-button>
-                </article>
-            </section>
-            <section id="listDemo">
-                <h1>Message List</h1>
-                <message-list id="messageList"></message-list>
-            </section>
-            <link-banner id="contentBanner"></link-banner>
-            <section id="formDemo">
-                <h1>Form Info</h1>
-                <form-info id="formInfo"></form-info>
-            </section>
-            <section id="detailsDemo">
-                <h1>Message Details</h1>
-                <message-details id="detailsInfo"></message-details>
-            </section>
-            <section id="corpDetailsDemo">
-                <h1>Corporate Details</h1>
-                <corporate-details id="corpDetails"></corporate-details>
-            </section>
-        </article>
-        <aside id="aside">
-            <category-menu class="asideMenu" id="asideMenu"></category-menu>
-            <link-avatar id="widgetButton"></link-avatar>
-            <corporate-address id="addressDetails"></corporate-address>
-        </aside>
-    </main>
-    <footer>
-        <social-group id="socialGroup"></social-group>
-        <div id="copyRight">
-            <span id="poweredBy">Powered By Cell.js</span>
-        </div>
-    </footer>
-    <notify-area id="notifyArea"></notify-area>
+<header id="topic">
+    <span class="logo suffix registered"></span>
+    <menu-element id="indexTopMenu"></menu-element>
+    <multi-menu id="multiMenu"></multi-menu>
+</header>
+<slide-show id="slideShow"></slide-show>
+<main>
+    <article>
+        <section id="mockElement">
+            <h1>Mock Elements</h1>
+            <article>
+                <progress-bar id="progressBarNumber"></progress-bar>
+                <progress-bar id="progressBarDetails"></progress-bar>
+                <a id="notifyBtn" href="./notify-data.json" data-target-id="notifyArea">Notify</a>
+                <a href="JavaScript:Cell.alert('Alter message information')">Alter Message</a>
+                <a href="JavaScript:Cell.confirm('Confirm message information', () => {alert('Confirmed')})">Confirm
+                    Dialog</a>
+                <like-button data-value="2"></like-button>
+                <favorite-button></favorite-button>
+            </article>
+        </section>
+        <section id="listDemo">
+            <h1>Message List</h1>
+            <message-list id="messageList"></message-list>
+        </section>
+        <link-banner id="contentBanner"></link-banner>
+        <section id="formDemo">
+            <h1>Form Info</h1>
+            <form-info id="formInfo"></form-info>
+        </section>
+        <section id="detailsDemo">
+            <h1>Message Details</h1>
+            <message-details id="detailsInfo"></message-details>
+        </section>
+        <section id="corpDetailsDemo">
+            <h1>Corporate Details</h1>
+            <corporate-details id="corpDetails"></corporate-details>
+        </section>
+    </article>
+    <aside id="aside">
+        <category-menu class="asideMenu" id="asideMenu"></category-menu>
+        <link-avatar id="widgetButton"></link-avatar>
+        <corporate-address id="addressDetails"></corporate-address>
+    </aside>
+</main>
+<footer>
+    <social-group id="socialGroup"></social-group>
+    <div id="copyRight">
+        <span id="poweredBy">Powered By Cell.js</span>
+    </div>
+</footer>
+<notify-area id="notifyArea"></notify-area>
 </body>

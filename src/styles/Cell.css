@@ -5,6 +5,7 @@
     src: url('../fonts/iconfont.woff2?t=1651372046520') format('woff2'),
     url('../fonts/iconfont.woff?t=1651372046520') format('woff'),
     url('../fonts/iconfont.ttf?t=1651372046520') format('truetype');
+    font-display: fallback;
 }
 * {
     font-family: "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Georgia, Helvetica, sans-serif !important;
@@ -1053,6 +1054,9 @@ category-menu > div[slot="menuList"] > record-operator {
 }
 category-menu > div[slot="menuList"] > record-operator:hover {
     background-color: rgb(var(--btn-bg-color));
+}
+category-menu > div[slot="menuList"] > record-operator > a > i {
+    margin-right: 0.5rem;
 }
 body > main > aside > menu-element > div[slot="menuList"] > menu-item > div[slot="menuList"] > menu-item > a > span {
     font-size: 1rem;

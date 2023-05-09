@@ -159,14 +159,24 @@ const DarkMode = {
 }
 Object.freeze(DarkMode);
 
+const DebugMode = {
+    DEBUG: 0,
+    INFO: 1,
+    WARN: 2,
+    ERROR: 3
+}
+Object.freeze(DebugMode);
+
 const Config = {
     contextPath: "",
     componentPath: "",
+    multiPath: "/multi/{languageCode}.json",
+    languageCode: Comment.Language,
+    debugMode: DebugMode.INFO,
     notify: {
         dataPath: "",
         period: 15 * 1000
     },
-    languageCode: Comment.Language,
     scrollHeader: {
         enabled: false,
         selectors: [],
@@ -233,7 +243,7 @@ function $() {
     }
 }
 
-export {Comment, RegexLibrary, Config, DarkMode, $};
+export {Comment, RegexLibrary, Config, DarkMode, DebugMode, $};
 
 Object.assign(Element.prototype, {
     getClass() {
@@ -830,6 +840,12 @@ Object.assign(String.prototype, {
             }
         }
         return _dataBytes.reverse();
+    }
+});
+
+Object.assign(HTMLVideoElement.prototype, {
+    isPlaying() {
+        return this.currentTime > 0 && !this.paused && !this.ended && this.readyState > this.HAVE_CURRENT_DATA;
     }
 });
 

@@ -52,7 +52,7 @@ export default class CRC extends Crypto {
             }
             this._mask = Math.pow(2, this._bit <= 8 ? 8 : this._bit) - 1;
         } else {
-            throw new Error("Unknown algorithm");
+            throw new Error(Cell.multiMsg("Unknown.Algorithm"));
         }
     }
 
@@ -163,12 +163,13 @@ export default class CRC extends Crypto {
     static REGISTER(name, bit, polynomial, init = 0x00, xorOut = 0x00,
                     refIn = false, refOut = false, override = false) {
         if (bit > 32) {
-            throw new Error("Not support CRC bit");
+            throw new Error(Cell.multiMsg("Bit.CRC.Error"));
         }
         if (CRC_CONSTANT.hasOwnProperty(name) && !override) {
             return;
         }
         CRC_CONSTANT[name] = [bit, polynomial, init, xorOut, refIn, refOut];
+        Cell.debug("Register.CRC.Config", name, bit, polynomial, init, xorOut, refIn, refOut);
     }
 
     static _REVERSE_BIT(value = 0x00, bitWidth) {

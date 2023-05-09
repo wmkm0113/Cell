@@ -196,13 +196,13 @@ class MockDialog extends CustomElement {
         let confirmBtn = document.createElement("button");
         confirmBtn.setAttribute("id", "confirm-btn");
         dialogElement.appendChild(confirmBtn);
-        confirmBtn.innerText = "OK";
+        confirmBtn.innerText = Cell.multiMsg("OK.Button");
 
         if (type === "confirm") {
             let cancelBtn = document.createElement("button");
             cancelBtn.setAttribute("id", "cancel-btn");
             dialogElement.appendChild(cancelBtn);
-            cancelBtn.innerText = "Cancel";
+            cancelBtn.innerText = Cell.multiMsg("Cancel.Button");
             cancelBtn.addEventListener("click", (event) => {
                 event.stopPropagation();
                 this._remove(dialogElement);

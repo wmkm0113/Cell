@@ -175,7 +175,7 @@ export default class RSA extends Crypto {
             case "PKCS1Padding":
                 let _paddingLength = this._maxDigit - 3 - _block.length;
                 if (_paddingLength < 0) {
-                    throw new Error("Padding error! ");
+                    throw new Error(Cell.multiMsg("Value.Padding.Error"));
                 }
                 _padding = this._publicKey ? 0x2n : 0x1n;
                 for (let _index = 0; _index < _paddingLength; _index++) {
@@ -220,7 +220,7 @@ export default class RSA extends Crypto {
                             break;
                         }
                         if (_match !== -1 && _blockBytes[_position] !== _match) {
-                            throw Error("Padding value invalid! ");
+                            throw Error(Cell.multiMsg("Value.Padding.Error"));
                         }
                         _position++;
                     }

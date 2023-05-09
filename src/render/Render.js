@@ -60,7 +60,7 @@ export default class UIRender {
 
     static _retrieve(tagName = "") {
         if (tagName.length === 0) {
-            throw Error("Unknown tag name");
+            throw Error(Cell.multiMsg("Unknown.Tag.name"));
         }
         let target = document.body.querySelector(tagName);
         if (target === null) {
@@ -68,7 +68,7 @@ export default class UIRender {
                 case "mock-dialog":
                     target = new MockDialog();
                     break;
-                case "notify":
+                case "notify-area":
                     target = new NotifyArea();
                     break;
                 default:

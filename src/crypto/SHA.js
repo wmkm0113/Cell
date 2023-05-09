@@ -89,10 +89,8 @@ const RC = [
 ];
 
 export default class SHA extends Crypto {
-    constructor(bit, outBit, delimiter, blockSize, blockLength, key = "") {
-        if (typeof bit === "undefined" || typeof outBit === "undefined" || typeof blockSize === "undefined") {
-            throw new Error("Invalid arguments");
-        }
+    constructor(bit = 160, outBit = 160, delimiter = 0x80, blockSize = 64, blockLength = 16, key = "") {
+        //  Default config value is SHA1
         super();
         this._bit = bit;
         this._outBit = outBit;
@@ -125,6 +123,7 @@ export default class SHA extends Crypto {
             }
         }
         this._hmac = key.length > 0;
+        Cell.debug("Register.SHA.Config", bit, outBit, delimiter, blockSize, blockLength, key);
     }
 
     static get CryptoName() {
@@ -237,7 +236,7 @@ export default class SHA extends Crypto {
                     case 256:
                         return [0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A, 0x510E527F, 0x9B05688C, 0x1F83D9AB, 0x5BE0CD19];
                     default:
-                        throw new Error("Not support bit");
+                        throw new Error(Cell.multiMsg("Out.Bit.SHA.Error"));
                 }
             case 512:
                 switch (this._outBit) {
@@ -270,7 +269,7 @@ export default class SHA extends Crypto {
                             new Int64(0x1F83D9AB, 0xFB41BD6B), new Int64(0x5BE0CD19, 0x137E2179)
                         ];
                     default:
-                        throw new Error("Not support bit");
+                        throw new Error(Cell.multiMsg("Out.Bit.SHA.Error"));
                 }
             case 1600:
                 let _hash = new Array(5);
@@ -281,6 +280,8 @@ export default class SHA extends Crypto {
                     }
                 }
                 return _hash;
+            default:
+                throw new Error(Cell.multiMsg("Bit.SHA.Error"));
         }
     }
 

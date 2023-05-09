@@ -62,8 +62,6 @@ class IntervalInput extends AbstractElement {
             Object.keys(data).forEach(key => {
                 switch (key) {
                     case "tips":
-                        this.dataset[key] = JSON.stringify(data[key]);
-                        break;
                     case "textContent":
                     case "beginName":
                     case "endName":
@@ -340,12 +338,27 @@ class AbstractInput extends BaseInput {
             .forEach(key => {
                 if (["id", "name", "placeholder", "value"].indexOf(key.toLowerCase()) !== -1) {
                     this.inputElement.setAttribute(key, this.dataset[key]);
+                } else if (key.toLowerCase() === "autocomplete"
+                    && ["text", "password", "email", "textarea", "hidden"].indexOf(this._elementType.toLowerCase()) !== -1) {
+                    this.inputElement.setAttribute(key, this.dataset[key]);
+                } else if (key.toLowerCase() === "verify") {
+                    if (this.inputElement.dataset.validate === "true") {
+                        let validateConfig = this.dataset[key].parseJSON();
+                        Object.keys(validateConfig)
+                            .forEach(validateKey => {
+                                if (validateKey.toLowerCase() === "type") {
+                                    this.inputElement.dataset[validateConfig[validateKey]] = "true";
+                                } else {
+                                    this.inputElement.dataset[validateKey] = validateConfig[validateKey];
+                                }
+                            })
+                    }
                 } else if (key.toLowerCase() === "reference"
                     && ["text", "textarea"].indexOf(this._elementType.toLowerCase()) !== -1) {
                     this.referenceElement.innerText = this.dataset[key];
                 } else if (key.toLowerCase() === "error") {
                     this.errorElement.innerText = this.dataset[key];
-                } else {
+                } else if (key.toLowerCase() !== "tips") {
                     this.inputElement.dataset[key] = this.dataset[key];
                 }
             });
@@ -602,6 +615,22 @@ class TextInput extends AbstractInput {
 
     static tagName() {
         return "text-input";
+    }
+}
+
+/**
+ * Email input
+ *
+ * Render element:
+ * <input type="email" ... />
+ */
+class EmailInput extends AbstractInput {
+    constructor() {
+        super("email");
+    }
+
+    static tagName() {
+        return "email-input";
     }
 }
 
@@ -1062,7 +1091,28 @@ class TextAreaInput extends AbstractInput {
 }
 
 export {
-    InputElement, BaseInput, AbstractInput, StandardButton, SubmitButton, ResetButton, LikeButton, FavoriteButton,
-    PasswordInput, HiddenInput, TextInput, SearchInput, NumberInput, DateInput, TimeInput, DateTimeInput, SelectInput,
-    TextAreaInput, DragUpload, NumberIntervalInput, DateIntervalInput, TimeIntervalInput, DateTimeIntervalInput
+    InputElement,
+    BaseInput,
+    AbstractInput,
+    StandardButton,
+    SubmitButton,
+    ResetButton,
+    LikeButton,
+    FavoriteButton,
+    PasswordInput,
+    HiddenInput,
+    TextInput,
+    EmailInput,
+    SearchInput,
+    NumberInput,
+    DateInput,
+    TimeInput,
+    DateTimeInput,
+    SelectInput,
+    TextAreaInput,
+    DragUpload,
+    NumberIntervalInput,
+    DateIntervalInput,
+    TimeIntervalInput,
+    DateTimeIntervalInput
 };

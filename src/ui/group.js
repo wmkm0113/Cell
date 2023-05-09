@@ -32,7 +32,7 @@ class GroupElement extends AbstractElement {
                         this.dataset.textContent = data[key];
                         break;
                     case "tips":
-                        this.dataset.tips = JSON.stringify(data[key]);
+                        this.dataset.tips = data[key];
                         break;
                     case "value":
                         if (data[key] instanceof Array) {

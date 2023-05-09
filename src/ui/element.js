@@ -161,7 +161,7 @@ class AbstractElement extends BaseElement {
             this.labelElement.innerText = textContent;
         }
 
-        if (this.dataset.tips !== undefined && this.dataset.tips.isJSON()) {
+        if (this.dataset.tips !== undefined && this.dataset.tips.length > 0) {
             if (this.tipsElement === null) {
                 this.tipsElement = new TipsElement();
                 this.tipsElement.setAttribute("slot", "tips");

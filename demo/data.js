@@ -149,11 +149,11 @@ const socialData = `{
 const listData = `{
     "id" : "listElement",
     "filter" : {
-        "pageLimit" : "pageLimit",
+        "pageLimit" : "listLimit",
         "searchText" : "Search Button",
         "method" : "post",
         "sortType" : "sortType",
-        "pageNo" : "pageNo",
+        "pageNo" : "listPage",
         "action" : "url",
         "sortBy" : "sortBy",
         "items" : [
@@ -165,7 +165,7 @@ const listData = `{
                 "placeholder" : "Input keywords",
                 "sortCode" : 10,
                 "value" : "",
-                "tips" : {"content" : "Tips message"}
+                "tips" : "Tips message"
             },
             {
                 "endValue" : 3,
@@ -176,7 +176,7 @@ const listData = `{
                 "beginValue" : 1,
                 "sortCode" : 8,
                 "beginName" : "beginElement",
-                "tips" : {"content" : "Interval Tips"}
+                "tips" : "Interval Tips"
             },
             {
                 "name" : "checkGroup",
@@ -190,7 +190,7 @@ const listData = `{
                     {"textButton" : "Option2", "id" : "checkbox2", "value" : "value4"},
                     {"textButton" : "Option3", "id" : "checkbox3", "value" : "value6"}
                 ],
-                "tips" : {"content" : "CheckGroup Tips"}
+                "tips" : "CheckGroup Tips"
             },
             {
                 "name" : "radioGroup",
@@ -204,7 +204,7 @@ const listData = `{
                     {"textButton" : "Option5", "id" : "radio2", "value" : "value4"},
                     {"textButton" : "Option6", "id" : "radio3", "value" : "value6"}
                 ],
-                "tips" : {"content" : "RadioGroup Tips"}
+                "tips" : "RadioGroup Tips"
             }
         ]
     },
@@ -782,7 +782,7 @@ const formData = `{
             "data": {
                 "textContent": "Property Name",
                 "value": "Property Content",
-                "tips": {"content": "Tips message"}
+                "tips": "Tips message"
             }
         },
         {
@@ -793,7 +793,7 @@ const formData = `{
                 "name": "selectElement",
                 "value": "4",
                 "textContent": "Element label text",
-                "tips": {"content": "Tips message"},
+                "tips": "Tips message",
                 "options": [
                     {"text":"option0","value":0},{"text":"option1","value":1},
                     {"text":"option2","value":2},{"text":"option3","value":3},
@@ -815,7 +815,23 @@ const formData = `{
                 "multilingual": true,
                 "language": "English",
                 "reference": "Reference context",
-                "tips": {"content": "Tips message"}
+                "tips": "Tips message"
+            }
+        },
+        {
+            "tag": "email-input",
+            "class": "formItem",
+            "data": {
+                "id": "emailElement",
+                "name": "emailElement",
+                "autocomplete": "email username",
+                "placeholder": "Placeholder string",
+                "textContent": "Element label text",
+                "verify": {
+                    "type": "email"
+                },
+                "value": "Initialize value",
+                "tips": "Tips message"
             }
         },
         {
@@ -825,9 +841,10 @@ const formData = `{
                 "id": "passwordElement",
                 "name": "passwordElement",
                 "placeholder": "Placeholder string",
+                "autocomplete": "new-password",
                 "textContent": "Element label text",
                 "value": "Initialize value",
-                "tips": {"content": "Tips message"}
+                "tips": "Tips message"
             }
         },
         {
@@ -839,7 +856,7 @@ const formData = `{
                 "placeholder": "Placeholder string",
                 "textContent": "Element label text",
                 "value": "Initialize value",
-                "tips": {"content": "Tips message"}
+                "tips": "Tips message"
             }
         },
         {
@@ -852,9 +869,13 @@ const formData = `{
                 "textContent": "Element label text",
                 "value": "Initialize value",
                 "multilingual": true,
+                "verify": {
+                    "regex": "\\\\d+",
+                    "type": "luhn"
+                },
                 "language": "简体中文",
                 "reference": "Reference context",
-                "tips": {"content": "Tips message"}
+                "tips": "Tips message"
             }
         },
         {
@@ -866,7 +887,7 @@ const formData = `{
                 "placeholder": "Placeholder string",
                 "textContent": "Element label text",
                 "value": "Initialize value",
-                "tips": {"content": "Tips message"}
+                "tips": "Tips message"
             }
         },
         {
@@ -878,7 +899,7 @@ const formData = `{
                 "placeholder": "Placeholder string",
                 "textContent": "Element label text",
                 "value": "Initialize value",
-                "tips": {"content": "Tips message"}
+                "tips": "Tips message"
             }
         },
         {
@@ -890,8 +911,10 @@ const formData = `{
                 "placeholder": "Bank card number",
                 "textContent": "Bank card number",
                 "error": "Bank card number invalid",
-                "luhn": "true",
-                "tips": {"content": "Tips message"}
+                "verify": {
+                    "type": "luhn"
+                },
+                "tips": "Tips message"
             }
         },
         {
@@ -903,7 +926,7 @@ const formData = `{
                 "placeholder": "Placeholder string",
                 "textContent": "Element label text",
                 "value": "1658958745944",
-                "tips": {"content": "Tips message"}
+                "tips": "Tips message"
             }
         },
         {
@@ -915,7 +938,7 @@ const formData = `{
                 "placeholder": "Placeholder string",
                 "textContent": "Element label text",
                 "value": "Initialize value",
-                "tips": {"content": "Tips message"}
+                "tips": "Tips message"
             }
         },
         {
@@ -927,7 +950,7 @@ const formData = `{
                 "placeholder": "Placeholder string",
                 "textContent": "Element label text",
                 "value": 1658958745944,
-                "tips": {"content": "Tips message"}
+                "tips": "Tips message"
             }
         },
         {
@@ -935,7 +958,7 @@ const formData = `{
             "class": "formItem",
             "data": {
                 "id": "numberIntervalElement",
-                "tips": {"content": "Tips message"},
+                "tips": "Tips message",
                 "textContent": "Element label text",
                 "beginName": "numberBegin",
                 "beginValue": 10,
@@ -948,7 +971,7 @@ const formData = `{
             "class": "formItem",
             "data": {
                 "id": "dateIntervalElement",
-                "tips": {"content": "Tips message"},
+                "tips": "Tips message",
                 "textContent": "Element label text",
                 "beginName": "dateBegin",
                 "beginValue": "1658958745944",
@@ -961,7 +984,7 @@ const formData = `{
             "class": "formItem",
             "data": {
                 "id": "timeIntervalElement",
-                "tips": {"content": "Tips message"},
+                "tips": "Tips message",
                 "textContent": "Element label text",
                 "beginName": "timeBegin",
                 "beginValue": "1658958745944",
@@ -974,7 +997,7 @@ const formData = `{
             "class": "formItem",
             "data": {
                 "id": "datetimeIntervalElement",
-                "tips": {"content": "Tips message"},
+                "tips": "Tips message",
                 "textContent": "Element label text",
                 "beginName": "datetimeBegin",
                 "beginValue": "1658958745944",
@@ -990,7 +1013,7 @@ const formData = `{
                 "name": "checkBoxGroupElement",
                 "value": ["checkBoxValue2", "checkBoxValue3"],
                 "textContent": "Element label text",
-                "tips": {"content": "Tips message"},
+                "tips": "Tips message",
                 "items": [
                     {"id" : "checkBoxButtonId1", "value" : "checkBoxValue1", "textButton" : "checkBox Content"},
                     {"id" : "checkBoxButtonId2", "value" : "checkBoxValue2", "textButton" : "checkBox Content"},
@@ -1034,7 +1057,7 @@ const formData = `{
                         "resourcePath": "images/1.jpg"
                     }
                 ],
-                "tips": {"content": "Tips message"}
+                "tips": "Tips message"
             }
         }
     ]

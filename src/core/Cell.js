@@ -43,13 +43,14 @@ import * as List from "../ui/list.js";
 import SlideShow from "../ui/slide.js";
 import SocialGroup from "../ui/social.js";
 import {MenuElement, MenuItem, MultilingualMenu, CategoryMenu} from "../ui/menu.js";
+import {DebugMode} from "../commons/Commons.js";
 
 class CellJS {
     static ELEMENTS = [
         BaiduMap, GoogleMap, TipsElement, FloatPage, FloatWindow, NotifyArea, MockSwitch, MockDialog, MockCheckBox,
         MockRadio, ProgressBar, ScrollBar, StarRating, StarScore, ButtonGroup, CheckBoxGroup, RadioGroup,
         Input.InputElement, Input.BaseInput, Input.StandardButton, Input.SubmitButton, Input.FavoriteButton, Input.LikeButton,
-        Input.ResetButton, Input.PasswordInput, Input.HiddenInput, Input.TextInput, Input.SearchInput,
+        Input.ResetButton, Input.PasswordInput, Input.HiddenInput, Input.TextInput, Input.SearchInput, Input.EmailInput,
         Input.NumberInput, Input.DateInput, Input.TimeInput, Input.DateTimeInput, Input.SelectInput,
         Input.TextAreaInput, Input.NumberIntervalInput, Input.DateIntervalInput, Input.TimeIntervalInput,
         Input.DateTimeIntervalInput, Input.DragUpload, FormItem, FormInfo, List.ListFilter, List.ListData,
@@ -60,27 +61,25 @@ class CellJS {
         Details.ResourceDetails, Details.MessageDetails, Details.PropertyDetails, Details.CorporateAddress,
         Details.CorporateDetails, Details.CorporatePreview, Details.LinkAvatar, Details.LinkBanner
     ];
-    _languageCode = null;
+    _languageCode = "";
 
     constructor() {
         this._config = Commons.Config;
         //  Freeze config
         Object.freeze(this._config);
 
-        if (this._config.darkMode.enabled && Comment.GPS) {
-            try {
-                navigator.geolocation.getCurrentPosition(function (position) {
-                    Cell.registerDarkMode(position.coords.longitude, position.coords.latitude);
-                });
-            } catch (e) {
-                console.log("Access geolocation failed! ");
-            }
-        }
         this._darkMode = false;
+        this._multiInfo = {};
     }
 
-    init() {
-        this.language = this._config.languageCode;
+    async init() {
+        this._languageCode = this._config.languageCode;
+        await Cell.Ajax(this.contextPath() + this._config.multiPath.replace("{languageCode}", this._languageCode))
+            .then(responseText => {
+                if (responseText.isJSON()) {
+                    this._multiInfo = responseText.parseJSON();
+                }
+            });
         this._initCrypto();
         this.Render = new UIRender();
         this.Render.init(CellJS.ELEMENTS);
@@ -90,36 +89,41 @@ class CellJS {
             window.onscroll = this.scrollPage;
         }
 
+        if (this._config.darkMode.enabled && Comment.GPS) {
+            switch (this._config.darkMode.mode) {
+                case Commons.DarkMode.Light:
+                    Cell.debug("Light.Mode.Dark");
+                    document.body.removeClass(this._config.darkMode.styleClass);
+                    break;
+                case Commons.DarkMode.Dark:
+                    Cell.debug("Dark.Mode.Dark");
+                    document.body.appendClass(this._config.darkMode.styleClass);
+                    break;
+                case Commons.DarkMode.Sun:
+                    Cell.debug("Sun.Mode.Dark");
+                    try {
+                        navigator.geolocation.getCurrentPosition((position) =>
+                            Cell.registerDarkMode(position.coords.longitude, position.coords.latitude));
+                    } catch (e) {
+                        Cell.error("GPS.Error.Data", e.toString());
+                    }
+                    break;
+                case Commons.DarkMode.System:
+                    Cell.debug("System.Mode.Dark");
+                    const matchMedia = window.matchMedia("(prefers-color-scheme: light)");
+                    matchMedia.addEventListener("change", (event) => this.systemDarkMode(event));
+                    this.systemDarkMode(matchMedia);
+                    break;
+            }
+        }
         if (this._config.notify.dataPath.length > 0) {
             window.setTimeout(Cell._scheduleNotify, this._config.notify.period);
-        }
-
-        switch (this._config.darkMode.mode) {
-            case Commons.DarkMode.Light:
-                document.body.removeClass(this._config.darkMode.styleClass);
-                break;
-            case Commons.DarkMode.Dark:
-                document.body.appendClass(this._config.darkMode.styleClass);
-                break;
-            case Commons.DarkMode.Sun:
-                try {
-                    navigator.geolocation.getCurrentPosition(function (position) {
-                        Cell.registerDarkMode(position.coords.longitude, position.coords.latitude);
-                    });
-                } catch (e) {
-                    console.log("Access geolocation failed! ");
-                }
-                break;
-            case Commons.DarkMode.System:
-                const matchMedia = window.matchMedia("(prefers-color-scheme: light)");
-                matchMedia.addEventListener("change", (event) => this.systemDarkMode(event));
-                this.systemDarkMode(matchMedia);
-                break;
         }
     }
 
     _scheduleNotify() {
         if (this._config.notify.dataPath.length > 0) {
+            Cell.debug("Notify.Path.Data", this._config.notify.dataPath);
             Cell.Ajax(this._config.notify.dataPath)
                 .then(responseText => {
                     if (responseText.isJSON()) {
@@ -131,6 +135,74 @@ class CellJS {
                 });
             window.setTimeout(Cell._scheduleNotify, this._config.notify.period);
         }
+    }
+
+    _initMulti() {
+        if (this._languageCode.length === 0) {
+            this._languageCode = this._config.languageCode;
+        }
+        Cell.Ajax(this.contextPath() + this._config.multiPath.replace("{languageCode}", this._languageCode),
+            {asynchronous: false})
+            .then(responseText => {
+                if (responseText.isJSON()) {
+                    this._multiInfo = responseText.parseJSON();
+                }
+            });
+    }
+
+    debug(messageKey = "", ...args) {
+        if (this._config.debugMode <= Commons.DebugMode.DEBUG) {
+            this._log(Commons.DebugMode.DEBUG, this.multiMsg(messageKey, args));
+        }
+    }
+
+    info(messageKey = "", ...args) {
+        if (this._config.debugMode <= Commons.DebugMode.INFO) {
+            this._log(Commons.DebugMode.INFO, this.multiMsg(messageKey, args));
+        }
+    }
+
+    warn(messageKey = "", ...args) {
+        if (this._config.debugMode <= Commons.DebugMode.WARN) {
+            this._log(Commons.DebugMode.WARN, this.multiMsg(messageKey, args));
+        }
+    }
+
+    error(messageKey = "", ...args) {
+        if (this._config.debugMode <= Commons.DebugMode.ERROR) {
+            this._log(Commons.DebugMode.ERROR, this.multiMsg(messageKey, args));
+        }
+    }
+
+    _log(debugMode = DebugMode.ERROR, multiMsg = "") {
+        if (multiMsg.length > 0) {
+            switch (debugMode) {
+                case DebugMode.DEBUG:
+                    console.debug(multiMsg);
+                    break;
+                case DebugMode.INFO:
+                    console.info(multiMsg);
+                    break;
+                case DebugMode.WARN:
+                    console.warn(multiMsg);
+                    break;
+                case DebugMode.ERROR:
+                    console.error(multiMsg);
+                    break;
+            }
+        }
+    }
+
+    multiMsg(messageKey = "", ...args) {
+        let multiMessage = this._multiInfo.hasOwnProperty(messageKey) ? this._multiInfo[messageKey] : "";
+        if (multiMessage.length > 0) {
+            let index = 1;
+            args.forEach(arg => {
+                multiMessage = multiMessage.replace("{" + index + "}", arg);
+                index++;
+            });
+        }
+        return multiMessage;
     }
 
     alert(message = "") {
@@ -158,6 +230,7 @@ class CellJS {
             return;
         }
         let urlAddress = this._config.componentPath.replace("{dataCode}", dataCode);
+        Cell.debug("Component.Path.Data", urlAddress);
         Cell.Ajax(Cell.contextPath() + urlAddress)
             .then(responseText => element.data = responseText)
             .catch(errorMsg => console.error(errorMsg));
@@ -168,14 +241,18 @@ class CellJS {
         if (responseData.hasOwnProperty("title")) {
             responseData.title.setTitle();
             title = responseData.title;
+            Cell.debug("Title.Data.Response", title);
         }
         if (responseData.hasOwnProperty("keywords")) {
             responseData.keywords.setKeywords();
+            Cell.debug("Keywords.Data.Response", responseData.keywords);
         }
         if (responseData.hasOwnProperty("description")) {
             responseData.description.setDescription();
+            Cell.debug("Description.Data.Response", responseData.description);
         }
         if (responseData.hasOwnProperty("data")) {
+            Cell.debug("Info.Data.Response", JSON.stringify(responseData.data), _floatWindow);
             if (!_floatWindow) {
                 Cell.closeWindow();
             }
@@ -185,6 +262,7 @@ class CellJS {
             history.pushState(null, title, linkAddress);
         }
         if (responseData.hasOwnProperty("notify")) {
+            Cell.debug("Notify.Data.Response", JSON.stringify(responseData.notify));
             responseData.notify.forEach(notifyItem => Cell.notify(JSON.stringify(notifyItem)));
         }
     }
@@ -215,6 +293,7 @@ class CellJS {
                                     if (responseText.isJSON()) {
                                         Cell._parseResponse(responseText.parseJSON(), _floatWindow, linkAddress);
                                     } else {
+                                        Cell.debug("Text.Data.Response", responseText);
                                         if (!_floatWindow) {
                                             Cell.closeWindow();
                                         }
@@ -222,7 +301,7 @@ class CellJS {
                                         history.pushState(null, "", linkAddress);
                                     }
                                 })
-                                .catch(errorMsg => console.error(errorMsg));
+                                .catch(errorMsg => Cell.error("Error.Message", errorMsg));
                         }
                     } else {
                         window.location = linkAddress;
@@ -249,12 +328,14 @@ class CellJS {
     submitForm(formElement) {
         if (formElement && !formElement.dataset.disabled && formElement.validate()) {
             let formData = formElement.formData();
+            Cell.debug("Submit.Form.Data", JSON.stringify(formData));
             Cell.Ajax(formElement.action, {
                 method: formElement.getAttribute("method"),
                 uploadFile: formData.uploadFile,
                 uploadProgress: formData.uploadProgress
             }, formData.data)
                 .then(responseText => {
+                    Cell.debug("Text.Data.Response", responseText);
                     if (responseText.isJSON()) {
                         Cell._parseResponse(responseText.parseJSON());
                         if (formElement.method.toLowerCase() === "get") {
@@ -272,7 +353,7 @@ class CellJS {
                         }
                     }
                 })
-                .catch(errorMsg => console.error(errorMsg));
+                .catch(errorMsg => Cell.error("Error.Message", errorMsg));
         }
         return false;
     }
@@ -281,6 +362,7 @@ class CellJS {
         if (this._config.darkMode.mode === Commons.DarkMode.Sun) {
             let Sun = new Date().sunTime(posLon, posLat);
             if (Sun.SunRise === -1 || Sun.SunSet === -1) {
+                Cell.error("Sun.Data.Error");
                 return;
             }
             this._sunRise = Sun.SunRise;
@@ -330,28 +412,32 @@ class CellJS {
         }
         document.documentElement.lang = languageCode;
         this._languageCode = languageCode;
+        this._initMulti();
     }
 
     digest(data) {
-        return this._config.security.password.encrypt
-            ? this.digestData(this._config.security.password.digest, data)
-            : data;
+        if (this._config.security.password.encrypt) {
+            return this.digestData(this._config.security.password.digest, data);
+        } else {
+            Cell.warn("Digest.Password.Data");
+            return data;
+        }
     }
 
     encData(data) {
-        return this._rsaInitialized()
-            ? RSA.newInstance(this._config.security.RSA).encrypt(data)
-            : data;
+        if (this._config.security.RSA.exponent.length > 0 && this._config.security.RSA.modulus.length > 0) {
+            return RSA.newInstance(this._config.security.RSA).encrypt(data);
+        } else {
+            return data;
+        }
     }
 
     decData(data) {
-        return this._rsaInitialized()
-            ? RSA.newInstance(this._config.security.RSA).decrypt(data)
-            : data;
-    }
-
-    _rsaInitialized() {
-        return this._config.security.RSA.exponent.length > 0 && this._config.security.RSA.modulus.length > 0;
+        if (this._config.security.RSA.exponent.length > 0 && this._config.security.RSA.modulus.length > 0) {
+            return RSA.newInstance(this._config.security.RSA).decrypt(data);
+        } else {
+            return data;
+        }
     }
 
     digestData(method, data, key = "", outBit = -1) {
@@ -362,6 +448,11 @@ class CellJS {
             encryptor = MD5.newInstance(key);
         } else if (method.toUpperCase().indexOf("SHA") !== -1) {
             encryptor = SHA.newInstance(method, key, outBit);
+        } else if (Cell.hasOwnProperty(method)) {
+            encryptor = Cell[method].newInstance(method, key, outBit);
+        } else {
+            encryptor = null;
+            Cell.error("Digest.Unknown.Algorithm");
         }
         if (encryptor === null) {
             return data;
@@ -403,6 +494,7 @@ class CellJS {
                 uploadProgress: null
             };
             Object.assign(_options, options);
+            Cell.debug("Link.Path.Data", url, _options.method);
             let _request;
             // If XMLHttpRequest is a javascript object in the local
             if (window.XMLHttpRequest) {
@@ -505,18 +597,23 @@ class CellJS {
     }
 
     _initCrypto() {
+        let cryptoNames = [];
         [MD5, CRC, RSA, SHA].concat(this._config.security.providers)
             .forEach(provider => {
                 let bundle = provider.CryptoName;
                 this[bundle] = bundle;
                 provider.initialize();
+                cryptoNames.push(bundle);
             });
+        Cell.debug("Names.Crypto", cryptoNames.join(", "));
     }
 
     static _parseResponse(_request, resolve, reject) {
+        Cell.debug("Status.Data.Response", _request.status);
         let languageCode = _request.getResponseHeader("languageCode");
         if (languageCode !== null) {
             Cell.language = languageCode;
+            Cell.debug("Modify.Language.Code", languageCode);
         }
         let _jwtToken = _request.getResponseHeader("Authentication");
         if (_jwtToken !== null) {
@@ -526,6 +623,7 @@ class CellJS {
         if (_request.status === 301 || _request.status === 302 || _request.status === 307) {
             let _redirectPath = _request.getResponseHeader("Location");
             if (_redirectPath.length !== 0) {
+                Cell.debug("Redirect.Path.Data", _redirectPath);
                 let _newOption = {};
                 Object.extend(_newOption, _request._options || {});
                 _newOption.method = "GET";
@@ -536,6 +634,7 @@ class CellJS {
         } else if (_request.status === 200) {
             let _responseText = _request.responseText;
             if (Boolean(_request.getResponseHeader("Data-Encrypted"))) {
+                Cell.debug("Decrypt.Data.Response");
                 _responseText = Cell.decData(_responseText);
             }
             resolve(_responseText);
@@ -564,7 +663,6 @@ class CellJS {
 }
 
 (
-
     function () {
         if (typeof window.Cell === "undefined") {
             window.$ = Commons.$;
@@ -572,6 +670,4 @@ class CellJS {
             window.Cell.init();
         }
     }
-
-)()
-;
+)();

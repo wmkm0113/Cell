@@ -339,7 +339,7 @@ class PropertyDetails extends BaseElement {
         }
         if (data.hasOwnProperty("tips")) {
             this.tipsButton.show();
-            this.tipsButton.data = JSON.stringify(data.tips);
+            this.tipsButton.data = data.tips;
         } else {
             this.tipsButton.hide();
         }
@@ -756,12 +756,15 @@ class ResourceDetails extends BaseElement {
     playVideo() {
         if (this.videoElement != null && this.videoElement.hasChildNodes()) {
             this.videoElement.muted = true;
-            this.videoElement.play();
+            if (!this.videoElement.isPlaying()) {
+                this.videoElement.play();
+            }
         }
     }
 
     pauseVideo() {
-        if (this.videoElement != null && this.videoElement.hasChildNodes()) {
+        if (this.videoElement != null && this.videoElement.hasChildNodes()
+            && this.videoElement.isPlaying()) {
             this.videoElement.pause();
         }
     }
@@ -778,6 +781,7 @@ class ResourceDetails extends BaseElement {
                 sourceElement.setAttribute("src", this.dataset.resourcePath);
                 sourceElement.setAttribute("type", this.dataset.mimeType);
                 this.videoElement.appendChild(sourceElement);
+                this.videoElement.load();
             }
             this.dataset.loaded = "true";
         }
