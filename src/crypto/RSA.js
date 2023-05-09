@@ -63,7 +63,7 @@ class RSAKey {
             }
             _tempValue = this._modulo(_tempValue * _tempValue);
         }
-        return _result;
+        return _result * 1n;
     }
     _modulo(x = 0n) {
         let _modify = (2n << 3n);

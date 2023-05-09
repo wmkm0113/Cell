@@ -262,6 +262,7 @@
 }
 /* Default style config */
 html {
+    --body-bg-color: 242, 242, 247;
     --bright-bg-color: 255, 255, 255;
     --dark-bg-color: 0, 0, 0;
     --bg-color: 5, 110, 183;
@@ -1079,13 +1080,13 @@ link-avatar > a > resource-details::before {
 }
 resource-details {
     position: relative;
+    background-color: rgb(var(--body-bg-color));
 }
 resource-details::before {
     position: absolute;
     width: 100%;
     height: 12rem;
     line-height: 12rem;
-    position: absolute;
     top: 50%;
     margin-top: -6rem;
     text-align: center;

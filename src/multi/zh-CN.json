@@ -32,5 +32,6 @@
   "Unknown.Tag.name": "未知的标签名",
   "OK.Button": "确定",
   "Cancel.Button": "取消",
-  "Result.Decrypt.RSA": "RSA解密结果：{1}"
+  "Result.Decrypt.RSA": "RSA解密结果：{1}",
+  "Success.Initialize.Result": "初始化CellJS完成……"
 }

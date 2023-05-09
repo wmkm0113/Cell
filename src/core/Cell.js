@@ -613,6 +613,6 @@ class CellJS {
     if (typeof window.Cell === "undefined") {
         window.$ = Commons.$;
         window.Cell = new CellJS();
-        window.Cell.init();
+        window.Cell.init().then(() => Cell.debug("Success.Initialize.Result"));
     }
 })();

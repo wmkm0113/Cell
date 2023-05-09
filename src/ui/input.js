@@ -383,9 +383,6 @@ class BaseButton extends AbstractInput {
                 this.dataset.formId = data.formId;
             }
         }
-        this.renderCustom(data);
-    }
-    renderCustom(data) {
     }
     connectedCallback() {
         super.connectedCallback();

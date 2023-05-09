@@ -32,5 +32,6 @@
   "Unknown.Tag.name": "Unknown tag name",
   "OK.Button": "OK",
   "Cancel.Button": "Cancel",
-  "Result.Decrypt.RSA": "RSA decrypt result: {}"
+  "Result.Decrypt.RSA": "RSA decrypt result: {}",
+  "Success.Initialize.Result": "Initialize CellJS finished..."
 }

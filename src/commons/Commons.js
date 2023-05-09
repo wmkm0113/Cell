@@ -790,7 +790,7 @@ Object.assign(String.prototype, {
 });
 Object.assign(HTMLVideoElement.prototype, {
     isPlaying() {
-        return this.currentTime > 0 && !this.paused && !this.ended && this.readyState > this.HAVE_CURRENT_DATA;
+        return this.currentTime > 0 && !this.paused && !this.ended && this.readyState > HTMLMediaElement.HAVE_CURRENT_DATA;
     }
 });
 Object.assign(Number.prototype, {

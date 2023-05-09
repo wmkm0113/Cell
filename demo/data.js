@@ -732,7 +732,7 @@ const slideData = `{
             "href" : "#",
             "resource" : {
                 "mimeType" : "image/jpg",
-                "resourcePath" : "./images/slides/1.jpg",
+                "resourcePath" : "./images/slides/5.jpg",
                 "title" : "Title 1"
             }
         },
