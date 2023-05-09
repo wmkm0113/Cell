@@ -15,11 +15,9 @@
  * limitations under the License.
  */
 "use strict";
-
 import {Comment} from "../commons/Commons.js";
 import {AbstractElement} from "./element.js";
 import {ResourceDetails} from "./details.js";
-
 /**
  * Base element of input/select/textarea
  */
@@ -27,7 +25,6 @@ class InputElement extends AbstractElement {
     constructor() {
         super();
     }
-
     _createElement(tagName = "") {
         if (tagName.length > 0 && tagName.toLowerCase()) {
             let element = document.createElement(tagName);
@@ -37,7 +34,6 @@ class InputElement extends AbstractElement {
         }
         return null;
     }
-
     renderElement(data) {
         if (data.hasOwnProperty("id") && data.hasOwnProperty("name")) {
             Object.keys(data).forEach(key =>
@@ -47,7 +43,6 @@ class InputElement extends AbstractElement {
         }
     }
 }
-
 class IntervalInput extends AbstractElement {
     constructor(type = "") {
         super();
@@ -56,7 +51,6 @@ class IntervalInput extends AbstractElement {
         this.beginElement = null;
         this.endElement = null;
     }
-
     renderElement(data) {
         if (data.hasOwnProperty("id") && data.hasOwnProperty("beginName") && data.hasOwnProperty("endName")) {
             Object.keys(data).forEach(key => {
@@ -89,12 +83,10 @@ class IntervalInput extends AbstractElement {
             this.connectedCallback();
         }
     }
-
     connectedCallback() {
         super._removeProgress();
         this._render();
     }
-
     _render() {
         if (this.dataset.beginName === undefined || this.dataset.endName === undefined) {
             return;
@@ -138,7 +130,6 @@ class IntervalInput extends AbstractElement {
         }
     }
 }
-
 /**
  * Base element of input, default input type: text
  */
@@ -147,7 +138,6 @@ class BaseInput extends InputElement {
         super();
         this._elementType = elementType;
     }
-
     renderElement(data) {
         if (data.hasOwnProperty("id") && data.hasOwnProperty("name")) {
             Object.keys(data).forEach(key => {
@@ -176,30 +166,24 @@ class BaseInput extends InputElement {
             this._render();
         }
     }
-
     enable() {
         this._removeAttribute("disabled");
     }
-
     disable() {
         this._updateAttribute("disabled", true);
     }
-
     disabled() {
         return this._checkAttribute("disabled");
     }
-
     value() {
         return this._attributeValue("value");
     }
-
     get checked() {
         if (this._elementType === "checkbox" || this._elementType === "radio") {
             return this._checkAttribute("checked");
         }
         return false;
     }
-
     set checked(value) {
         if (this._elementType === "checkbox" || this._elementType === "radio") {
             if (value !== undefined && Boolean(value)) {
@@ -209,7 +193,6 @@ class BaseInput extends InputElement {
             }
         }
     }
-
     addEventListener(type, listener, options) {
         if (this._elementType === "checkbox" || this._elementType === "radio") {
             super.addEventListener(type, listener, options);
@@ -222,7 +205,6 @@ class BaseInput extends InputElement {
             super.addEventListener(type, listener, options);
         }
     }
-
     _checkAttribute(attributeName) {
         let inputElement = this.querySelector("input");
         if (inputElement) {
@@ -230,7 +212,6 @@ class BaseInput extends InputElement {
         }
         return false;
     }
-
     _attributeValue(attributeName) {
         let inputElement = this.querySelector("input");
         if (inputElement) {
@@ -238,14 +219,12 @@ class BaseInput extends InputElement {
         }
         return null;
     }
-
     _updateAttribute(attributeName, attributeValue) {
         let inputElement = this.querySelector("input");
         if (inputElement) {
             inputElement.setAttribute(attributeName, attributeValue);
         }
     }
-
     _removeAttribute(attributeName) {
         let inputElement = this.querySelector("input");
         if (inputElement) {
@@ -253,7 +232,6 @@ class BaseInput extends InputElement {
         }
     }
 }
-
 /**
  *
  * Abstract input element
@@ -279,7 +257,6 @@ class AbstractInput extends BaseInput {
         this.referenceElement = null;
         this.errorElement = null;
     }
-
     connectedCallback() {
         super._removeProgress();
         if (this.inputElement === null) {
@@ -329,7 +306,6 @@ class AbstractInput extends BaseInput {
         }
         this._render();
     }
-
     _render() {
         if (this._elementType.toLowerCase() !== "hidden") {
             super._renderLabel();
@@ -372,7 +348,6 @@ class AbstractInput extends BaseInput {
         });
     }
 }
-
 class BaseButton extends AbstractInput {
     constructor(elementType = "button") {
         if (!["button", "submit", "reset"].includes(elementType.toLowerCase())) {
@@ -381,17 +356,14 @@ class BaseButton extends AbstractInput {
         super(elementType);
         this._timer = null;
     }
-
     set value(data) {
         if (this.inputElement !== null) {
             this.inputElement.setAttribute("value", data);
         }
     }
-
     set id(id) {
         super.setAttribute("id", id);
     }
-
     renderElement(data) {
         if (data.hasOwnProperty("value")) {
             this.textContent = data.value;
@@ -413,10 +385,8 @@ class BaseButton extends AbstractInput {
         }
         this.renderCustom(data);
     }
-
     renderCustom(data) {
     }
-
     connectedCallback() {
         super.connectedCallback();
         let buttonElement = this;
@@ -456,7 +426,6 @@ class BaseButton extends AbstractInput {
             });
         }
     }
-
     disable() {
         let countDown;
         if (this.dataset.countDown === undefined || !this.dataset.countDown.isNum()) {
@@ -472,7 +441,6 @@ class BaseButton extends AbstractInput {
             this.dataset.countDown = countDown.toString();
         }
     }
-
     enable() {
         if (this._timer !== null) {
             window.clearInterval(this._timer);
@@ -483,18 +451,15 @@ class BaseButton extends AbstractInput {
         this.inputElement.enable();
     }
 }
-
 class LikeButton extends BaseButton {
     constructor() {
         super("button");
         super._addSlot("icon");
         this.iconElement = null;
     }
-
     static tagName() {
         return "like-button";
     }
-
     connectedCallback() {
         if (this.iconElement === null) {
             this.iconElement = document.createElement("i");
@@ -503,7 +468,6 @@ class LikeButton extends BaseButton {
         }
         super.connectedCallback();
     }
-
     renderElement(data) {
         if (data.hasOwnProperty("checked")) {
             this.dataset.checked = Boolean(data.checked).toString();
@@ -511,18 +475,15 @@ class LikeButton extends BaseButton {
         super.renderElement(data);
     }
 }
-
 class FavoriteButton extends BaseButton {
     constructor() {
         super("button");
         super._addSlot("icon");
         this.iconElement = null;
     }
-
     static tagName() {
         return "favorite-button";
     }
-
     connectedCallback() {
         if (this.iconElement === null) {
             this.iconElement = document.createElement("i");
@@ -531,44 +492,36 @@ class FavoriteButton extends BaseButton {
         }
         super.connectedCallback();
     }
-
     renderElement(data) {
         if (data.hasOwnProperty("checked")) {
             this.dataset.checked = Boolean(data.checked).toString();
         }
     }
 }
-
 class StandardButton extends BaseButton {
     constructor() {
         super("button");
     }
-
     static tagName() {
         return "standard-button";
     }
 }
-
 class SubmitButton extends BaseButton {
     constructor() {
         super("submit");
     }
-
     static tagName() {
         return "submit-button";
     }
 }
-
 class ResetButton extends BaseButton {
     constructor() {
         super("reset");
     }
-
     static tagName() {
         return "reset-button";
     }
 }
-
 /**
  * Password input
  *
@@ -580,12 +533,10 @@ class PasswordInput extends AbstractInput {
         super("password");
         this.removeAttribute("value");
     }
-
     static tagName() {
         return "password-input";
     }
 }
-
 /**
  * Hidden input
  *
@@ -596,12 +547,10 @@ class HiddenInput extends AbstractInput {
     constructor() {
         super("hidden");
     }
-
     static tagName() {
         return "hidden-input";
     }
 }
-
 /**
  * Text input
  *
@@ -612,12 +561,10 @@ class TextInput extends AbstractInput {
     constructor() {
         super("text");
     }
-
     static tagName() {
         return "text-input";
     }
 }
-
 /**
  * Email input
  *
@@ -628,12 +575,10 @@ class EmailInput extends AbstractInput {
     constructor() {
         super("email");
     }
-
     static tagName() {
         return "email-input";
     }
 }
-
 /**
  * Search input
  *
@@ -644,12 +589,10 @@ class SearchInput extends AbstractInput {
     constructor() {
         super("search");
     }
-
     static tagName() {
         return "search-input";
     }
 }
-
 /**
  * Number input
  *
@@ -660,12 +603,10 @@ class NumberInput extends AbstractInput {
     constructor() {
         super("number");
     }
-
     static tagName() {
         return "number-input";
     }
 }
-
 /**
  * Date input
  *
@@ -676,12 +617,10 @@ class DateInput extends AbstractInput {
     constructor() {
         super("date");
     }
-
     static tagName() {
         return "date-input";
     }
 }
-
 /**
  * Time input
  *
@@ -692,12 +631,10 @@ class TimeInput extends AbstractInput {
     constructor() {
         super("time");
     }
-
     static tagName() {
         return "time-input";
     }
 }
-
 /**
  * Datetime input
  *
@@ -708,52 +645,42 @@ class DateTimeInput extends AbstractInput {
     constructor() {
         super("datetime-local");
     }
-
     static tagName() {
         return "datetime-input";
     }
 }
-
 class NumberIntervalInput extends IntervalInput {
     constructor() {
         super("number");
     }
-
     static tagName() {
         return "number-interval-input";
     }
 }
-
 class DateIntervalInput extends IntervalInput {
     constructor() {
         super("date");
     }
-
     static tagName() {
         return "date-interval-input";
     }
 }
-
 class TimeIntervalInput extends IntervalInput {
     constructor() {
         super("time");
     }
-
     static tagName() {
         return "time-interval-input";
     }
 }
-
 class DateTimeIntervalInput extends IntervalInput {
     constructor() {
         super("datetime-local");
     }
-
     static tagName() {
         return "datetime-interval-input";
     }
 }
-
 class DragUpload extends AbstractElement {
     constructor() {
         super();
@@ -764,22 +691,18 @@ class DragUpload extends AbstractElement {
         this.drawFiles = [];
         this.referenceElement = null;
     }
-
     static tagName() {
         return "drag-upload";
     }
-
     uploadFiles() {
         return this.drawFiles;
     }
-
     renderElement(data) {
         if (data !== undefined && data.hasOwnProperty("name")) {
             Object.keys(data).forEach(key => (this.dataset[key] = ((typeof data[key]) === "string") ? data[key] : JSON.stringify(data[key])));
             this._render();
         }
     }
-
     _checkType(fileItem = null) {
         if (fileItem === null) {
             return false;
@@ -796,7 +719,6 @@ class DragUpload extends AbstractElement {
         }
         return !(this.dataset.fileSize !== undefined && this.dataset.fileSize !== null && (this.dataset.fileSize.parseInt() < fileItem.size));
     }
-
     _removeItem(identifyCode = "") {
         if (identifyCode === "" && this.dataset.multipartFile) {
             return;
@@ -817,7 +739,6 @@ class DragUpload extends AbstractElement {
             this.dragElement.show();
         }
     }
-
     _renderItem(identifyCode = "") {
         if (identifyCode === "" && this.dataset.multipartFile) {
             return null;
@@ -834,7 +755,6 @@ class DragUpload extends AbstractElement {
         imgPreview.appendChild(closeBtn);
         return imgPreview;
     }
-
     connectedCallback() {
         super._removeProgress();
         this._render();
@@ -915,12 +835,10 @@ class DragUpload extends AbstractElement {
             }
         });
     }
-
     _checkExists(fileItem) {
         if (fileItem === null || fileItem === undefined) {
             return false;
         }
-
         for (let existItem in this.drawFiles) {
             if (existItem.type === fileItem.type
                 && existItem.size === fileItem.size
@@ -930,7 +848,6 @@ class DragUpload extends AbstractElement {
         }
         return true;
     }
-
     _renderReference() {
         if (this.referenceElement === null && this.dataset.multilingual === "true"
             && this.dataset.reference !== undefined && this.dataset.reference.isJSON()) {
@@ -946,7 +863,6 @@ class DragUpload extends AbstractElement {
                 });
         }
     }
-
     _render() {
         super._renderLabel();
         this._renderReference();
@@ -969,7 +885,6 @@ class DragUpload extends AbstractElement {
 
     }
 }
-
 /**
  *
  * Select element
@@ -997,16 +912,13 @@ class SelectInput extends InputElement {
     constructor() {
         super();
     }
-
     static tagName() {
         return "select-input";
     }
-
     connectedCallback() {
         super._removeProgress();
         this._render();
     }
-
     _render() {
         let currentValue = this.dataset.value;
         super._addSlot("element");
@@ -1029,7 +941,6 @@ class SelectInput extends InputElement {
         }
     }
 }
-
 /**
  *
  * Textarea element
@@ -1050,17 +961,14 @@ class TextAreaInput extends AbstractInput {
     constructor() {
         super("textarea");
     }
-
     static tagName() {
         return "textarea-input";
     }
-
     connectedCallback() {
         super._removeProgress();
         super.connectedCallback();
         this._render();
     }
-
     _render() {
         if (this.dataset.name === undefined) {
             return;
@@ -1089,30 +997,8 @@ class TextAreaInput extends AbstractInput {
         }
     }
 }
-
 export {
-    InputElement,
-    BaseInput,
-    AbstractInput,
-    StandardButton,
-    SubmitButton,
-    ResetButton,
-    LikeButton,
-    FavoriteButton,
-    PasswordInput,
-    HiddenInput,
-    TextInput,
-    EmailInput,
-    SearchInput,
-    NumberInput,
-    DateInput,
-    TimeInput,
-    DateTimeInput,
-    SelectInput,
-    TextAreaInput,
-    DragUpload,
-    NumberIntervalInput,
-    DateIntervalInput,
-    TimeIntervalInput,
-    DateTimeIntervalInput
+    InputElement, BaseInput, AbstractInput, StandardButton, SubmitButton, ResetButton, LikeButton, FavoriteButton,
+    PasswordInput, HiddenInput, TextInput, EmailInput, SearchInput, NumberInput, DateInput, TimeInput, DateTimeInput,
+    SelectInput, TextAreaInput, DragUpload, NumberIntervalInput, DateIntervalInput, TimeIntervalInput, DateTimeIntervalInput
 };

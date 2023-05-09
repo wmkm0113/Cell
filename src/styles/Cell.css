@@ -1085,7 +1085,9 @@ resource-details::before {
     width: 100%;
     height: 12rem;
     line-height: 12rem;
-    padding: calc(-6rem + 50%) 0;
+    position: absolute;
+    top: 50%;
+    margin-top: -6rem;
     text-align: center;
     font-family: iconfont, sans-serif;
     font-size: 12rem;
@@ -2164,14 +2166,9 @@ slide-show > div[slot="slide"] > div {
     position: absolute;
     top: 0;
     left: 0;
-    display: flex;
 }
 slide-show > div[slot="slide"] > div > resource-details {
     position: relative;
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-color: rgb(var(--bright-bg-color));
     float: left;
     display: block;
 }

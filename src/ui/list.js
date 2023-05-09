@@ -21,7 +21,6 @@ import {MockCheckBox} from "./mock.js";
 import {StandardButton, HiddenInput} from "./input.js";
 import {ResourceDetails, UserDetails} from "./details.js";
 import {FormInfo} from "./form.js";
-
 /**
  * Message List Filter Form
  *
@@ -92,7 +91,6 @@ import {FormInfo} from "./form.js";
  * }
  */
 class ListFilter extends BaseElement {
-
     constructor() {
         super();
         super._addSlot("filterForm", "searchBtn");
@@ -102,11 +100,9 @@ class ListFilter extends BaseElement {
         this.pageNoElement = null;
         this.pageLimitElement = null;
     }
-
     static tagName() {
         return "list-filter";
     }
-
     renderElement(data) {
         Object.keys(data).forEach(key => {
             switch (key.toLowerCase()) {
@@ -121,7 +117,6 @@ class ListFilter extends BaseElement {
         })
         this._render();
     }
-
     connectedCallback() {
         super._removeProgress();
         this.filterForm = document.createElement("form");
@@ -129,7 +124,6 @@ class ListFilter extends BaseElement {
         this.appendChild(this.filterForm);
         this._render();
     }
-
     _render() {
         if (this.dataset.targetId !== null && this.dataset.targetId !== undefined) {
             this.filterForm.dataset.targetId = this.dataset.targetId;
@@ -200,11 +194,9 @@ class ListFilter extends BaseElement {
             this.show();
         }
     }
-
     refresh() {
         this._submitForm();
     }
-
     sortQuery(sortBy = "", asc = false) {
         if (this.sortByElement !== null) {
             this.sortByElement.value = sortBy;
@@ -214,14 +206,12 @@ class ListFilter extends BaseElement {
         }
         this._submitForm();
     }
-
     pageQuery(pageNo = 1) {
         if (this.pageNoElement !== null) {
             this.pageNoElement.value = pageNo;
         }
         this._submitForm();
     }
-
     _submitForm() {
         if (this.dataset.targetId !== undefined && this.dataset.targetId !== null) {
             this.filterForm.dataset.targetId = this.dataset.targetId;
@@ -229,7 +219,6 @@ class ListFilter extends BaseElement {
         Cell.submitForm(this.filterForm);
     }
 }
-
 /**
  * Message List Statistics
  *
@@ -270,11 +259,9 @@ class ListStatistics extends BaseElement {
         super._addSlot("statistics");
         this.statisticsElement = null;
     }
-
     static tagName() {
         return "list-statistics";
     }
-
     connectedCallback() {
         this._removeProgress();
         if (this.statisticsElement === null) {
@@ -283,12 +270,10 @@ class ListStatistics extends BaseElement {
             this.appendChild(this.statisticsElement);
         }
     }
-
     renderElement(data) {
         if (data === null) {
             return;
         }
-
         if (data instanceof Array) {
             this.statisticsElement.clearChildNodes();
             data.forEach(dataItem => {
@@ -325,7 +310,6 @@ class ListStatistics extends BaseElement {
         }
     }
 }
-
 /**
  * Message List Title
  *
@@ -348,11 +332,9 @@ class ListTitle extends BaseElement {
         this.titleElement = null;
         this.btnGroup = null;
     }
-
     static tagName() {
         return "list-title";
     }
-
     connectedCallback() {
         this._removeProgress();
         if (this.titleElement === null) {
@@ -397,7 +379,6 @@ class ListTitle extends BaseElement {
             });
         }
     }
-
     renderElement(data) {
         if (data.hasOwnProperty("textContent")) {
             this.titleElement.innerText = data.textContent;
@@ -422,7 +403,6 @@ class ListTitle extends BaseElement {
         }
     }
 }
-
 class PropertyItem extends BaseElement {
     constructor() {
         super();
@@ -430,11 +410,9 @@ class PropertyItem extends BaseElement {
         this.nameElement = null;
         this.valueElement = null;
     }
-
     static tagName() {
         return "property-item";
     }
-
     itemName(name = "") {
         if (name == null || name.length === 0) {
             return;
@@ -446,7 +424,6 @@ class PropertyItem extends BaseElement {
         }
         this.nameElement.innerText = name;
     }
-
     itemValue(value = "") {
         if (value == null || value.length === 0) {
             return;
@@ -459,13 +436,11 @@ class PropertyItem extends BaseElement {
         this.valueElement.innerText = value;
         this.valueElement.setAttribute("title", value);
     }
-
     connectedCallback() {
         super._removeProgress();
         this.addEventListener("click", (event) => Cell.sendRequest(event));
     }
 }
-
 class PropertyDefine {
     index = 0;
     mapKey = "";
@@ -475,10 +450,8 @@ class PropertyDefine {
     utc = false;
     sort = false;
     modified = false;
-
     constructor() {
     }
-
     update(data) {
         let updateCount = 0;
         if (data.hasOwnProperty("index")) {
@@ -526,32 +499,26 @@ class PropertyDefine {
         this.modified = (updateCount > 0);
     }
 }
-
 class ListHeader extends BaseElement {
     itemDefines = [];
     mainElement = null;
     itemElement = null;
     operatorElement = null;
-
     constructor() {
         super();
         super._addSlot("selectAll", "mainTitle", "items", "operators");
     }
-
     static tagName() {
         return "list-header";
     }
-
     renderElement(data) {
         if (data === null || !data.hasOwnProperty("mainTitle")) {
             return;
         }
-
         this.dataset.mainTitle = data.mainTitle;
         if (data.hasOwnProperty("operatorTitle")) {
             this.dataset.operatorTitle = data.operatorTitle;
         }
-
         if (data.hasOwnProperty("items") && (data.items instanceof Array)) {
             let newKeys = [];
             data.items.filter(data => (data.hasOwnProperty("mapKey") && data.mapKey.length > 0))
@@ -576,11 +543,9 @@ class ListHeader extends BaseElement {
         }
         this._render();
     }
-
     connectedCallback() {
         this._render();
     }
-
     _render() {
         if (this.mainElement === null) {
             this.mainElement = document.createElement("span");
@@ -647,7 +612,6 @@ class ListHeader extends BaseElement {
             this.itemElement.sortChildrenBy("span", "data-sort-code", true);
         }
     }
-
     _index(mapKey = "") {
         let index = -1;
         if (this.itemDefines !== null) {
@@ -660,9 +624,7 @@ class ListHeader extends BaseElement {
         return index;
     }
 }
-
 class RecordOperator extends BaseElement {
-
     constructor() {
         super();
         super._addSlot("link");
@@ -670,11 +632,9 @@ class RecordOperator extends BaseElement {
         this.iconElement = null;
         this.textElement = null;
     }
-
     static tagName() {
         return "record-operator";
     }
-
     connectedCallback() {
         this.linkElement = document.createElement("a");
         this.linkElement.setAttribute("slot", "link");
@@ -687,7 +647,6 @@ class RecordOperator extends BaseElement {
         this.textElement.setAttribute("id", "text");
         this.linkElement.appendChild(this.textElement);
     }
-
     renderElement(data) {
         if (data.hasOwnProperty("link")) {
             this.linkElement.setAttribute("href", data.link);
@@ -709,7 +668,6 @@ class RecordOperator extends BaseElement {
         }
     }
 }
-
 class ListRecord extends BaseElement {
     propertyDefines = [];
     selectElement = null;
@@ -719,25 +677,20 @@ class ListRecord extends BaseElement {
     itemsElement = null;
     scoreElement = null;
     operatorsElement = null;
-
     constructor() {
         super();
         super._addSlot("selectAll", "preview", "mainTitle", "score", "items", "abstract", "operators");
     }
-
     static tagName() {
         return "list-record";
     }
-
     updateDefines(propertyDefines = []) {
         this.propertyDefines = propertyDefines;
         this._render();
     }
-
     renderElement(data) {
         this._renderData(data);
     }
-
     connectedCallback() {
         super._removeProgress();
         this._render();
@@ -749,19 +702,16 @@ class ListRecord extends BaseElement {
             listRecord.avatarPause();
         });
     }
-
     avatarPlay() {
         if (this.avatarElement !== null) {
             this.avatarElement.playVideo();
         }
     }
-
     avatarPause() {
         if (this.avatarElement !== null) {
             this.avatarElement.pauseVideo();
         }
     }
-
     set selectAll(selectAll) {
         if (selectAll !== null && selectAll.length > 0 && this.selectElement !== null
             && this.dataset.recordData !== undefined && this.dataset.recordData.isJSON()) {
@@ -774,7 +724,6 @@ class ListRecord extends BaseElement {
             this.selectElement.data = JSON.stringify(data);
         }
     }
-
     _renderData(jsonData = {}) {
         if (jsonData.hasOwnProperty("title")) {
             this.dataset.link = jsonData.hasOwnProperty("link") ? jsonData.link : "#";
@@ -920,32 +869,27 @@ class ListRecord extends BaseElement {
             }
         }
     }
-
     _render() {
         if (this.dataset.recordData !== undefined && this.dataset.recordData.isJSON()) {
             this._renderData(this.dataset.recordData.parseJSON());
         }
     }
-
     enableAll() {
         if (this.selectElement !== null) {
             this.selectElement.show();
         }
     }
-
     disableAll() {
         if (this.selectElement !== null) {
             this.selectElement.hide();
         }
     }
 }
-
 class PagerList extends BaseElement {
     constructor() {
         super();
         this.pagerElement = null;
     }
-
     connectedCallback() {
         if (this.pagerElement === null) {
             this.pagerElement = document.createElement("div");
@@ -954,7 +898,6 @@ class PagerList extends BaseElement {
             this.appendChild(this.pagerElement);
         }
     }
-
     _renderPager(jsonData = {}) {
         let totalPage = 0, currentPage = 1;
         if (jsonData.hasOwnProperty("totalPage") && ((typeof jsonData.totalPage) === "number")) {
@@ -971,7 +914,6 @@ class PagerList extends BaseElement {
                 currentPage = 1;
             }
         }
-
         let firstPageBtn = this.pagerElement.querySelector("i[id='firstPage']");
         if (firstPageBtn === null) {
             firstPageBtn = document.createElement("i");
@@ -989,12 +931,10 @@ class PagerList extends BaseElement {
         } else {
             firstPageBtn.show();
         }
-
         let previousPage = currentPage - 1;
         if (previousPage < 1) {
             previousPage = 1;
         }
-
         let previousPageBtn = this.pagerElement.querySelector("i[id='previousPage']");
         if (previousPageBtn === null) {
             previousPageBtn = document.createElement("i");
@@ -1012,7 +952,6 @@ class PagerList extends BaseElement {
             previousPageBtn.dataset.currentPage = previousPage.toString();
             previousPageBtn.show();
         }
-
         let pageGroup = this.pagerElement.querySelector("div[id='pageGroup']");
         if (pageGroup === null) {
             pageGroup = document.createElement("div");
@@ -1036,7 +975,6 @@ class PagerList extends BaseElement {
                 });
             }
         }
-
         let beginPage = Math.max(1, currentPage - 2), endPage = Math.min(totalPage, currentPage + 2);
         pageGroup.querySelectorAll("i").forEach(pageBtn => {
             let pageNo = pageBtn.dataset.currentPage.parseInt();
@@ -1091,7 +1029,6 @@ class PagerList extends BaseElement {
         }
     }
 }
-
 class ListData extends PagerList {
     constructor() {
         super();
@@ -1104,11 +1041,9 @@ class ListData extends PagerList {
         this.selectAllBtn = null;
         this.batchElement = null;
     }
-
     static tagName() {
         return "list-data";
     }
-
     connectedCallback() {
         super._removeProgress();
         if (this.listElement === null) {
@@ -1133,7 +1068,6 @@ class ListData extends PagerList {
         }
         super.connectedCallback();
     }
-
     renderElement(data) {
         if (data === null) {
             return;
@@ -1168,12 +1102,10 @@ class ListData extends PagerList {
             }
         }
     }
-
     switchStyle(styleClass = "") {
         if (styleClass === null) {
             styleClass = "";
         }
-
         if (!["text-list", "view-list", "image-list"].includes(styleClass)) {
             styleClass = "view-list";
         }
@@ -1182,21 +1114,17 @@ class ListData extends PagerList {
             this.listElement.setClass(styleClass);
         }
     }
-
     sortQuery(sortBy = "", asc = false) {
         this.parentElement.sortQuery(sortBy, asc);
     }
-
     pageQuery(pageNo = 1) {
         if (this.parentElement !== null) {
             this.parentElement.pageQuery(pageNo);
         }
     }
-
     switchSelectAll(count) {
         this.selectAllBtn.dataset.selectAll = "" + (count === 0);
     }
-
     _renderBatchOperators() {
         if (this.batchElement.dataset.batchOperators === undefined
             || !this.batchElement.dataset.batchOperators.isJSON()) {
@@ -1239,12 +1167,10 @@ class ListData extends PagerList {
                 operator.data = JSON.stringify(operatorData);
             }
         }
-
         while (i < existsCount) {
             this.batchElement.removeChild(existsOperators[i]);
             i++;
         }
-
         this.selectAll = (operatorCount > 0);
         if (this.selectAll) {
             this.selectAllBtn.show();
@@ -1252,13 +1178,11 @@ class ListData extends PagerList {
             this.selectAllBtn.hide();
         }
     }
-
     _renderData() {
         if (this.contentElement.dataset.itemData === undefined || this.contentElement.dataset.itemData == null
             || !this.contentElement.dataset.itemData.isJSON()) {
             return;
         }
-
         let jsonData = this.contentElement.dataset.itemData.parseJSON();
         if (jsonData instanceof Array) {
             if (this.dataset.type === "append") {
@@ -1290,7 +1214,6 @@ class ListData extends PagerList {
             }
         }
     }
-
     _renderRow(rowElement = null, rowData = []) {
         if (rowElement == null || rowData.length === 0) {
             return;
@@ -1310,7 +1233,6 @@ class ListData extends PagerList {
         }
     }
 }
-
 class MessageList extends BaseElement {
     constructor() {
         super();
@@ -1321,11 +1243,9 @@ class MessageList extends BaseElement {
         this.gridElement = null;
         this.interval = 0;
     }
-
     static tagName() {
         return "message-list";
     }
-
     connectedCallback() {
         this._appendProgress();
         let initData = this.getAttribute("data");
@@ -1333,7 +1253,6 @@ class MessageList extends BaseElement {
             this.renderElement(initData.parseJSON());
         }
     }
-
     renderElement(data) {
         if (data === null) {
             return;
@@ -1361,7 +1280,6 @@ class MessageList extends BaseElement {
             this.gridElement.setAttribute("slot", "info");
             this.appendChild(this.gridElement);
         }
-
         if (data.hasOwnProperty("className")) {
             this.setClass(data.className);
         }
@@ -1391,31 +1309,26 @@ class MessageList extends BaseElement {
                 refreshElement.refresh();
             }, data.refresh);
         }
-
         if (data.hasOwnProperty("className")) {
             this.setClass(data.className);
         }
     }
-
     switchStyle(styleClass = "") {
         if (this.gridElement !== null) {
             this.gridElement.switchStyle(styleClass);
         }
     }
-
     sortQuery(sortBy = "", asc = false) {
         if (this.filterElement !== null) {
             this.filterElement.sortQuery(sortBy, asc);
         }
     }
-
     pageQuery(pageNo = 1) {
         if (this.filterElement !== null) {
             this.filterElement.pageQuery(pageNo);
         }
     }
 }
-
 class CommentList extends PagerList {
     constructor() {
         super();
@@ -1427,11 +1340,9 @@ class CommentList extends PagerList {
         this.pageNoElement = null;
         this.pageLimitElement = null;
     }
-
     static tagName() {
         return "comment-list";
     }
-
     connectedCallback() {
         if (this.titleElement === null) {
             this.titleElement = document.createElement("h3");
@@ -1475,7 +1386,6 @@ class CommentList extends PagerList {
             this.renderElement(this.dataset.data.parseJSON());
         }
     }
-
     renderElement(data) {
         if (data.hasOwnProperty("title")) {
             this.titleElement.innerHTML = data.title;
@@ -1502,7 +1412,6 @@ class CommentList extends PagerList {
             this.formElement.hide();
         }
     }
-
     pageQuery(pageNo = 1) {
         if (this.filterElement !== null) {
             this.pageNoElement.value = pageNo;
@@ -1510,7 +1419,6 @@ class CommentList extends PagerList {
         }
     }
 }
-
 class CommentData extends BaseElement {
     constructor() {
         super();
@@ -1520,11 +1428,9 @@ class CommentData extends BaseElement {
         this.contentElement = null;
         this.operators = null;
     }
-
     static tagName() {
         return "comment-data";
     }
-
     connectedCallback() {
         if (this.userInfo === null) {
             this.userInfo = new UserDetails();
@@ -1547,7 +1453,6 @@ class CommentData extends BaseElement {
             this.appendChild(this.operators);
         }
     }
-
     renderElement(data) {
         if (data.hasOwnProperty("userDetails") && data.hasOwnProperty("title") && data.hasOwnProperty("content")) {
             this.userInfo.data = JSON.stringify(data.userDetails);
@@ -1575,7 +1480,6 @@ class CommentData extends BaseElement {
         }
     }
 }
-
 export {
     ListFilter, ListData, ListStatistics, ListTitle, ListRecord, RecordOperator, ListHeader, MessageList, PropertyItem,
     PropertyDefine, CommentList, CommentData

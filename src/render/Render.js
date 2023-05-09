@@ -21,13 +21,10 @@
  *
  */
 'use strict';
-
 import {NotifyArea, MockDialog} from "../ui/mock.js";
-
 export default class UIRender {
     constructor() {
     }
-
     init(elements = []) {
         elements.filter(element => element.tagName !== undefined && (typeof element.tagName) === "function")
             .forEach(element => {
@@ -39,12 +36,10 @@ export default class UIRender {
                 }
             });
     }
-
     message(type = "", message = "", confirmFunc = null) {
         if (message === null || message.length === 0) {
             return;
         }
-
         switch (type.toLowerCase()) {
             case "alert":
                 UIRender._retrieve("mock-dialog").showMessage(message, type);
@@ -57,7 +52,6 @@ export default class UIRender {
                 break;
         }
     }
-
     static _retrieve(tagName = "") {
         if (tagName.length === 0) {
             throw Error(Cell.multiMsg("Unknown.Tag.name"));

@@ -15,17 +15,14 @@
  * limitations under the License.
  */
 "use strict";
-
 class CustomElement extends HTMLElement {
     constructor() {
         super();
         this._shadowRoot = this.attachShadow({mode: "closed"});
     }
-
     static tagName() {
         return null;
     }
-
     _addSlot(...names) {
         if (names !== null) {
             names.filter(name => this._checkExists(name))
@@ -36,13 +33,11 @@ class CustomElement extends HTMLElement {
                 });
         }
     }
-
     _checkExists(name = "") {
         return (name != null) && (name.length > 0)
             && (this._shadowRoot.querySelector("slot[name='" + name + "']") === null);
     }
 }
-
 class BaseElement extends CustomElement {
     constructor() {
         super();
@@ -65,19 +60,16 @@ class BaseElement extends CustomElement {
         this._addSlot("loading");
         this.loadingElement = null;
     }
-
     loadData() {
         if (this.dataset.hasOwnProperty("code")) {
             window.setTimeout(() => Cell.initData(this.dataset.code, this), 100);
         }
     }
-
     remove() {
         if (this.parentElement !== null) {
             this.parentElement.removeChild(this);
         }
     }
-
     _appendProgress() {
         if (this.loadingElement === null) {
             this.loadingElement = document.createElement("div");
@@ -86,7 +78,6 @@ class BaseElement extends CustomElement {
             this.appendChild(this.loadingElement);
         }
     }
-
     _removeProgress() {
         if (this.loadingElement !== null) {
             this.removeChild(this.loadingElement);
@@ -94,22 +85,18 @@ class BaseElement extends CustomElement {
         }
     }
 }
-
 class TipsElement extends BaseElement {
     constructor() {
         super();
         super._addSlot("tipsButton");
     }
-
     static tagName() {
         return "tips-button";
     }
-
     renderElement(data) {
         this.dataset.content = data;
         this.connectedCallback();
     }
-
     connectedCallback() {
         super._removeProgress();
         let tipsElement = this.querySelector("span[slot='tipsButton']");
@@ -135,7 +122,6 @@ class TipsElement extends BaseElement {
         }
     }
 }
-
 class AbstractElement extends BaseElement {
     constructor() {
         super();
@@ -143,7 +129,6 @@ class AbstractElement extends BaseElement {
         this.labelElement = null;
         this.tipsElement = null;
     }
-
     _renderLabel() {
         if (this.labelElement === null) {
             this.labelElement = document.createElement("label");
@@ -160,7 +145,6 @@ class AbstractElement extends BaseElement {
             }
             this.labelElement.innerText = textContent;
         }
-
         if (this.dataset.tips !== undefined && this.dataset.tips.length > 0) {
             if (this.tipsElement === null) {
                 this.tipsElement = new TipsElement();
@@ -171,7 +155,6 @@ class AbstractElement extends BaseElement {
         }
     }
 }
-
 /**
  * Progress bar element
  *
@@ -224,11 +207,9 @@ class ProgressBar extends CustomElement {
             }
         });
     }
-
     static tagName() {
         return "progress-bar";
     }
-
     connectedCallback() {
         if (this._progressInfo === null) {
             this._progressInfo = document.createElement("span");
@@ -242,7 +223,6 @@ class ProgressBar extends CustomElement {
         }
     }
 }
-
 /**
  * Mock scroll bar
  */
@@ -252,7 +232,6 @@ class ScrollBar extends CustomElement {
         super._addSlot("scrollItem");
         this._scrollItem = null;
     }
-
     connectedCallback() {
         if (this._scrollItem === null) {
             this._scrollItem = document.createElement("div");
@@ -260,26 +239,21 @@ class ScrollBar extends CustomElement {
             this.appendChild(this._scrollItem);
         }
     }
-
     static tagName() {
         return "scroll-bar";
     }
-
     disable() {
         this.style.display = "none";
     }
-
     enable() {
         this.style.display = "block";
     }
-
     initHeight(itemHeight = 0) {
         if (this._scrollItem !== null && itemHeight > 0) {
             this._scrollItem.style.height = itemHeight + "px";
             this._scrollItem.style.top = "0";
         }
     }
-
     scroll(top = 0) {
         if (this._scrollItem !== null) {
             let limitTop = this.offsetHeight - this._scrollItem.offsetHeight;
@@ -289,12 +263,10 @@ class ScrollBar extends CustomElement {
             this._scrollItem.style.top = (top > 0 ? top : 0) + "px";
         }
     }
-
     scrollTop() {
         return this._scrollItem !== null ? this._scrollItem.style.top.parseInt() : 0;
     }
 }
-
 /**
  * Mock five-star rating
  * setting name attribute for form item name
@@ -304,21 +276,17 @@ class StarRating extends CustomElement {
         super();
         super._addSlot("starRating");
     }
-
     static tagName() {
         return "star-rating";
     }
-
     connectedCallback() {
         if (this.hasAttribute("name")) {
             this.render(this.getAttribute("name"));
         }
     }
-
     set name(name) {
         this.render(name);
     }
-
     render(name = "") {
         if (name.length > 0 && this.querySelector("div[slot='starRating']") === null) {
             let divElement = document.createElement("div");
@@ -339,23 +307,19 @@ class StarRating extends CustomElement {
         }
     }
 }
-
 /**
  * Five star score display element
  * set score for display, for example: 3.0 is 3 fill stars, 4.2 is 4 fill stars and 1 half star
  */
 class StarScore extends CustomElement {
-
     constructor() {
         super();
         super._addSlot("starScore");
         this.scoreElement = null;
     }
-
     static tagName() {
         return "star-score";
     }
-
     connectedCallback() {
         if (this.scoreElement === null) {
             this.scoreElement = document.createElement("p");
@@ -369,7 +333,6 @@ class StarScore extends CustomElement {
             }
         }
     }
-
     set score(score) {
         if ((typeof score) === "number") {
             let starList = this.scoreElement.querySelectorAll("i");
@@ -395,5 +358,4 @@ class StarScore extends CustomElement {
         }
     }
 }
-
 export {TipsElement, CustomElement, BaseElement, AbstractElement, ProgressBar, ScrollBar, StarRating, StarScore};

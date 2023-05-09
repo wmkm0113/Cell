@@ -15,21 +15,17 @@
  * limitations under the License.
  */
 "use strict";
-
 import {BaseElement} from "./element.js";
 import {RecordOperator} from "./list.js";
-
 class MenuElement extends BaseElement {
     constructor() {
         super();
         super._addSlot("menuList");
         this.menuList = null;
     }
-
     static tagName() {
         return "menu-element";
     }
-
     connectedCallback() {
         this._appendProgress();
         this.menuList = document.createElement("div");
@@ -40,7 +36,6 @@ class MenuElement extends BaseElement {
             this.renderElement(initData.parseJSON());
         }
     }
-
     renderElement(data) {
         if (data.hasOwnProperty("className")) {
             this.setClass(data.className);
@@ -56,7 +51,6 @@ class MenuElement extends BaseElement {
         }
         this._render();
     }
-
     _render() {
         if (this.dataset.menuData !== undefined && this.dataset.menuData.isJSON()) {
             super._removeProgress();
@@ -81,7 +75,6 @@ class MenuElement extends BaseElement {
                     menuItem.data = JSON.stringify(itemData);
                     i++;
                 });
-
             while (i < existsCount) {
                 this.menuList.removeChild(itemList[i]);
                 i++;
@@ -90,7 +83,6 @@ class MenuElement extends BaseElement {
         }
     }
 }
-
 class MenuItem extends BaseElement {
     constructor() {
         super();
@@ -98,11 +90,9 @@ class MenuItem extends BaseElement {
         this._menuTitle = null;
         this._menuList = null;
     }
-
     static tagName() {
         return "menu-item";
     }
-
     connectedCallback() {
         this._menuTitle = this.querySelector("a[slot='menuTitle']");
         if (this._menuTitle === null) {
@@ -120,7 +110,6 @@ class MenuItem extends BaseElement {
             this.renderElement(this.getAttribute("data").parseJSON());
         }
     }
-
     renderElement(data) {
         if (data.hasOwnProperty("title")) {
             if (data.hasOwnProperty("sortCode") && data.sortCode.isNum()) {
@@ -166,7 +155,6 @@ class MenuItem extends BaseElement {
             }
         }
     }
-
     static _renderContent(element, languageCode, itemData) {
         if (itemData.hasOwnProperty("link")) {
             let linkAddress = Cell.contextPath();
@@ -202,7 +190,6 @@ class MenuItem extends BaseElement {
         }
     }
 }
-
 class MultilingualMenu extends BaseElement {
     constructor() {
         super();
@@ -210,11 +197,9 @@ class MultilingualMenu extends BaseElement {
         this.currentItem = null;
         this.menuItems = null;
     }
-
     static tagName() {
         return "multi-menu";
     }
-
     renderElement(data) {
         if (data.hasOwnProperty("url") && data.url.length > 0) {
             this.menuItems.clearChildNodes();
@@ -255,7 +240,6 @@ class MultilingualMenu extends BaseElement {
             }
         }
     }
-
     connectedCallback() {
         if (this.querySelector("i[slot='icon']") === null) {
             let iconElement = document.createElement("i");
@@ -278,7 +262,6 @@ class MultilingualMenu extends BaseElement {
         }
     }
 }
-
 class CategoryMenu extends BaseElement {
     constructor() {
         super();
@@ -286,11 +269,9 @@ class CategoryMenu extends BaseElement {
         this._menuTitle = null;
         this._menuList = null;
     }
-
     static tagName() {
         return "category-menu";
     }
-
     connectedCallback() {
         if (this._menuTitle === null) {
             this._menuTitle = document.createElement("h4");
@@ -303,7 +284,6 @@ class CategoryMenu extends BaseElement {
             this.appendChild(this._menuList);
         }
     }
-
     renderElement(data) {
         if (data.hasOwnProperty("className")) {
             this.setClass(data.className);
@@ -323,5 +303,4 @@ class CategoryMenu extends BaseElement {
         }
     }
 }
-
 export {MenuElement, MenuItem, MultilingualMenu, CategoryMenu};

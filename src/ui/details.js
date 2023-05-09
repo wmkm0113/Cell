@@ -15,12 +15,10 @@
  * limitations under the License.
  */
 "use strict";
-
 import {BaseElement, StarScore, TipsElement} from "./element.js";
 import {CommentList} from "./list.js";
 import {StandardButton} from "./input.js";
 import {MultilingualMenu} from "./menu.js";
-
 class AttachFiles extends BaseElement {
     constructor() {
         super();
@@ -28,15 +26,12 @@ class AttachFiles extends BaseElement {
         this.attachTitle = null;
         this.attachList = null;
     }
-
     static tagName() {
         return "attach-list";
     }
-
     renderElement(data) {
         this._renderElement(data);
     }
-
     connectedCallback() {
         if (this.attachTitle === null) {
             this.attachTitle = document.createElement("h3");
@@ -52,7 +47,6 @@ class AttachFiles extends BaseElement {
             this._renderElement(this.getAttribute("data").parseJSON());
         }
     }
-
     _renderElement(data) {
         super._removeProgress();
         if (data.hasOwnProperty("title")) {
@@ -78,7 +72,6 @@ class AttachFiles extends BaseElement {
         }
     }
 }
-
 class MessageDetails extends BaseElement {
     constructor() {
         super();
@@ -98,15 +91,12 @@ class MessageDetails extends BaseElement {
         this.tags = null;
         this.operators = null;
     }
-
     static tagName() {
         return "message-details";
     }
-
     renderElement(data) {
         this._renderElement(data);
     }
-
     connectedCallback() {
         if (this.multiMenu === null) {
             this.multiMenu = new MultilingualMenu();
@@ -185,7 +175,6 @@ class MessageDetails extends BaseElement {
             this._renderElement(this.getAttribute("data").parseJSON());
         }
     }
-
     _renderElement(data) {
         super._removeProgress();
         if (data.hasOwnProperty("multiMenu") && data.multiMenu.hasOwnProperty("url")) {
@@ -281,7 +270,6 @@ class MessageDetails extends BaseElement {
         }
     }
 }
-
 class PropertyDetails extends BaseElement {
     constructor() {
         super();
@@ -290,21 +278,17 @@ class PropertyDetails extends BaseElement {
         this.tipsButton = null;
         this.contentElement = null;
     }
-
     static tagName() {
         return "property-details";
     }
-
     renderElement(data) {
         this._renderElement(data);
     }
-
     connectedCallback() {
         if (this.hasAttribute("data") && this.getAttribute("data").isJSON()) {
             this._renderElement(this.getAttribute("data").parseJSON());
         }
     }
-
     _renderElement(data) {
         if (this.titleElement === null) {
             this.titleElement = document.createElement("span");
@@ -345,7 +329,6 @@ class PropertyDetails extends BaseElement {
         }
     }
 }
-
 class ModelDetails extends BaseElement {
     constructor() {
         super();
@@ -354,15 +337,12 @@ class ModelDetails extends BaseElement {
         this.titleElement = null;
         this.contentElement = null;
     }
-
     static tagName() {
         return "model-details";
     }
-
     renderElement(data) {
         this._renderElement(data);
     }
-
     connectedCallback() {
         if (this.previewElement === null) {
             this.previewElement = new ResourceDetails();
@@ -384,7 +364,6 @@ class ModelDetails extends BaseElement {
             this._renderElement(this.getAttribute("data").parseJSON());
         }
     }
-
     _renderElement(data) {
         super._removeProgress();
         if (data.hasOwnProperty("identifyCode")) {
@@ -404,7 +383,6 @@ class ModelDetails extends BaseElement {
         }
     }
 }
-
 class ModelList extends BaseElement {
     constructor() {
         super();
@@ -412,15 +390,12 @@ class ModelList extends BaseElement {
         this.titleElement = null;
         this.itemsElement = null;
     }
-
     static tagName() {
         return "model-list";
     }
-
     renderElement(data) {
         this._renderElement(data);
     }
-
     connectedCallback() {
         if (this.titleElement === null) {
             this.titleElement = document.createElement("h3");
@@ -436,7 +411,6 @@ class ModelList extends BaseElement {
             this._renderElement(this.getAttribute("data").parseJSON());
         }
     }
-
     _renderElement(data) {
         super._removeProgress();
         if (data.hasOwnProperty("title")) {
@@ -463,7 +437,6 @@ class ModelList extends BaseElement {
         }
     }
 }
-
 class AccessoriesDetails extends BaseElement {
     constructor() {
         super();
@@ -471,15 +444,12 @@ class AccessoriesDetails extends BaseElement {
         this.titleElement = null;
         this.itemsElement = null;
     }
-
     static tagName() {
         return "accessories-details";
     }
-
     renderElement(data) {
         this._renderElement(data);
     }
-
     connectedCallback() {
         if (this.titleElement === null) {
             this.titleElement = document.createElement("h3");
@@ -495,7 +465,6 @@ class AccessoriesDetails extends BaseElement {
             this._renderElement(this.getAttribute("data").parseJSON());
         }
     }
-
     _renderElement(data) {
         super._removeProgress();
         if (data.hasOwnProperty("categoryName")) {
@@ -519,22 +488,18 @@ class AccessoriesDetails extends BaseElement {
         }
     }
 }
-
 class AccessoriesList extends BaseElement {
     constructor() {
         super();
         super._addSlot("accessoriesItems");
         this.accessoriesItems = null;
     }
-
     static tagName() {
         return "accessories-list";
     }
-
     renderElement(data) {
         this._renderElement(data);
     }
-
     connectedCallback() {
         if (this.accessoriesItems === null) {
             this.accessoriesItems = document.createElement("div");
@@ -545,7 +510,6 @@ class AccessoriesList extends BaseElement {
             this._renderElement(this.getAttribute("data").parseJSON());
         }
     }
-
     _renderElement(data) {
         super._removeProgress();
         if (data instanceof Array) {
@@ -558,7 +522,6 @@ class AccessoriesList extends BaseElement {
         }
     }
 }
-
 class CorporateAddress extends BaseElement {
     constructor() {
         super();
@@ -567,15 +530,12 @@ class CorporateAddress extends BaseElement {
         this.contentElement = null;
         this.mapElement = null;
     }
-
     static tagName() {
         return "corporate-address";
     }
-
     renderElement(data) {
         this._renderElement(data);
     }
-
     connectedCallback() {
         if (this.titleElement === null) {
             this.titleElement = document.createElement("h4");
@@ -591,7 +551,6 @@ class CorporateAddress extends BaseElement {
             this.renderElement(this.getAttribute("data").parseJSON());
         }
     }
-
     _renderElement(data) {
         super._removeProgress();
         if (data.hasOwnProperty("title") && data.hasOwnProperty("content")) {
@@ -608,7 +567,6 @@ class CorporateAddress extends BaseElement {
             this.mapElement.data = JSON.stringify(data.location);
         }
     }
-
     _newMap(tagName = "") {
         if (tagName.length > 0) {
             this.mapElement = document.createElement(tagName);
@@ -617,7 +575,6 @@ class CorporateAddress extends BaseElement {
         }
     }
 }
-
 class CorporateDetails extends BaseElement {
     constructor() {
         super();
@@ -628,15 +585,12 @@ class CorporateDetails extends BaseElement {
         this.addressElement = null;
         this.addressList = null;
     }
-
     static tagName() {
         return "corporate-details";
     }
-
     renderElement(data) {
         this._renderElement(data);
     }
-
     connectedCallback() {
         if (this.contentElement === null) {
             this.contentElement = document.createElement("article");
@@ -659,13 +613,11 @@ class CorporateDetails extends BaseElement {
             this.renderElement(this.getAttribute("data").parseJSON());
         }
     }
-
     _renderElement(data) {
         super._removeProgress();
         if (data.hasOwnProperty("contentInfo")) {
             this.contentElement.innerHTML = data.contentInfo;
         }
-
         if (data.hasOwnProperty("resourceList")) {
             this.resourceList.clearChildNodes();
             data.resourceList.forEach(itemData => {
@@ -690,7 +642,6 @@ class CorporateDetails extends BaseElement {
         }
     }
 }
-
 class ResourceDetails extends BaseElement {
     constructor() {
         super();
@@ -700,11 +651,9 @@ class ResourceDetails extends BaseElement {
         this.videoElement = null;
         this.titleElement = null;
     }
-
     static tagName() {
         return "resource-details";
     }
-
     connectedCallback() {
         this.setClass("icon icon-img-lost");
         if (this.imgElement === null) {
@@ -752,7 +701,6 @@ class ResourceDetails extends BaseElement {
             this.renderElement(this.getAttribute("data").parseJSON());
         }
     }
-
     playVideo() {
         if (this.videoElement != null && this.videoElement.hasChildNodes()) {
             this.videoElement.muted = true;
@@ -761,14 +709,12 @@ class ResourceDetails extends BaseElement {
             }
         }
     }
-
     pauseVideo() {
         if (this.videoElement != null && this.videoElement.hasChildNodes()
             && this.videoElement.isPlaying()) {
             this.videoElement.pause();
         }
     }
-
     loadResource() {
         if (this.dataset.loaded === "true") {
             return;
@@ -786,7 +732,6 @@ class ResourceDetails extends BaseElement {
             this.dataset.loaded = "true";
         }
     }
-
     renderElement(data) {
         if (data.hasOwnProperty("resourcePath") && data.hasOwnProperty("mimeType")) {
             this.dataset.resourcePath = Cell.contextPath() + data.resourcePath;
@@ -838,7 +783,6 @@ class ResourceDetails extends BaseElement {
         this.dataset.link = data.hasOwnProperty("link") ? data.link : "#";
     }
 }
-
 class CorporatePreview extends BaseElement {
     constructor() {
         super();
@@ -846,11 +790,9 @@ class CorporatePreview extends BaseElement {
         this.contentElement = null;
         this.resourceDetails = null;
     }
-
     static tagName() {
         return "corporate-preview";
     }
-
     connectedCallback() {
         if (this.contentElement === null) {
             this.contentElement = document.createElement("div");
@@ -866,7 +808,6 @@ class CorporatePreview extends BaseElement {
             this.renderElement(this.getAttribute("data").parseJSON());
         }
     }
-
     renderElement(data) {
         if (data === null) {
             return;
@@ -885,7 +826,6 @@ class CorporatePreview extends BaseElement {
         }
     }
 }
-
 class LinkAvatar extends BaseElement {
     constructor() {
         super();
@@ -893,11 +833,9 @@ class LinkAvatar extends BaseElement {
         this.linkElement = null;
         this.resourceDetails = null;
     }
-
     static tagName() {
         return "link-avatar";
     }
-
     connectedCallback() {
         if (this.linkElement === null) {
             this.linkElement = document.createElement("a");
@@ -912,7 +850,6 @@ class LinkAvatar extends BaseElement {
             this.renderElement(this.getAttribute("data").parseJSON());
         }
     }
-
     renderElement(data) {
         if (data === null) {
             return;
@@ -923,7 +860,6 @@ class LinkAvatar extends BaseElement {
         }
     }
 }
-
 class LinkBanner extends BaseElement {
     constructor() {
         super();
@@ -931,11 +867,9 @@ class LinkBanner extends BaseElement {
         this.backgroundElement = null;
         this.titleElement = null;
     }
-
     static tagName() {
         return "link-banner";
     }
-
     connectedCallback() {
         if (this.backgroundElement === null) {
             this.backgroundElement = new ResourceDetails();
@@ -952,7 +886,6 @@ class LinkBanner extends BaseElement {
             this.renderElement(this.getAttribute("data").parseJSON());
         }
     }
-
     renderElement(data) {
         if (data === null) {
             return;
@@ -966,7 +899,6 @@ class LinkBanner extends BaseElement {
         this.dataset.link = data.hasOwnProperty("linkAddress") ? data.linkAddress : "#";
     }
 }
-
 class UserDetails extends BaseElement {
     constructor() {
         super();
@@ -976,11 +908,9 @@ class UserDetails extends BaseElement {
         this.userName = null;
         this.addEventListener("click", (event) => Cell.sendRequest(event));
     }
-
     static tagName() {
         return "user-info";
     }
-
     connectedCallback() {
         if (this.avatar === null) {
             this.avatar = new ResourceDetails();
@@ -999,7 +929,6 @@ class UserDetails extends BaseElement {
             this.appendChild(this.userName);
         }
     }
-
     renderElement(data) {
         if (data.hasOwnProperty("avatar")) {
             this.avatar.data = JSON.stringify(data.avatar);

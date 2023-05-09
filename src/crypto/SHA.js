@@ -21,9 +21,7 @@
  *                          SHAKE128/SHAKE256/Keccak224/Keccak256/Keccak384/Keccak512
  */
 'use strict';
-
 import {Int64, Crypto, CryptoUtils} from "./Crypto.js";
-
 const K = [
     new Int64(0x428A2F98, 0xD728AE22), new Int64(0x71374491, 0x23EF65CD),
     new Int64(0xB5C0FBCF, 0xEC4D3B2F), new Int64(0xE9B5DBA5, 0x8189DBBC),
@@ -87,7 +85,6 @@ const RC = [
     new Int64(0x80000000, 0x80008081), new Int64(0x80000000, 0x00008080),
     new Int64(0x00000000, 0x80000001), new Int64(0x80000000, 0x80008008)
 ];
-
 export default class SHA extends Crypto {
     constructor(bit = 160, outBit = 160, delimiter = 0x80, blockSize = 64, blockLength = 16, key = "") {
         //  Default config value is SHA1
@@ -110,7 +107,6 @@ export default class SHA extends Crypto {
             if (this._bit === 1600) {
                 _keyBytes[this._blockLength - 1] &= 0xFFFFFF00;
             }
-
             for (let i = 0; i < this._blockLength; i++) {
                 this._inPad[i] = (_keyBytes[i] | 0) ^ 0x36363636;
                 this._outPad[i] = (_keyBytes[i] | 0) ^ 0x5C5C5C5C;
@@ -125,28 +121,23 @@ export default class SHA extends Crypto {
         this._hmac = key.length > 0;
         Cell.debug("Register.SHA.Config", bit, outBit, delimiter, blockSize, blockLength, key);
     }
-
     static get CryptoName() {
         return "SHA";
     }
-
     append(string = "") {
         this.appendBinary(string.getBytes(this._bit !== 1600), string.toUTF8().length);
     }
-
     appendBinary(dataBytes, dataLength) {
         this._buffer = this._buffer.concat(dataBytes);
         this._length += dataLength;
         this._preCalc();
     }
-
     reset() {
         this._buffer = [];
         this._length = 0;
         this._reset();
         this._hash = this._initHash();
     }
-
     _final(dataBytes, length, total) {
         switch (this._bit) {
             case 1600:
@@ -166,7 +157,6 @@ export default class SHA extends Crypto {
         }
         this._calculate(dataBytes);
     }
-
     finish(hex = true) {
         let _length = (this._bit === 1600)
             ? ((this._length * 8) % this._blockSize)
@@ -191,14 +181,12 @@ export default class SHA extends Crypto {
         this.reset();
         return _result;
     }
-
     _preCalc() {
         while (this._buffer.length >= this._blockLength) {
             this._calculate(this._buffer.slice(0, this._blockLength));
             this._buffer = this._buffer.slice(this._blockLength);
         }
     }
-
     _reset() {
         switch (this._bit) {
             case 160:
@@ -224,7 +212,6 @@ export default class SHA extends Crypto {
                 break;
         }
     }
-
     _initHash() {
         switch (this._bit) {
             case 160:
@@ -284,7 +271,6 @@ export default class SHA extends Crypto {
                 throw new Error(Cell.multiMsg("Bit.SHA.Error"));
         }
     }
-
     _hmacTotal() {
         switch (this._bit) {
             case 160:
@@ -295,7 +281,6 @@ export default class SHA extends Crypto {
                 return 192 * 8 - (this._bit - this._outBit);
         }
     }
-
     _calculate(dataBytes) {
         switch (this._bit) {
             case 160:
@@ -428,7 +413,6 @@ export default class SHA extends Crypto {
                                 new Int64(dataBytes[x + 1], dataBytes[x]));
                     }
                 }
-
                 // Rounds
                 for (let j = 0; j < 24; j++) {
                     this._reset();
@@ -439,21 +423,18 @@ export default class SHA extends Crypto {
                         _tmp[x] = Int64.XOR(this._hash[x][0], this._hash[x][1], this._hash[x][2],
                             this._hash[x][3], this._hash[x][4]);
                     }
-
                     for (let x = 0; x < 5; x++) {
                         let _num = Int64.XOR(_tmp[(x + 4) % 5], _tmp[(x + 1) % 5].safeRotateLeft(1));
                         for (let y = 0; y < 5; y++) {
                             this._hash[x][y] = Int64.XOR(_num, this._hash[x][y]);
                         }
                     }
-
                     // Rho Pi
                     for (let x = 0; x < 5; x++) {
                         for (let y = 0; y < 5; y++) {
                             this._words[y][(2 * x + 3 * y) % 5] = this._hash[x][y].safeRotateLeft(R[x][y]);
                         }
                     }
-
                     // Chi
                     for (let x = 0; x < 5; x++) {
                         for (let y = 0; y < 5; y++) {
@@ -462,13 +443,11 @@ export default class SHA extends Crypto {
                                     Int64.AND(this._words[(x + 1) % 5][y].NOT(), this._words[(x + 2) % 5][y]));
                         }
                     }
-
                     this._hash[0][0] = Int64.XOR(this._hash[0][0], RC[j]);
                 }
                 break;
         }
     }
-
     _array() {
         let _result = [], _limit = Math.floor(this._outBit / 32);
         switch (this._bit) {
@@ -498,7 +477,6 @@ export default class SHA extends Crypto {
                 return _result;
         }
     }
-
     static newInstance(method = "SHA1", key = "", outBit = -1) {
         switch (method.toUpperCase()) {
             case "SHA1":

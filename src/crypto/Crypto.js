@@ -23,16 +23,13 @@ class Int64 {
         this._high = high;
         this._low = low;
     }
-
     clone() {
         return new Int64(this._high, this._low);
     }
-
     safeRotateRight(bit) {
         return new Int64(((this._high >>> bit) | (this._low << (32 - bit))),
             ((this._low >>> bit) | (this._high << (32 - bit))));
     }
-
     safeRotateLeft(bit) {
         if (bit > 32) {
             return new Int64(((this._low << (bit - 32)) | (this._high >>> (64 - bit))),
@@ -44,20 +41,16 @@ class Int64 {
             return new Int64(this._high, this._low);
         }
     }
-
     reverseAndRotate(bit) {
         return new Int64(((this._low >>> bit) | (this._high << (32 - bit))),
             ((this._high >>> bit) | (this._low << (32 - bit))));
     }
-
     shiftRight(bit) {
         return new Int64((this._high >>> bit), ((this._low >>> bit) | this._high << (32 - bit)));
     }
-
     NOT() {
         return new Int64(~this._high, ~this._low);
     }
-
     static ADD(x, ...args) {
         let _a = x._low & 0xFFFF, _b = x._low >>> 16, _c = x._high & 0xFFFF, _d = x._high >>> 16;
         let _length = args.length;
@@ -72,7 +65,6 @@ class Int64 {
         _d += (_c >>> 16);
         return new Int64(((_c & 0xFFFF) | (_d << 16)), ((_a & 0xFFFF) | (_b << 16)));
     }
-
     static XOR(x, ...codes) {
         let _high = x._high | 0, _low = x._low | 0;
         let _length = codes.length;
@@ -82,7 +74,6 @@ class Int64 {
         }
         return new Int64(_high, _low);
     }
-
     static AND(x, ...codes) {
         let _high = x._high | 0, _low = x._low | 0;
         let _length = codes.length;
@@ -93,7 +84,6 @@ class Int64 {
         return new Int64(_high, _low);
     }
 }
-
 class CryptoUtils {
     static SAFE_ADD(x = 0, y = 0) {
         if ((typeof x).toLowerCase() === "number" && (typeof y).toLowerCase() === "number") {
@@ -104,16 +94,12 @@ class CryptoUtils {
             return Int64.ADD(x, y)
         }
     }
-
 }
-
 class Crypto {
     static get CryptoName() {
         return "";
     }
-
     static initialize() {
     }
 }
-
 export {Int64, Crypto, CryptoUtils}

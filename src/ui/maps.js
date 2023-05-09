@@ -15,9 +15,7 @@
  * limitations under the License.
  */
 "use strict";
-
 import {BaseElement} from "./element.js";
-
 class MapElement extends BaseElement {
     constructor() {
         super();
@@ -25,11 +23,9 @@ class MapElement extends BaseElement {
         this.containerElement = null;
         this.mapInstance = null;
     }
-
     renderElement(data) {
         this._renderElement(data);
     }
-
     connectedCallback() {
         if (this.containerElement === null) {
             this.containerElement = document.createElement("div");
@@ -39,16 +35,13 @@ class MapElement extends BaseElement {
         }
     }
 }
-
 class BaiduMap extends MapElement {
     constructor() {
         super();
     }
-
     static tagName() {
         return "baidu-map";
     }
-
     _renderElement(data) {
         super._removeProgress();
         if (data.hasOwnProperty("latitude") && data.hasOwnProperty("longitude")) {
@@ -70,7 +63,6 @@ class BaiduMap extends MapElement {
         }
     }
 }
-
 class GoogleMap extends MapElement {
     constructor() {
         super();
@@ -81,11 +73,9 @@ class GoogleMap extends MapElement {
             mapTypeId: null
         };
     }
-
     static tagName() {
         return "google-map";
     }
-
     _renderElement(data) {
         super._removeProgress();
         if (this._mapOptions.initialized && data.hasOwnProperty("latitude") && data.hasOwnProperty("longitude")) {
@@ -103,5 +93,4 @@ class GoogleMap extends MapElement {
         }
     }
 }
-
 export {BaiduMap, GoogleMap}

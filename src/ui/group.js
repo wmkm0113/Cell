@@ -15,15 +15,12 @@
  * limitations under the License.
  */
 "use strict";
-
-import {AbstractElement} from "./element.js";
+import {AbstractElement, BaseElement} from "./element.js";
 import {MockCheckBox, MockRadio, MockSwitch} from "./mock.js";
-
 class GroupElement extends AbstractElement {
     constructor() {
         super();
     }
-
     renderElement(data) {
         if (data.hasOwnProperty("name")) {
             Object.keys(data).forEach(key => {
@@ -52,7 +49,6 @@ class GroupElement extends AbstractElement {
             this.connectedCallback();
         }
     }
-
     _renderItem(tagName = "") {
         let itemName = this.getAttribute("name");
         let itemList = this.dataset.items;
@@ -140,7 +136,6 @@ class GroupElement extends AbstractElement {
         }
     }
 }
-
 /**
  * Mock button group
  *
@@ -165,16 +160,13 @@ class ButtonGroup extends GroupElement {
     constructor() {
         super();
     }
-
     static tagName() {
         return "group-button";
     }
-
     connectedCallback() {
         super._renderItem("mock-switch");
     }
 }
-
 /**
  * Mock checkbox group
  *
@@ -199,16 +191,13 @@ class CheckBoxGroup extends GroupElement {
     constructor() {
         super();
     }
-
     static tagName() {
         return "checkbox-group";
     }
-
     connectedCallback() {
         super._renderItem("mock-checkbox");
     }
 }
-
 /**
  * Mock radio group
  *
@@ -233,15 +222,69 @@ class RadioGroup extends GroupElement {
     constructor() {
         super();
     }
-
     static tagName() {
         return "radio-group";
     }
-
     connectedCallback() {
         super._removeProgress();
         super._renderItem("mock-radio");
     }
 }
-
-export {ButtonGroup, RadioGroup, CheckBoxGroup};
+class SocialGroup extends BaseElement {
+    constructor() {
+        super();
+        this._addSlot("title", "items");
+        this.titleElement = null;
+    }
+    static tagName() {
+        return "social-group";
+    }
+    connectedCallback() {
+        this._render();
+    }
+    renderElement(data) {
+        this.dataset.itemData = JSON.stringify(data);
+        this._render();
+    }
+    _render() {
+        if (this.dataset.itemData === undefined || this.dataset.itemData.length === 0
+            || !this.dataset.itemData.isJSON()) {
+            return;
+        }
+        if (this.titleElement === null) {
+            this.titleElement = document.createElement("h3");
+            this.titleElement.setAttribute("slot", "title");
+            this.appendChild(this.titleElement);
+        }
+        let jsonData = this.dataset.itemData.parseJSON(), existsItems = this.querySelectorAll("a"),
+            existsCount = existsItems.length, i = 0;
+        if (jsonData.hasOwnProperty("textContent")) {
+            this.titleElement.innerHTML = jsonData.textContent;
+        }
+        if (jsonData.hasOwnProperty("items")) {
+            Array.from(jsonData.items)
+                .filter(jsonItem => jsonItem.hasOwnProperty("className"))
+                .forEach(jsonItem => {
+                    let linkElement;
+                    if (i < existsCount) {
+                        linkElement = existsItems[i];
+                    } else {
+                        linkElement = document.createElement("a");
+                        linkElement.setAttribute("slot", "items");
+                        linkElement.setAttribute("target", "_blank");
+                        this.appendChild(linkElement);
+                    }
+                    linkElement.setClass(jsonItem.className);
+                    linkElement.setAttribute("title", jsonItem.hasOwnProperty("title") ? jsonItem.title : "");
+                    linkElement.setAttribute("href", jsonItem.hasOwnProperty("link") ? jsonItem.link : "#");
+                    if (jsonItem.hasOwnProperty("sortIndex")) {
+                        linkElement.dataset.sortIndex = jsonItem.sortIndex;
+                    } else {
+                        linkElement.dataset.sortIndex = "0";
+                    }
+                });
+            this.sortChildrenBy("a", "data-sort-index", true);
+        }
+    }
+}
+export {ButtonGroup, RadioGroup, CheckBoxGroup, SocialGroup};

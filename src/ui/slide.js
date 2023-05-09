@@ -15,10 +15,9 @@
  * limitations under the License.
  */
 "use strict";
-
+import {SlideType} from "../commons/Commons.js";
 import {BaseElement} from "./element.js";
 import {ResourceDetails} from "./details.js";
-
 /**
  * Slide show element
  *
@@ -48,17 +47,15 @@ export default class SlideShow extends BaseElement {
             transitionTime: 1000,
             openWindow: false,
             timeOut: 5000,
-            slideType: "scrollLeft"
+            slideType: SlideType.ScrollLeft
         };
         Object.seal(this._options);
         super._addSlot("slide", "sort");
         this.sortElement = null;
     }
-
     static tagName() {
         return "slide-show";
     }
-
     renderElement(data) {
         this.dataset.transitionTime =
             data.transitionTime === undefined ? this.dataset.transitionTime : data.transitionTime;
@@ -74,14 +71,12 @@ export default class SlideShow extends BaseElement {
         }
         this.renderSlides();
     }
-
     connectedCallback() {
         this._appendProgress();
         if (this.hasAttribute("data") && this.getAttribute("data").isJSON()) {
             this.renderElement(this.getAttribute("data").parseJSON());
         }
     }
-
     renderSlides() {
         if (this.dataset.items === undefined) {
             return;
@@ -95,7 +90,6 @@ export default class SlideShow extends BaseElement {
             window.clearInterval(this._timer);
             this._timer = null;
         }
-
         let itemList = this.dataset.items;
         if (itemList.isJSON()) {
             let jsonItems = itemList.parseJSON();
@@ -114,7 +108,7 @@ export default class SlideShow extends BaseElement {
             }
             let existsItems = slideElement.querySelectorAll("resource-details");
             let existsDots = this.sortElement.querySelectorAll("span");
-            let slideType = this.dataset.slideType === undefined ? this._options.slideType : this.dataset.slideType;
+            let slideType = this._slideType();
             let transitionTime = (this.dataset.transitionTime === undefined || !this.dataset.transitionTime.isNum())
                 ? this._options.transitionTime
                 : this.dataset.transitionTime.parseInt();
@@ -128,29 +122,46 @@ export default class SlideShow extends BaseElement {
                 }
                 this.dataset.transitionTime = transitionTime.toString();
             }
-            if (slideType.startsWith("scroll")) {
+            let reverse = false;
+            if (slideType === SlideType.ScrollLeft || slideType === SlideType.ScrollRight
+                || slideType === SlideType.ScrollTop || slideType === SlideType.ScrollBottom) {
                 if (transitionTime > 0) {
                     slideElement.style.transition = "all " + transitionTime + "ms";
                 }
-                if (slideType === "scrollLeft" || slideType === "scrollRight") {
-                    slideElement.style.width = (jsonItems.length * 100) + "%";
-                } else if (slideType === "scrollTop" || slideType === "scrollBottom") {
-                    slideElement.style.height = (jsonItems.length * 100) + "%";
+                switch (slideType) {
+                    case SlideType.ScrollLeft:
+                    case SlideType.ScrollRight:
+                        slideElement.style.width = (jsonItems.length * 100) + "%";
+                        slideElement.style.height = "100%";
+                        slideElement.style.display = "flex";
+                        break;
+                    case SlideType.ScrollTop:
+                    case SlideType.ScrollBottom:
+                        slideElement.style.width = "100%";
+                        slideElement.style.height = (jsonItems.length * 100) + "%";
+                        break;
                 }
-
-                if (slideType === "scrollRight" || slideType === "scrollBottom") {
-                    jsonItems = jsonItems.reverse();
+                if (slideType === SlideType.ScrollRight || slideType === SlideType.ScrollBottom) {
+                    reverse = true;
+                    // jsonItems = jsonItems.reverse();
                 }
             }
             let indexValue = jsonItems.length;
+            let previousItem = null;
             jsonItems.forEach((itemInfo, index) => {
                 let slideItem;
                 if (index < existsItems.length) {
                     slideItem = existsItems[index];
+                    previousItem = existsItems[index];
                 } else {
                     slideItem = new ResourceDetails();
-                    slideElement.appendChild(slideItem);
+                    if (reverse && previousItem !== null) {
+                        slideElement.insertBefore(slideItem, previousItem);
+                    } else {
+                        slideElement.appendChild(slideItem);
+                    }
                     slideItem.addEventListener("click", (event) => Cell.sendRequest(event));
+                    previousItem = slideItem;
                 }
                 slideItem.style.zIndex = "" + indexValue;
                 indexValue--;
@@ -165,40 +176,40 @@ export default class SlideShow extends BaseElement {
                     slideItem.removeAttribute("target");
                 }
                 slideItem.dataset.sortIndex = index;
-
-                switch (slideType) {
-                    case "scrollTop":
-                        slideElement.style.top = "0";
-                        break;
-                    case "scrollLeft":
-                        slideElement.style.left = "0";
-                        break;
-                    case "scrollBottom":
-                        slideElement.style.top = ((jsonItems.length - 1) * -100) + "%";
-                        break;
-                    case "scrollRight":
-                        slideElement.style.left = ((jsonItems.length - 1) * -100) + "%";
-                        break;
-                    case "zoomIn":
-                        slideItem.style.transform = (index === 0) ? "scale(1, 1)" : "scale(0, 0)";
-                        break;
-                    case "zoomOut":
-                        slideItem.style.transform = "scale(1, 1)";
-                        break;
-                    case "opacityIn":
-                        slideItem.style.opacity = (index === 0) ? "1" : "0";
-                        break;
-                    case "opacityOut":
-                        slideItem.style.opacity = "1";
-                        break;
-                }
-
                 if (transitionTime > 0) {
                     slideItem.style.transition = "all " + transitionTime + "ms";
                 }
+
+                switch (slideType) {
+                    case SlideType.ScrollTop:
+                        slideElement.style.top = "0";
+                        break;
+                    case SlideType.ScrollLeft:
+                        slideElement.style.left = "0";
+                        break;
+                    case SlideType.ScrollBottom:
+                        slideElement.style.top = ((jsonItems.length - 1) * -100) + "%";
+                        break;
+                    case SlideType.ScrollRight:
+                        slideElement.style.left = ((jsonItems.length - 1) * -100) + "%";
+                        break;
+                    case SlideType.ZoomIn:
+                        slideItem.style.transform = (index === 0) ? "scale(1, 1)" : "scale(0, 0)";
+                        break;
+                    case SlideType.ZoomOut:
+                        slideItem.style.transform = "scale(1, 1)";
+                        break;
+                    case SlideType.OpacityIn:
+                        slideItem.style.opacity = (index === 0) ? "1" : "0";
+                        break;
+                    case SlideType.OpacityOut:
+                        slideItem.style.opacity = "1";
+                        break;
+                }
                 slideItem.style.width = (this.offsetWidth + "px");
                 slideItem.style.height = (this.offsetHeight + "px");
-                if (!slideType.startsWith("scroll")) {
+                if (slideType === SlideType.ZoomIn || slideType === SlideType.ZoomOut
+                || slideType === SlideType.OpacityIn || slideType === SlideType.OpacityOut) {
                     slideItem.style.position = "absolute";
                     slideItem.style.top = "0";
                     slideItem.style.left = "0";
@@ -210,7 +221,6 @@ export default class SlideShow extends BaseElement {
                         slideItem.loadResource();
                     }
                 }
-
                 let dotItem;
                 if (index < existsDots.length) {
                     dotItem = existsDots[index];
@@ -238,62 +248,70 @@ export default class SlideShow extends BaseElement {
         this.addEventListener("mouseout", this.resume);
         this.resume();
     }
-
+    _slideType() {
+        if (this.dataset.slideType === undefined || !this.dataset.slideType.isNum()) {
+            return this._options.slideType;
+        } else {
+            return this.dataset.slideType.parseInt();
+        }
+    }
     process() {
         let slideElement = this.querySelector("div > div");
         if (slideElement !== null) {
             let existsItems = this.querySelectorAll("div > div > resource-details");
             if (existsItems.length > 1) {
-                let currentIndex =
-                    this.dataset.index === undefined ? 0 : this.dataset.index.parseInt(), nextIndex;
-                if (this.dataset.slideType.startsWith("scroll")) {
-                    if ((currentIndex + 1) === existsItems.length) {
-                        nextIndex = 0;
-                    } else {
-                        nextIndex = currentIndex + 1;
+                let slideType = this._slideType();
+                let currentIndex = this.dataset.index === undefined ? 0 : this.dataset.index.parseInt(),
+                    nextIndex = currentIndex + 1;
+                if (nextIndex === existsItems.length) {
+                    nextIndex = 0;
+                }
+                existsItems.forEach(item => {
+                    if (item.dataset.sortIndex.parseInt() === nextIndex) {
+                        item.loadResource();
                     }
-                    existsItems[nextIndex].loadResource();
-                    switch (this.dataset.slideType) {
-                        case "scrollTop":
+                });
+                if (slideType === SlideType.ScrollLeft || slideType === SlideType.ScrollRight
+                    || slideType === SlideType.ScrollTop || slideType === SlideType.ScrollBottom) {
+                    switch (slideType) {
+                        case SlideType.ScrollTop:
                             slideElement.style.top = (nextIndex * -100) + "%";
                             break;
-                        case "scrollLeft":
+                        case SlideType.ScrollLeft:
                             slideElement.style.left = (nextIndex * -100) + "%";
                             break;
-                        case "scrollBottom":
+                        case SlideType.ScrollBottom:
                             slideElement.style.top = ((existsItems.length - nextIndex - 1) * -100) + "%";
                             break;
-                        case "scrollRight":
+                        case SlideType.ScrollRight:
                             slideElement.style.left = ((existsItems.length - nextIndex - 1) * -100) + "%";
                             break;
                     }
                 } else {
-                    nextIndex = currentIndex + 1;
-                    if (nextIndex === existsItems.length) {
-                        nextIndex = 0;
-                    }
-                    if (this.dataset.slideType.endsWith("In")) {
+                    let currentItem, nextItem;
+                    existsItems.forEach(item => {
+                        if (item.dataset.sortIndex.parseInt() === currentIndex) {
+                            currentItem = item;
+                        } else if (item.dataset.sortIndex.parseInt() === nextIndex) {
+                            nextItem = item;
+                        }
+                    });
+                    if (slideType === SlideType.ZoomIn || slideType === SlideType.OpacityIn) {
                         this.sortIndex(nextIndex);
                     }
-                    existsItems[nextIndex].loadResource();
-                    let moveItem =
-                        this.dataset.slideType.endsWith("Out") ? existsItems[currentIndex] : existsItems[nextIndex];
-                    if (this.dataset.slideType.endsWith("Out")) {
-                        existsItems[currentIndex].show();
-                        existsItems[nextIndex].show();
-                    }
-                    switch (this.dataset.slideType) {
-                        case "zoomIn":
-                            moveItem.style.transform = "scale(1, 1)";
+                    nextItem.show();
+                    switch (slideType) {
+                        case SlideType.ZoomIn:
+                            nextItem.style.transform = "scale(1, 1)";
                             break;
-                        case "zoomOut":
-                            moveItem.style.transform = "scale(0, 0)";
+                        case SlideType.ZoomOut:
+                            currentItem.style.transform = "scale(0, 0)";
                             break;
-                        case "opacityIn":
-                            moveItem.style.opacity = "1";
+                        case SlideType.OpacityIn:
+                            nextItem.style.opacity = "1";
                             break;
-                        case "opacityOut":
-                            moveItem.style.opacity = "0";
+                        case SlideType.OpacityOut:
+                            currentItem.style.opacity = "0";
                             break;
                     }
                     let frameElement = this;
@@ -301,16 +319,17 @@ export default class SlideShow extends BaseElement {
                         ? this._options.transitionTime.parseInt()
                         : this.dataset.transitionTime.parseInt();
                     if (transitionTime === 0) {
-                        if (this.dataset.slideType.endsWith("Out")) {
+                        this._resetItem(slideType, currentItem);
+                        if (slideType === SlideType.ZoomOut || slideType === SlideType.OpacityOut) {
                             this.sortIndex(currentIndex);
                         }
-                        this.resetItems();
                     } else {
-                        window.setTimeout(function () {
-                            if (frameElement.dataset.slideType.endsWith("Out")) {
+                        window.setTimeout(() => {
+                            frameElement._resetItem(slideType, currentItem);
+                            if (frameElement._slideType() === SlideType.ZoomOut
+                                || frameElement._slideType() === SlideType.OpacityOut) {
                                 frameElement.sortIndex(nextIndex);
                             }
-                            frameElement.resetItems.apply(frameElement);
                         }, transitionTime);
                     }
                 }
@@ -325,7 +344,6 @@ export default class SlideShow extends BaseElement {
             }
         }
     }
-
     sortIndex(currentIndex) {
         let existsItems = this.querySelectorAll("div > div > resource-details");
         if (existsItems.length > 1) {
@@ -340,42 +358,31 @@ export default class SlideShow extends BaseElement {
             }
         }
     }
-
-    resetItems() {
-        let existsItems = this.querySelectorAll("div > div > resource-details");
-        if (existsItems.length > 1) {
-            let currentIndex = this.dataset.index.parseInt();
-            Array.from(existsItems)
-                .filter(itemElement => itemElement.dataset.sortIndex !== currentIndex.toString())
-                .forEach(itemElement => {
-                    if (this.dataset.slideType.endsWith("Out")) {
-                        itemElement.hide();
-                    }
-                    switch (this.dataset.slideType) {
-                        case "opacityIn":
-                            itemElement.style.opacity = "0";
-                            break;
-                        case "opacityOut":
-                            itemElement.style.opacity = "1";
-                            break;
-                        case "zoomIn":
-                            itemElement.style.transform = "scale(0, 0)";
-                            break;
-                        case "zoomOut":
-                            itemElement.style.transform = "scale(1, 1)";
-                            break;
-                    }
-                });
+    _resetItem(slideType, currentItem) {
+        if (slideType === SlideType.OpacityOut || slideType === SlideType.ZoomOut) {
+            currentItem.hide();
+        }
+        switch (slideType) {
+            case SlideType.OpacityIn:
+                currentItem.style.opacity = "0";
+                break;
+            case SlideType.OpacityOut:
+                currentItem.style.opacity = "1";
+                break;
+            case SlideType.ZoomIn:
+                currentItem.style.transform = "scale(0, 0)";
+                break;
+            case SlideType.ZoomOut:
+                currentItem.style.transform = "scale(1, 1)";
+                break;
         }
     }
-
     pause() {
         if (this._timer !== null) {
             window.clearInterval(this._timer);
             this._timer = null;
         }
     }
-
     resume() {
         if (this._timer === null) {
             let existsItems = this.querySelectorAll("div > div > resource-details");

@@ -726,7 +726,7 @@ const slideData = `{
     "transitionTime": 1000,
     "openWindow" : false,
     "timeOut" : 5000,
-    "slideType" : "scrollLeft",
+    "slideType" : 7,
     "items" : [
         {
             "href" : "#",
@@ -764,7 +764,8 @@ const slideData = `{
             "href" : "#",
             "resource" : {
                 "mimeType": "video/mp4",
-                "resourcePath" : "./images/demoVideo.mp4"
+                "resourcePath" : "./images/demoVideo.mp4",
+                "title" : "Title 5"
             }
         }
     ]

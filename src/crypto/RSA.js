@@ -19,9 +19,7 @@
  * [New] RSA Utils Only Support RSA/ECB/NoPadding
  */
 'use strict';
-
 import {Crypto} from "./Crypto.js";
-
 class RSAKey {
     constructor(_exponent = "", _modulus = "", _radix = 16) {
         let _prefix;
@@ -41,7 +39,6 @@ class RSAKey {
         }
         this._exponent = BigInt(_prefix + _exponent);
         this._modulus = BigInt(_prefix + _modulus);
-
         this._highIndex = 0n;
         let _value = this._modulus;
         while (Number(_value | 0n) !== 0) {
@@ -52,7 +49,6 @@ class RSAKey {
         this._mu = _b2k / this._modulus;
         this._bkPlus = 1n << (this._highIndex + (2n << 3n));
     }
-
     powMod(_hexData) {
         let _result = 1n;
         let _tempValue = BigInt("0x" + _hexData);
@@ -69,7 +65,6 @@ class RSAKey {
         }
         return _result;
     }
-
     _modulo(x = 0n) {
         let _modify = (2n << 3n);
         let _q1 = x >> (this._highIndex - _modify);
@@ -79,18 +74,15 @@ class RSAKey {
         let _r2term = _q3 * this._modulus;
         let _r2 = _r2term % (2n << (this._highIndex + _modify - 1n));
         let _result = _r1 - _r2;
-
         if (_result < 0n) {
             _result += this._bkPlus;
         }
-
         while (_result > this._modulus) {
             _result -= this._modulus;
         }
         return _result;
     }
 }
-
 export default class RSA extends Crypto {
     constructor(keyConfig = {exponent: "", modulus: "", radix: 16, keySize: 1024, padding: "NoPadding"}) {
         super();
@@ -131,19 +123,15 @@ export default class RSA extends Crypto {
         this._publicKey = (keyConfig.exponent === "10001");
         this._key = new RSAKey(keyConfig.exponent, keyConfig.modulus, keyConfig.radix);
     }
-
     static get CryptoName() {
         return "RSA";
     }
-
     static newInstance(keyConfig = {exponent: "", modulus: "", radix: 16, keySize: 1024, padding: "NoPadding"}) {
         return new RSA(keyConfig);
     }
-
     encrypt(str = "") {
         return this._encrypt(str.getBytes());
     }
-
     decrypt(str) {
         if ((str.length % this._blockLength) !== 0) {
             return "";
@@ -156,7 +144,6 @@ export default class RSA extends Crypto {
         }
         return new TextDecoder().decode(new Uint8Array(_dataBytes.flat()));
     }
-
     _encrypt(_array) {
         let _position = 0, _result = "";
         while (_position < _array.length) {
@@ -168,7 +155,6 @@ export default class RSA extends Crypto {
         }
         return _result;
     }
-
     _processPadding(_block) {
         let _padding = 0n;
         switch (this._padding) {
@@ -195,7 +181,6 @@ export default class RSA extends Crypto {
         }
         return _padding;
     }
-
     _removePadding(_blockData = 0n) {
         let _blockBytes = [], _block = _blockData;
         while (_block > 0n) {

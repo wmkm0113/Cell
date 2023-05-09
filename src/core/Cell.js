@@ -37,14 +37,12 @@ import * as Details from "../ui/details.js";
 import {TipsElement, ProgressBar, ScrollBar, StarRating, StarScore} from "../ui/element.js";
 import {BaiduMap, GoogleMap} from "../ui/maps.js";
 import {FormItem, FormInfo} from "../ui/form.js";
-import {ButtonGroup, CheckBoxGroup, RadioGroup} from "../ui/group.js";
+import {ButtonGroup, CheckBoxGroup, RadioGroup, SocialGroup} from "../ui/group.js";
 import * as Input from "../ui/input.js";
 import * as List from "../ui/list.js";
 import SlideShow from "../ui/slide.js";
-import SocialGroup from "../ui/social.js";
 import {MenuElement, MenuItem, MultilingualMenu, CategoryMenu} from "../ui/menu.js";
 import {DebugMode} from "../commons/Commons.js";
-
 class CellJS {
     static ELEMENTS = [
         BaiduMap, GoogleMap, TipsElement, FloatPage, FloatWindow, NotifyArea, MockSwitch, MockDialog, MockCheckBox,
@@ -62,7 +60,6 @@ class CellJS {
         Details.CorporateDetails, Details.CorporatePreview, Details.LinkAvatar, Details.LinkBanner
     ];
     _languageCode = "";
-
     constructor() {
         this._config = Commons.Config;
         //  Freeze config
@@ -71,7 +68,6 @@ class CellJS {
         this._darkMode = false;
         this._multiInfo = {};
     }
-
     async init() {
         this._languageCode = this._config.languageCode;
         await Cell.Ajax(this.contextPath() + this._config.multiPath.replace("{languageCode}", this._languageCode))
@@ -88,7 +84,6 @@ class CellJS {
             window.onload = this.scrollPage;
             window.onscroll = this.scrollPage;
         }
-
         if (this._config.darkMode.enabled && Comment.GPS) {
             switch (this._config.darkMode.mode) {
                 case Commons.DarkMode.Light:
@@ -120,7 +115,6 @@ class CellJS {
             window.setTimeout(Cell._scheduleNotify, this._config.notify.period);
         }
     }
-
     _scheduleNotify() {
         if (this._config.notify.dataPath.length > 0) {
             Cell.debug("Notify.Path.Data", this._config.notify.dataPath);
@@ -136,7 +130,6 @@ class CellJS {
             window.setTimeout(Cell._scheduleNotify, this._config.notify.period);
         }
     }
-
     _initMulti() {
         if (this._languageCode.length === 0) {
             this._languageCode = this._config.languageCode;
@@ -149,31 +142,26 @@ class CellJS {
                 }
             });
     }
-
     debug(messageKey = "", ...args) {
         if (this._config.debugMode <= Commons.DebugMode.DEBUG) {
             this._log(Commons.DebugMode.DEBUG, this.multiMsg(messageKey, args));
         }
     }
-
     info(messageKey = "", ...args) {
         if (this._config.debugMode <= Commons.DebugMode.INFO) {
             this._log(Commons.DebugMode.INFO, this.multiMsg(messageKey, args));
         }
     }
-
     warn(messageKey = "", ...args) {
         if (this._config.debugMode <= Commons.DebugMode.WARN) {
             this._log(Commons.DebugMode.WARN, this.multiMsg(messageKey, args));
         }
     }
-
     error(messageKey = "", ...args) {
         if (this._config.debugMode <= Commons.DebugMode.ERROR) {
             this._log(Commons.DebugMode.ERROR, this.multiMsg(messageKey, args));
         }
     }
-
     _log(debugMode = DebugMode.ERROR, multiMsg = "") {
         if (multiMsg.length > 0) {
             switch (debugMode) {
@@ -192,7 +180,6 @@ class CellJS {
             }
         }
     }
-
     multiMsg(messageKey = "", ...args) {
         let multiMessage = this._multiInfo.hasOwnProperty(messageKey) ? this._multiInfo[messageKey] : "";
         if (multiMessage.length > 0) {
@@ -204,38 +191,30 @@ class CellJS {
         }
         return multiMessage;
     }
-
     alert(message = "") {
         this.Render.message("alert", message);
     }
-
     confirm(message = "", confirmFunc = null) {
         this.Render.message("confirm", message, confirmFunc);
     }
-
     notify(message = null) {
-        if (message === null || message === undefined) {
-            return;
+        if (message !== null && message !== undefined) {
+            this.Render.message("notify", message);
         }
-        this.Render.message("notify", message);
     }
-
     contextPath() {
         return this._config.contextPath;
     }
-
     initData(dataCode = "", element) {
-        if (this._config.componentPath.length === 0 || dataCode.length === 0
-            || element === undefined || element === null) {
-            return;
+        if (this._config.componentPath.length > 0 && dataCode.length > 0
+            && element !== undefined && element !== null) {
+            let urlAddress = this._config.componentPath.replace("{dataCode}", dataCode);
+            Cell.debug("Component.Path.Data", urlAddress);
+            Cell.Ajax(Cell.contextPath() + urlAddress)
+                .then(responseText => element.data = responseText)
+                .catch(errorMsg => console.error(errorMsg));
         }
-        let urlAddress = this._config.componentPath.replace("{dataCode}", dataCode);
-        Cell.debug("Component.Path.Data", urlAddress);
-        Cell.Ajax(Cell.contextPath() + urlAddress)
-            .then(responseText => element.data = responseText)
-            .catch(errorMsg => console.error(errorMsg));
     }
-
     _parseResponse(responseData = {}, _floatWindow = false, linkAddress = "") {
         let title = "";
         if (responseData.hasOwnProperty("title")) {
@@ -266,13 +245,11 @@ class CellJS {
             responseData.notify.forEach(notifyItem => Cell.notify(JSON.stringify(notifyItem)));
         }
     }
-
     sendRequest(event) {
         if (!Commons.Comment.Browser.IE || Commons.Comment.Browser.IE11) {
             event.preventDefault();
             event.stopPropagation();
         }
-
         let target = event.currentTarget;
         if (target.dataset.disabled == null || target.dataset.disabled === "false") {
             if (target.tagName.toLowerCase() === "form") {
@@ -313,18 +290,15 @@ class CellJS {
             }
         }
     }
-
     openWindow(data) {
         Cell._floatWindow().data = data;
     }
-
     closeWindow() {
         let floatWindow = Cell._floatWindow();
         if (floatWindow) {
             document.body.removeChild(floatWindow);
         }
     }
-
     submitForm(formElement) {
         if (formElement && !formElement.dataset.disabled && formElement.validate()) {
             let formData = formElement.formData();
@@ -357,7 +331,6 @@ class CellJS {
         }
         return false;
     }
-
     registerDarkMode(posLon, posLat) {
         if (this._config.darkMode.mode === Commons.DarkMode.Sun) {
             let Sun = new Date().sunTime(posLon, posLat);
@@ -373,7 +346,6 @@ class CellJS {
             }, 60 * 1000);
         }
     }
-
     switchDarkMode() {
         if (this._config.darkMode.mode === Commons.DarkMode.Sun) {
             let _currDate = new Date(),
@@ -385,7 +357,6 @@ class CellJS {
             }
         }
     }
-
     systemDarkMode(event) {
         if (event.matches) {
             this._disableDarkMode();
@@ -393,28 +364,22 @@ class CellJS {
             this._enableDarkMode();
         }
     }
-
     _enableDarkMode() {
         document.body.appendClass(this._config.darkMode.styleClass);
     }
-
     _disableDarkMode() {
         document.body.removeClass(this._config.darkMode.styleClass);
     }
-
     get language() {
         return this._languageCode;
     }
-
     set language(languageCode) {
-        if (this._languageCode === languageCode) {
-            return;
+        if (this._languageCode !== languageCode) {
+            document.documentElement.lang = languageCode;
+            this._languageCode = languageCode;
+            this._initMulti();
         }
-        document.documentElement.lang = languageCode;
-        this._languageCode = languageCode;
-        this._initMulti();
     }
-
     digest(data) {
         if (this._config.security.password.encrypt) {
             return this.digestData(this._config.security.password.digest, data);
@@ -423,7 +388,6 @@ class CellJS {
             return data;
         }
     }
-
     encData(data) {
         if (this._config.security.RSA.exponent.length > 0 && this._config.security.RSA.modulus.length > 0) {
             return RSA.newInstance(this._config.security.RSA).encrypt(data);
@@ -431,7 +395,6 @@ class CellJS {
             return data;
         }
     }
-
     decData(data) {
         if (this._config.security.RSA.exponent.length > 0 && this._config.security.RSA.modulus.length > 0) {
             return RSA.newInstance(this._config.security.RSA).decrypt(data);
@@ -439,7 +402,6 @@ class CellJS {
             return data;
         }
     }
-
     digestData(method, data, key = "", outBit = -1) {
         let encryptor;
         if (method.startsWith("CRC")) {
@@ -460,7 +422,6 @@ class CellJS {
         encryptor.append(data);
         return encryptor.finish();
     }
-
     dateToMilliseconds(value = "") {
         if (this._config.formConfig.convertDateTime) {
             let milliseconds = Date.parse(value);
@@ -471,7 +432,6 @@ class CellJS {
         }
         return value;
     }
-
     millisecondsToDate(value = null, pattern = Comment.ISO8601DATETIMEPattern,
                        utc = this._config.formConfig.utcDateTime) {
         if (Number.isFinite(value)) {
@@ -482,7 +442,6 @@ class CellJS {
         }
         return value;
     }
-
     Ajax(url, options = {}, parameters = null) {
         return new Promise(function (resolve, reject) {
             let _options = {
@@ -513,7 +472,6 @@ class CellJS {
                     }
                 }
             }
-
             if (_options.asynchronous) {
                 _request.onreadystatechange = function () {
                     if (this.readyState === 4) {
@@ -521,7 +479,6 @@ class CellJS {
                     }
                 };
             }
-
             _request.ontimeout = function () {
                 reject(_request);
             };
@@ -530,14 +487,12 @@ class CellJS {
             } else {
                 _request.open(_options.method, url, _options.asynchronous);
             }
-
             _request.setRequestHeader("Cache-Control", "no-cache");
             _request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
             let _jwtToken = sessionStorage.getItem("JWTToken");
             if (_jwtToken != null) {
                 _request.setRequestHeader("Authorization", _jwtToken);
             }
-
             if (parameters) {
                 if (_options.uploadFile) {
                     if (_options.uploadProgress) {
@@ -548,13 +503,11 @@ class CellJS {
                 }
             }
             _request.send(parameters);
-
             if (!_options.asynchronous) {
                 CellJS._parseResponse(_request, resolve, reject);
             }
         });
     }
-
     _floatWindow() {
         let floatWindow = document.body.querySelector("float-window");
         if (floatWindow === null) {
@@ -563,7 +516,6 @@ class CellJS {
         }
         return floatWindow;
     }
-
     _renderElement(dataList = [], floatWindow = false) {
         dataList.forEach(dataItem => {
             if (dataItem.hasOwnProperty("id") && dataItem.hasOwnProperty("tagName")) {
@@ -595,7 +547,6 @@ class CellJS {
             }
         });
     }
-
     _initCrypto() {
         let cryptoNames = [];
         [MD5, CRC, RSA, SHA].concat(this._config.security.providers)
@@ -607,7 +558,6 @@ class CellJS {
             });
         Cell.debug("Names.Crypto", cryptoNames.join(", "));
     }
-
     static _parseResponse(_request, resolve, reject) {
         Cell.debug("Status.Data.Response", _request.status);
         let languageCode = _request.getResponseHeader("languageCode");
@@ -619,7 +569,6 @@ class CellJS {
         if (_jwtToken !== null) {
             sessionStorage.setItem("JWTToken", _jwtToken);
         }
-
         if (_request.status === 301 || _request.status === 302 || _request.status === 307) {
             let _redirectPath = _request.getResponseHeader("Location");
             if (_redirectPath.length !== 0) {
@@ -642,7 +591,6 @@ class CellJS {
             reject(_request.status);
         }
     }
-
     scrollPage() {
         Cell._config.scrollHeader.selectors
             .filter(selector => selector.length > 0)
@@ -661,13 +609,10 @@ class CellJS {
             })
     }
 }
-
-(
-    function () {
-        if (typeof window.Cell === "undefined") {
-            window.$ = Commons.$;
-            window.Cell = new CellJS();
-            window.Cell.init();
-        }
+(function () {
+    if (typeof window.Cell === "undefined") {
+        window.$ = Commons.$;
+        window.Cell = new CellJS();
+        window.Cell.init();
     }
-)();
+})();

@@ -15,10 +15,8 @@
  * limitations under the License.
  */
 "use strict";
-
 import {BaseElement, CustomElement, ScrollBar} from "./element.js";
 import {BaseInput} from "./input.js";
-
 /**
  * Abstract mock element
  *
@@ -48,7 +46,6 @@ class MockElement extends BaseInput {
         this._inputElement = null;
         this._spanElement = null;
     }
-
     renderElement(data) {
         if (data.hasOwnProperty("name")) {
             Object.keys(data).forEach(key =>
@@ -56,7 +53,6 @@ class MockElement extends BaseInput {
             this.connectedCallback();
         }
     }
-
     _render() {
         if (this.dataset.name !== undefined && this.dataset.name.length > 0) {
             this._divElement.setClass(this._className);
@@ -87,11 +83,9 @@ class MockElement extends BaseInput {
                     }
                 });
             }
-
             this._spanElement.innerText = this.dataset.textButton === undefined ? "" : this.dataset.textButton;
         }
     }
-
     connectedCallback() {
         super._removeProgress();
         let tipsButton = this.querySelector("tips-button[slot='tips']");
@@ -130,7 +124,6 @@ class MockElement extends BaseInput {
         this._render();
     }
 }
-
 /**
  * Flat style button
  */
@@ -138,12 +131,10 @@ class MockSwitch extends MockElement {
     constructor() {
         super("checkbox", "mock-switch");
     }
-
     static tagName() {
         return "mock-switch";
     }
 }
-
 /**
  * Mock checkbox
  */
@@ -151,12 +142,10 @@ class MockCheckBox extends MockElement {
     constructor() {
         super("checkbox");
     }
-
     static tagName() {
         return "mock-checkbox";
     }
 }
-
 /**
  * Mock radio button
  */
@@ -164,12 +153,10 @@ class MockRadio extends MockElement {
     constructor() {
         super("radio", "mockElement mockRadio");
     }
-
     static tagName() {
         return "mock-radio";
     }
 }
-
 /**
  * Mock dialog for float notification and notify center
  */
@@ -177,27 +164,22 @@ class MockDialog extends CustomElement {
     constructor() {
         super();
     }
-
     static tagName() {
         return "mock-dialog";
     }
-
     showMessage(message = "", type = "alert", callFunc = null) {
         document.body.style.overflow = "hidden";
         let dialogElement = document.createElement("div");
         dialogElement.setAttribute("slot", "dialog");
         dialogElement.setClass(type);
         this.appendChild(dialogElement);
-
         let messageElement = document.createElement("span");
         messageElement.innerHTML = message;
         dialogElement.appendChild(messageElement);
-
         let confirmBtn = document.createElement("button");
         confirmBtn.setAttribute("id", "confirm-btn");
         dialogElement.appendChild(confirmBtn);
         confirmBtn.innerText = Cell.multiMsg("OK.Button");
-
         if (type === "confirm") {
             let cancelBtn = document.createElement("button");
             cancelBtn.setAttribute("id", "cancel-btn");
@@ -221,7 +203,6 @@ class MockDialog extends CustomElement {
             });
         }
     }
-
     _remove(dialogElement) {
         if (dialogElement.parentElement !== null) {
             this.removeChild(dialogElement);
@@ -231,14 +212,12 @@ class MockDialog extends CustomElement {
             }
         }
     }
-
     connectedCallback() {
         let slotElement = document.createElement("slot");
         slotElement.setAttribute("name", "dialog");
         this._shadowRoot.appendChild(slotElement);
     }
 }
-
 class NotifyArea extends CustomElement {
     constructor() {
         super();
@@ -247,11 +226,9 @@ class NotifyArea extends CustomElement {
         this._floatNotify = null;
         this._notification = null;
     }
-
     static tagName() {
         return "notify-area";
     }
-
     connectedCallback() {
         if (this._floatNotify === null) {
             this._floatNotify = document.createElement("div");
@@ -263,7 +240,6 @@ class NotifyArea extends CustomElement {
             this._notification.setAttribute("slot", "notification");
             this.appendChild(this._notification);
         }
-
         if (this._floatButton === null) {
             this._floatButton = document.createElement("i");
             this._floatButton.setAttribute("slot", "button");
@@ -284,7 +260,6 @@ class NotifyArea extends CustomElement {
         }
         this.hide();
     }
-
     notify(data = "") {
         if (data.isJSON()) {
             let jsonData = data.parseJSON();
@@ -334,7 +309,6 @@ class NotifyArea extends CustomElement {
             this.checkNotify();
         }
     }
-
     checkNotify() {
         if (this._notification.querySelectorAll("div").length === 0) {
             this._floatButton.setClass("icon-bell");
@@ -346,14 +320,12 @@ class NotifyArea extends CustomElement {
             this.show();
         }
     }
-
     checkFloat() {
         if (this._floatNotify.childList().length === 0) {
             this._floatNotify.style.opacity = "0";
         }
     }
 }
-
 /**
  * Float window element
  */
@@ -368,23 +340,19 @@ class FloatWindow extends BaseElement {
         };
         window.addEventListener("resize", this.listenerFunc);
     }
-
     static tagName() {
         return "float-window";
     }
-
     close() {
         document.body.style.overflowY = "scroll";
         this.parentElement.removeChild(this);
     }
-
     renderElement(data) {
         let pageElement = this.querySelector("float-page");
         if (pageElement !== null) {
             pageElement.data = JSON.stringify(data);
         }
     }
-
     connectedCallback() {
         let pageElement = this.querySelector("float-page");
         if (pageElement === null) {
@@ -394,11 +362,9 @@ class FloatWindow extends BaseElement {
         }
         this.resize();
     }
-
     disconnectedCallback() {
         window.removeEventListener("resize", this.listenerFunc);
     }
-
     resize() {
         this.style.width = "100%";
         this.style.height = document.body.scrollHeight + "px";
@@ -408,7 +374,6 @@ class FloatWindow extends BaseElement {
         }
     }
 }
-
 /**
  * Float page element
  *
@@ -439,26 +404,21 @@ class FloatPage extends BaseElement {
         this._pageHeight = -1;
         this._windowHeight = -1;
     }
-
     static tagName() {
         return "float-page";
     }
-
     close() {
         this.parentElement.close();
     }
-
     renderElement(data) {
         this.dataset.data = JSON.stringify(data);
         this.render();
     }
-
     _mouseDown(event, scrollBar) {
         event.stopPropagation();
         scrollBar._beginPoint = event.clientY;
         scrollBar._beginPosition = scrollBar._divElement.scrollTop;
     }
-
     _mouseMove(event, scrollBar) {
         event.stopPropagation();
         if (scrollBar._beginPoint !== -1) {
@@ -469,7 +429,6 @@ class FloatPage extends BaseElement {
             }
         }
     }
-
     _mouseUp(event, scrollBar) {
         event.stopPropagation();
         if ((event.clientY - scrollBar._beginPoint) === 0) {
@@ -493,12 +452,10 @@ class FloatPage extends BaseElement {
         }
         scrollBar._beginPoint = -1;
     }
-
     _scroll(event) {
         event.stopPropagation();
         event.target.parentElement.scroll();
     }
-
     resize() {
         let scrollTop = window.scrollY;
         let height = Math.floor(window.innerHeight * 0.8);
@@ -529,7 +486,6 @@ class FloatPage extends BaseElement {
             }
         }
     }
-
     scroll() {
         let pageStyle = window.getComputedStyle(this._childElement);
         let windowStyle = window.getComputedStyle(this._divElement);
@@ -540,7 +496,6 @@ class FloatPage extends BaseElement {
         let different = pageHeight - windowHeight;
         this._scrollBar.scroll(Math.floor((windowHeight - itemHeight) * scrollTop / different));
     }
-
     connectedCallback() {
         super._removeProgress();
         if (this._divElement === null) {
@@ -572,7 +527,6 @@ class FloatPage extends BaseElement {
         }
         this.resize();
     }
-
     render() {
         this._divElement.removeClass("waitingData");
         document.body.style.overflowY = "hidden";
@@ -595,5 +549,4 @@ class FloatPage extends BaseElement {
         this.resize();
     }
 }
-
 export {MockSwitch, MockCheckBox, MockRadio, MockDialog, NotifyArea, FloatWindow, FloatPage};

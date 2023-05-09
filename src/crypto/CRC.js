@@ -22,9 +22,7 @@
 'use strict';
 
 import {Crypto} from "./Crypto.js";
-
 const CRC_CONSTANT = {};
-
 export default class CRC extends Crypto {
     constructor(name) {
         super();
@@ -55,7 +53,6 @@ export default class CRC extends Crypto {
             throw new Error(Cell.multiMsg("Unknown.Algorithm"));
         }
     }
-
     static initialize() {
         CRC.REGISTER("CRC-3/GSM", 3, 0x3, 0x0, 0x7, false, false);
         CRC.REGISTER("CRC-3/ROHC", 3, 0x3, 0x7, 0x0, true, true);
@@ -159,7 +156,6 @@ export default class CRC extends Crypto {
         CRC.REGISTER("CRC-32/MPEG-2", 32, 0x04C11DB7, 0xFFFFFFFF, 0x00000000, false, false);
         CRC.REGISTER("CRC-32/XFER", 32, 0x000000AF, 0x00000000, 0x00000000, false, false);
     }
-
     static REGISTER(name, bit, polynomial, init = 0x00, xorOut = 0x00,
                     refIn = false, refOut = false, override = false) {
         if (bit > 32) {
@@ -171,7 +167,6 @@ export default class CRC extends Crypto {
         CRC_CONSTANT[name] = [bit, polynomial, init, xorOut, refIn, refOut];
         Cell.debug("Register.CRC.Config", name, bit, polynomial, init, xorOut, refIn, refOut);
     }
-
     static _REVERSE_BIT(value = 0x00, bitWidth) {
         let _result = 0;
         for (let i = 0 ; i < bitWidth ; i++) {
@@ -182,19 +177,15 @@ export default class CRC extends Crypto {
         }
         return _result >>> 0;
     }
-
     static get CryptoName() {
         return "CRC";
     }
-
     static newInstance(name) {
         return new CRC(name);
     }
-
     append(string = "") {
         this.appendBinary(string.toByteArray());
     }
-
     appendBinary(dataBytes) {
         let _length = dataBytes.length, i, j;
         for (i = 0 ; i < _length ; i++) {
@@ -214,7 +205,6 @@ export default class CRC extends Crypto {
         }
         this._crc &= this._mask;
     }
-
     finish() {
         if (this._bit < 8 && !this._refIn) {
             this._crc >>= (8 - this._bit);
@@ -233,7 +223,6 @@ export default class CRC extends Crypto {
         this.reset();
         return "0x" + _result;
     }
-
     reset() {
         this._crc = this._init;
     }
