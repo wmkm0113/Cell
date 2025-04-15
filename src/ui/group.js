@@ -259,7 +259,7 @@ class SocialGroup extends BaseElement {
         let jsonData = this.dataset.itemData.parseJSON(), existsItems = this.querySelectorAll("a"),
             existsCount = existsItems.length, i = 0;
         if (jsonData.hasOwnProperty("textContent")) {
-            this.titleElement.innerHTML = jsonData.textContent;
+            this.titleElement.innerHTML = Cell.multiMsg(jsonData.textContent);
         }
         if (jsonData.hasOwnProperty("items")) {
             Array.from(jsonData.items)
@@ -275,7 +275,7 @@ class SocialGroup extends BaseElement {
                         this.appendChild(linkElement);
                     }
                     linkElement.setClass(jsonItem.className);
-                    linkElement.setAttribute("title", jsonItem.hasOwnProperty("title") ? jsonItem.title : "");
+                    linkElement.setAttribute("title", jsonItem.hasOwnProperty("title") ? Cell.multiMsg(jsonItem.title) : "");
                     linkElement.setAttribute("href", jsonItem.hasOwnProperty("link") ? jsonItem.link : "#");
                     if (jsonItem.hasOwnProperty("sortIndex")) {
                         linkElement.dataset.sortIndex = jsonItem.sortIndex;

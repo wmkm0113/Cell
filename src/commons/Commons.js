@@ -144,7 +144,8 @@ const RegexLibrary = {
     HtmlTag: /<[a-zA-Z\d]+[^>]*>/ig,
     Luhn: /^[0-9]+/g,
     CHN_ID_Card: /^[1-9](\d{17}|(\d{16}X))$/g,
-    CHN_Social_Credit: /^([1-9]|A|N|Y)[\dA-Z]{17}$/g
+    CHN_Social_Credit: /^([1-9]|A|N|Y)[\dA-Z]{17}$/g,
+    Multilingual_Key: /^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*$/
 };
 const DarkMode = {
     Light: 0,
@@ -174,9 +175,12 @@ Object.freeze(SlideType);
 const Config = {
     contextPath: "",
     componentPath: "",
-    multiPath: "/scripts/multi/{languageCode}.json",
-    languageCode: Comment.Language,
     debugMode: DebugMode.INFO,
+    multi: {
+        codes: [],
+        default: "",
+        path: "/scripts/multi/{languageCode}.json"
+    },
     notify: {
         dataPath: "",
         period: 15 * 1000
@@ -225,29 +229,49 @@ const Config = {
 };
 Object.seal(Config);
 
-function $() {
+const $ = function() {
     if (arguments.length <= 0) {
         return [];
+    }
+    let argCount = arguments.length;
+    if (argCount === 1) {
+        return document.getElementById(arguments[0]);
     } else {
-        let argCount = arguments.length;
-        if (argCount === 1) {
-            return document.getElementById(arguments[0]);
-        } else {
-            let returnElements = [];
-            for (let i = 0; i < argCount; i++) {
-                let element = null;
-                let elementId = arguments[i];
-                if (typeof elementId === 'string') {
-                    element = document.getElementById(elementId);
-                }
-                returnElements.push(element);
+        let returnElements = [];
+        for (let i = 0; i < argCount; i++) {
+            let element = null;
+            let elementId = arguments[i];
+            if (typeof elementId === 'string') {
+                element = document.getElementById(elementId);
             }
-            return returnElements;
+            returnElements.push(element);
         }
+        return returnElements;
     }
 }
 
-export {Comment, RegexLibrary, Config, DarkMode, DebugMode, SlideType, $};
+const $$ = function() {
+    if (arguments.length <= 0) {
+        return [];
+    }
+    let argCount = arguments.length;
+    if (argCount === 1) {
+        return document.querySelectorAll(arguments[0]);
+    } else {
+        let returnElements = [];
+        for (let i = 0; i < argCount; i++) {
+            let element = null;
+            let selector = arguments[i];
+            if (typeof selector === 'string') {
+                element = document.querySelectorAll(selector);
+            }
+            returnElements.push(element);
+        }
+        return returnElements;
+    }
+}
+
+export {Comment, RegexLibrary, Config, DarkMode, DebugMode, SlideType, $, $$};
 Object.assign(Element.prototype, {
     getClass() {
         let _className;
@@ -320,9 +344,6 @@ Object.assign(Element.prototype, {
             return scrollTop > this.dataset.offsetTop;
         }
         return false;
-    },
-    scrollInView() {
-        return this.getBoundingClientRect().top >= 0;
     },
     inViewPort() {
         let viewPortHeight = window.innerHeight || document.documentElement.clientHeight;
@@ -404,7 +425,7 @@ Object.assign(Element.prototype, {
                 }
             });
             this.querySelectorAll("drag-upload").forEach(drawUpload =>
-                drawUpload.uploadFiles().forEach(fileItem => {
+                drawUpload.drawFiles.forEach(fileItem => {
                     _formData.append(drawUpload.getAttribute("name"), fileItem, fileItem.name);
                     formData.uploadFile = true;
                 }));
@@ -467,9 +488,9 @@ Object.assign(Element.prototype, {
             return;
         }
         if (this.hasChildNodes()) {
-            let queryNodes = this.querySelectorAll(selectors);
-            let sortNodes = Array.from(queryNodes)
-                .sort((a, b) => {
+            let childNodes = [];
+            this.querySelectorAll(selectors).forEach(childNode => childNodes.push(childNode));
+            childNodes.sort((a, b) => {
                     try {
                         let aValue = a.getAttribute(attributeName);
                         let bValue = b.getAttribute(attributeName);
@@ -480,9 +501,11 @@ Object.assign(Element.prototype, {
                     } catch (e) {
                         return 0;
                     }
+                })
+                .forEach(childNode => {
+                    this.removeChild(childNode);
+                    this.appendChild(childNode);
                 });
-            Array.from(queryNodes).forEach(childNode => this.removeChild(childNode));
-            Array.from(sortNodes).forEach(childNode => this.appendChild(childNode));
         }
     },
     attrNames() {
@@ -537,9 +560,6 @@ Object.assign(Element.prototype, {
     }
 });
 Object.assign(String.prototype, {
-    reverse() {
-        return Array.from(this).reverse().join('');
-    },
     cleanBlank() {
         return this.isEmpty() ? "" : this.replace(RegexLibrary.BlankText, "");
     },

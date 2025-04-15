@@ -50,7 +50,7 @@ class AttachFiles extends BaseElement {
     _renderElement(data) {
         super._removeProgress();
         if (data.hasOwnProperty("title")) {
-            this.attachTitle.innerHTML = data.title;
+            this.attachTitle.innerHTML = Cell.multiMsg(data.title);
         }
         if (data.hasOwnProperty("attachList")) {
             this.attachList.clearChildNodes();
@@ -307,7 +307,7 @@ class PropertyDetails extends BaseElement {
             this.appendChild(this.tipsButton);
         }
         if (data.hasOwnProperty("textContent")) {
-            this.titleElement.innerText = data.textContent;
+            this.titleElement.innerText = Cell.multiMsg(data.textContent);
         }
         if (data.hasOwnProperty("value")) {
             let textValue;
@@ -554,7 +554,7 @@ class CorporateAddress extends BaseElement {
     _renderElement(data) {
         super._removeProgress();
         if (data.hasOwnProperty("title") && data.hasOwnProperty("content")) {
-            this.titleElement.innerText = data.title;
+            this.titleElement.innerText = Cell.multiMsg(data.title);
             this.contentElement.innerText = data.content;
         }
         if (data.hasOwnProperty("location") && data.hasOwnProperty("provider")) {
@@ -689,14 +689,6 @@ class ResourceDetails extends BaseElement {
         let resourceDetails = this;
         this.addEventListener("mouseover", () => resourceDetails.playVideo());
         this.addEventListener("mouseout", () => resourceDetails.pauseVideo());
-        window.addEventListener("scroll", () => {
-            document.querySelectorAll("resource-details")
-                .forEach(resource => {
-                    if (resource.scrollInView()) {
-                        resource.loadResource();
-                    }
-                });
-        })
         if (this.hasAttribute("data") && this.getAttribute("data").isJSON()) {
             this.renderElement(this.getAttribute("data").parseJSON());
         }

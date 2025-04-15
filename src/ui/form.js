@@ -178,7 +178,7 @@ class FormInfo extends BaseElement {
                             titleElement.setAttribute("slot", "formTitle");
                             this.appendChild(titleElement);
                         }
-                        titleElement.innerHTML = data[key];
+                        titleElement.innerHTML = Cell.multiMsg(data[key]);
                         break;
                     case "items":
                         this.dataset.items = JSON.stringify(data[key]);
@@ -247,18 +247,11 @@ class FormInfo extends BaseElement {
                 });
             if (this.dataset.buttons !== undefined && this.dataset.buttons.isJSON()) {
                 let buttonsData = this.dataset.buttons.parseJSON();
-                if (buttonsData.hasOwnProperty("submit")) {
-                    this.submitButton.data = JSON.stringify(buttonsData.submit);
-                    this.submitButton.show();
-                } else {
-                    this.submitButton.hide();
-                }
-                if (buttonsData.hasOwnProperty("reset")) {
-                    this.resetButton.data = JSON.stringify(buttonsData.reset);
-                    this.resetButton.show();
-                } else {
-                    this.resetButton.hide();
-                }
+                this.submitButton.value = buttonsData.hasOwnProperty("submit") ? buttonsData.submit : "Submit";
+                this.resetButton.value = buttonsData.hasOwnProperty("reset") ? buttonsData.reset : "Reset";
+            } else {
+                this.submitButton.value = "Submit";
+                this.resetButton.value = "Reset";
             }
             this.attrNames().forEach(attributeName => {
                 if (!attributeName.startsWith("data-") && attributeName.toLowerCase() !== "slot") {

@@ -2,25 +2,21 @@ const multiMenuData = `{
     "url": "./index.html?lang={languageCode}",
     "items" : [
         {
-            "languageCode" : "en",
+            "languageCode" : "en-US",
             "languageName" : "English"
         },
         {
-            "languageCode" : "zh_CN",
+            "languageCode" : "zh-CN",
             "languageName" : "简体中文"
-        },
-        {
-            "languageCode" : "zh_TW",
-            "languageName" : "繁體中文"
         }
     ]
 }`;
 const categoryList = `{
-    "title": "Category Name",
+    "title": "Category.Name",
     "items": [
         {
             "tagName": "a",
-            "textContent": "Category 1",
+            "textContent": "Category1",
             "link": "#1",
             "icon": "icon-pencil"
         },
@@ -60,7 +56,7 @@ const indexTopMenuData = `{
             "title": "Demo Menu",
             "items": [
                 {
-                    "title": "Mock Elements",
+                    "title": "Mock.Elements",
                     "link": "#mockElement"
                 },
                 {
@@ -112,7 +108,7 @@ const progressBarDataDetails = `{
     "total" : "13032864"
 }`;
 const socialData = `{
-    "textContent": "Follow Us",
+    "textContent": "Follow.Us",
     "items": [
         {
             "className": "icon icon-facebook",
@@ -127,7 +123,7 @@ const socialData = `{
         {
             "className": "icon icon-github-circle",
             "title": "Github",
-            "link": "https://github.com/Nervousync"
+            "link": "https://github.com/wmkm0113"
         },
         {
             "className": "icon icon-twitter",
@@ -145,7 +141,7 @@ const listData = `{
     "id" : "listElement",
     "filter" : {
         "pageLimit" : "listLimit",
-        "searchText" : "Search Button",
+        "searchText": "filter.list.btn",
         "method" : "post",
         "sortType" : "sortType",
         "pageNo" : "listPage",
@@ -154,7 +150,7 @@ const listData = `{
         "items" : [
             {
                 "name" : "searchElement",
-                "textContent" : "Search Input",
+                "textContent" : "Search.Input",
                 "id" : "searchElement",
                 "tag" : "search-input",
                 "placeholder" : "Input keywords",
@@ -165,7 +161,7 @@ const listData = `{
             {
                 "endValue" : 3,
                 "endName" : "endElement",
-                "textContent" : "Interval Input",
+                "textContent" : "Interval.Input",
                 "id" : "intervalElement",
                 "tag" : "number-interval-input",
                 "beginValue" : 1,
@@ -175,7 +171,7 @@ const listData = `{
             },
             {
                 "name" : "checkGroup",
-                "textContent" : "Check Group",
+                "textContent" : "Check.Group",
                 "id" : "checkGroup",
                 "tag" : "checkbox-group",
                 "sortCode" : 6,
@@ -189,7 +185,7 @@ const listData = `{
             },
             {
                 "name" : "radioGroup",
-                "textContent" : "Radio Group",
+                "textContent" : "Radio.Group",
                 "id" : "radioGroup",
                 "tag" : "radio-group",
                 "sortCode" : 4,
@@ -210,31 +206,31 @@ const listData = `{
                 "index" : 1,
                 "className" : "error",
                 "id" : "statistics1",
-                "title" : "Title 1"
+                "title" : "Title1"
             },
             {
                 "data" : "Data 2",
                 "index" : 2,
                 "id" : "statistics2",
-                "title" : "Title 2"
+                "title" : "Title2"
             },
             {
                 "data" : "Data 3",
                 "index" : 4,
                 "className" : "warning",
                 "id" : "statistics3",
-                "title" : "Title 3",
+                "title" : "Title3",
                 "link" : "#"
             },
             {
                 "data" : "Data 4",
                 "index" : 3,
                 "id" : "statistics4",
-                "title" : "Title 4"
+                "title" : "Title4"
             }
         ],
     "title" : {
-        "textContent" : "Message List Title",
+        "textContent" : "Message.List.Title",
         "styleClass" : "view-list",
         "disableSwitch" : false
     },
@@ -250,14 +246,14 @@ const listData = `{
                     "width" : "10%",
                     "index" : 8,
                     "sort" : true,
-                    "title" : "Column Title 9"
+                    "title" : "Column.Title.9"
                 },
                 {
                     "mapKey" : "key8",
                     "width" : "10%",
                     "index" : 7,
                     "sort" : false,
-                    "title" : "Column Title 8"
+                    "title" : "Column.Title.8"
                 },
                 {
                     "mapKey" : "key7",
@@ -313,7 +309,7 @@ const listData = `{
                 "elementId" : "elementId",
                 "link" : "details-data.json",
                 "openWindow": true,
-                "abstract" : "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                "abstract" : "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
                 "title" : "Text content Text content Text content Text content Text content Text content Text content Text content",
                 "score" : 4.2,
                 "properties": {
@@ -332,7 +328,6 @@ const listData = `{
                         "link" : "form-data.json",
                         "index" : 3,
                         "textContent" : "Edit",
-                        "title" : "Edit",
                         "icon" : "icon-pencil",
                         "openWindow": true
                     },
@@ -372,7 +367,6 @@ const listData = `{
                 "link" : "details-data.json",
                 "openWindow": true,
                 "className" : "warning",
-                "identifyCode" : "2",
                 "title" : "Text content Text content Text content Text content Text content Text content Text content Text content"
             },
             {
@@ -766,14 +760,14 @@ const slideData = `{
 const formData = `{
     "method": "post",
     "action": "/#",
-    "title": "Form title",
+    "title": "Form.title",
     "validate": "true",
     "items": [
         {
             "tag": "property-details",
             "class": "formItem",
             "data": {
-                "textContent": "Property Name",
+                "textContent": "Property.Name",
                 "value": "Property Content",
                 "tips": "Tips message"
             }
@@ -785,7 +779,7 @@ const formData = `{
                 "id": "selectElement",
                 "name": "selectElement",
                 "value": "4",
-                "textContent": "Element label text",
+                "textContent": "Element.label.text",
                 "tips": "Tips message",
                 "options": [
                     {"text":"option0","value":0},{"text":"option1","value":1},
@@ -802,9 +796,8 @@ const formData = `{
             "data": {
                 "id": "textareaElement",
                 "name": "textareaElement",
-                "placeholder": "Placeholder string",
-                "value": "Initialize value",
-                "textContent": "Element label text",
+                "placeholder": "Placeholder.string",
+                "textContent": "Element.label.text",
                 "multilingual": true,
                 "language": "English",
                 "reference": "Reference context",
@@ -1099,7 +1092,7 @@ const detailsData = `{
         }
     ],
     "attachList": {
-        "title": "Attach Files",
+        "title": "Attach.Files",
         "attachList": [
             {
                 "resourceName": "Attach File1",
@@ -1126,7 +1119,7 @@ const detailsData = `{
 }`;
 const addressData = `{
     "title" : "Address Title",
-    "content" : "Room 909, Building A, Broadtec International Plaza, Chaoyang District, Beijing, China",
+    "content" : "Room Number, Community name, District name, City name, Country name",
     "provider" : "baidu-map",
     "location" : {
         "latitude" : "40.009068571369137",
@@ -1171,7 +1164,7 @@ const corporateData = `{
     "addressList": [
         {
             "title" : "Address Title 1",
-            "content" : "Room 909, Building A, Broadtec International Plaza, Chaoyang District, Beijing, China",
+            "content" : "Room Number, Community name, District name, City name, Country name",
             "provider" : "google-map",
             "location" : {
                 "latitude" : "40.009068571369137",
@@ -1180,7 +1173,7 @@ const corporateData = `{
         },
         {
             "title" : "Address Title 2",
-            "content" : "Room 909, Building A, Broadtec International Plaza, Chaoyang District, Beijing, China",
+            "content" : "Room Number, Community name, District name, City name, Country name",
             "provider" : "baidu-map",
             "location" : {
                 "latitude" : "40.009068571369137",
@@ -1189,7 +1182,7 @@ const corporateData = `{
         },
         {
             "title" : "Address Title 3",
-            "content" : "Room 909, Building A, Broadtec International Plaza, Chaoyang District, Beijing, China",
+            "content" : "Room Number, Community name, District name, City name, Country name",
             "provider" : "baidu-map",
             "location" : {
                 "latitude" : "40.009068571369137",

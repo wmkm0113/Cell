@@ -175,7 +175,7 @@ class MenuItem extends BaseElement {
             spanElement.setAttribute("name", "textContent");
             element.appendChild(spanElement);
         }
-        spanElement.innerText = itemData.title;
+        spanElement.innerText = Cell.multiMsg(itemData.title);
         let iconElement = element.querySelector("i");
         if (iconElement === null) {
             iconElement = document.createElement("i");
@@ -290,12 +290,12 @@ class CategoryMenu extends BaseElement {
             this.setClass(data.className);
         }
         if (data.hasOwnProperty("title")) {
-            this._menuTitle.innerHTML = data.title;
+            this._menuTitle.innerHTML = Cell.multiMsg(data.title);
         }
         if (data.hasOwnProperty("items")) {
             this._menuList.clearChildNodes();
             data.items
-                .filter(itemData => itemData.hasOwnProperty("link") && itemData.hasOwnProperty("textContent"))
+                .filter(itemData => itemData.hasOwnProperty("link"))
                 .forEach(itemData => {
                     let menuItem = new RecordOperator();
                     this._menuList.appendChild(menuItem);
