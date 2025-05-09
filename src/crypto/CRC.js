@@ -22,7 +22,111 @@
 'use strict';
 
 import {Crypto} from "./Crypto.js";
+
 const CRC_CONSTANT = {};
+const CRC_TEST = {
+    "CRC-16/ISO-IEC-14443-3-A": "0x264e",
+    "CRC-32/JAMCRC": "0xf68d2c9e",
+    "CRC-4/INTERLAKEN": "0x5",
+    "CRC-16/TELEDISK": "0x2cd1",
+    "CRC-32/MPEG-2": "0xd8f06c8f",
+    "CRC-16/GSM": "0xdf1b",
+    "CRC-6/GSM": "0x0e",
+    "CRC-7/UMTS": "0x70",
+    "CRC-32/BZIP2": "0x270f9370",
+    "CRC-8/I-CODE": "0x5b",
+    "CRC-16/IBM-SDLC": "0xe672",
+    "CRC-16/LJ1200": "0x928f",
+    "CRC-10/ATM": "0x3c8",
+    "CRC-8/NRSC-5": "0x16",
+    "CRC-5/USB": "0x00",
+    "CRC-7/ROHC": "0x4d",
+    "CRC-12/UMTS": "0x05d",
+    "CRC-8/BLUETOOTH": "0xc4",
+    "CRC-14/GSM": "0x36d0",
+    "CRC-8/SMBUS": "0xfd",
+    "CRC-8/TECH-3250": "0x8e",
+    "CRC-5/G-704": "0x19",
+    "CRC-16/MODBUS": "0x32e4",
+    "CRC-12/DECT": "0xba0",
+    "CRC-7/MMC": "0x7b",
+    "CRC-16/CMS": "0xb1b6",
+    "CRC-24/FLEXRAY-A": "0x5ca9c5",
+    "CRC-24/FLEXRAY-B": "0x26eb8f",
+    "CRC-32/ISO-HDLC": "0x0972d361",
+    "CRC-21/CAN-FD": "0x185105",
+    "CRC-8/LTE": "0x7f",
+    "CRC-15/CAN": "0x1813",
+    "CRC-24/LTE-A": "0xbcefc7",
+    "CRC-30/CDMA": "0x1f4b73ce",
+    "CRC-3/GSM": "0x4",
+    "CRC-24/LTE-B": "0x021ebd",
+    "CRC-24/OPENPGP": "0x341a7c",
+    "CRC-12/CDMA2000": "0x169",
+    "CRC-16/MAXIM-DOW": "0xd61b",
+    "CRC-16/XMODEM": "0x20e4",
+    "CRC-6/G-704": "0x0e",
+    "CRC-24/OS-9": "0xfe0e46",
+    "CRC-16/DNP": "0x57de",
+    "CRC-32/AIXM": "0x7ccd1a36",
+    "CRC-10/CDMA2000": "0x05e",
+    "CRC-6/CDMA2000-A": "0x03",
+    "CRC-6/CDMA2000-B": "0x3d",
+    "CRC-16/TMS37157": "0xb6c9",
+    "CRC-16/UMTS": "0xb16e",
+    "CRC-32/XFER": "0xf036f1c2",
+    "CRC-8/ROHC": "0x57",
+    "CRC-16/DECT-R": "0x8ffe",
+    "CRC-8/WCDMA": "0xab",
+    "CRC-8/DVB-S2": "0xb0",
+    "CRC-15/MPT1327": "0x4532",
+    "CRC-16/DECT-X": "0x8fff",
+    "CRC-6/DARC": "0x1f",
+    "CRC-16/DDS-110": "0xb3be",
+    "CRC-32/ISCSI": "0x41357186",
+    "CRC-16/USB": "0xcd1b",
+    "CRC-8/MIFARE-MAD": "0xe1",
+    "CRC-8/AUTOSAR": "0x91",
+    "CRC-16/KERMIT": "0x11fd",
+    "CRC-16/IBM-3740": "0x2ef4",
+    "CRC-4/G-704": "0x0",
+    "CRC-16/RIELLO": "0x75c5",
+    "CRC-16/EN-13757": "0x062a",
+    "CRC-16/NRSC-5": "0x7cff",
+    "CRC-14/DARC": "0x038c",
+    "CRC-31/PHILIPS": "0x4190cf7c",
+    "CRC-5/EPC-C1G2": "0x12",
+    "CRC-32/BASE91-D": "0x0c61f70a",
+    "CRC-16/ARC": "0x29e4",
+    "CRC-16/MCRF4XX": "0x198d",
+    "CRC-16/T10-DIF": "0x31c0",
+    "CRC-24/INTERLAKEN": "0x3f68b2",
+    "CRC-3/ROHC": "0x5",
+    "CRC-13/BBC": "0x11ab",
+    "CRC-11/UMTS": "0x697",
+    "CRC-16/SPI-FUJITSU": "0x11da",
+    "CRC-10/GSM": "0x262",
+    "CRC-8/DARC": "0x11",
+    "CRC-8/OPENSAFETY": "0x0e",
+    "CRC-12/GSM": "0xa36",
+    "CRC-32/CKSUM": "0x1d752f02",
+    "CRC-16/PROFIBUS": "0x2d37",
+    "CRC-8/GSM-B": "0x9b",
+    "CRC-8/GSM-A": "0xde",
+    "CRC-8/SAE-J1850": "0x28",
+    "CRC-8/CDMA2000": "0xef",
+    "CRC-8/MAXIM-DOW": "0xec",
+    "CRC-16/GENIBUS": "0xd10b",
+    "CRC-8/I-432-1": "0xa8",
+    "CRC-17/CAN-FD": "0x09097",
+    "CRC-16/OPENSAFETY-B": "0xbf4a",
+    "CRC-32/CD-ROM-EDC": "0xd4a7186c",
+    "CRC-16/OPENSAFETY-A": "0x4bb3",
+    "CRC-32/AUTOSAR": "0xedbd99c1",
+    "CRC-16/CDMA2000": "0x5059",
+    "CRC-11/FLEXRAY": "0x578",
+    "CRC-24/BLE": "0xa0afcd"
+};
 export default class CRC extends Crypto {
     constructor(name) {
         super();
@@ -53,6 +157,7 @@ export default class CRC extends Crypto {
             throw new Error(Cell.multiMsg("Unknown.Algorithm"));
         }
     }
+
     static initialize() {
         CRC.REGISTER("CRC-3/GSM", 3, 0x3, 0x0, 0x7, false, false);
         CRC.REGISTER("CRC-3/ROHC", 3, 0x3, 0x7, 0x0, true, true);
@@ -156,6 +261,7 @@ export default class CRC extends Crypto {
         CRC.REGISTER("CRC-32/MPEG-2", 32, 0x04C11DB7, 0xFFFFFFFF, 0x00000000, false, false);
         CRC.REGISTER("CRC-32/XFER", 32, 0x000000AF, 0x00000000, 0x00000000, false, false);
     }
+
     static REGISTER(name, bit, polynomial, init = 0x00, xorOut = 0x00,
                     refIn = false, refOut = false, override = false) {
         if (bit > 32) {
@@ -167,9 +273,10 @@ export default class CRC extends Crypto {
         CRC_CONSTANT[name] = [bit, polynomial, init, xorOut, refIn, refOut];
         Cell.debug("Register.CRC.Config", name, bit, polynomial, init, xorOut, refIn, refOut);
     }
+
     static _REVERSE_BIT(value = 0x00, bitWidth) {
         let _result = 0;
-        for (let i = 0 ; i < bitWidth ; i++) {
+        for (let i = 0; i < bitWidth; i++) {
             if (value & 0x1) {
                 _result |= 1 << (bitWidth - 1 - i);
             }
@@ -177,24 +284,35 @@ export default class CRC extends Crypto {
         }
         return _result >>> 0;
     }
+
     static get CryptoName() {
         return "CRC";
     }
+
     static newInstance(name) {
         return new CRC(name);
     }
+
+    static test() {
+        for (const name of Object.keys(CRC_CONSTANT)) {
+            Cell.debug("CRC.Test", name, Cell.digestData(name, "123456", false).toHex(), CRC_TEST[name]);
+        }
+        // Cell.debug("CRC.Test", "CRC-32/XFER", Cell.digestData("CRC-32/XFER", "123456", false).toHex(), CRC_TEST["CRC-32/XFER"]);
+    }
+
     append(string = "") {
         this.appendBinary(string.toByteArray());
     }
+
     appendBinary(dataBytes) {
         let _length = dataBytes.length, i, j;
-        for (i = 0 ; i < _length ; i++) {
+        for (i = 0; i < _length; i++) {
             if (this._bit > 8) {
                 this._crc ^= ((this._refIn ? dataBytes[i] : (dataBytes[i] << (this._bit - 8))) & this._mask);
             } else {
                 this._crc ^= dataBytes[i];
             }
-            for (j = 0 ; j < 8 ; j++) {
+            for (j = 0; j < 8; j++) {
 
                 if ((this._crc & this._check) !== 0) {
                     this._crc = (this._refIn ? (this._crc >>> 1) : (this._crc << 1)) ^ this._polynomial;
@@ -205,24 +323,41 @@ export default class CRC extends Crypto {
         }
         this._crc &= this._mask;
     }
-    finish() {
+
+    finish(hex = true) {
         if (this._bit < 8 && !this._refIn) {
             this._crc >>= (8 - this._bit);
         }
-        let _result;
+        let _calc;
         if (this._refIn !== this._refOut && this._refOut) {
             //  Just using for CRC-12/UMTS
-            _result = this._crc & this._mask;
-            _result = ((CRC._REVERSE_BIT(_result, _result.toString(2).length) ^ this._xorOut) >>> 0).toString(16);
+            _calc = this._crc & this._mask;
+            _calc = ((CRC._REVERSE_BIT(_calc, _calc.toString(2).length) ^ this._xorOut) >>> 0);
         } else {
-            _result = (((this._crc ^ this._xorOut) & this._mask) >>> 0).toString(16);
+            _calc = (((this._crc ^ this._xorOut) & this._mask) >>> 0);
         }
-        while (_result.length < this._outLength) {
-            _result = "0" + _result;
+
+        let _result;
+        if (hex) {
+            let _string = _calc.toString(16);
+            while (_string.length < this._outLength) {
+                _string = "0" + _string;
+            }
+            _result = "0x" + _string;
+        } else {
+            _result = [];
+            while (true) {
+                if (_calc === 0 || _calc === -1) {
+                    break;
+                }
+                _result.unshift(_calc & 0xFF);
+                _calc >>= 8;
+            }
         }
         this.reset();
-        return "0x" + _result;
+        return _result;
     }
+
     reset() {
         this._crc = this._init;
     }

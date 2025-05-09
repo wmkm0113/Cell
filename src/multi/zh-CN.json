@@ -66,5 +66,7 @@
   "LinkedIn": "领英",
   "Github": "Github",
   "Twitter": "推特",
-  "Instagram": "照片墙"
+  "Instagram": "照片墙",
+  "KeySize_Too_Small": "RSA密钥长度小于当前填充模式要求",
+  "CRC.Test": "CRC测试算法名：{1}，计算结果：{2}，预期结果：{3}"
 }

@@ -175,7 +175,7 @@ export default class SHA extends Crypto {
         }
         let _result = this._array();
         if (hex) {
-            _result = _result.toHex(this._bit === 1600);
+            _result = _result.encodeBase16(this._bit === 1600);
         }
 
         this.reset();

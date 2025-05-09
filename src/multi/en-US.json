@@ -66,5 +66,7 @@
   "LinkedIn": "LinkedIn",
   "Github": "Github",
   "Twitter": "X",
-  "Instagram": "Instagram"
+  "Instagram": "Instagram",
+  "KeySize_Too_Small": "RSA key size is too small for the current padding mode",
+  "CRC.Test": "Test CRC Algorithm Name: {1}, calculate result: {2}, expect result: {3}"
 }

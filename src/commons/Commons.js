@@ -721,9 +721,6 @@ Object.assign(String.prototype, {
         }
         metaElement.setAttribute("content", this);
     },
-    encodeBase64() {
-        return this.toByteArray().encodeBase64();
-    },
     decodeBase64() {
         let _result = [], i = 0, _length = this.length;
         while (i < _length) {
@@ -835,6 +832,22 @@ Object.assign(Number.prototype, {
         return this >>> _count;
     }
 });
+Object.assign(BigInt.prototype, {
+    toByteArray(bigEndian = false) {
+        let array = [];
+        let bigInt = this;
+        while (bigInt > 0) {
+            let value = bigInt % 256n;
+            if (bigEndian) {
+                array.push(Number(value));
+            } else {
+                array.unshift(Number(value));
+            }
+            bigInt >>= 8n;
+        }
+        return array;
+    },
+});
 Object.assign(Date.prototype, {
     format(pattern = "MM/dd/yyyy") {
         let Pattern = {
@@ -939,7 +952,18 @@ Object.assign(Date.prototype, {
     }
 });
 Object.assign(Array.prototype, {
-    toHex(littleEndian = true) {
+    toHex(separator = "") {
+        let _result = "";
+        this.forEach(_byte => {
+            let _string = Number(_byte).toString(16);
+            if (_string.length < 2) {
+                _string = "0" + _string;
+            }
+            _result += (separator + _string);
+        });
+        return _result;
+    },
+    encodeBase16(littleEndian = true) {
         let _result = "", _byte;
         for (let i = 0; i < this.length; i++) {
             _byte = this[i];

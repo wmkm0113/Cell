@@ -112,7 +112,7 @@ export default class MD5 extends Crypto {
         }
         let _result = this._hash.slice();
         if (hex) {
-            _result = _result.toHex();
+            _result = _result.encodeBase16();
         }
         this.reset();
         return _result;

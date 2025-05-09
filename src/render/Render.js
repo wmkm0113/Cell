@@ -21,11 +21,45 @@
  *
  */
 'use strict';
-import {NotifyArea, MockDialog} from "../ui/mock.js";
+import {FloatWindow, FloatPage, NotifyArea, MockSwitch, MockDialog, MockCheckBox, MockRadio} from "../ui/mock.js";
+import * as Details from "../ui/details.js";
+import {TipsElement, ProgressBar, ScrollBar, StarRating, StarScore} from "../ui/element.js";
+import {BaiduMap, GoogleMap} from "../ui/maps.js";
+import {FormItem, FormInfo} from "../ui/form.js";
+import {ButtonGroup, CheckBoxGroup, RadioGroup, SocialGroup} from "../ui/group.js";
+import * as Input from "../ui/input.js";
+import * as List from "../ui/list.js";
+import SlideShow from "../ui/slide.js";
+import {MenuElement, MenuItem, MultilingualMenu, CategoryMenu} from "../ui/menu.js";
+
 export default class UIRender {
+    static ELEMENTS = [
+        BaiduMap, GoogleMap, TipsElement, FloatPage, FloatWindow, NotifyArea, MockSwitch, MockDialog, MockCheckBox,
+        MockRadio, ProgressBar, ScrollBar, StarRating, StarScore, ButtonGroup, CheckBoxGroup, RadioGroup,
+        Input.InputElement, Input.BaseInput, Input.StandardButton, Input.SubmitButton, Input.FavoriteButton, Input.LikeButton,
+        Input.ResetButton, Input.PasswordInput, Input.HiddenInput, Input.TextInput, Input.SearchInput, Input.EmailInput,
+        Input.NumberInput, Input.DateInput, Input.TimeInput, Input.DateTimeInput, Input.SelectInput,
+        Input.TextAreaInput, Input.NumberIntervalInput, Input.DateIntervalInput, Input.TimeIntervalInput,
+        Input.DateTimeIntervalInput, Input.DragUpload, FormItem, FormInfo, List.ListFilter, List.ListData,
+        List.ListStatistics, List.ListTitle, List.ListRecord, List.RecordOperator, List.ListHeader,
+        List.PropertyItem, List.PropertyDefine, List.MessageList, Details.UserDetails, List.CommentList,
+        List.CommentData, SlideShow, SocialGroup, MenuItem, MenuElement, MultilingualMenu, CategoryMenu,
+        Details.AttachFiles, Details.ModelDetails, Details.ModelList, Details.AccessoriesDetails, Details.AccessoriesList,
+        Details.ResourceDetails, Details.MessageDetails, Details.PropertyDetails, Details.CorporateAddress,
+        Details.CorporateDetails, Details.CorporatePreview, Details.LinkAvatar, Details.LinkBanner
+    ];
     constructor() {
     }
     init(elements = []) {
+        UIRender.ELEMENTS.filter(element => element.tagName !== undefined && (typeof element.tagName) === "function")
+            .forEach(element => {
+                let tagName = element.tagName();
+                if (tagName !== null) {
+                    if (customElements.get(tagName) === undefined) {
+                        customElements.define(tagName, element);
+                    }
+                }
+            });
         elements.filter(element => element.tagName !== undefined && (typeof element.tagName) === "function")
             .forEach(element => {
                 let tagName = element.tagName();

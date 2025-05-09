@@ -32,36 +32,13 @@ import MD5 from "../crypto/MD5.js";
 import RSA from "../crypto/RSA.js";
 import SHA from "../crypto/SHA.js";
 import UIRender from "../render/Render.js";
-import {FloatWindow, FloatPage, NotifyArea, MockSwitch, MockDialog, MockCheckBox, MockRadio} from "../ui/mock.js";
-import * as Details from "../ui/details.js";
-import {TipsElement, ProgressBar, ScrollBar, StarRating, StarScore} from "../ui/element.js";
-import {BaiduMap, GoogleMap} from "../ui/maps.js";
-import {FormItem, FormInfo} from "../ui/form.js";
-import {ButtonGroup, CheckBoxGroup, RadioGroup, SocialGroup} from "../ui/group.js";
-import * as Input from "../ui/input.js";
-import * as List from "../ui/list.js";
-import SlideShow from "../ui/slide.js";
-import {MenuElement, MenuItem, MultilingualMenu, CategoryMenu} from "../ui/menu.js";
+import {FloatWindow} from "../ui/mock.js";
 import {Comment, DebugMode} from "../commons/Commons.js";
 
 class CellJS {
-    static ELEMENTS = [
-        BaiduMap, GoogleMap, TipsElement, FloatPage, FloatWindow, NotifyArea, MockSwitch, MockDialog, MockCheckBox,
-        MockRadio, ProgressBar, ScrollBar, StarRating, StarScore, ButtonGroup, CheckBoxGroup, RadioGroup,
-        Input.InputElement, Input.BaseInput, Input.StandardButton, Input.SubmitButton, Input.FavoriteButton, Input.LikeButton,
-        Input.ResetButton, Input.PasswordInput, Input.HiddenInput, Input.TextInput, Input.SearchInput, Input.EmailInput,
-        Input.NumberInput, Input.DateInput, Input.TimeInput, Input.DateTimeInput, Input.SelectInput,
-        Input.TextAreaInput, Input.NumberIntervalInput, Input.DateIntervalInput, Input.TimeIntervalInput,
-        Input.DateTimeIntervalInput, Input.DragUpload, FormItem, FormInfo, List.ListFilter, List.ListData,
-        List.ListStatistics, List.ListTitle, List.ListRecord, List.RecordOperator, List.ListHeader,
-        List.PropertyItem, List.PropertyDefine, List.MessageList, Details.UserDetails, List.CommentList,
-        List.CommentData, SlideShow, SocialGroup, MenuItem, MenuElement, MultilingualMenu, CategoryMenu,
-        Details.AttachFiles, Details.ModelDetails, Details.ModelList, Details.AccessoriesDetails, Details.AccessoriesList,
-        Details.ResourceDetails, Details.MessageDetails, Details.PropertyDetails, Details.CorporateAddress,
-        Details.CorporateDetails, Details.CorporatePreview, Details.LinkAvatar, Details.LinkBanner
-    ];
     _multiInitialized = false;
     _languageCode = "";
+    _loggerBuffer = [];
 
     constructor() {
         this._config = Commons.Config;
@@ -75,14 +52,8 @@ class CellJS {
     init() {
         this._languageCode = this._config.multi.default;
         this._initMulti();
-        while (true) {
-            if (this._multiInitialized) {
-                break;
-            }
-        }
         this._initCrypto();
         this.Render = new UIRender();
-        this.Render.init(CellJS.ELEMENTS);
         this.Render.init(this._config.elements);
         if (this._config.scrollHeader.enabled) {
             window.onload = this.scrollPage;
@@ -150,6 +121,7 @@ class CellJS {
         }
 
         let url = this.contextPath() + this._config.multi.path;
+        let _loadLanguages = [];
         this._config.multi.codes
             .filter(languageCode => typeof languageCode === "string")
             .forEach(languageCode => {
@@ -158,56 +130,78 @@ class CellJS {
                         if (responseText.isJSON()) {
                             this._multiInfo[languageCode] = responseText.parseJSON();
                         }
+                        _loadLanguages.push(languageCode);
+                        this._initMultiCount(_loadLanguages.length);
                     })
-                    .catch(errorMsg => console.error("Load multilingual resource failed! Path: " + url, errorMsg));
+                    .catch(errorMsg => {
+                        console.error("Load multilingual resource failed! Path: " + url, errorMsg);
+                        _loadLanguages.push(languageCode);
+                        this._initMultiCount(_loadLanguages.length);
+                    });
             });
-        this._multiInitialized = true;
+    }
+
+    _initMultiCount(count = 0) {
+        this._multiInitialized = (this._config.multi.codes.length === count);
+        if (this._multiInitialized) {
+            this._loggerBuffer.forEach(buffer => this._log(buffer["level"], buffer["key"], buffer["args"].split("|")));
+            this._loggerBuffer = [];
+        }
     }
 
     debug(messageKey = "", ...args) {
         if (this._config.debugMode <= Commons.DebugMode.DEBUG) {
-            this._log(Commons.DebugMode.DEBUG, this.multiMsg(messageKey, args));
+            this._log(Commons.DebugMode.DEBUG, messageKey, args);
         }
     }
 
     info(messageKey = "", ...args) {
         if (this._config.debugMode <= Commons.DebugMode.INFO) {
-            this._log(Commons.DebugMode.INFO, this.multiMsg(messageKey, args));
+            this._log(Commons.DebugMode.INFO, messageKey, args);
         }
     }
 
     warn(messageKey = "", ...args) {
         if (this._config.debugMode <= Commons.DebugMode.WARN) {
-            this._log(Commons.DebugMode.WARN, this.multiMsg(messageKey, args));
+            this._log(Commons.DebugMode.WARN, messageKey, args);
         }
     }
 
     error(messageKey = "", ...args) {
         if (this._config.debugMode <= Commons.DebugMode.ERROR) {
-            this._log(Commons.DebugMode.ERROR, this.multiMsg(messageKey, args));
+            this._log(Commons.DebugMode.ERROR, messageKey, args);
         }
     }
 
-    _log(debugMode = DebugMode.ERROR, multiMsg = "") {
-        if (multiMsg.length > 0) {
+    _log(debugMode = DebugMode.ERROR, messageKey = "", args = []) {
+        if (messageKey.length > 0) {
+            if (!this._multiInitialized) {
+                let _logDetails = [];
+                _logDetails["level"] = debugMode;
+                _logDetails["key"] = messageKey;
+                _logDetails["args"] = args.join("|");
+                this._loggerBuffer.push(_logDetails);
+                return;
+            }
+            let _multiMsg = Cell.multiMsg(messageKey, args);
             switch (debugMode) {
                 case DebugMode.DEBUG:
-                    console.debug(multiMsg);
+                    console.debug(_multiMsg);
                     break;
                 case DebugMode.INFO:
-                    console.info(multiMsg);
+                    console.info(_multiMsg);
                     break;
                 case DebugMode.WARN:
-                    console.warn(multiMsg);
+                    console.warn(_multiMsg);
                     break;
                 case DebugMode.ERROR:
-                    console.error(multiMsg);
+                    console.error(_multiMsg);
                     break;
             }
         }
     }
 
-    multiMsg(messageKey = "", ...args) {
+    multiMsg(messageKey = "", args = []) {
         let multiMessage = "";
         if (Commons.RegexLibrary.Multilingual_Key.test(messageKey)) {
             let languageCode = this._langCurrent();
@@ -224,8 +218,6 @@ class CellJS {
                         index++;
                     });
                 }
-
-                console.debug("Process multilingual");
             }
         }
         return multiMessage.length === 0 ? messageKey : multiMessage;
@@ -487,7 +479,7 @@ class CellJS {
         }
     }
 
-    digestData(method, data, key = "", outBit = -1) {
+    digestData(method, data, hex = true, key = "", outBit = -1) {
         let encryptor;
         if (method.startsWith("CRC")) {
             encryptor = CRC.newInstance(method);
@@ -505,7 +497,7 @@ class CellJS {
             return data;
         }
         encryptor.append(data);
-        return encryptor.finish();
+        return encryptor.finish(hex);
     }
 
     dateToMilliseconds(value = "") {
@@ -530,63 +522,109 @@ class CellJS {
         return value;
     }
 
-    Ajax(url, options = {}, parameters = null) {
-        return new Promise(function (resolve, reject) {
-            let _options = {
-                method: "get",
-                userName: null,
-                passWord: null,
-                uploadFile: false,
-                uploadProgress: null
-            };
-            Object.assign(_options, options);
-            Cell.debug("Link.Path.Data", url, _options.method);
-            let _request;
-            // If XMLHttpRequest is a javascript object in the local
-            if (window.XMLHttpRequest) {
-                _request = new XMLHttpRequest();
-            } else if (window.ActiveXObject) { // Support the ActiveX
+    static _XHR(url = "", options = {}) {
+        let _options = {
+            method: "get",
+            contentType: "",
+            headers: [],
+            userName: null,
+            passWord: null,
+            uploadFile: false,
+            uploadProgress: null
+        };
+        Object.assign(_options, options);
+        let _request;
+        // If XMLHttpRequest is a JavaScript object in the local
+        if (window.XMLHttpRequest) {
+            _request = new XMLHttpRequest();
+        } else if (window.ActiveXObject) { // Support the ActiveX
+            try {
+                // Create XMLHttpRequest object by instance an ActiveXObject
+                _request = new ActiveXObject("Microsoft.XMLHTTP"); // higher than msxml3
+            } catch (e) {
                 try {
                     // Create XMLHttpRequest object by instance an ActiveXObject
-                    _request = new ActiveXObject("Microsoft.XMLHTTP"); // higher than msxml3
+                    _request = new ActiveXObject("Msxml2.XMLHTTP"); // lower than msxml3
                 } catch (e) {
-                    try {
-                        // Create XMLHttpRequest object by instance an ActiveXObject
-                        _request = new ActiveXObject("Msxml2.XMLHTTP"); // lower than msxml3
-                    } catch (e) {
-                        reject(e.toString());
-                        throw e;
-                    }
+                    throw e;
                 }
             }
+        }
+
+        if (_options.userName !== null && _options.passWord !== null) {
+            _request.open(_options.method, url, true, _options.userName, _options.passWord);
+        } else {
+            _request.open(_options.method, url, true);
+        }
+        _request.setRequestHeader("Cache-Control", "no-cache");
+        _request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+        let _jwtToken = sessionStorage.getItem("JWTToken");
+        if (_jwtToken != null) {
+            _request.setRequestHeader("Authorization", _jwtToken);
+        }
+        if (_options.headers.length > 0) {
+            _options.headers.forEach(header => _request.setRequestHeader(header.name, header.value));
+        }
+        if (_options.contentType.length > 0) {
+            _request.setRequestHeader("Content-Type", _options.contentType);
+        }
+        if (_options.uploadFile) {
+            if (_options.uploadProgress) {
+                _request.upload.onprogress = function (event) {
+                    $(_options.uploadProgress).setAttribute("value", (event.loaded / event.total).toString());
+                };
+            }
+        }
+        return _request;
+    }
+
+    Stream(url, options = {}, parameters = null, resolve, reject) {
+        let _request = CellJS._XHR(url, options);
+        _request.setRequestHeader("Accept", "text/event-stream");
+        let processLength = 0;
+        _request.onreadystatechange = function () {
+            if (this.readyState === 3 || this.readyState === 4) {
+                let _totalData = _request.responseText;
+                let _partData = _totalData.substring(processLength);
+                processLength = _totalData.length;
+                if (_partData.length === 0) {
+                    return;
+                }
+                if (_partData.startsWith("data:")) {
+                    _partData = _partData.substring("data:".length).trim();
+                }
+                let _index = _partData.indexOf("\n");
+                if (_index > 0) {
+                    _partData = _partData.substring(0, _index);
+                }
+                resolve(_partData);
+            }
+        }
+        _request.ontimeout = function () {
+            reject(_request);
+        };
+        _request.onerror = function () {
+            reject(_request);
+        };
+        _request.send(parameters);
+    }
+
+    Ajax(url, options = {}, parameters = null) {
+        return new Promise(function (resolve, reject) {
+            let _request = CellJS._XHR(url, options);
             _request.onreadystatechange = function () {
                 if (this.readyState === 4) {
+                    Cell.debug("Link.Path.Data", url, _request.method);
+                    Cell.debug("Status.Data.Response", _request.status);
                     CellJS._parseResponse(_request, resolve, reject);
                 }
             };
             _request.ontimeout = function () {
                 reject(_request);
             };
-            if (_options.userName !== null && _options.passWord !== null) {
-                _request.open(_options.method, url, true, _options.userName, _options.passWord);
-            } else {
-                _request.open(_options.method, url, true);
-            }
-            _request.setRequestHeader("Cache-Control", "no-cache");
-            _request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-            let _jwtToken = sessionStorage.getItem("JWTToken");
-            if (_jwtToken != null) {
-                _request.setRequestHeader("Authorization", _jwtToken);
-            }
-            if (parameters) {
-                if (_options.uploadFile) {
-                    if (_options.uploadProgress) {
-                        _request.upload.onprogress = function (event) {
-                            $(_options.uploadProgress).setAttribute("value", (event.loaded / event.total).toString());
-                        };
-                    }
-                }
-            }
+            _request.onerror = function () {
+                reject(_request);
+            };
             _request.send(parameters);
         });
     }
@@ -645,7 +683,6 @@ class CellJS {
     }
 
     static _parseResponse(_request, resolve, reject) {
-        Cell.debug("Status.Data.Response", _request.status);
         let languageCode = _request.getResponseHeader("languageCode");
         if (languageCode !== null) {
             Cell.language = languageCode;
@@ -703,13 +740,13 @@ class CellJS {
         window.$$ = Commons.$$;
         window.Cell = new CellJS();
         window.Cell.init();
-        window.addEventListener("scroll", () => {
+        window.addEventListener("scroll", () =>
             document.querySelectorAll("resource-details")
                 .forEach(resource => {
                     if (resource.inViewPort()) {
                         resource.loadResource();
                     }
-                });
-        });
+                }));
+        CRC.test();
     }
 })();
