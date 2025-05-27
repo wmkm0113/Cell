@@ -584,20 +584,24 @@ class CellJS {
         let processLength = 0;
         _request.onreadystatechange = function () {
             if (this.readyState === 3 || this.readyState === 4) {
-                let _totalData = _request.responseText;
-                let _partData = _totalData.substring(processLength);
-                processLength = _totalData.length;
-                if (_partData.length === 0) {
-                    return;
+                if (this.status === 200) {
+                    let _totalData = _request.responseText;
+                    let _partData = _totalData.substring(processLength);
+                    processLength = _totalData.length;
+                    if (_partData.length === 0) {
+                        return;
+                    }
+                    if (_partData.startsWith("data:")) {
+                        _partData = _partData.substring("data:".length).trim();
+                    }
+                    let _index = _partData.indexOf("\n");
+                    if (_index > 0) {
+                        _partData = _partData.substring(0, _index);
+                    }
+                    resolve(_partData);
+                } else {
+                    reject(this.status);
                 }
-                if (_partData.startsWith("data:")) {
-                    _partData = _partData.substring("data:".length).trim();
-                }
-                let _index = _partData.indexOf("\n");
-                if (_index > 0) {
-                    _partData = _partData.substring(0, _index);
-                }
-                resolve(_partData);
             }
         }
         _request.ontimeout = function () {

@@ -295,9 +295,8 @@ export default class CRC extends Crypto {
 
     static test() {
         for (const name of Object.keys(CRC_CONSTANT)) {
-            Cell.debug("CRC.Test", name, Cell.digestData(name, "123456", false).toHex(), CRC_TEST[name]);
+            Cell.debug("CRC.Test", name, Cell.digestData(name, "123456"), CRC_TEST[name]);
         }
-        // Cell.debug("CRC.Test", "CRC-32/XFER", Cell.digestData("CRC-32/XFER", "123456", false).toHex(), CRC_TEST["CRC-32/XFER"]);
     }
 
     append(string = "") {
