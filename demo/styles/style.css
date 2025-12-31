@@ -1,31 +1,5 @@
 @charset "UTF-8";
-* {
-    float: left;
-    background-color: transparent;
-    margin: 0 auto;
-    padding: 0;
-}
-html {
-    float: none;
-    color: rgb(var(--text-color));
-}
-body {
-    width: 100%;
-    margin: 0 auto;
-    padding: 0;
-    background-color: rgb(var(--body-bg-color));
-    overflow-y: scroll;
-}
-body > header {
-    width: 100%;
-    height: 3rem;
-    background-color: #FFFFFF;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 10;
-    box-shadow: 0 5px 10px rgba(var(--bg-color), 0.4);
-}
+
 body > header > span.logo {
     width: 8rem;
     height: 3rem;
@@ -33,207 +7,129 @@ body > header > span.logo {
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-    margin: 0 0.5rem;
+    margin: 0 0.75rem 0 0.5rem;
 }
+
 body > header > span.title {
     width: calc(-16rem + 100%);
     height: 4rem;
     line-height: 4rem;
-    font-size: 2rem;
     font-family: "Microsoft YaHei", PingFang, sans-serif;
     font-weight: bolder;
     color: rgb(var(--bg-color));
 }
-body > header > menu-element {
-    margin-left: 1rem;
-}
-body > header > menu-element > div > menu-item,
-body > header > menu-element > div > menu-item > a,
-body > header > menu-element > div > menu-item > a > span {
-    height: 3rem;
-    line-height: 3rem;
-}
-body > header > menu-element > div > menu-item > div {
-    top: 3rem;
-    color: #FFFFFF;
-}
-body > header > multi-menu {
-    width: 3rem;
-    height: 3rem;
-    position: absolute;
-    overflow: hidden;
-    right: 0;
-    border-radius: unset;
-}
-body > header > multi-menu > i {
-    width: 2rem;
-    height: 2rem;
-    line-height: 2rem;
-    padding: 0.5rem;
-    font-size: 1.8rem;
-}
-body > header > multi-menu > div {
-    top: 3rem;
-}
-body > header > multi-menu > div > a {
-    min-height: 2rem;
-    line-height: 2rem;
-    font-size: 1rem;
-}
-body > header > multi-menu:hover {
-    overflow: unset;
-    background-color: rgb(var(--bg-color));
-}
-body > header > multi-menu:hover > i {
-    color: #FFFFFF;
-}
-body > slide-show {
+
+body > section[data-type="slide"] {
     width: 100%;
+    height: 60vh;
     margin-top: 3rem;
     margin-bottom: 1rem;
-    padding-bottom: 600px;
 }
+
 body > main {
     width: 100%;
 }
+
 body > main > article {
-    width: calc(-21rem + 100%);
+    width: max(calc(-23rem + 100%), calc(-3rem + 80%));
     min-height: calc(-300px + 100%);
+    padding: 0 1rem;
 }
+
 body > main > article > section {
     width: 100%;
 }
+
 body > main > article > section > h1 {
-    width: calc(-2rem + 100%);
+    width: 100%;
     height: 4rem;
     line-height: 4rem;
-    padding: 0 1rem;
-    font-size: 2rem;
-    color: rgb(var(--title-color));
 }
+
 body > main > article > section > article {
-    width: calc(-6rem + 100%);
-    margin: 1rem;
+    width: calc(-4rem + 100%);
+    margin: 1rem 0;
     padding: 2rem;
-    background-color: #FFFFFF;
+    background-color: rgb(var(--section-bg-color));
     border-radius: 1rem;
 }
-body > main > article > section > article > a,
-body > main > article > section > article > like-button,
-body > main > article > section > article > favorite-button {
-    height: 2rem;
-    line-height: 2rem;
-    margin: 0 0.5rem;
-    background-color: rgb(var(--btn-bg-color));
-    border-radius: 1rem;
-    box-shadow: 0 2px 5px rgba(var(--text-color), 0.4);
+
+section#circleChart {
+    margin-right: 0;
 }
-body > main > article > section > article > a:hover,
-body > main > article > section > article > like-button:hover,
-body > main > article > section > article > favorite-button:hover {
-    background-color: rgb(var(--bg-color));
-    color: #FFFFFF;
-    box-shadow: none;
-}
-body > main > article > section > article > like-button:hover > input[slot="element"] {
-    color: #FFFFFF;
-}
-body > main > article > section > article > a {
-    padding: 0 1rem;
-    font-weight: bolder;
-    font-size: 0.8rem;
-}
-body > main > article > section > article > favorite-button {
-    width: 2rem;
-}
-body > main > article > section > article > like-button > input[slot="element"] {
-    border-bottom: none;
-    float: right;
-}
-body > main > article > section > article > favorite-button > input[slot="element"] {
-    display: none;
-}
-body > main > article > section > message-list > list-filter,
-body > main > article > section > message-list > list-statistics,
-body > main > article > section > message-list > list-title,
-body > main > article > section > form-info,
-body > main > article > section > message-details,
-body > main > article > section > corporate-details {
-    border-radius: 1rem;
-}
-body > main > article > section > message-list > list-title {
-    border-radius: 1rem 1rem 0 0;
-}
-body > main > article > section > message-list > list-data {
-    border-radius: 0 0 1rem 1rem;
-}
-body > main > article > link-banner {
-    width: calc(-2rem + 100%);
+
+body > main > article > a[data-type="banner"] {
     height: 10rem;
-    margin: 0 1rem;
 }
-body > main > article > link-banner > resource-details::before {
-    width: 100%;
-    height: 10rem;
-    line-height: 10rem;
-    padding: 0;
-    font-size: 10rem;
-}
+
 body > main > aside {
-    width: 20rem;
+    width: min(20rem, 20%);
     min-height: calc(-2rem + 100%);
     margin-right: 1rem;
     float: right;
 }
-body > main > aside.fixed {
+
+body > main > aside.freeze {
     position: -webkit-sticky; /* Safari support */
     position: sticky;
     top: 4rem;
     right: 0;
     margin-bottom: 1rem;
 }
+
 body > main > aside > * {
     border-radius: 0.5rem;
     overflow: hidden;
 }
-body > footer {
-    width: calc(-6rem + 100%);
-    padding: 1rem 3rem 0 3rem;
-    background-color: rgb(var(--bg-color));
-    color: #F2F2F7;
+
+body > main > aside > section[data-type="address"] {
+    width: calc(-4rem + 100%);
+    padding: 2rem;
+    border-radius: 1rem;
+    background-color: rgb(var(--section-bg-color));
 }
-body > footer > social-group {
+
+body > footer > *[data-type="social-group"] {
     width: 15rem;
     float: right;
     margin-bottom: 1rem;
 }
-body > footer > social-group > a.icon {
+
+body > footer > *[data-type="social-group"] > span[data-type="items"] > a {
     color: #F2F2F7;
 }
+
 body > footer > div#copyRight {
     width: 100%;
     margin: 1rem 0;
     border-top: 1px solid #FFFFFF;
 }
+
 body > footer > div#copyRight > span#poweredBy {
     height: 2rem;
     line-height: 2rem;
 }
+
 html[lang="en"] {
     font-family: sans-serif;
 }
+
 html[lang="en"] > body > header > span.logo {
     background-image: url("../images/logo_en.svg");
 }
+
 html[lang="zh-CN"] {
     font-family: sans-serif;
 }
+
 html[lang="zh-CN"] > body > header > span.logo {
     background-image: url("../images/logo_zhs.svg");
 }
+
 html[lang="zh-TW"] {
     font-family: sans-serif;
 }
+
 html[lang="zh-TW"] > body > header > span.logo {
     background-image: url("../images/logo_zht.svg");
 }

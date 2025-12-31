@@ -22,6 +22,7 @@
  */
 'use strict';
 import {Int64, Crypto, CryptoUtils} from "./Crypto.js";
+
 const K = [
     new Int64(0x428A2F98, 0xD728AE22), new Int64(0x71374491, 0x23EF65CD),
     new Int64(0xB5C0FBCF, 0xEC4D3B2F), new Int64(0xE9B5DBA5, 0x8189DBBC),
@@ -121,23 +122,28 @@ export default class SHA extends Crypto {
         this._hmac = key.length > 0;
         Cell.debug("Register.SHA.Config", bit, outBit, delimiter, blockSize, blockLength, key);
     }
+
     static get CryptoName() {
         return "SHA";
     }
+
     append(string = "") {
         this.appendBinary(string.getBytes(this._bit !== 1600), string.toUTF8().length);
     }
+
     appendBinary(dataBytes, dataLength) {
         this._buffer = this._buffer.concat(dataBytes);
         this._length += dataLength;
         this._preCalc();
     }
+
     reset() {
         this._buffer = [];
         this._length = 0;
         this._reset();
         this._hash = this._initHash();
     }
+
     _final(dataBytes, length, total) {
         switch (this._bit) {
             case 1600:
@@ -157,6 +163,7 @@ export default class SHA extends Crypto {
         }
         this._calculate(dataBytes);
     }
+
     finish(hex = true) {
         let _length = (this._bit === 1600)
             ? ((this._length * 8) % this._blockSize)
@@ -181,12 +188,14 @@ export default class SHA extends Crypto {
         this.reset();
         return _result;
     }
+
     _preCalc() {
         while (this._buffer.length >= this._blockLength) {
             this._calculate(this._buffer.slice(0, this._blockLength));
             this._buffer = this._buffer.slice(this._blockLength);
         }
     }
+
     _reset() {
         switch (this._bit) {
             case 160:
@@ -212,6 +221,7 @@ export default class SHA extends Crypto {
                 break;
         }
     }
+
     _initHash() {
         switch (this._bit) {
             case 160:
@@ -271,6 +281,7 @@ export default class SHA extends Crypto {
                 throw new Error(Cell.multiMsg("Bit.SHA.Error"));
         }
     }
+
     _hmacTotal() {
         switch (this._bit) {
             case 160:
@@ -281,6 +292,7 @@ export default class SHA extends Crypto {
                 return 192 * 8 - (this._bit - this._outBit);
         }
     }
+
     _calculate(dataBytes) {
         switch (this._bit) {
             case 160:
@@ -448,6 +460,7 @@ export default class SHA extends Crypto {
                 break;
         }
     }
+
     _array() {
         let _result = [], _limit = Math.floor(this._outBit / 32);
         switch (this._bit) {
@@ -477,6 +490,7 @@ export default class SHA extends Crypto {
                 return _result;
         }
     }
+
     static newInstance(method = "SHA1", key = "", outBit = -1) {
         switch (method.toUpperCase()) {
             case "SHA1":

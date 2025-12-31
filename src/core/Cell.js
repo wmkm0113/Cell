@@ -27,21 +27,73 @@
 'use strict';
 
 import * as Commons from "../commons/Commons.js";
+import {Crypto} from "../crypto/Crypto.js";
 import CRC from "../crypto/CRC.js";
 import MD5 from "../crypto/MD5.js";
 import RSA from "../crypto/RSA.js";
 import SHA from "../crypto/SHA.js";
-import UIRender from "../render/Render.js";
-import {FloatWindow} from "../ui/mock.js";
-import {Comment, DebugMode} from "../commons/Commons.js";
+import * as Renders from "../render/Renders.js";
+import * as Components from "../components/Components.js";
+
+const FONT_ARRAY = ["url('../src/fonts/iconfont.woff2?t=1651372046520') format('woff2')",
+    "url('../src/fonts/iconfont.woff?t=1651372046520') format('woff')",
+    "url('../src/fonts/iconfont.woff2?t=1651372046520') format('woff2')"];
+
+const Options = {
+    async: true,
+    stream: false,
+    method: "get",
+    contentType: "",
+    headers: [],
+    userName: null,
+    passWord: null,
+    uploadFile: false,
+    uploadProgress: ""
+}
+
+const ELEMENTS = [
+    Components.TipsElement, Components.ProgressElement, Components.ScoreElement, Components.ResourceElement,
+    Components.BannerElement, Components.ButtonElement, Components.ChartElement, Components.MessageDetailsElement,
+    Components.CorporateDetailsElement, Components.MultiMenuElement, Components.MenuElement,
+    Components.MessageListElement, Components.CommentListElement,
+    Components.SocialGroupElement, Components.SlideElement, Components.CalendarElement,
+    Components.FormItemElement, Components.FormInfoElement
+];
+
+const listener = function () {
+    document.querySelectorAll("span[data-type='lazy']")
+        .forEach(resource => {
+            if (resource.inViewPort()) {
+                resource.loadResource();
+            }
+        });
+}
+
+const retrieveWindow = function (type = "") {
+    if (type.length === 0) {
+        return null;
+    }
+    let target = document.body.querySelector(`:scope > div[data-type="${type}"]`);
+    if (target === null) {
+        target = Renders.WindowRender.newInstance(type);
+        if (target !== null) {
+            document.body._appendChild(target);
+        }
+    }
+    return target;
+}
 
 class CellJS {
-    _multiInitialized = false;
+    _multilingual = false;
     _languageCode = "";
     _loggerBuffer = [];
+    _notify = -1;
+    _colorListener = -1;
+    _registeredRenders = new Map();
+    _observer = null;
 
     constructor() {
-        this._config = Commons.Config;
+        this._config = JSON.stringify(Commons.Config).parseJSON();
         //  Freeze config
         Object.freeze(this._config);
 
@@ -50,91 +102,189 @@ class CellJS {
     }
 
     init() {
+        this._observer = new MutationObserver(() => this._render());
+        this._observer.observe(document.body, {
+            attributes: false,
+            childList: true,
+            subtree: true
+        });
         this._languageCode = this._config.multi.default;
         this._initMulti();
-        this._initCrypto();
-        this.Render = new UIRender();
-        this.Render.init(this._config.elements);
-        if (this._config.scrollHeader.enabled) {
-            window.onload = this.scrollPage;
-            window.onscroll = this.scrollPage;
-        }
-        if (this._config.darkMode.enabled && Comment.GPS) {
-            switch (this._config.darkMode.mode) {
-                case Commons.DarkMode.Light:
-                    Cell.debug("Light.Mode.Dark");
-                    document.body.removeClass(this._config.darkMode.styleClass);
-                    break;
-                case Commons.DarkMode.Dark:
-                    Cell.debug("Dark.Mode.Dark");
-                    document.body.appendClass(this._config.darkMode.styleClass);
-                    break;
-                case Commons.DarkMode.Sun:
-                    Cell.debug("Sun.Mode.Dark");
+        this._languageCode.setLanguage();
+        [CRC, MD5, SHA, RSA].forEach(crypto => this._registerCrypto(crypto));
+        Object.values(Renders).forEach(render => this._register(render));
+        ELEMENTS.concat(this._config.elements)
+            .filter(component => component.tagName !== undefined && (typeof component.tagName) === "function")
+            .forEach(component => {
+                let tagName = component.tagName();
+                if (tagName !== null) {
+                    if (customElements.get(tagName) === undefined) {
+                        customElements.define(tagName, component);
+                    }
+                }
+            });
+        window.onload = this.scrollPage;
+        window.onscroll = this.scrollPage;
+        window.onresize = this.scale;
+
+        switch (this._config.colorMode) {
+            case Commons.ColorMode.Light:
+                Cell.debug("Light.Mode.Dark");
+                document.body.removeClass("dark");
+                break;
+            case Commons.ColorMode.Dark:
+                Cell.debug("Dark.Mode.Dark");
+                document.body.appendClass("dark");
+                break;
+            case Commons.ColorMode.Sun:
+                Cell.debug("Sun.Mode.Dark");
+                if (Commons.Comment.GPS) {
                     try {
                         navigator.geolocation.getCurrentPosition((position) =>
-                            Cell.registerDarkMode(position.coords.longitude, position.coords.latitude));
+                            Cell._registerDarkMode(position.coords.longitude, position.coords.latitude));
                     } catch (e) {
                         Cell.error("GPS.Error.Data", e.toString());
                     }
-                    break;
-                case Commons.DarkMode.System:
-                    Cell.debug("System.Mode.Dark");
-                    const matchMedia = window.matchMedia("(prefers-color-scheme: light)");
-                    matchMedia.addEventListener("change", (event) => this.systemDarkMode(event));
-                    this.systemDarkMode(matchMedia);
-                    break;
-            }
+                }
+                break;
+            case Commons.ColorMode.System:
+                Cell.debug("System.Mode.Dark");
+                const matchMedia = window.matchMedia("(prefers-color-scheme: dark)");
+                if (matchMedia.matches) {
+                    this._switchColor();
+                }
+                matchMedia.addEventListener("change", (event) => {
+                    if (event.matches !== this._darkMode) {
+                        this._switchColor();
+                    }
+                });
+                break;
         }
-        if (this._config.notify.dataPath.length > 0) {
-            window.setTimeout(Cell._scheduleNotify, this._config.notify.period);
+        this._notify = setInterval(Cell._scheduleNotify, this._config.notify.period);
+        this._loadFont();
+        this._render();
+
+        if (this._config.maps.Google.ApiKey.length > 0) {
+            (g => {
+                let h, a, k, p = Cell.multiMsg("Map.API", "Google"), c = "google", l = "importLibrary", q = "__ib__",
+                    m = document, b = window;
+                b = b[c] || (b[c] = {});
+                let d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams,
+                    u = () => h || (h = new Promise(async (f, n) => {
+                        await (a = m.createElement("script"));
+                        e.set("libraries", [...r] + "");
+                        for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]);
+                        e.set("callback", c + ".maps." + q);
+                        a.src = `https://maps.${c}apis.com/maps/api/js?` + e;
+                        d[q] = f;
+                        a.onerror = () => h = n(Error(Cell.multiMsg("Map.Load.Error", p)));
+                        a.nonce = m.querySelector("script[nonce]")?.nonce || "";
+                        m.head.append(a)
+                    }));
+                d[l] ? Cell.warn("Map.Reload.Warning", p, g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n))
+            })({
+                key: this._config.maps.Google.ApiKey,
+                v: this._config.maps.Google.version
+            });
         }
-        Cell.debug("Success.Initialize.Result");
+        if (this._config.maps.Baidu.ApiKey.length > 0) {
+            (b => {
+                let h, a, k, p = Cell.multiMsg("Map.API", "Baidu"), c = "baidu", l = "importLibrary", q = "__ib__",
+                    d = document, w = window;
+                w = w[c] || (w[c] = {});
+                const m = w.maps || (w.maps = {}), e = new URLSearchParams,
+                    u = () => h || (h = new Promise(async (f, n) => {
+                        await (a = d.createElement("script"));
+                        for (k in b) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), b[k]);
+                        e.set("callback", c + ".maps." + q);
+                        a.src = "https://api.map.baidu.com/api?" + e;
+                        a.onerror = () => h = n(new Error(Cell.multiMsg("Map.Load.Error", p)));
+                        m[q] = () => {
+                            m[l] = () => window.explain(this._config.maps.Baidu.paramName);
+                            delete m[q];
+                            f();
+                        };
+                        d.head.append(a);
+                    }));
+                m[l] ? Cell.warn("Map.Reload.Warning", p, b) : m[l] = (f, n) => u().then(() => m[l](f, n));
+            })({
+                ak: this._config.maps.Baidu.ApiKey,
+                v: this._config.maps.Baidu.version,
+                type: this._config.maps.Baidu.type
+            });
+        }
+
+        Cell.info("Success.Initialize.Result");
+
+        if (Cell._modeEnabled(Commons.DebugMode.DEBUG)) {
+            CRC.test();
+        }
+    }
+
+    destroy() {
+        if (this._notify > 0) {
+            clearInterval(this._notify);
+        }
+        if (this._colorListener > 0) {
+            clearInterval(this._colorListener);
+        }
+        this._observer.disconnect();
+        this._observer = null;
+        this._multiInfo = {};
+        this._multilingual = false;
+        this._loggerBuffer = [];
+    }
+
+    _loadFont(index = 0) {
+        if (FONT_ARRAY.length <= index) {
+            return;
+        }
+        new FontFace("iconfont", FONT_ARRAY[index], {display: "block"})
+            .load()
+            .then(font => document.fonts.add(font))
+            .catch(() => Cell._loadFont(index + 1));
     }
 
     _scheduleNotify() {
-        if (this._config.notify.dataPath.length > 0) {
-            Cell.debug("Notify.Path.Data", this._config.notify.dataPath);
-            Cell.Ajax(this._config.notify.dataPath)
-                .then(responseText => {
+        if (Cell._config.notify.dataPath.length > 0) {
+            Cell.debug("Notify.Path.Data", Cell._config.notify.dataPath);
+            Cell.sendRequest(Cell._config.notify.dataPath)
+                .then((responseText) => {
                     if (responseText.isJSON()) {
-                        let _jsonData = responseText.parseJSON();
-                        if (_jsonData.hasOwnProperty("notify")) {
-                            _jsonData.notify.forEach(notifyItem => Cell.notify(JSON.stringify(notifyItem)));
-                        }
+                        Cell.notify(responseText.parseJSON());
                     }
                 })
-                .catch(errorMsg => Cell.error("Error.Message", errorMsg));
-            window.setTimeout(Cell._scheduleNotify, this._config.notify.period);
+                .catch((errorMsg) => Cell.error("Error.Message", errorMsg));
         }
     }
 
     _initMulti() {
-        if (this._multiInitialized) {
+        if (this._multilingual) {
             return;
         }
-        if (this._config.multi === null || this._config.multi.codes.length === 0
-            || this._config.multi.path.length === 0 || this._config.multi.path.indexOf("{languageCode}") === -1
-            || this._config.multi.codes.indexOf(this._config.multi.default) === -1) {
+        if ((this._config.multi === null) || (this._config.multi.codes.length === 0)
+            || (this._config.multi.path.length === 0) || (this._config.multi.path.indexOf("{languageCode}") === -1)
+            || (this._config.multi.codes.indexOf(this._config.multi.default) === -1)) {
             console.debug("Multilingual was not configured or invalid, ignore load multilingual information");
             return;
         }
 
-        let url = this.contextPath() + this._config.multi.path;
+        let url = this._config.contextPath + this._config.multi.path;
         let _loadLanguages = [];
         this._config.multi.codes
             .filter(languageCode => typeof languageCode === "string")
             .forEach(languageCode => {
-                Cell.Ajax(url.replace("{languageCode}", languageCode))
-                    .then(responseText => {
+                //  Use synchronous request to initialize multilingual information
+                Cell.sendRequest(url.replace("{languageCode}", languageCode))
+                    .then((responseText) => {
                         if (responseText.isJSON()) {
                             this._multiInfo[languageCode] = responseText.parseJSON();
                         }
-                        _loadLanguages.push(languageCode);
-                        this._initMultiCount(_loadLanguages.length);
                     })
-                    .catch(errorMsg => {
+                    .catch((errorMsg) => {
                         console.error("Load multilingual resource failed! Path: " + url, errorMsg);
+                    })
+                    .finally(() => {
                         _loadLanguages.push(languageCode);
                         this._initMultiCount(_loadLanguages.length);
                     });
@@ -142,66 +292,118 @@ class CellJS {
     }
 
     _initMultiCount(count = 0) {
-        this._multiInitialized = (this._config.multi.codes.length === count);
-        if (this._multiInitialized) {
-            this._loggerBuffer.forEach(buffer => this._log(buffer["level"], buffer["key"], buffer["args"].split("|")));
+        this._multilingual = (this._config.multi.codes.length === count);
+        if (this._multilingual) {
+            this._loggerBuffer.forEach(buffer => {
+                const args = buffer.args.split("|");
+                this._log(buffer.level, buffer.key, ...args);
+            });
             this._loggerBuffer = [];
+            this.multilingual();
+        }
+    }
+
+    _register(render) {
+        if (render) {
+            const enhanceRender = new render();
+            if (enhanceRender.selectors().length > 0) {
+                enhanceRender.selectors().forEach(selector => this._registeredRenders.set(selector, enhanceRender));
+            }
+        }
+    }
+
+    _preRender(element = null) {
+        if (element === null) {
+            return;
+        }
+        this._registeredRenders.forEach((render, selector) => {
+            if (element.matches(selector + ":not([data-render='true'])")) {
+                this._renderElement(element, render);
+            }
+        })
+    }
+
+    _render() {
+        this._registeredRenders.forEach((render, selector) =>
+            $$(selector + ":not([data-render='true'])")
+                .forEach((item) => {
+                    this._renderElement(item, render);
+                    Cell.multilingual(item);
+                }));
+    }
+
+    _colorMode() {
+        this._registeredRenders.forEach((render, selector) =>
+            $$(selector).forEach((item) => render.colorMode(item, this._darkMode)));
+    }
+
+    _renderElement(element = null, render = null) {
+        if (element === null || render === null) {
+            return;
+        }
+        render._enhance(element);
+        Object.defineProperty(element, "data", {
+            set(data) {
+                render._prepare(element, data);
+                render._setData(element, data);
+            }
+        })
+        element.dataset.render = "true";
+        if (element.dataset.initData && element.dataset.initData.isJSON()) {
+            element.data = element.dataset.initData.parseJSON();
         }
     }
 
     debug(messageKey = "", ...args) {
-        if (this._config.debugMode <= Commons.DebugMode.DEBUG) {
-            this._log(Commons.DebugMode.DEBUG, messageKey, args);
-        }
+        this._log(Commons.DebugMode.DEBUG, messageKey, ...args);
     }
 
     info(messageKey = "", ...args) {
-        if (this._config.debugMode <= Commons.DebugMode.INFO) {
-            this._log(Commons.DebugMode.INFO, messageKey, args);
-        }
+        this._log(Commons.DebugMode.INFO, messageKey, ...args);
     }
 
     warn(messageKey = "", ...args) {
-        if (this._config.debugMode <= Commons.DebugMode.WARN) {
-            this._log(Commons.DebugMode.WARN, messageKey, args);
-        }
+        this._log(Commons.DebugMode.WARN, messageKey, ...args);
     }
 
     error(messageKey = "", ...args) {
-        if (this._config.debugMode <= Commons.DebugMode.ERROR) {
-            this._log(Commons.DebugMode.ERROR, messageKey, args);
-        }
+        this._log(Commons.DebugMode.ERROR, messageKey, ...args);
     }
 
-    _log(debugMode = DebugMode.ERROR, messageKey = "", args = []) {
-        if (messageKey.length > 0) {
-            if (!this._multiInitialized) {
-                let _logDetails = [];
-                _logDetails["level"] = debugMode;
-                _logDetails["key"] = messageKey;
-                _logDetails["args"] = args.join("|");
-                this._loggerBuffer.push(_logDetails);
+    _modeEnabled(loggerLevel = Commons.DebugMode.ERROR) {
+        return this._config.debugMode <= loggerLevel;
+    }
+
+    _log(debugMode = Commons.DebugMode.ERROR, messageKey = "", ...args) {
+        if (this._modeEnabled(debugMode) && messageKey.length > 0) {
+            if ((this._config.debugMode <= debugMode) && (messageKey.length > 0) && !this._multilingual) {
+                const logDetails = {
+                    level: debugMode,
+                    key: messageKey,
+                    args: args.join("|")
+                };
+                this._loggerBuffer.push(logDetails);
                 return;
             }
-            let _multiMsg = Cell.multiMsg(messageKey, args);
+            let _multiMsg = Cell.multiMsg(messageKey, ...args);
             switch (debugMode) {
-                case DebugMode.DEBUG:
+                case Commons.DebugMode.DEBUG:
                     console.debug(_multiMsg);
                     break;
-                case DebugMode.INFO:
+                case Commons.DebugMode.INFO:
                     console.info(_multiMsg);
                     break;
-                case DebugMode.WARN:
+                case Commons.DebugMode.WARN:
                     console.warn(_multiMsg);
                     break;
-                case DebugMode.ERROR:
+                case Commons.DebugMode.ERROR:
                     console.error(_multiMsg);
                     break;
             }
         }
     }
 
-    multiMsg(messageKey = "", args = []) {
+    multiMsg(messageKey = "", ...args) {
         let multiMessage = "";
         if (Commons.RegexLibrary.Multilingual_Key.test(messageKey)) {
             let languageCode = this._langCurrent();
@@ -212,10 +414,8 @@ class CellJS {
                     multiMessage = this._multiInfo[this._config.multi.default][messageKey];
                 }
                 if (multiMessage.length > 0) {
-                    let index = 1;
-                    args.forEach(arg => {
-                        multiMessage = multiMessage.replace("{" + index + "}", arg);
-                        index++;
+                    args.forEach((arg, index) => {
+                        multiMessage = multiMessage.replace("{" + (index + 1) + "}", arg);
                     });
                 }
             }
@@ -242,109 +442,312 @@ class CellJS {
 
     multilingual(element = document.body) {
         element.querySelectorAll('[data-multi-key]')
-            .forEach(element => element.innerText = Cell.multiMsg(element.dataset.multiKey));
+            .forEach(element => {
+                const textContent = Cell.multiMsg(element.dataset.multiKey);
+                if (element.tagName.toLowerCase() === "input") {
+                    if (element.dataset.hasOwnProperty("category")
+                        && ["score", "like", "favorite", "select-all"].indexOf(element.dataset.category.toLowerCase()) >= 0) {
+                        return;
+                    }
+                    switch (element.type.toLowerCase()) {
+                        case "submit":
+                        case "reset":
+                            element.value = textContent;
+                            element.dataset.value = textContent;
+                            break;
+                        case "checkbox":
+                        case "radio":
+                        case "button":
+                            const label = element.nextElementSibling;
+                            if (label) {
+                                label.innerText = textContent;
+                            }
+                            break;
+                        default:
+                            element.placeholder = textContent;
+                            break;
+                    }
+                } else if (element.tagName.toLowerCase() === "textarea") {
+                    element.placeholder = textContent;
+                } else if (element.tagName.toLowerCase() === "select") {
+                    element.items();
+                } else if (element.matches('i[data-type="tips"]')) {
+                    element.dataset.content = textContent;
+                } else {
+                    element.innerText = textContent;
+                    if (element.tagName.toLowerCase() === "a" || element.tagName.toLowerCase() === "span") {
+                        element.setAttribute("title", textContent);
+                    }
+                }
+            });
+        this._registeredRenders.forEach((render, selector) =>
+            element.querySelectorAll(selector + "[data-multi='true']")
+                .forEach(renderElement => render._multilingual(renderElement)));
     }
 
     alert(message = "") {
-        this.Render.message("alert", message);
-    }
-
-    confirm(message = "", confirmFunc = null) {
-        this.Render.message("confirm", message, confirmFunc);
-    }
-
-    notify(message = null) {
-        if (message !== null && message !== undefined) {
-            this.Render.message("notify", message);
+        const window = retrieveWindow("dialog");
+        if (window) {
+            window.data = {
+                content: message
+            }
         }
     }
 
-    contextPath() {
-        return this._config.contextPath;
+    confirm(message = "", confirmFunc = null) {
+        const window = retrieveWindow("dialog");
+        if (window) {
+            window.data = {
+                content: message,
+                confirm: confirmFunc
+            }
+        }
     }
 
-    initData(dataCode = "", parameters = "", element) {
-        if (this._config.componentPath.length > 0 && dataCode.length > 0
-            && element !== undefined && element !== null) {
+    notify(message = null) {
+        if (message !== null) {
+            const notify = retrieveWindow("notify");
+            if (notify) {
+                notify.data = message;
+            }
+        }
+    }
+
+    _initData(element = null) {
+        if (element === null) {
+            return;
+        }
+        const dataCode = element.dataset.hasOwnProperty("code") ? element.dataset.code : "",
+            parameters = element.dataset.hasOwnProperty("parameter") ? element.dataset.parameter : "";
+        if (this._config.componentPath.length > 0 && dataCode.length > 0) {
             let urlAddress = this._config.componentPath.replace("{dataCode}", dataCode);
             if (parameters.length > 0) {
                 urlAddress += ("?" + parameters);
             }
-            Cell.debug("Component.Path.Data", urlAddress);
-            Cell.Ajax(Cell.contextPath() + urlAddress)
-                .then(responseText => element.data = responseText)
-                .catch(errorMsg => Cell.error("Error.Message", errorMsg));
+            this.debug("Component.Path.Data", urlAddress);
+            this.sendRequest(this._config.contextPath + urlAddress)
+                .then((responseText) => element.data = responseText)
+                .catch((errorMsg) => this.error("Error.Message", errorMsg));
         }
     }
 
-    _parseResponse(responseData = {}, _floatWindow = false, linkAddress = "") {
-        let title = "";
-        if (responseData.hasOwnProperty("title")) {
-            responseData.title.setTitle();
-            title = responseData.title;
-            Cell.debug("Title.Data.Response", title);
-        }
-        if (responseData.hasOwnProperty("keywords")) {
-            responseData.keywords.setKeywords();
-            Cell.debug("Keywords.Data.Response", responseData.keywords);
-        }
-        if (responseData.hasOwnProperty("description")) {
-            responseData.description.setDescription();
-            Cell.debug("Description.Data.Response", responseData.description);
-        }
-        if (responseData.hasOwnProperty("data")) {
-            Cell.debug("Info.Data.Response", JSON.stringify(responseData.data), _floatWindow);
+    _response(responseText = "", _floatWindow = false, linkAddress = "", targetId = "") {
+        Cell.debug("Text.Data.Response", responseText);
+        let title = document.title;
+        if (responseText.isJSON()) {
+            const responseData = responseText.parseJSON();
+            if (responseData.hasOwnProperty("title")) {
+                responseData.title.setTitle();
+                title = responseData.title;
+                this.debug("Title.Data.Response", title);
+            }
+            if (responseData.hasOwnProperty("keywords")) {
+                responseData.keywords.setKeywords();
+                this.debug("Keywords.Data.Response", responseData.keywords);
+            }
+            if (responseData.hasOwnProperty("description")) {
+                responseData.description.setDescription();
+                this.debug("Description.Data.Response", responseData.description);
+            }
+            if (responseData.hasOwnProperty("data")) {
+                this.debug("Info.Data.Response", JSON.stringify(responseData.data), _floatWindow);
+                if (!_floatWindow) {
+                    this.closeWindow();
+                }
+                if (_floatWindow) {
+                    retrieveWindow("float").data = responseData.data;
+                } else {
+                    if (responseData.data instanceof Array) {
+                        responseData.data.forEach(dataItem => {
+                            if (dataItem.hasOwnProperty("id") && dataItem.hasOwnProperty("tagName")) {
+                                const parent = dataItem.hasOwnProperty("parentId") ? $(dataItem.parentId) : document.body;
+                                let bindElement = parent.querySelector(`${dataItem.tagName}[id="${dataItem.id}"]`);
+                                if (bindElement === null) {
+                                    bindElement = document.createElement(dataItem.tagName);
+                                    bindElement.id = dataItem.id;
+                                    parent.appendChild(bindElement);
+                                }
+                                if (dataItem.hasOwnProperty("data")) {
+                                    bindElement.data = JSON.stringify(dataItem.data);
+                                } else if (dataItem.hasOwnProperty("dataCode")) {
+                                    bindElement.dataset.code = dataItem.dataCode;
+                                    Cell._initData(bindElement);
+                                }
+                            }
+                        });
+                    } else {
+                        if (targetId.length > 0) {
+                            const _element = $(targetId);
+                            if (_element) {
+                                _element.data = responseData.data;
+                            }
+                        }
+                    }
+                }
+            }
+            if (responseData.hasOwnProperty("notify")) {
+                this.debug("Notify.Data.Response", JSON.stringify(responseData.notify));
+                this.notify(responseData.notify);
+            }
+        } else if (responseText.isHtml()) {
             if (!_floatWindow) {
                 Cell.closeWindow();
             }
-            Cell._renderElement(responseData.data, _floatWindow);
+            const _element = _floatWindow ? retrieveWindow("float") : $(targetId);
+            if (_element) {
+                _element.innerHTML = ("" + responseText);
+            }
         }
         if (linkAddress.length > 0) {
             history.pushState(null, title, linkAddress);
         }
-        if (responseData.hasOwnProperty("notify")) {
-            Cell.debug("Notify.Data.Response", JSON.stringify(responseData.notify));
-            responseData.notify.forEach(notifyItem => Cell.notify(JSON.stringify(notifyItem)));
-        }
+        return true;
     }
 
-    sendRequest(event) {
+    sendRequest(url, options = {}, parameters = null) {
+        return new Promise((resolve, reject) => {
+            const _options = JSON.stringify(Options).parseJSON();
+            Object.assign(_options, options);
+            let _request;
+            // If XMLHttpRequest is a JavaScript object in the local
+            if (window.XMLHttpRequest) {
+                _request = new XMLHttpRequest();
+            } else if (window.ActiveXObject) { // Support the ActiveX
+                try {
+                    // Create XMLHttpRequest object by instance an ActiveXObject
+                    _request = new ActiveXObject("Microsoft.XMLHTTP"); // higher than msxml3
+                } catch (e) {
+                    try {
+                        // Create XMLHttpRequest object by instance an ActiveXObject
+                        _request = new ActiveXObject("Msxml2.XMLHTTP"); // lower than msxml3
+                    } catch (e) {
+                        throw e;
+                    }
+                }
+            }
+
+            if (_options.userName !== null && _options.passWord !== null) {
+                _request.open(_options.method, url, _options.async, _options.userName, _options.passWord);
+            } else {
+                _request.open(_options.method, url, _options.async);
+            }
+            _request.method = _options.method;
+            _request.setRequestHeader("Cache-Control", "no-cache");
+            _request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+            if (_options.stream) {
+                _request.setRequestHeader("Accept", "text/event-stream");
+            }
+            let _jwtToken = sessionStorage.getItem("JWTToken");
+            if (_jwtToken != null) {
+                _request.setRequestHeader("Authorization", _jwtToken);
+            }
+            if (_options.headers.length > 0) {
+                _options.headers.forEach(header => _request.setRequestHeader(header.name, header.value));
+            }
+            if (_options.contentType.length > 0) {
+                _request.setRequestHeader("Content-Type", _options.contentType);
+            }
+            if (_options.uploadFile) {
+                _request.setRequestHeader("Content-Type", "multipart/form-data");
+                if (_options.uploadProgress.length > 0) {
+                    _request.upload.addEventListener("progress",
+                        (event) => {
+                            const progress = $(_options.uploadProgress);
+                            const percent = (event.loaded / event.total) * 100;
+                            progress.setAttribute("value", percent.toString());
+                            progress.data = {
+                                "processed": event.loaded.toString(),
+                                "total": event.total.toString()
+                            }
+                        });
+                }
+            }
+            let processLength = 0;
+            const stream = options.stream || false;
+            _request.onreadystatechange = function () {
+                if (this.readyState === 3 || this.readyState === 4) {
+                    if (this.readyState === 4 || stream) {
+                        Cell.debug("Link.Path.Data", url, this.method);
+                        Cell.debug("Status.Data.Response", this.status);
+
+                        let languageCode = this.getResponseHeader("languageCode");
+                        if (languageCode !== null) {
+                            Cell.language = languageCode;
+                            Cell.debug("Modify.Language.Code", languageCode);
+                        }
+                        let _jwtToken = this.getResponseHeader("Authentication");
+                        if (_jwtToken !== null) {
+                            sessionStorage.setItem("JWTToken", _jwtToken);
+                        }
+                        if (this.status === 301 || this.status === 302 || this.status === 307) {
+                            let _redirectPath = this.getResponseHeader("Location");
+                            if (_redirectPath.length !== 0) {
+                                Cell.debug("Redirect.Path.Data", _redirectPath);
+                                let _newOption = JSON.stringify(Options).parseJSON();
+                                Object.extend(_newOption, _options);
+                                Cell.sendRequest(_redirectPath, _newOption, parameters).then(resolve).catch(reject);
+                            } else {
+                                reject(_request);
+                            }
+                        } else if (_request.status === 200) {
+                            let _responseText = _request.responseText;
+                            if (Boolean(this.getResponseHeader("Data-Encrypted"))) {
+                                Cell.debug("Decrypt.Data.Response");
+                                _responseText = Cell.decData(_responseText);
+                            }
+                            if (stream) {
+                                let _partData = _responseText.substring(processLength);
+                                processLength = _responseText.length;
+                                if (_partData.length === 0) {
+                                    return;
+                                }
+                                if (_partData.startsWith("data:")) {
+                                    _partData = _partData.substring("data:".length).trim();
+                                }
+                                let _index = _partData.indexOf("\n");
+                                if (_index > 0) {
+                                    _partData = _partData.substring(0, _index);
+                                }
+                                _responseText = _partData;
+                            }
+                            resolve(_responseText);
+                        } else {
+                            reject(_request.status);
+                        }
+                    }
+                }
+            };
+            _request.ontimeout = function () {
+                reject(_request);
+            };
+            _request.onerror = function () {
+                reject(_request);
+            };
+            _request.send(parameters);
+        });
+    }
+
+    eventRequest(event, options = {}, parameters = null) {
         if (!Commons.Comment.Browser.IE || Commons.Comment.Browser.IE11) {
             event.preventDefault();
-            event.stopPropagation();
         }
+        event.stopPropagation();
         let target = event.currentTarget;
         if (target.dataset.disabled == null || target.dataset.disabled === "false") {
             if (target.tagName.toLowerCase() === "form") {
                 return this.submitForm(target);
             } else {
-                let linkAddress = target.tagName.toLowerCase() === "a"
-                    ? target.getAttribute("href")
-                    : target.dataset.link;
-                if (linkAddress !== undefined && linkAddress.length > 0 && linkAddress !== "#") {
+                let url = target.tagName.toLowerCase() === "a" ? target.href : target.dataset.link;
+                if (url !== undefined && url.length > 0 && url !== "#") {
                     if (target.dataset.openWindow === "true" ||
-                        (target.dataset.targetId !== undefined && target.dataset.targetId !== null
-                            && target.dataset.targetId.length > 0)) {
-                        let _floatWindow = Boolean(target.dataset.openWindow);
-                        let _element = _floatWindow ? Cell._floatWindow() : $(target.dataset.targetId);
-                        if (_element) {
-                            Cell.Ajax(linkAddress)
-                                .then(responseText => {
-                                    if (responseText.isJSON()) {
-                                        Cell._parseResponse(responseText.parseJSON(), _floatWindow, linkAddress);
-                                    } else {
-                                        Cell.debug("Text.Data.Response", responseText);
-                                        if (!_floatWindow) {
-                                            Cell.closeWindow();
-                                        }
-                                        _element.innerHTML = ("" + responseText);
-                                        history.pushState(null, "", linkAddress);
-                                    }
-                                })
-                                .catch(errorMsg => Cell.error("Error.Message", errorMsg));
-                        }
+                        (target.dataset.targetId !== undefined && target.dataset.targetId !== null && target.dataset.targetId.length > 0)) {
+                        const floatWindow = target.dataset.openWindow === "true",
+                            targetId = target.dataset.targetId || "";
+                        Cell.sendRequest(url, options, parameters)
+                            .then((responseText) => Cell._response(responseText, floatWindow, url, targetId))
+                            .catch((errorMsg) => Cell.error("Error.Message", errorMsg));
                     } else {
-                        window.location = linkAddress;
+                        window.location = url;
                     }
                 }
                 if (target.tagName.toLowerCase() === "a") {
@@ -354,52 +757,43 @@ class CellJS {
         }
     }
 
-    openWindow(data) {
-        Cell._floatWindow().data = data;
-    }
-
     closeWindow() {
-        let floatWindow = Cell._floatWindow();
+        let floatWindow = retrieveWindow("float");
         if (floatWindow) {
-            document.body.removeChild(floatWindow);
+            floatWindow.hide();
         }
     }
 
-    submitForm(formElement) {
+    submitForm(formElement, parameters = {}) {
         if (formElement && !formElement.dataset.disabled && formElement.validate()) {
-            let formData = formElement.formData();
-            Cell.debug("Submit.Form.Data", JSON.stringify(formData));
-            Cell.Ajax(formElement.action, {
-                method: formElement.getAttribute("method"),
-                uploadFile: formData.uploadFile,
-                uploadProgress: formData.uploadProgress
-            }, formData.data)
-                .then(responseText => {
-                    Cell.debug("Text.Data.Response", responseText);
-                    if (responseText.isJSON()) {
-                        Cell._parseResponse(responseText.parseJSON());
-                        if (formElement.method.toLowerCase() === "get") {
-                            let urlAddress = formElement.action;
-                            if (formData.data != null) {
-                                let queryString = "";
-                                for (let key of formData.data.keys()) {
-                                    queryString += ("&" + key + "=" + formData.data.get(key));
-                                }
-                                if (queryString.length > 0) {
-                                    urlAddress += ("?" + queryString.substring(1));
-                                }
-                            }
-                            history.pushState(null, null, urlAddress);
-                        }
-                    }
-                })
-                .catch(errorMsg => Cell.error("Error.Message", errorMsg));
+            if (formElement.action.indexOf("#") >= 0) {
+                window.location.hash = formElement.action.substring(formElement.action.indexOf("#"));
+                return;
+            }
+            const formData = formElement.formData();
+            Object.keys(parameters).forEach((key) => formData.data.append(key, parameters[key]));
+            if (Cell._modeEnabled(Commons.DebugMode.DEBUG)) {
+                Cell.debug("Submit.Form.Data", formData.uploadFile, formData.uploadProgress, JSON.stringify(Object.fromEntries(formData.data.toMap())));
+            }
+            Cell.sendRequest(formElement.action, {
+                    method: formElement.getAttribute("method"),
+                    uploadFile: formData.uploadFile,
+                    uploadProgress: formData.uploadProgress
+                },
+                formData.data)
+                .then((responseText) =>
+                    Cell._response(responseText, false, formElement.url(),
+                        formElement.dataset.hasOwnProperty("targetId") ? formElement.dataset.targetId : ""))
+                .catch((errorMsg) => Cell.error("Error.Message", errorMsg));
         }
-        return false;
     }
 
-    registerDarkMode(posLon, posLat) {
-        if (this._config.darkMode.mode === Commons.DarkMode.Sun) {
+    darkMode() {
+        return this._darkMode;
+    }
+
+    _registerDarkMode(posLon, posLat) {
+        if (this._config.colorMode === Commons.ColorMode.Sun) {
             let Sun = new Date().sunTime(posLon, posLat);
             if (Sun.SunRise === -1 || Sun.SunSet === -1) {
                 Cell.error("Sun.Data.Error");
@@ -407,43 +801,30 @@ class CellJS {
             }
             this._sunRise = Sun.SunRise;
             this._sunSet = Sun.SunSet;
-            this.switchDarkMode();
-            setInterval(function () {
-                Cell.switchDarkMode();
-            }, 60 * 1000);
+            this._switchDarkMode();
+            this._colorListener = setInterval(Cell._switchDarkMode, 60 * 1000);
         }
     }
 
-    switchDarkMode() {
-        if (this._config.darkMode.mode === Commons.DarkMode.Sun) {
+    _switchDarkMode() {
+        if (this._config.colorMode === Commons.ColorMode.Sun) {
             let _currDate = new Date(),
                 _currTime = _currDate.getTime() + (_currDate.getTimezoneOffset() * 60 * 1000);
-            if (_currTime > this._sunRise && this._darkMode) {
-                this._disableDarkMode();
-            } else if (_currTime > this._sunSet && !this._darkMode) {
-                this._enableDarkMode();
+            if ((_currTime > this._sunRise && this._darkMode) || (_currTime > this._sunSet && !this._darkMode)) {
+                this._switchColor();
             }
         }
     }
 
-    systemDarkMode(event) {
-        if (event.matches) {
-            this._disableDarkMode();
+    _switchColor() {
+        if (this._darkMode) {
+            document.body.removeClass("dark");
         } else {
-            this._enableDarkMode();
+            document.body.appendClass("dark");
         }
-    }
 
-    _enableDarkMode() {
-        document.body.appendClass(this._config.darkMode.styleClass);
-    }
-
-    _disableDarkMode() {
-        document.body.removeClass(this._config.darkMode.styleClass);
-    }
-
-    get language() {
-        return this._langCurrent();
+        this._darkMode = !this._darkMode;
+        this._colorMode();
     }
 
     set language(languageCode) {
@@ -465,7 +846,7 @@ class CellJS {
 
     encData(data) {
         if (this._config.security.RSA.exponent.length > 0 && this._config.security.RSA.modulus.length > 0) {
-            return RSA.newInstance(this._config.security.RSA).encrypt(data);
+            return this["RSA"].newInstance(this._config.security.RSA).encrypt(data);
         } else {
             return data;
         }
@@ -473,268 +854,90 @@ class CellJS {
 
     decData(data) {
         if (this._config.security.RSA.exponent.length > 0 && this._config.security.RSA.modulus.length > 0) {
-            return RSA.newInstance(this._config.security.RSA).decrypt(data);
+            return this["RSA"].newInstance(this._config.security.RSA).decrypt(data);
         } else {
             return data;
         }
     }
 
     digestData(method, data, hex = true, key = "", outBit = -1) {
-        let encryptor;
-        if (method.startsWith("CRC")) {
-            encryptor = CRC.newInstance(method);
-        } else if (method.toUpperCase().indexOf("MD5") !== -1) {
-            encryptor = MD5.newInstance(key);
-        } else if (method.toUpperCase().indexOf("SHA") !== -1) {
-            encryptor = SHA.newInstance(method, key, outBit);
-        } else if (Cell.hasOwnProperty(method)) {
-            encryptor = Cell[method].newInstance(method, key, outBit);
-        } else {
-            encryptor = null;
+        let digest = this._initDigest(method, key, outBit);
+        if (digest === null) {
             Cell.error("Digest.Unknown.Algorithm");
-        }
-        if (encryptor === null) {
             return data;
         }
-        encryptor.append(data);
-        return encryptor.finish(hex);
+        digest.append(data);
+        return digest.finish(hex);
     }
 
-    dateToMilliseconds(value = "") {
-        if (this._config.formConfig.convertDateTime) {
-            let milliseconds = Date.parse(value);
-            if (this._config.formConfig.utcDateTime) {
-                milliseconds += Comment.TimeZoneOffset;
+    digestBinary(method, dataBytes = [], hex = true, key = "", outBit = -1) {
+        let digest = this._initDigest(method, key, outBit);
+        if (digest === null) {
+            Cell.error("Digest.Unknown.Algorithm");
+            return dataBytes;
+        }
+        digest.appendBinary(dataBytes);
+        return digest.finish(hex);
+    }
+
+    _initDigest(method = "", key = "", outBit = -1) {
+        if (method.startsWith("CRC")) {
+            return this["CRC"].newInstance(method);
+        } else if (method.toUpperCase().indexOf("MD5") !== -1) {
+            return this["MD5"].newInstance(key);
+        } else if (method.toUpperCase().indexOf("SHA") !== -1) {
+            return this["SHA"].newInstance(method, key, outBit);
+        } else if (this.hasOwnProperty(method) && this[method] instanceof Crypto) {
+            return this[method].newInstance(method, key, outBit);
+        }
+        return null;
+    }
+
+    _registerCrypto(provider) {
+        if (provider) {
+            const name = provider.CryptoName;
+            if (this.hasOwnProperty(name)) {
+                Cell.warn("", name);
             }
-            return milliseconds;
+            this[name] = provider;
+            provider.initialize();
         }
-        return value;
     }
 
-    millisecondsToDate(value = null, pattern = Comment.ISO8601DATETIMEPattern,
-                       utc = this._config.formConfig.utcDateTime) {
-        if (Number.isFinite(value)) {
-            return value.parseTime(utc).format(pattern);
-        }
-        if (Object.prototype.toString.call(value) === "[object String]" && value.isNum()) {
-            return value.parseInt().parseTime(utc).format(pattern);
-        }
-        return value;
-    }
-
-    static _XHR(url = "", options = {}) {
-        let _options = {
-            method: "get",
-            contentType: "",
-            headers: [],
-            userName: null,
-            passWord: null,
-            uploadFile: false,
-            uploadProgress: null
-        };
-        Object.assign(_options, options);
-        let _request;
-        // If XMLHttpRequest is a JavaScript object in the local
-        if (window.XMLHttpRequest) {
-            _request = new XMLHttpRequest();
-        } else if (window.ActiveXObject) { // Support the ActiveX
-            try {
-                // Create XMLHttpRequest object by instance an ActiveXObject
-                _request = new ActiveXObject("Microsoft.XMLHTTP"); // higher than msxml3
-            } catch (e) {
-                try {
-                    // Create XMLHttpRequest object by instance an ActiveXObject
-                    _request = new ActiveXObject("Msxml2.XMLHTTP"); // lower than msxml3
-                } catch (e) {
-                    throw e;
-                }
-            }
-        }
-
-        if (_options.userName !== null && _options.passWord !== null) {
-            _request.open(_options.method, url, true, _options.userName, _options.passWord);
+    scale() {
+        const clientWidth = window.screen.width;
+        if (clientWidth <= 576) {
+            document.body.style.scale = ("" + (clientWidth / 576));
+        } else if (clientWidth <= 1280) {
+            document.body.style.scale = ("" + (clientWidth / 1280));
+        } else if (clientWidth <= 1440) {
+            document.body.style.scale = ("" + (clientWidth / 1440));
+        } else if (clientWidth <= 1920) {
+            document.body.style.scale = ("" + (clientWidth / 1920));
+        } else if (clientWidth <= 2560) {
+            document.body.style.scale = ("" + (clientWidth / 2560));
         } else {
-            _request.open(_options.method, url, true);
-        }
-        _request.setRequestHeader("Cache-Control", "no-cache");
-        _request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-        let _jwtToken = sessionStorage.getItem("JWTToken");
-        if (_jwtToken != null) {
-            _request.setRequestHeader("Authorization", _jwtToken);
-        }
-        if (_options.headers.length > 0) {
-            _options.headers.forEach(header => _request.setRequestHeader(header.name, header.value));
-        }
-        if (_options.contentType.length > 0) {
-            _request.setRequestHeader("Content-Type", _options.contentType);
-        }
-        if (_options.uploadFile) {
-            if (_options.uploadProgress) {
-                _request.upload.onprogress = function (event) {
-                    $(_options.uploadProgress).setAttribute("value", (event.loaded / event.total).toString());
-                };
-            }
-        }
-        return _request;
-    }
-
-    Stream(url, options = {}, parameters = null, resolve, reject) {
-        let _request = CellJS._XHR(url, options);
-        _request.setRequestHeader("Accept", "text/event-stream");
-        let processLength = 0;
-        _request.onreadystatechange = function () {
-            if (this.readyState === 3 || this.readyState === 4) {
-                if (this.status === 200) {
-                    let _totalData = _request.responseText;
-                    let _partData = _totalData.substring(processLength);
-                    processLength = _totalData.length;
-                    if (_partData.length === 0) {
-                        return;
-                    }
-                    if (_partData.startsWith("data:")) {
-                        _partData = _partData.substring("data:".length).trim();
-                    }
-                    let _index = _partData.indexOf("\n");
-                    if (_index > 0) {
-                        _partData = _partData.substring(0, _index);
-                    }
-                    resolve(_partData);
-                } else {
-                    reject(this.status);
-                }
-            }
-        }
-        _request.ontimeout = function () {
-            reject(_request);
-        };
-        _request.onerror = function () {
-            reject(_request);
-        };
-        _request.send(parameters);
-    }
-
-    Ajax(url, options = {}, parameters = null) {
-        return new Promise(function (resolve, reject) {
-            let _request = CellJS._XHR(url, options);
-            _request.onreadystatechange = function () {
-                if (this.readyState === 4) {
-                    Cell.debug("Link.Path.Data", url, _request.method);
-                    Cell.debug("Status.Data.Response", _request.status);
-                    CellJS._parseResponse(_request, resolve, reject);
-                }
-            };
-            _request.ontimeout = function () {
-                reject(_request);
-            };
-            _request.onerror = function () {
-                reject(_request);
-            };
-            _request.send(parameters);
-        });
-    }
-
-    _floatWindow() {
-        let floatWindow = document.body.querySelector("float-window");
-        if (floatWindow === null) {
-            floatWindow = new FloatWindow();
-            document.body.append(floatWindow);
-        }
-        return floatWindow;
-    }
-
-    _renderElement(dataList = [], floatWindow = false) {
-        dataList.forEach(dataItem => {
-            if (dataItem.hasOwnProperty("id") && dataItem.hasOwnProperty("tagName")) {
-                if (floatWindow) {
-                    let floatWindow = document.body.querySelector("float-window");
-                    if (floatWindow) {
-                        floatWindow.data = JSON.stringify(dataItem);
-                    }
-                } else {
-                    let parentElement;
-                    if (dataItem.hasOwnProperty("parentId")) {
-                        parentElement = $(dataItem.parentId);
-                    } else {
-                        parentElement = document.body;
-                    }
-                    let bindElement = parentElement.querySelector(dataItem.tagName + "[id=\"" + dataItem.id + "\"]");
-                    if (bindElement === null) {
-                        bindElement = document.createElement(dataItem.tagName);
-                        bindElement.id = dataItem.id;
-                        parentElement.appendChild(bindElement);
-                    }
-                    if (dataItem.hasOwnProperty("data")) {
-                        bindElement.data = JSON.stringify(dataItem.data);
-                    } else if (dataItem.hasOwnProperty("dataCode") && bindElement.loadData !== undefined) {
-                        bindElement.dataset.code = dataItem.dataCode;
-                        bindElement.loadData();
-                    }
-                }
-            }
-        });
-    }
-
-    _initCrypto() {
-        let cryptoNames = [];
-        [MD5, CRC, RSA, SHA].concat(this._config.security.providers)
-            .forEach(provider => {
-                let bundle = provider.CryptoName;
-                this[bundle] = bundle;
-                provider.initialize();
-                cryptoNames.push(bundle);
-            });
-        Cell.debug("Names.Crypto", cryptoNames.join(", "));
-    }
-
-    static _parseResponse(_request, resolve, reject) {
-        let languageCode = _request.getResponseHeader("languageCode");
-        if (languageCode !== null) {
-            Cell.language = languageCode;
-            Cell.debug("Modify.Language.Code", languageCode);
-        }
-        let _jwtToken = _request.getResponseHeader("Authentication");
-        if (_jwtToken !== null) {
-            sessionStorage.setItem("JWTToken", _jwtToken);
-        }
-        if (_request.status === 301 || _request.status === 302 || _request.status === 307) {
-            let _redirectPath = _request.getResponseHeader("Location");
-            if (_redirectPath.length !== 0) {
-                Cell.debug("Redirect.Path.Data", _redirectPath);
-                let _newOption = {};
-                Object.extend(_newOption, _request._options || {});
-                _newOption.method = "GET";
-                Cell.Ajax(_redirectPath, _newOption).then(resolve).catch(reject);
-            } else {
-                reject(_request);
-            }
-        } else if (_request.status === 200) {
-            let _responseText = _request.responseText;
-            if (Boolean(_request.getResponseHeader("Data-Encrypted"))) {
-                Cell.debug("Decrypt.Data.Response");
-                _responseText = Cell.decData(_responseText);
-            }
-            resolve(_responseText);
-        } else {
-            reject(_request.status);
+            document.body.style.scale = ("" + (clientWidth / 3840));
         }
     }
 
     scrollPage() {
-        Cell._config.scrollHeader.selectors
+        Cell._config.freeze
             .filter(selector => selector.length > 0)
             .forEach(selector => {
                 let pinnedElement = document.body.querySelector(selector);
                 if (pinnedElement) {
                     if (!pinnedElement.dataset.hasOwnProperty("offsetTop")) {
-                        pinnedElement.dataset.offsetTop = pinnedElement.offsetTop;
+                        const offsetTop = pinnedElement.getBoundingClientRect().top + window.pageYOffset;
+                        pinnedElement.dataset.offsetTop = Math.trunc(offsetTop).toString();
                     }
                     if (pinnedElement.scrollOut()) {
-                        pinnedElement.appendClass(Cell._config.scrollHeader.styleClass);
+                        pinnedElement.appendClass("freeze");
                     } else {
-                        pinnedElement.removeClass(Cell._config.scrollHeader.styleClass);
+                        pinnedElement.removeClass("freeze");
                     }
                 }
-            })
+            });
     }
 }
 
@@ -744,13 +947,13 @@ class CellJS {
         window.$$ = Commons.$$;
         window.Cell = new CellJS();
         window.Cell.init();
-        window.addEventListener("scroll", () =>
-            document.querySelectorAll("resource-details")
-                .forEach(resource => {
-                    if (resource.inViewPort()) {
-                        resource.loadResource();
-                    }
-                }));
-        CRC.test();
+        window.addEventListener("scroll", listener);
+        window.addEventListener("beforeunload", () => {
+            window.removeEventListener("scroll", listener);
+            window.Cell.destroy();
+            delete window.$;
+            delete window.$$;
+            delete window.Cell;
+        });
     }
 })();

@@ -16,6 +16,9 @@
  */
 /*
  *
+ * 1.0.2
+ * [Update] Rewrite custom element define, compatible enhance exist html element
+ *
  * 1.0.1
  * [New] Extend String for Verify CHN ID Card Code and CHN Social Credit Code
  *
@@ -24,17 +27,58 @@
  *
  */
 'use strict';
+
 const Comment = {
-    Version: "1.0.1",
+    Version: "1.0.2",
     Language: navigator.language,
     Html5: ((typeof Worker) !== "undefined"),
     MaxWidth: Math.max(document.documentElement.scrollWidth, document.documentElement.clientWidth),
     MaxHeight: Math.max(document.documentElement.scrollHeight, document.documentElement.clientHeight),
     GPS: !!navigator.geolocation,
-    TimeZoneOffset: new Date().getTimezoneOffset() * 60 * 1000,
-    ISO8601DATEPattern: "yyyy-MM-dd",
-    ISO8601TIMEPattern: "HH:mm:ss",
-    ISO8601DATETIMEPattern: "yyyy-MM-ddTHH:mm:ss",
+    Icons: {
+        Connector: "-",
+        Multilingual: Number.parseInt("eb8e", 16),
+        Score: {
+            Fill: Number.parseInt("eab5", 16),
+            Half: Number.parseInt("eac0", 16),
+            Empty: Number.parseInt("eac2", 16)
+        },
+        Favorite: {
+            Yes: Number.parseInt("eab5", 16),
+            No: Number.parseInt("eac2", 16),
+        },
+        Like: {
+            Yes: Number.parseInt("eb0d", 16),
+            No: Number.parseInt("eafa", 16)
+        },
+        Pager: {
+            First: Number.parseInt("e733", 16),
+            Previous: Number.parseInt("e737", 16),
+            Next: Number.parseInt("e738", 16),
+            Last: Number.parseInt("e734", 16),
+        },
+        List: {
+            Text: Number.parseInt("eb61", 16),
+            View: Number.parseInt("eb62", 16),
+            Image: Number.parseInt("eb60", 16)
+        },
+        Select: {
+            Yes: Number.parseInt("e72e", 16),
+            No: Number.parseInt("e721", 16),
+        },
+        Picker: {
+            Calendar: Number.parseInt("e6e5", 16),
+            Timer: Number.parseInt("e8eb", 16)
+        }
+    },
+    DateTime: {
+        Convert: false,
+        UTC: false,
+        TimeZoneOffset: new Date().getTimezoneOffset() * 60 * 1000,
+        ISO8601DATEPattern: "yyyy-MM-dd",
+        ISO8601TIMEPattern: "HH:mm:ss",
+        ISO8601DATETIMEPattern: "yyyy-MM-ddTHH:mm:ss"
+    },
     BASE16: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'],
     BASE36: [
         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
@@ -110,50 +154,31 @@ Comment.Browser.Version = () => {
         return parseInt(userAgent.match(/MICROMESSENGER\/([\d.]+)/)[1]);
     }
 }
-const TagDefine = {
-    HtmlTag: [
-        "a", "abbr", "acronym", "address", "applet", "area", "b", "base", "bdo", "big", "blockquote", "body", "br",
-        "button", "caption", "center", "cite", "code", "col", "colgroup", "dd", "del", "div", "dfn", "dl", "dt", "em",
-        "embed", "fieldset", "form", "frame", "frameset", "h1", "h2", "h3", "h4", "h5", "h6", "head", "html", "i",
-        "iframe", "img", "input", "ins", "kbd", "label", "legend", "li", "link", "map", "meta", "noframes", "noscript",
-        "object", "ol", "optgroup", "option", "p", "param", "pre", "q", "s", "samp", "script", "select", "small",
-        "span", "strong", "style", "sub", "sup", "table", "tbody", "td", "textarea", "tfoot", "th", "thead", "title",
-        "tr", "tt", "ul", "var"
-    ],
-    Html5Tag: [
-        "a", "abbr", "address", "area", "article", "aside", "audio", "b", "base", "bdi", "bdo", "big", "blockquote",
-        "body", "br", "button", "canvas", "caption", "center", "cite", "code", "col", "colgroup", "data", "datalist",
-        "dd", "del", "details", "div", "dfn", "dialog", "dl", "dt", "em", "embed", "fieldset", "figcaption", "figure",
-        "footer", "form", "frame", "frameset", "h1", "h2", "h3", "h4", "h5", "h6", "head", "header", "hgroup", "html",
-        "i", "iframe", "img", "input", "ins", "kbd", "keygen", "label", "legend", "li", "link", "main", "map", "mark",
-        "meta", "meter", "nav", "noframes", "noscript", "object", "ol", "optgroup", "option", "output", "p", "param",
-        "picture", "pre", "progress", "q", "rp", "rt", "ruby", "s", "samp", "script", "section", "select", "small",
-        "source", "span", "strong", "style", "sub", "summary", "sup", "table", "tbody", "td", "textarea", "template",
-        "tfoot", "th", "thead", "time", "title", "tr", "track", "tt", "ul", "var", "video", "wbr"
-    ]
-}
-Object.seal(TagDefine);
 const RegexLibrary = {
     E_Mail: /^([A-Za-z\d_\-.])+@([A-Za-z\d_\-.])+\.([A-Za-z]{2,4})$/i,
     UUID: /^([\da-f]{8}((-[\da-f]{4}){3})-[\da-f]{12})|([\da-f]{32})\b/g,
     BlankText: /\s+/ig,
-    Number: /^\b\d+\b$/g,
-    Zero_Number: /^-?0*$/g,
+    Number: {
+        Float: /^\b\d+\.\d+\b$/g,
+        Zero_Number: /^-?0*$/g,
+        Default: /^\b\d+\b$/g
+    },
     Color: /^#[\dA-F]{6}$/i,
     XML: /<[a-zA-Z\d]+[^>]*>(?:.|[\r\n])*?<\/[a-zA-Z\d]+>/ig,
     HtmlTag: /<[a-zA-Z\d]+[^>]*>/ig,
     Luhn: /^[0-9]+/g,
     CHN_ID_Card: /^[1-9](\d{17}|(\d{16}X))$/g,
     CHN_Social_Credit: /^([1-9]|A|N|Y)[\dA-Z]{17}$/g,
+    Language_Code: /^[a-z]{2,3}(-[A-Z]{2})?(-[a-zA-Z]{4})?$/ig,
     Multilingual_Key: /^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*$/
 };
-const DarkMode = {
+const ColorMode = {
     Light: 0,
     Dark: 1,
     Sun: 2,
     System: 3
 }
-Object.freeze(DarkMode);
+Object.freeze(ColorMode);
 const DebugMode = {
     DEBUG: 0,
     INFO: 1,
@@ -185,23 +210,9 @@ const Config = {
         dataPath: "",
         period: 15 * 1000
     },
-    scrollHeader: {
-        enabled: false,
-        selectors: [],
-        styleClass: "fixed"
-    },
+    freeze: [],
     //  Config the dark mode by sunrise and sunset
-    darkMode: {
-        mode: DarkMode.Light,
-        styleClass: "darkMode"
-    },
-    //  Config for form data
-    formConfig: {
-        //  Convert date/time from 'yyyy-MM-dd [HH:mm]' to number of milliseconds between that date and midnight, January 1, 1970.
-        convertDateTime: false,
-        //  Convert value is UTC number of milliseconds between that date and midnight, January 1, 1970.
-        utcDateTime: false
-    },
+    colorMode: ColorMode.Light,
     security: {
         providers: [],
         password: {
@@ -225,11 +236,30 @@ const Config = {
             padding: "NoPadding"
         }
     },
+    maps: {
+        Google: {
+            ApiKey: "",
+            version: "weekly"
+        },
+        Baidu: {
+            ApiKey: "",
+            version: "1.0",
+            type: "webgl",
+            paramName: "BMapGL"
+        }
+    },
     elements: []
 };
 Object.seal(Config);
 
-const $ = function() {
+const DragUpload = {
+    identifyCode: "",
+    fileName: "",
+    content: null
+};
+Object.seal(DragUpload);
+
+const $ = function () {
     if (arguments.length <= 0) {
         return [];
     }
@@ -250,7 +280,7 @@ const $ = function() {
     }
 }
 
-const $$ = function() {
+const $$ = function () {
     if (arguments.length <= 0) {
         return [];
     }
@@ -271,8 +301,109 @@ const $$ = function() {
     }
 }
 
-export {Comment, RegexLibrary, Config, DarkMode, DebugMode, SlideType, $, $$};
+export {Comment, RegexLibrary, Config, DragUpload, ColorMode, DebugMode, SlideType, $, $$};
+
+const validate = function (element = HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement) {
+    let _result = true;
+    if (element.value.length > 0) {
+        let _value = element.value;
+        if (element.dataset.hasOwnProperty("regex")) {
+            _result = _result && new RegExp(element.dataset.regex).test(_value);
+        }
+        if (element.dataset.hasOwnProperty("minValue") && element.dataset.minValue.isNum()) {
+            _result = _result && _value.isNum() && (element.dataset.minValue.parseFloat() <= _value.parseFloat());
+        }
+        if (element.dataset.hasOwnProperty("maxValue") && element.dataset.maxValue.isNum()) {
+            _result = _result && _value.isNum() && (_value.parseFloat() <= this.dataset.maxValue.parseFloat());
+        }
+        if (Boolean(element.dataset.xml)) {
+            _result = _result && _value.isXml();
+        }
+        if (Boolean(element.dataset.html)) {
+            _result = _result && _value.isHtml();
+        }
+        if (Boolean(element.dataset.email)) {
+            _result = _result && _value.isEmail();
+        }
+        if (Boolean(element.dataset.luhn)) {
+            _result = _result && _value.isLuhn();
+        }
+        if (Boolean(element.dataset.color)) {
+            _result = _result && _value.isColorCode();
+        }
+        if (Boolean(element.dataset.CHNID)) {
+            _result = _result && _value.isCHNID();
+        }
+        if (Boolean(element.dataset.CHNSocialCredit)) {
+            _result = _result && _value.isCHNSocialCredit();
+        }
+    } else {
+        _result = (element.dataset.notNull === undefined || element.dataset.notNull === "false");
+    }
+    if (_result) {
+        delete element.dataset["validate"];
+    } else {
+        element.dataset.validate = "" + _result;
+    }
+    return _result;
+}
+
+const countDown = function (element = null) {
+    if (element === null || element.tagName.toLowerCase() !== "input" || !element.dataset.hasOwnProperty("timer")) {
+        return;
+    }
+    const label = (element.type.toLowerCase() === "button") ? this.nextElementSibling : element;
+    if (element.dataset.hasOwnProperty("countDown")) {
+        let countDown = element.dataset.countDown.parseInt();
+        countDown--;
+        if (countDown <= 0) {
+            window.clearInterval(element.dataset.timer.parseInt());
+            element.enable();
+            label.dataset.value = element.dataset.originalText;
+            label.value = element.dataset.originalText;
+            delete element.dataset.originalText;
+            delete element.dataset.countDown;
+        } else {
+            element.dataset.countDown = countDown.toString();
+            label.dataset.value = countDown.toString();
+            label.value = countDown.toString();
+        }
+    }
+}
+
+Object.assign(Document.prototype, {
+    remWidth() {
+        return this.documentElement.styles().fontSize.parseInt();
+    },
+    scrollPosition() {
+        return {
+            top: document.documentElement.scrollTop || document.body.scrollTop,
+            left: document.documentElement.scrollLeft || document.body.scrollLeft
+        }
+    }
+})
+
+Object.assign(Window.prototype, {
+    explain(parameterName = "") {
+        if (parameterName.length === 0) {
+            return {};
+        }
+        const d = window.hasOwnProperty(parameterName) ? window[parameterName] : {};
+        for (const [k, v] of Object.entries(d))
+            v === void 0 && delete d[k];
+        return Object.freeze({...d});
+    }
+})
+
 Object.assign(Element.prototype, {
+    styles() {
+        return window.getComputedStyle(this);
+    },
+    generateId() {
+        if (this.id.length === 0) {
+            this.id = Math.trunc(Math.random() * 1000000).toString(16);
+        }
+    },
     getClass() {
         let _className;
         if (Comment.Browser.IE && !Comment.Browser.IE11) {
@@ -296,6 +427,15 @@ Object.assign(Element.prototype, {
             return this.getClass().indexOf(_className) !== -1;
         }
         return false;
+    },
+    _appendChild(childNode = null) {
+        if (childNode === null) {
+            return;
+        }
+        this.appendChild(childNode);
+        if (Cell) {
+            Cell._preRender(childNode);
+        }
     },
     appendClass(_className = "") {
         if (_className.length > 0) {
@@ -341,15 +481,16 @@ Object.assign(Element.prototype, {
     scrollOut() {
         if (this.dataset.hasOwnProperty("offsetTop")) {
             let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-            return scrollTop > this.dataset.offsetTop;
+            return scrollTop > this.dataset.offsetTop.parseInt();
         }
         return false;
     },
     inViewPort() {
-        let viewPortHeight = window.innerHeight || document.documentElement.clientHeight;
-        let viewPortWidth = window.innerWidth || document.documentElement.clientWidth;
-        let {top, left, bottom, right} = this.getBoundingClientRect();
-        return (top >= 0 && left >= 0 && bottom <= viewPortHeight && right <= viewPortWidth);
+        const viewPortHeight = window.innerHeight || document.documentElement.clientHeight,
+            viewPortWidth = window.innerWidth || document.documentElement.clientWidth,
+            scrollPosition = document.scrollPosition();
+        let {top, left} = this.getBoundingClientRect();
+        return (top - scrollPosition.top) < viewPortHeight && (left - scrollPosition.left) < viewPortWidth;
     },
     removeEvent(_eventName, _operateFunc) {
         this.removeEventListener(_eventName, _operateFunc, false);
@@ -381,131 +522,42 @@ Object.assign(Element.prototype, {
             document.body.style.overflow = "auto";
         }
     },
-    formData() {
-        let formData = {};
-        if (this.tagName.toLowerCase() === "form") {
-            formData.uploadFile = false;
-            let _formData = new FormData();
-            let _inputName, _inputValue;
-            this.querySelectorAll("input, select, textarea").forEach(input => {
-                _inputName = input.name;
-                let process = true;
-                if (input.type === "checkbox" || input.type === "radio") {
-                    process = input.checked;
-                }
-                if (process) {
-                    _inputValue = input.value;
-                    if (_inputValue !== null && _inputValue.length > 0) {
-                        if (input.tagName.toLowerCase() === "input") {
-                            switch (input.type.toLowerCase()) {
-                                case "password":
-                                    _inputValue = Cell.digest(_inputValue);
-                                    break;
-                                case "date":
-                                case "time":
-                                case "datetime-local":
-                                    _inputValue = Cell.dateToMilliseconds(_inputValue);
-                                    break;
-                                case "file":
-                                    formData.uploadFile = true;
-                                    break;
-                                case "text":
-                                case "search":
-                                case "url":
-                                    if (input.dataset.encrypt === "true") {
-                                        _inputValue = Cell.encData(_inputValue);
-                                    }
-                                    break;
-                            }
-                        } else if (input.tagName.toLowerCase() !== "select") {
-                            _inputValue = _inputValue.encodeByRegExp();
-                        }
-                        _formData.append(_inputName, _inputValue);
-                    }
-                }
-            });
-            this.querySelectorAll("drag-upload").forEach(drawUpload =>
-                drawUpload.drawFiles.forEach(fileItem => {
-                    _formData.append(drawUpload.getAttribute("name"), fileItem, fileItem.name);
-                    formData.uploadFile = true;
-                }));
-            if (formData.uploadFile && this.dataset.uploadProgress) {
-                formData.uploadProgress = this.dataset.uploadProgress;
-            }
-            formData.data = _formData;
-        }
-        return formData;
-    },
-    validate() {
-        let _result = true;
-        let _tagName = this.tagName.toLowerCase();
-        if (_tagName === "form") {
-            this.querySelectorAll("input, select, textarea")
-                .forEach(input => {
-                    _result = _result && input.validate();
-                });
-        } else if (this.dataset.validate === "true" && ["input", "select", "textarea"].indexOf(_tagName) !== -1) {
-            if (this.value.length > 0) {
-                let _value = this.value;
-                if (this.dataset.regex) {
-                    _result = _result && (_value.match(this.dataset.regex) !== null);
-                }
-                if (this.dataset.minValue && this.dataset.minValue.isNum()) {
-                    _result = _result && _value.isNum() && (this.dataset.minValue.parseFloat() <= _value.parseFloat());
-                }
-                if (this.dataset.maxValue && this.dataset.maxValue.isNum()) {
-                    _result = _result && _value.isNum() && (_value.parseFloat() <= this.dataset.maxValue.parseFloat());
-                }
-                if (this.dataset.xml === "true") {
-                    _result = _result && _value.isXml();
-                }
-                if (this.dataset.html === "true") {
-                    _result = _result && _value.isHtml();
-                }
-                if (this.dataset.email === "true") {
-                    _result = _result && _value.isEmail();
-                }
-                if (this.dataset.luhn === "true") {
-                    _result = _result && _value.isLuhn();
-                }
-                if (this.dataset.color === "true") {
-                    _result = _result && _value.isColorCode();
-                }
-                if (this.dataset.CHNID === "true") {
-                    _result = _result && _value.isCHNID();
-                }
-                if (this.dataset.CHNSocialCredit === "true") {
-                    _result = _result && _value.isCHNSocialCredit();
-                }
+    after(element = null) {
+        if (element && this.parentElement) {
+            let posNode = this.nextElementSibling;
+            if (posNode) {
+                this.parentElement.insertBefore(element, posNode);
             } else {
-                _result = (this.dataset.notNull === undefined || this.dataset.notNull === "false");
+                this.parentElement.appendChild(element);
             }
         }
-        return _result;
     },
     sortChildrenBy(selectors = "", attributeName = "", _sortDesc = false) {
-        if (!attributeName || !selectors) {
+        if (!attributeName || !selectors || attributeName.length === 0) {
             return;
         }
         if (this.hasChildNodes()) {
             let childNodes = [];
             this.querySelectorAll(selectors).forEach(childNode => childNodes.push(childNode));
             childNodes.sort((a, b) => {
-                    try {
-                        let aValue = a.getAttribute(attributeName);
-                        let bValue = b.getAttribute(attributeName);
-                        if (bValue.length !== aValue.length) {
-                            return _sortDesc ? bValue.length > aValue.length : bValue.length < aValue.length;
-                        }
-                        return _sortDesc ? bValue.localeCompare(aValue) : aValue.localeCompare(bValue);
-                    } catch (e) {
-                        return 0;
+                try {
+                    let aValue = a.getAttribute(attributeName);
+                    let bValue = b.getAttribute(attributeName);
+                    if (aValue.isNum() && bValue.isNum()) {
+                        return _sortDesc ? bValue.parseFloat() > aValue.parseFloat() : bValue.parseFloat() < aValue.parseFloat();
                     }
-                })
-                .forEach(childNode => {
-                    this.removeChild(childNode);
-                    this.appendChild(childNode);
-                });
+                    if (bValue.length !== aValue.length) {
+                        return _sortDesc ? bValue.length > aValue.length : bValue.length < aValue.length;
+                    }
+                    return _sortDesc ? bValue.localeCompare(aValue) : aValue.localeCompare(bValue);
+                } catch (e) {
+                    return 0;
+                }
+            });
+            childNodes.forEach(childNode => {
+                this.removeChild(childNode);
+                this.appendChild(childNode);
+            });
         }
     },
     attrNames() {
@@ -535,21 +587,22 @@ Object.assign(Element.prototype, {
     render() {
         if (Comment.Browser.IE || Comment.Browser.IE11) {
             let _html = "<" + this.tagName;
-            let _attributes = this.attributes, _attrLength = _attributes.length, i;
-            for (i = 0; i < _attrLength; i++) {
-                _html += (" " + _attributes[i].name + "=\"" + this.getAttribute(_attributes[i].name) + "\"");
+            for (let attributesKey in this.attributes) {
+                _html += (" " + attributesKey + "=\"" + this.getAttribute(attributesKey) + "\"");
             }
             if (this.tagName.toLowerCase() === "input") {
                 _html += "/>";
             } else {
                 _html += ">";
-                let _childList = this.childList(), _childLength = _childList.length;
-                if (_childLength > 0) {
-                    for (i = 0; i < _childLength; i++) {
-                        _html += _childList[i].render();
+                const _childList = this.childList();
+                if (_childList.length === 0) {
+                    if (this.innerHTML !== undefined) {
+                        _html += this.innerHTML;
                     }
-                } else if (this.innerHTML !== undefined) {
-                    _html += this.innerHTML;
+                } else {
+                    _childList.forEach(child => {
+                        _html += child.render();
+                    });
                 }
                 _html += ("</" + this.tagName + ">");
             }
@@ -557,8 +610,419 @@ Object.assign(Element.prototype, {
         } else {
             return this.outerHTML;
         }
+    },
+    slide(force = false) {
+        if (this.tagName.toLowerCase() === "section"
+            && this.dataset.hasOwnProperty("type") && this.dataset.type === "slide") {
+            if (!force && this.dataset.hasOwnProperty("paused") && this.dataset.paused.toLowerCase() === "true") {
+                return;
+            }
+            const transitionTime = this.dataset.hasOwnProperty("transitionTime") ? this.dataset.transitionTime.parseInt() : 0;
+            const total = this.querySelectorAll(':scope > span[data-type="sort-container"] > i').length,
+                current = this.dataset.hasOwnProperty("current") ? this.dataset.current.parseInt() : 0,
+                next = this.dataset.hasOwnProperty("next") ? this.dataset.next.parseInt() : nextIndex(current, total);
+            const sortArray = this.querySelectorAll(`:scope > span[data-type="sort-container"] > i`),
+                slideArray = this.querySelectorAll(':scope > span[data-type="slide-container"] > a');
+
+            if (sortArray.length === 0 || slideArray.length === 0) {
+                return;
+            }
+
+            const slideType = this.dataset.hasOwnProperty("slideType") ? this.dataset.slideType.parseInt() : SlideType.ScrollLeft;
+            slideArray[next].appendClass("next");
+            switch (slideType) {
+                case SlideType.ScrollLeft:
+                    slideArray[current].style.left = "-100%";
+                    break;
+                case SlideType.ScrollTop:
+                    slideArray[current].style.top = "-100%";
+                    break;
+                case SlideType.ScrollRight:
+                    slideArray[current].style.left = "100%";
+                    break;
+                case SlideType.ScrollBottom:
+                    slideArray[current].style.top = "100%";
+                    break;
+                case SlideType.ZoomIn:
+                    slideArray[next].style.scale = "1";
+                    break;
+                case SlideType.ZoomOut:
+                    slideArray[current].style.scale = "0";
+                    break;
+                case SlideType.OpacityIn:
+                    slideArray[next].style.opacity = "1";
+                    break;
+                case SlideType.OpacityOut:
+                    slideArray[current].style.opacity = "0";
+                    break;
+            }
+            sortArray.forEach((sort, index) => {
+                sort.removeClass("current");
+                if (index === next) {
+                    sort.appendClass("current");
+                }
+            });
+            this.dataset.current = next.toString();
+            this.dataset.next = nextIndex(next, total).toString();
+
+            window.setTimeout(() => {
+                slideArray.forEach((slide, index) => {
+                    slide.removeClass("current");
+                    if (index === next) {
+                        slide.setClass("current");
+                    }
+                });
+                switch (slideType) {
+                    case SlideType.ScrollLeft:
+                    case SlideType.ScrollRight:
+                        slideArray[current].style.left = "0";
+                        break;
+                    case SlideType.ScrollTop:
+                    case SlideType.ScrollBottom:
+                        slideArray[current].style.top = "0";
+                        break;
+                    case SlideType.ZoomIn:
+                        slideArray[current].style.scale = "0";
+                        break;
+                    case SlideType.ZoomOut:
+                        slideArray[current].style.scale = "1";
+                        break;
+                    case SlideType.OpacityIn:
+                        slideArray[current].style.opacity = "0";
+                        break;
+                    case SlideType.OpacityOut:
+                        slideArray[current].style.opacity = "1";
+                        break;
+                }
+            }, transitionTime);
+        }
     }
 });
+
+function nextIndex(current = 0, total = 0) {
+    if (current === total) {
+        return current;
+    }
+    return ((current + 1) === total) ? 0 : (current + 1);
+}
+
+Object.assign(HTMLInputElement.prototype, {
+    validate() {
+        return validate(this);
+    },
+
+    currentDateTime() {
+        switch (this.type.toLowerCase()) {
+            case "date":
+                this.value = new Date().format(Comment.DateTime.ISO8601DATEPattern);
+                break;
+            case "time":
+                this.value = new Date().format(Comment.DateTime.ISO8601TIMEPattern);
+                break;
+            case "datetime-local":
+                this.value = new Date().format(Comment.DateTime.ISO8601DATETIMEPattern);
+                break;
+        }
+    },
+
+    countDown() {
+        const type = this.type.toLowerCase();
+        const intervalTime = this.dataset.hasOwnProperty("intervalTime") ? this.dataset.intervalTime.parseInt() : 0;
+        if (["button", "submit", "reset"].indexOf(type) === -1 || intervalTime <= 0) {
+            return;
+        }
+        const label = type === "button" ? this.nextElementSibling : this;
+        if (label) {
+            if (!this.dataset.hasOwnProperty("timer")) {
+                this.dataset.originalText = label.dataset.value;
+                this.dataset.countDown = intervalTime.toString();
+                label.dataset.value = intervalTime.toString();
+                label.value = intervalTime.toString();
+                this.disable();
+                this.dataset.timer = window.setInterval(() => countDown(this), 1000).toString();
+            }
+        }
+    },
+
+    parseValue() {
+        switch (this.type.toLowerCase()) {
+            case "password":
+                if (Cell) {
+                    return Cell.digest(this.value);
+                }
+                break
+            case "date":
+            case "time":
+            case "datetime-local":
+                if (Comment.DateTime.Convert) {
+                    let milliseconds = Date.parse(this.value);
+                    if (Comment.DateTime.UTC) {
+                        milliseconds += Comment.DateTime.TimeZoneOffset;
+                    }
+                    return milliseconds;
+                }
+                break;
+            case "file":
+                if (this.dragFiles) {
+                    return this.dragFiles;
+                }
+                break;
+            case "text":
+            case "search":
+            case "url":
+                if (Cell) {
+                    return Boolean(this.dataset.encrypt) ? Cell.encData(this.value) : this.value;
+                }
+                break;
+        }
+        return this.value;
+    }
+});
+
+Object.assign(HTMLSelectElement.prototype, {
+    validate() {
+        return validate(this);
+    },
+
+    items(data = []) {
+        const currentValue = this.dataset.value || "",
+            multiKey = this.dataset.multiKey || "",
+            multilingual = multiKey.length > 0;
+        if (data.length === 0) {
+            if (multilingual) {
+                Array.from(this.options).forEach(option => option.innerText = Cell.multiMsg(multiKey, option.value));
+            }
+        } else {
+            this.clearChildNodes();
+            data.forEach((item, index) => {
+                const text = multilingual ? Cell.multiMsg(multiKey, item.value) : item.text;
+                this.options.add(new Option(text, item.value, index === 0, item.value.toString() === currentValue));
+            });
+        }
+    },
+
+    parseValue() {
+        return this.value;
+    }
+});
+
+Object.assign(HTMLTextAreaElement.prototype, {
+    validate() {
+        return validate(this);
+    },
+
+    parseValue() {
+        return this.value.encodeByRegExp();
+    }
+});
+
+Object.assign(HTMLFormElement.prototype, {
+    url() {
+        let url = this.action;
+        if (this.method.toLowerCase() === "get") {
+            const formData = this.formData();
+            if (formData.data != null) {
+                let queryString = "";
+                for (let key of formData.data.keys()) {
+                    queryString += ("&" + key + "=" + formData.data.get(key));
+                }
+                if (queryString.length > 0) {
+                    url += ("?" + queryString.substring(1));
+                }
+            }
+        }
+        return url;
+    },
+    formData() {
+        let uploadFile = false, data = new FormData(), uploadProgress = "";
+        Array.from(this.querySelectorAll("input, select, textarea"))
+            .filter(input => {
+                if (input.name.length === 0) {
+                    return false;
+                }
+                if (input.type.toLowerCase() === "checkbox" || input.type.toLowerCase() === "radio") {
+                    return input.checked;
+                } else if (input.type.toLowerCase() === "file") {
+                    return (input.dragFiles !== undefined);
+                } else {
+                    return input.value !== null && input.value.length > 0;
+                }
+            })
+            .forEach(input => {
+                const value = input.parseValue();
+                if (value instanceof Array) {
+                    uploadFile = true;
+                    value.forEach(file => {
+                        if (file instanceof File) {
+                            data.append(input.name, file, file.name);
+                        } else {
+                            data.append(input.name, file.content, file.fileName);
+                        }
+                    });
+                } else {
+                    data.append(input.name, value);
+                }
+            });
+        if (uploadFile && this.dataset.uploadProgress) {
+            uploadProgress = this.dataset.uploadProgress;
+        }
+        return {
+            uploadFile: uploadFile,
+            data: data,
+            uploadProgress: uploadProgress
+        };
+    },
+    validate() {
+        const elements = this.querySelectorAll("input, select, textarea");
+        const successCount = Array.from(elements).filter(input => input.validate()).length;
+        return successCount === elements.length;
+    }
+});
+
+Object.assign(HTMLSpanElement.prototype, {
+    isLazyLoad() {
+        return this.dataset.hasOwnProperty("type") && this.dataset.type === "lazy";
+    },
+    playVideo() {
+        const styles = this.styles();
+        if (styles.display === "none" || styles.visibility === "hidden" || !this.dataset.loaded || this.dataset.loaded !== "true") {
+            return;
+        }
+        if (this.dataset.hasOwnProperty("mimeType") && this.dataset.mimeType.startsWith("video")) {
+            const video = this._elements().video;
+            if (!video.isPlaying()) {
+                video.muted = true;
+                video.play();
+            }
+        }
+    },
+    pauseVideo() {
+        if (this.dataset.hasOwnProperty("mimeType") && this.dataset.mimeType.startsWith("video")) {
+            const video = this._elements().video;
+            if (!Boolean(this.dataset.autoplay) && video.isPlaying()) {
+                video.pause();
+            }
+        }
+    },
+    loadResource() {
+        if (!this.isLazyLoad() || this.dataset.loaded === "true" || !this.inViewPort()) {
+            return;
+        }
+        if (this.dataset.hasOwnProperty("mimeType") && this.dataset.hasOwnProperty("resourcePath")) {
+            const _elements = this._elements();
+            if (this.dataset.mimeType.startsWith("image")) {
+                _elements.img.src = this.dataset.resourcePath;
+            } else {
+                _elements.video.show();
+                if (this.dataset.hasOwnProperty("disableDownload") && Boolean(this.dataset.disableDownload)) {
+                    _elements.video.setAttribute("controlslist", "nodownload");
+                } else {
+                    _elements.video.setAttribute("controlslist", "");
+                }
+                _elements.video.addEventListener("contextmenu", () => {
+                    return this.dataset.hasOwnProperty("disableDownload") && Boolean(this.dataset.disableDownload);
+                });
+                _elements.video.disablePictureInPicture = this.dataset.hasOwnProperty("disableDownload") && Boolean(this.dataset.disableDownload);
+                if (this.dataset.hasOwnProperty("controls") && Boolean(this.dataset.controls)) {
+                    _elements.video.setAttribute("controls", "");
+                } else {
+                    _elements.video.removeAttribute("controls");
+                }
+                if (this.dataset.hasOwnProperty("loop") && Boolean(this.dataset.loop)) {
+                    _elements.video.setAttribute("loop", "");
+                } else {
+                    _elements.video.removeAttribute("loop");
+                }
+                _elements.video.setPath(this.dataset.mimeType, this.dataset.resourcePath);
+                _elements.video.load();
+            }
+            this.dataset.loaded = "true";
+        }
+    },
+    _elements() {
+        const elements = {img: null, video: null};
+        let imgArray = this.getElementsByTagName("img");
+        if (imgArray.length === 0) {
+            const imgElement = document.createElement("img");
+            this.appendChild(imgElement);
+            imgElement.addEventListener("error", (event) => event.target.parentElement.style.opacity = "0");
+            imgElement.addEventListener("load", (event) =>
+                event.target.parentElement.style.backgroundImage = 'url("' + event.target.src + '")');
+            elements.img = imgElement;
+        } else {
+            elements.img = imgArray[0];
+            if (imgArray.length > 1) {
+                imgArray.filter((imgElement, index) => index > 0)
+                    .forEach(imgElement => this.removeChild(imgElement));
+            }
+        }
+
+        const videoArray = this.querySelectorAll(":scope > video");
+        if (videoArray.length === 0) {
+            const videoElement = document.createElement("video");
+            videoElement.addEventListener("canplay", (event) => {
+                const video = event.target;
+                if (Boolean(video.parentElement.dataset.autoplay)) {
+                    video.muted = true;
+                    video.play();
+                }
+            });
+            this.appendChild(videoElement);
+            elements.video = videoElement;
+        } else {
+            elements.video = videoArray[0];
+            if (videoArray.length > 1) {
+                videoArray.filter((video, index) => index > 0).forEach(video => this.removeChild(video));
+            }
+        }
+        if (this.dataset.mimeType.startsWith("video")) {
+            elements.video.show();
+        } else {
+            elements.video.hide();
+        }
+        elements.img.hide();
+        return elements;
+    }
+});
+
+Object.assign(HTMLVideoElement.prototype, {
+    setPath(mimeType = "", resPath = "") {
+        if (mimeType.length > 0 && resPath.length > 0 && mimeType.toLowerCase().startsWith("video")) {
+            let _source;
+            const sourceArray = this.getElementsByTagName("source");
+            if (sourceArray.length === 0) {
+                _source = document.createElement("source");
+                this.appendChild(_source);
+            } else {
+                _source = sourceArray[0];
+                if (sourceArray.length > 1) {
+                    sourceArray.filter((sourceElement, index) => index > 0)
+                        .forEach(sourceElement => this.removeChild(sourceElement));
+                }
+            }
+            _source.src = resPath;
+            _source.type = mimeType;
+        }
+    },
+    isPlaying() {
+        return this.currentTime > 0 && !this.paused && !this.ended && this.readyState > HTMLMediaElement.HAVE_CURRENT_DATA;
+    }
+});
+
+Object.assign(FormData.prototype, {
+    toMap() {
+        const map = new Map();
+        this.keys().forEach((key) => {
+            if (map.has(key)) {
+                map.set(key, this.getAll(key));
+            } else {
+                map.set(key, this.get(key));
+            }
+        });
+        return map;
+    }
+});
+
 Object.assign(String.prototype, {
     cleanBlank() {
         return this.isEmpty() ? "" : this.replace(RegexLibrary.BlankText, "");
@@ -630,24 +1094,12 @@ Object.assign(String.prototype, {
         return this.trim().search(RegexLibrary.XML) !== -1;
     },
     isHtml() {
-        let _matchResult = this.isXml();
-        if (_matchResult) {
-            let _length = RegexLibrary.HtmlTag.length, _tagName;
-            for (let i = 0; i < _length; i++) {
-                _tagName = this.match(RegexLibrary.HtmlTag[i]);
-                if (_tagName !== null) {
-                    _tagName = _tagName.substring(1, _tagName.length - 1);
-                    if (_tagName.indexOf(" ") > 0) {
-                        _tagName = _tagName.substring(0, _tagName.indexOf(" "));
-                    }
-
-                    _matchResult = Comment.Html5
-                        ? TagDefine.Html5Tag.indexOf(_tagName) !== -1
-                        : TagDefine.HtmlTag.indexOf(_tagName) !== -1;
-                }
-            }
-        }
-        return _matchResult;
+        return this.isXml() && this.match(RegexLibrary.HtmlTag)
+            .filter(tag => {
+                const tagName = tag.substring(1, tag.indexOf(" ") === -1 ? tag.length - 1 : tag.indexOf(" "));
+                return customElements.get(tagName) === null;
+            })
+            .length === 0;
     },
     parseJSON() {
         if (!this.isJSON()) {
@@ -692,7 +1144,10 @@ Object.assign(String.prototype, {
         return _xmlDoc == null ? null : _xmlDoc.documentElement;
     },
     isNum() {
-        return (this.match(RegexLibrary.Number) != null);
+        if (this.length === 0) {
+            return false;
+        }
+        return Object.values(RegexLibrary.Number).filter(regex => regex.test(this.trim())).length > 0;
     },
     parseInt(radix) {
         return parseInt(this, radix === null ? 10 : radix);
@@ -720,6 +1175,11 @@ Object.assign(String.prototype, {
             document.head.appendChild(metaElement);
         }
         metaElement.setAttribute("content", this);
+    },
+    setLanguage() {
+        if (RegexLibrary.Language_Code.test(this)) {
+            document.documentElement.lang = this;
+        }
     },
     decodeBase64() {
         let _result = [], i = 0, _length = this.length;
@@ -805,18 +1265,20 @@ Object.assign(String.prototype, {
             }
         }
         return _dataBytes.reverse();
+    },
+    formatDate(pattern = Comment.DateTime.ISO8601DATETIMEPattern, utc = Comment.DateTime.UTC) {
+        if (this.isNum() && Comment.DateTime.Convert) {
+            return this.parseInt().parseTime(utc).format(pattern);
+        }
+        return this;
     }
 });
-Object.assign(HTMLVideoElement.prototype, {
-    isPlaying() {
-        return this.currentTime > 0 && !this.paused && !this.ended && this.readyState > HTMLMediaElement.HAVE_CURRENT_DATA;
-    }
-});
+
 Object.assign(Number.prototype, {
-    parseTime(utc = false) {
+    parseTime(utc = Comment.DateTime.UTC) {
         let _date = new Date();
         if (utc) {
-            _date.setTime(this - Comment.TimeZoneOffset);
+            _date.setTime(this - Comment.DateTime.TimeZoneOffset);
         } else {
             _date.setTime(this);
         }
@@ -830,8 +1292,21 @@ Object.assign(Number.prototype, {
     },
     rotateRight(_count) {
         return this >>> _count;
+    },
+    parseInt() {
+        return parseInt(this.toString());
+    },
+    parseFloat() {
+        return parseFloat(this.toString());
+    },
+    formatDate(pattern = Comment.DateTime.ISO8601DATETIMEPattern, utc = Comment.DateTime.UTC) {
+        if (Comment.DateTime.Convert) {
+            return this.parseTime(utc).format(pattern);
+        }
+        return this.toString();
     }
 });
+
 Object.assign(BigInt.prototype, {
     toByteArray(bigEndian = false) {
         let array = [];
@@ -848,6 +1323,7 @@ Object.assign(BigInt.prototype, {
         return array;
     },
 });
+
 Object.assign(Date.prototype, {
     format(pattern = "MM/dd/yyyy") {
         let Pattern = {
@@ -883,6 +1359,46 @@ Object.assign(Date.prototype, {
         }
         return returnValue;
     },
+    weekOfMonth(beginIndex = 0) {
+        const offset = 7 - ((beginIndex === 0) ? 7 : beginIndex);
+        const w = (this.getDay() === 0) ? 7 : this.getDay();
+        return Math.ceil((this.getDate() + 6 - w + offset) / 7);
+    },
+    weekOfYear(beginIndex = 0) {
+        const offset = 7 - ((beginIndex === 0) ? 7 : beginIndex);
+        const firstDayOfYear = new Date(this.getFullYear(), 0, 1);
+        const dayCount = Math.round((this.valueOf() - firstDayOfYear.valueOf()) / (24 * 60 * 60 * 1000));
+        return Math.ceil((dayCount + firstDayOfYear.getDay() + offset) / 7);
+    },
+    lastDayOfPreviousMonth() {
+        return new Date(this.getFullYear(), this.getMonth(), 0).getDate();
+    },
+    lastDayOfCurrentMonth() {
+        if (this.getMonth() === 11) {
+            return new Date(this.getFullYear() + 1, 0, 0).getDate();
+        } else {
+            return new Date(this.getFullYear(), this.getMonth() + 1, 0).getDate();
+        }
+    },
+    matches(year = -1, month = -1, day = -1) {
+        return this.getFullYear() === year && this.getMonth() === month && this.getDate() === day;
+    },
+    before(year = -1, month = -1, day = -1) {
+        let result = true;
+        if (year >= 0) {
+            result &= this.getFullYear() <= year;
+        }
+        if (month > 0 && month <= 12) {
+            result &= this.getMonth() < month;
+        }
+        if (day > 0) {
+            result &= this.getDate() <= day;
+        }
+        return (result === true);
+    },
+    after(year = -1, month = -1, day = -1) {
+        return !this.before(year, month, day);
+    },
     /**
      * Calculate sunrise/sunset/noon by given gps location
      * @param posLon    GPS longitude
@@ -906,7 +1422,7 @@ Object.assign(Date.prototype, {
         if (posLon < 0) {
             _fixTime *= -1;
         }
-        let _currentUTC = new Date().getTime() + Comment.TimeZoneOffset,
+        let _currentUTC = new Date().getTime() + Comment.DateTime.TimeZoneOffset,
             _gpsTime = new Date(_currentUTC + _fixTime),
             _gpsMonth = _gpsTime.getMonth() + 1, _gpsDay = _gpsTime.getDate(),
             RD = 180 / Math.PI, B5 = Math.PI * posLat / 180,
@@ -951,6 +1467,7 @@ Object.assign(Date.prototype, {
         return Sun;
     }
 });
+
 Object.assign(Array.prototype, {
     toHex(separator = "") {
         let _result = "";

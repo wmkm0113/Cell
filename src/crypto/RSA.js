@@ -305,7 +305,7 @@ export default class RSA extends Crypto {
                 break;
         }
         _seedLength >>= 3;
-        let _lHash= Cell.digestData(_hash, "", false);
+        let _lHash = Cell.digestData(_hash, "", false);
         console.info(_lHash.length);
         return 0n;
     }

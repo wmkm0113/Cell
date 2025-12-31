@@ -1,19 +1,25 @@
 {
   "notify": [
-    {
-      "textContent": "Test Notify 1"
-    },
-    {
-      "textContent": "Test Notify 2"
-    },
-    {
-      "textContent": "Test Notify 3"
-    },
-    {
-      "textContent": "Test Notify 4"
-    },
-    {
-      "textContent": "Test Notify 5"
-    }
+      {
+          "identify": "identify1",
+          "text": "Test Notify 1"
+      },
+      {
+          "identify": "identify2",
+          "text": "Test Notify 2"
+      },
+      {
+          "identify": "identify3",
+          "text": "Test Notify 3"
+      },
+      {
+          "identify": "identify4",
+          "text": "Test Notify 4"
+      },
+      {
+          "identify": "identify5",
+          "imgPath": "/demo/images/icon.svg",
+          "text": "Test Notify 5"
+      }
   ]
 }

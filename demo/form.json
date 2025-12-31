@@ -1,0 +1,363 @@
+{
+    "title": "Test form",
+    "data": {
+        "tagName": "form-info",
+        "data": {
+            "id": "floatForm",
+            "method": "post",
+            "action": "/#",
+            "title": "Form.title",
+            "items": [
+                {
+                    "type": "property",
+                    "class": "formItem",
+                    "title": "Property.Name",
+                    "value": "Property Content",
+                    "tips": "Tips message"
+                },
+                {
+                    "type": "select",
+                    "class": "formItem",
+                    "id": "selectElement",
+                    "name": "selectElement",
+                    "value": 4,
+                    "title": "Element.label.text",
+                    "tips": "Tips message",
+                    "items": [
+                        {
+                            "text": "option0",
+                            "value": 0
+                        },
+                        {
+                            "text": "option1",
+                            "value": 1
+                        },
+                        {
+                            "text": "option2",
+                            "value": 2
+                        },
+                        {
+                            "text": "option3",
+                            "value": 3
+                        },
+                        {
+                            "text": "option4",
+                            "value": 4
+                        },
+                        {
+                            "text": "option5",
+                            "value": 5
+                        },
+                        {
+                            "text": "option6",
+                            "value": 6
+                        },
+                        {
+                            "text": "option7",
+                            "value": 7
+                        },
+                        {
+                            "text": "option8",
+                            "value": 8
+                        },
+                        {
+                            "text": "option9",
+                            "value": 9
+                        }
+                    ]
+                },
+                {
+                    "type": "textarea",
+                    "class": "formItem",
+                    "id": "textareaElement",
+                    "name": "textareaElement",
+                    "placeholder": "Placeholder.string",
+                    "title": "Element.label.text",
+                    "multilingual": true,
+                    "language": "English",
+                    "reference": "Reference context",
+                    "tips": "Tips message"
+                },
+                {
+                    "type": "email",
+                    "class": "formItem",
+                    "id": "emailElement",
+                    "name": "emailElement",
+                    "autocomplete": "email username",
+                    "placeholder": "Placeholder string",
+                    "title": "Element label text",
+                    "verify": {
+                        "type": "email"
+                    },
+                    "value": "wmkm0113@gmail.com",
+                    "tips": "Tips message"
+                },
+                {
+                    "type": "password",
+                    "class": "formItem",
+                    "id": "passwordElement",
+                    "name": "passwordElement",
+                    "placeholder": "Placeholder string",
+                    "autocomplete": "new-password",
+                    "title": "Element label text",
+                    "value": "Initialize value",
+                    "tips": "Tips message"
+                },
+                {
+                    "type": "hidden",
+                    "class": "formItem",
+                    "id": "hiddenElement",
+                    "name": "hiddenElement",
+                    "placeholder": "Placeholder string",
+                    "title": "Element label text",
+                    "value": "Initialize value",
+                    "tips": "Tips message"
+                },
+                {
+                    "type": "text",
+                    "class": "formItem",
+                    "id": "textElement",
+                    "name": "textElement",
+                    "placeholder": "Placeholder string",
+                    "title": "Element label text",
+                    "value": "123456789",
+                    "multilingual": true,
+                    "verify": {
+                        "regex": "^\\d+$"
+                    },
+                    "language": "简体中文",
+                    "reference": "Reference context",
+                    "tips": "Tips message"
+                },
+                {
+                    "type": "search",
+                    "class": "formItem",
+                    "id": "searchFormElement",
+                    "name": "searchFormElement",
+                    "placeholder": "Placeholder string",
+                    "title": "Element label text",
+                    "value": "Initialize value",
+                    "tips": "Tips message"
+                },
+                {
+                    "type": "number",
+                    "class": "formItem",
+                    "id": "numberElement",
+                    "name": "numberElement",
+                    "placeholder": "Placeholder string",
+                    "title": "Element label text",
+                    "value": "Initialize value",
+                    "tips": "Tips message"
+                },
+                {
+                    "type": "number",
+                    "class": "formItem",
+                    "id": "luhnElement",
+                    "name": "luhnElement",
+                    "placeholder": "Bank card number",
+                    "title": "Bank card number",
+                    "error": "Bank card number invalid",
+                    "verify": {
+                        "type": "luhn"
+                    },
+                    "tips": "Tips message"
+                },
+                {
+                    "type": "date",
+                    "class": "formItem",
+                    "id": "dateElement",
+                    "name": "dateElement",
+                    "placeholder": "Placeholder string",
+                    "title": "Element label text",
+                    "value": "1658958745944",
+                    "tips": "Tips message"
+                },
+                {
+                    "type": "time",
+                    "class": "formItem",
+                    "id": "timeElement",
+                    "name": "timeElement",
+                    "placeholder": "Placeholder string",
+                    "title": "Element label text",
+                    "value": "Initialize value",
+                    "tips": "Tips message"
+                },
+                {
+                    "type": "datetime-local",
+                    "class": "formItem",
+                    "id": "datetimeElement",
+                    "name": "datetimeElement",
+                    "placeholder": "Placeholder string",
+                    "title": "Element label text",
+                    "value": "1658958745944",
+                    "tips": "Tips message"
+                },
+                {
+                    "type": "number",
+                    "category": "interval",
+                    "class": "formItem",
+                    "tips": "Tips message",
+                    "title": "Element label text",
+                    "value": {
+                        "begin": {
+                            "name": "numberBegin",
+                            "value": "10"
+                        },
+                        "end": {
+                            "name": "numberEnd",
+                            "value": "100"
+                        }
+                    }
+                },
+                {
+                    "type": "date",
+                    "category": "interval",
+                    "class": "formItem",
+                    "tips": "Tips message",
+                    "title": "Element label text",
+                    "value": {
+                        "begin": {
+                            "name": "dateBegin",
+                            "value": "1658958745944"
+                        },
+                        "end": {
+                            "name": "dateEnd",
+                            "value": "1658958745944"
+                        }
+                    }
+                },
+                {
+                    "type": "time",
+                    "category": "interval",
+                    "class": "formItem",
+                    "tips": "Tips message",
+                    "title": "Element label text",
+                    "value": {
+                        "begin": {
+                            "name": "timeBegin",
+                            "value": "1658958745944"
+                        },
+                        "end": {
+                            "name": "timeEnd",
+                            "value": "1658958745944"
+                        }
+                    }
+                },
+                {
+                    "type": "datetime-local",
+                    "category": "interval",
+                    "class": "formItem",
+                    "tips": "Tips message",
+                    "title": "Element label text",
+                    "value": {
+                        "begin": {
+                            "name": "datetimeBegin",
+                            "value": "1658958745944"
+                        },
+                        "end": {
+                            "name": "datetimeEnd",
+                            "value": "1658958745944"
+                        }
+                    }
+                },
+                {
+                    "type": "checkbox",
+                    "category": "group",
+                    "class": "formItem",
+                    "id": "checkBoxGroupElement",
+                    "name": "checkBoxGroupElement",
+                    "value": [
+                        "checkBoxValue2",
+                        "checkBoxValue3"
+                    ],
+                    "title": "Element label text",
+                    "tips": "Tips message",
+                    "items": [
+                        {
+                            "id": "checkBoxButtonId1",
+                            "value": "checkBoxValue1",
+                            "content": "checkBox Content",
+                            "textButton": "checkBox Content"
+                        },
+                        {
+                            "id": "checkBoxButtonId2",
+                            "value": "checkBoxValue2",
+                            "content": "checkBox Content",
+                            "textButton": "checkBox Content"
+                        },
+                        {
+                            "id": "checkBoxButtonId3",
+                            "value": "checkBoxValue3",
+                            "content": "checkBox Content",
+                            "textButton": "checkBox Content"
+                        },
+                        {
+                            "id": "checkBoxButtonId4",
+                            "value": "checkBoxValue4",
+                            "content": "checkBox Content",
+                            "textButton": "checkBox Content"
+                        }
+                    ]
+                },
+                {
+                    "type": "radio",
+                    "category": "group",
+                    "class": "formItem",
+                    "id": "radioGroupElement",
+                    "name": "radioGroupElement",
+                    "value": "radioValue2",
+                    "title": "Element label text",
+                    "items": [
+                        {
+                            "id": "radioButtonId1",
+                            "value": "radioValue1",
+                            "content": "checkBox Content",
+                            "textButton": "Radio Content"
+                        },
+                        {
+                            "id": "radioButtonId2",
+                            "value": "radioValue2",
+                            "content": "checkBox Content",
+                            "textButton": "Radio Content"
+                        },
+                        {
+                            "id": "radioButtonId3",
+                            "value": "radioValue3",
+                            "content": "checkBox Content",
+                            "textButton": "Radio Content"
+                        },
+                        {
+                            "id": "radioButtonId4",
+                            "value": "radioValue4",
+                            "content": "checkBox Content",
+                            "textButton": "Radio Content"
+                        }
+                    ]
+                },
+                {
+                    "type": "file",
+                    "category": "drag",
+                    "class": "formItem",
+                    "title": "Element label text",
+                    "multilingual": true,
+                    "reference": [
+                        {
+                            "mimeType": "image/jpg",
+                            "resourcePath": "images/1.jpg"
+                        },
+                        {
+                            "mimeType": "image/jpg",
+                            "resourcePath": "images/1.jpg"
+                        }
+                    ],
+                    "value": {
+                        "id": "uploadElement",
+                        "multipleFiles": "true",
+                        "name": "uploadElement"
+                    },
+                    "tips": "Tips message"
+                }
+            ]
+        }
+    }
+}

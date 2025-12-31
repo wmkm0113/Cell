@@ -1,0 +1,319 @@
+{
+    "title": "Test title",
+    "keywords": "Test keywords",
+    "description": "Test description",
+    "data": [
+        {
+            "id": "messageDetails",
+            "tagName": "message-details",
+            "data": {
+                "title": "Message Title Message Title Message Title Message Title",
+                "properties": [
+                    {
+                        "title": "Properties1",
+                        "content": "Content1"
+                    },
+                    {
+                        "title": "Properties1",
+                        "content": "Content2",
+                        "link": "#"
+                    },
+                    {
+                        "title": "Properties3",
+                        "content": "Content3"
+                    }
+                ],
+                "multiMenu": {
+                    "url": "/index.html?lang={languageCode}",
+                    "items": [
+                        {
+                            "languageCode": "en",
+                            "languageName": "English"
+                        },
+                        {
+                            "languageCode": "zh_CN",
+                            "languageName": "简体中文"
+                        },
+                        {
+                            "languageCode": "zh_TW",
+                            "languageName": "繁體中文"
+                        }
+                    ]
+                },
+                "avatar": {
+                    "resourcePath": "images/logo.svg",
+                    "mimeType": "image/png"
+                },
+                "summary": "Abstract Message Abstract Message Abstract Message Abstract Message Abstract Message Abstract Message Abstract Message Abstract Message",
+                "content": "Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content",
+                "resources": [
+                    {
+                        "mimeType": "image/jpg",
+                        "resourcePath": "images/slides/1.jpg"
+                    },
+                    {
+                        "mimeType": "image/jpg",
+                        "resourcePath": "images/slides/2.jpg"
+                    },
+                    {
+                        "mimeType": "image/jpg",
+                        "resourcePath": "images/slides/3.jpg"
+                    },
+                    {
+                        "mimeType": "image/jpg",
+                        "resourcePath": "images/slides/4.jpg"
+                    }
+                ],
+                "attaches": {
+                    "title": "Attach Files",
+                    "items": [
+                        {
+                            "title": "Attach File1",
+                            "link": "#File1"
+                        },
+                        {
+                            "title": "Attach File2",
+                            "link": "#File2"
+                        },
+                        {
+                            "title": "Attach File3",
+                            "link": "#File3"
+                        },
+                        {
+                            "title": "Attach File4",
+                            "link": "#File4"
+                        },
+                        {
+                            "title": "Attach File5",
+                            "link": "#File5"
+                        }
+                    ]
+                },
+                "models": {
+                    "title": "Models List",
+                    "items": [
+                        {
+                            "link": "#Model1",
+                            "title": "Model 1",
+                            "content": "Model 1 Content",
+                            "avatar": {
+                                "resourcePath": "images/logo.svg",
+                                "mimeType": "image/png"
+                            }
+                        },
+                        {
+                            "link": "#Model2",
+                            "title": "Model 2",
+                            "content": "Model 2 Content",
+                            "avatar": {
+                                "resourcePath": "images/logo.svg",
+                                "mimeType": "image/png"
+                            }
+                        },
+                        {
+                            "link": "#Model3",
+                            "title": "Model 3",
+                            "content": "Model 3 Content",
+                            "avatar": {
+                                "resourcePath": "images/logo.svg",
+                                "mimeType": "image/png"
+                            }
+                        },
+                        {
+                            "link": "#Model4",
+                            "title": "Model 4",
+                            "content": "Model 4 Content",
+                            "avatar": {
+                                "resourcePath": "images/logo.svg",
+                                "mimeType": "image/png"
+                            }
+                        },
+                        {
+                            "link": "#Model5",
+                            "title": "Model 5",
+                            "content": "Model 5 Content",
+                            "avatar": {
+                                "resourcePath": "images/logo.svg",
+                                "mimeType": "image/png"
+                            }
+                        }
+                    ]
+                },
+                "accessories": {
+                    "title": "Accessories",
+                    "items": [
+                        {
+                            "link": "#accessories1",
+                            "title": "Accessories Name 1",
+                            "avatar": {
+                                "resourcePath": "images/demoVideo.mp4",
+                                "mimeType": "video/mp4",
+                                "title": "Accessories Item 1"
+                            }
+                        },
+                        {
+                            "link": "#accessories2",
+                            "title": "Accessories Name 2",
+                            "avatar": {
+                                "resourcePath": "images/logo_zht.svg",
+                                "mimeType": "image/png",
+                                "title": "Accessories Item 1"
+                            }
+                        },
+                        {
+                            "link": "#accessories3",
+                            "title": "Accessories Name 3",
+                            "avatar": {
+                                "resourcePath": "images/logo.svg",
+                                "mimeType": "image/png",
+                                "title": "Accessories Item 1"
+                            }
+                        }
+                    ]
+                },
+                "comments": {
+                    "title": "Comment List",
+                    "items": [
+                        {
+                            "content": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                            "title": "Text content Text content Text content Text content Text content Text content Text content Text content",
+                            "user": {
+                                "avatar": {
+                                    "mimeType": "image/jpg",
+                                    "resourcePath": "./images/1.jpg"
+                                },
+                                "content": "User Name"
+                            },
+                            "operators": [
+                                {
+                                    "tagName": "like-button",
+                                    "value": 2
+                                },
+                                {
+                                    "tagName": "favorite-button",
+                                    "link": "#fav"
+                                }
+                            ]
+                        },
+                        {
+                            "content": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content",
+                            "title": "Text content Text content Text content Text content Text content Text content Text content Text content",
+                            "user": {
+                                "avatar": {
+                                    "mimeType": "image/jpg",
+                                    "resourcePath": "./images/1.jpg"
+                                },
+                                "content": "User Name",
+                                "score": 4
+                            },
+                            "operators": [
+                                {
+                                    "type": "button",
+                                    "category": "like",
+                                    "checked": true,
+                                    "link": "#like",
+                                    "value": 3
+                                },
+                                {
+                                    "type": "button",
+                                    "category": "favorite",
+                                    "link": "#fav"
+                                }
+                            ]
+                        },
+                        {
+                            "content": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                            "title": "Text content Text content Text content Text content Text content Text content Text content Text content",
+                            "user": {
+                                "avatar": {
+                                    "mimeType": "image/jpg",
+                                    "resourcePath": "./images/1.jpg"
+                                },
+                                "content": "User Name"
+                            }
+                        },
+                        {
+                            "content": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                            "title": "Text content Text content Text content Text content Text content Text content Text content Text content",
+                            "user": {
+                                "avatar": {
+                                    "mimeType": "image/jpg",
+                                    "resourcePath": "./images/1.jpg"
+                                },
+                                "content": "User Name",
+                                "score": 4
+                            },
+                            "operators": [
+                                {
+                                    "type": "button",
+                                    "category": "like",
+                                    "link": "#like",
+                                    "value": 3
+                                },
+                                {
+                                    "type": "button",
+                                    "category": "favorite",
+                                    "checked": true,
+                                    "link": "#fav"
+                                }
+                            ]
+                        },
+                        {
+                            "content": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                            "title": "Text content Text content Text content Text content Text content Text content Text content Text content",
+                            "user": {
+                                "avatar": {
+                                    "mimeType": "image/jpg",
+                                    "resourcePath": "./images/1.jpg"
+                                },
+                                "content": "User Name",
+                                "score": 4
+                            }
+                        },
+                        {
+                            "content": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                            "title": "Text content Text content Text content Text content Text content Text content Text content Text content",
+                            "user": {
+                                "avatar": {
+                                    "mimeType": "image/jpg",
+                                    "resourcePath": "./images/1.jpg"
+                                },
+                                "content": "User Name",
+                                "score": 4
+                            }
+                        },
+                        {
+                            "content": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                            "title": "Text content Text content Text content Text content Text content Text content Text content Text content",
+                            "user": {
+                                "avatar": {
+                                    "mimeType": "image/jpg",
+                                    "resourcePath": "./images/1.jpg"
+                                },
+                                "content": "User Name",
+                                "score": 4
+                            }
+                        },
+                        {
+                            "content": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                            "title": "Text content Text content Text content Text content Text content Text content Text content Text content",
+                            "user": {
+                                "avatar": {
+                                    "mimeType": "image/jpg",
+                                    "resourcePath": "./images/1.jpg"
+                                },
+                                "content": "User Name",
+                                "score": 4
+                            }
+                        }
+                    ],
+                    "url": "#",
+                    "pager": {
+                        "totalPage": 18,
+                        "currentPage": 5
+                    }
+                }
+            }
+        }
+    ]
+}

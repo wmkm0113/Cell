@@ -3,58 +3,40 @@
 <head>
     <title>Test</title>
     <meta charset="utf-8"/>
-    <meta name="viewport"
-          content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
     <link rel="shortcut icon" href="./favicon.ico"/>
     <link rel="icon" type="image/svg+xml" sizes="16x16" href="./images/icon.svg"/>
     <link rel="stylesheet" href="../src/styles/Cell.css"/>
+    <link rel="stylesheet" href="../src/styles/theme.css"/>
     <link rel="stylesheet" href="./styles/style.css"/>
     <script type="module">
-        import {Config, DebugMode} from "../src/commons/Commons.js";
+        import {Config, Comment, DebugMode, ColorMode} from "../src/commons/Commons.js";
 
+        Comment.DateTime.Convert = true;
+        Comment.DateTime.UTC = true;
         Config.debugMode = DebugMode.DEBUG;
+        Config.colorMode = ColorMode.System;
         Config.multi = {
             codes: ["zh-CN", "en-US"],
             default: "zh-CN",
             path: "../src/multi/{languageCode}.json"
-        }
-        Config.scrollHeader.enabled = true;
-        Config.scrollHeader.selectors = ["aside[id=\"aside\"]"];
-        Config.formConfig.utcDateTime = true;
+        };
+        //  Freeze header to the top of window
+        Config.freeze = ['aside[id="aside"]'];
         Config.security.RSA.modulus = "b03d0b864320ffd2f3ebe84e3e59217ab4a3691262931634ab308b69ae1cb158c8affd02bbc3ab87e923804f7a135078b73cffafc8c1b557403fd96b0e22cec65c2767f9a6f028d80c64bdc601caaf2b74f1d0dac9ecf3837b0222ea9aa46a5b4613eb9b1a9dec2ec88d75653606085658e7858a2b0fc039de85213ef3b51dd3";
         Config.security.RSA.exponent = "1f51b1df19c5df009f9d604aab54ce98ce4a2ded78fc1799a3847c79fad99980a425764a8a90a2c683dd6dbb71ffc5b0b62b8e6ab03c105c618c1738a9a9f0e1ce2779294edb5df516bfd88e13f55eec0efc48f100034eca1553008fafb9d78af9811a5a82c3a67cea7b886a108112e00f2aa55597b042004033170839729f0d";
-        // Config.security.RSA.modulus = "b03d0b864320ffd2f3ebe84e3e59217ab4a3691262931634ab308b69ae1cb158c8affd02bbc3ab87e923804f7a135078b73cffafc8c1b557403fd96b0e22cec65c2767f9a6f028d80c64bdc601caaf2b74f1d0dac9ecf3837b0222ea9aa46a5b4613eb9b1a9dec2ec88d75653606085658e7858a2b0fc039de85213ef3b51dd3";
-        // Config.security.RSA.exponent = "10001";
-        Config.security.RSA.padding = "OAEPWithSHA-1AndMGF1Padding";
+
+        // Setting the API Key value of Map
+        // Config.maps.Google.ApiKey = "";
+        // Config.maps.Baidu.ApiKey = "";
     </script>
     <script src="../src/core/Cell.js" type="module"></script>
-    <!--    <script src="https://api.map.baidu.com/api?key=&v=3.0&ak={API_KEY}" type="text/javascript" charset="utf-8"></script>-->
-    <!--    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={API_KEY}"></script>-->
     <script type="module">
-        import * as Data from "./data.js";
-
         window.addEventListener("load", () => {
-            $("notifyBtn").addEventListener("click", Cell.sendRequest);
-            window.setTimeout(function () {
-                $("multiMenu").data = Data.multiMenuData;
-                $("indexTopMenu").data = Data.indexTopMenuData;
-                $("asideMenu").data = Data.categoryList;
-                $("progressBarNumber").data = Data.progressBarDataNumber;
-                $("progressBarDetails").data = Data.progressBarDataDetails;
-                $("socialGroup").data = Data.socialData;
-                $("slideShow").data = Data.slideData;
-                $("messageList").data = Data.listData;
-                $("contentBanner").data = Data.bannerData;
-                $("formInfo").data = Data.formData;
-                $("detailsInfo").data = Data.detailsData;
-                $("widgetButton").data = Data.widgetData;
-                //  To show the map must uncomment the script code and replace {API_KEY} with your Baidu Map/Google map api key
-                $("corpDetails").data = Data.corporateData;
-                $("addressDetails").data = Data.addressData;
-                // console.log(new TextEncoder().encode("Test测试TestTest测试TestTestTest测试TestTestTestTest测试TestTestTestTestTest测试TestTestTestTestTestTest测试TestTestTestTestTestTestTest测试TestTestTestTestTest测试"));
-                // Cell.info("Result.Decrypt.RSA", Cell.decData("M4LOZaHUaQyDktdzQyJESQ3FoT4vBPFN52NavhzjiCOzdTALY1hmDHQpT7hNo+mcmExQaKLAwKsAUXOouk/agJPufkXG6UiYkJDUDWwqqJheMMTVMxPfGt9RVC/hiYZ+B25ItsI1p3M4l3SzcWhZ+ms13Nbbuhes904g5mJHWriKgHHYqUB4wsquivVT1X9XW4TWnlfMO+RF9rRbh1CnsNNDvwZEL9RMi52XceFNpdqp5mj9uk+i8uyX3U7iQ59gmg00BwRVTeYwhDKzwxWgIKkBVUHjvz7NN8WieG625vJprl+gv8BGDl9BYbI1CXTHkHFAxHvVFGncfoh5rB0MGA=="));
-                console.log(Cell.encData("Test测试TestTest测试TestTestTest测试TestTestTestTest测试TestTestTestTestTest测试TestTestTestTestTestTest测试TestTestTestTestTestTestTest测试TestTestTestTestTest测试"));
-            }, 1000);
+            console.log(Cell.encData("Test测试TestTest测试TestTestTest测试TestTestTestTest测试TestTestTestTestTest测试TestTestTestTestTestTest测试TestTestTestTestTestTestTest测试TestTestTestTestTest测试"));
+            Cell.sendRequest("./data.json")
+                .then(responseText => responseText.parseJSON().forEach((item => $(item.id).data = item.data)))
+                .catch((error) => Cell.error(error));
             Cell.multilingual();
         });
     </script>
@@ -62,51 +44,82 @@
 <body>
 <header id="topic">
     <span class="logo suffix registered"></span>
-    <menu-element id="indexTopMenu"></menu-element>
-    <multi-menu id="multiMenu"></multi-menu>
+    <nav id="topMenu"></nav>
+    <nav data-type="multi" id="multiMenu"></nav>
 </header>
-<slide-show id="slideShow"></slide-show>
+<section data-type="slide" id="slide"></section>
 <main>
     <article>
         <section id="mockElement">
             <h1 data-multi-key="Mock.Elements">Mock Elements</h1>
+            <article id="mockArticle">
+                <p id="star" data-type="score"></p>
+                <span id="score" data-type="score"></span>
+                <input type="checkbox" data-type="switch" id="mockSwitch" name="mockSwitch" data-content="Switch content"/>
+                <input type="checkbox" data-type="checkbox" id="mockCheckbox" name="mockCheckbox" value="Check value" data-content="Check content"/>
+                <input type="radio" id="mockRadio" name="mockRadio" value="Radio value" data-content="Radio content"/>
+                <i id="tips" data-type="tips" data-content="Tips message Tips message Tips message Tips message Tips message Tips message Tips message"></i>
+                <div style="width: 100%">
+                    <section style="width: 70%">
+                        <progress id="numberRender"></progress>
+                        <span id="progressNumberRender" data-type="progress"></span>
+                        <progress id="detailsRender"></progress>
+                        <span id="progressDetailsRender" data-type="progress"></span>
+                    </section>
+                    <section style="width: 30%">
+                        <span id="numberRingRender" data-type="progress" data-category="ring"></span>
+                        <span id="progressDetailsRingRender" data-type="progress" data-category="ring"></span>
+                    </section>
+                </div>
+                <a id="notifyBtn" title="Notify" data-mock="button" href="./notify-data.json" data-target-id="notifyArea">Notify</a>
+                <a data-mock="button" title="Alter Message" href="JavaScript:Cell.alert('Alter message information')">Alter Message</a>
+                <a data-mock="button" title="Confirm Dialog" href="JavaScript:Cell.confirm('Confirm message information', () => {alert('Confirmed')})">Confirm Dialog</a>
+                <a data-mock="button" title="2" data-category="like" id="likeMockBtn">2</a>
+                <a data-mock="button" data-category="favorite" id="mockFavBtn"></a>
+                <input type="button" data-category="like" id="likeBtn" value="2"/>
+                <input type="button" data-category="favorite" id="favBtn" data-status="true"/>
+                <span data-type="calendar" id="calendar"></span>
+            </article>
+        </section>
+        <section id="charts">
+            <h1 data-multi-key="Chart.Widgets">Chart Widgets</h1>
             <article>
-                <progress-bar id="progressBarNumber"></progress-bar>
-                <progress-bar id="progressBarDetails"></progress-bar>
-                <a id="notifyBtn" href="./notify-data.json" data-target-id="notifyArea">Notify</a>
-                <a href="JavaScript:Cell.alert('Alter message information')">Alter Message</a>
-                <a href="JavaScript:Cell.confirm('Confirm message information', () => {alert('Confirmed')})">Confirm
-                    Dialog</a>
-                <like-button data-value="2"></like-button>
-                <favorite-button></favorite-button>
+                <section id="pieChart" data-type="chart" data-style="pie"></section>
+                <section id="roseChart" data-type="chart" data-style="rose"></section>
+                <section id="circleChart" data-type="chart" data-style="ring"></section>
+                <section id="columnChart" data-type="chart" data-style="column"></section>
+                <section id="waterfallChart" data-type="chart" data-style="waterfall"></section>
+                <section id="barChart" data-type="chart" data-style="bar"></section>
+                <section id="k-line" data-type="chart" data-style="k-line"></section>
             </article>
         </section>
         <section id="listDemo">
             <h1 data-multi-key="Message.List">Message List</h1>
-            <message-list id="messageList"></message-list>
+            <div data-type="grid" id="messageList"></div>
         </section>
-        <link-banner id="contentBanner"></link-banner>
+        <a data-type="banner" id="contentBanner"></a>
         <section id="formDemo">
             <h1 data-multi-key="Form.Info">Form Info</h1>
-            <form-info id="formInfo"></form-info>
+            <form data-type="form" id="formInfo"></form>
+            <form data-type="form" id="calendarForm"></form>
         </section>
         <section id="detailsDemo">
             <h1 data-multi-key="Message.Details">Message Details</h1>
-            <message-details id="detailsInfo"></message-details>
+            <span data-type="details" data-category="message" id="messageDetails"></span>
         </section>
         <section id="corpDetailsDemo">
             <h1 data-multi-key="Corporate.Details">Corporate Details</h1>
-            <corporate-details id="corpDetails"></corporate-details>
+            <span data-type="details" data-category="corporate" id="corpDetails"></span>
         </section>
     </article>
     <aside id="aside">
-        <category-menu class="asideMenu" id="asideMenu"></category-menu>
-        <link-avatar id="widgetButton"></link-avatar>
-        <corporate-address id="addressDetails"></corporate-address>
+        <nav id="asideMenu"></nav>
+        <a data-type="banner" id="widgetLink"></a>
+        <section data-type="address" id="addressDetails"></section>
     </aside>
 </main>
 <footer>
-    <social-group id="socialGroup"></social-group>
+    <section data-type="social-group" id="socialGroup"></section>
     <div id="copyRight">
         <span id="poweredBy">Powered By Cell.js</span>
     </div>

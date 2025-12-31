@@ -1,0 +1,3428 @@
+[
+    {
+        "id": "star",
+        "data": 3.5
+    },
+    {
+        "id": "calendar",
+        "data": {
+            "beginIndex": 5,
+            "category": "year"
+        }
+    },
+    {
+        "id": "topMenu",
+        "data": {
+            "class": "topMenu",
+            "items": [
+                {
+                    "multiKey": "Menu.1",
+                    "link": "#Link1"
+                },
+                {
+                    "multiKey": "Menu.2",
+                    "items": [
+                        {
+                            "multiKey": "Mock.Elements",
+                            "link": "#mockElement"
+                        },
+                        {
+                            "multiKey": "Chart.Widgets",
+                            "link": "#charts"
+                        },
+                        {
+                            "multiKey": "Message.List",
+                            "link": "#listDemo"
+                        },
+                        {
+                            "multiKey": "Form.Info",
+                            "link": "#formDemo"
+                        },
+                        {
+                            "multiKey": "Message.Details",
+                            "link": "#detailsDemo"
+                        },
+                        {
+                            "multiKey": "Corporate.Details",
+                            "link": "#corpDetailsDemo"
+                        },
+                        {
+                            "title": "Address Details",
+                            "link": "#addressDetails"
+                        }
+                    ]
+                },
+                {
+                    "multiKey": "Menu.3",
+                    "items": [
+                        {
+                            "title": "Child Menu 1",
+                            "link": "#Link3-1"
+                        },
+                        {
+                            "title": "Child Menu 2",
+                            "link": "#Link3-2"
+                        },
+                        {
+                            "title": "Child Menu 3",
+                            "link": "#Link3-3"
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    {
+        "id": "multiMenu",
+        "data": {
+            "class": "multi",
+            "items": [
+                {
+                    "code": "en-US",
+                    "name": "English"
+                },
+                {
+                    "code": "zh-CN",
+                    "name": "简体中文"
+                }
+            ]
+        }
+    },
+    {
+        "id": "asideMenu",
+        "data": {
+            "class": "category",
+            "multiKey": "Category.Name",
+            "items": [
+                {
+                    "title": "Category1",
+                    "link": "#1",
+                    "icon": "e9da"
+                },
+                {
+                    "title": "Category 2",
+                    "link": "#1",
+                    "icon": "e9da"
+                },
+                {
+                    "title": "Category 3",
+                    "link": "#1",
+                    "icon": "e9da"
+                },
+                {
+                    "title": "Category 4",
+                    "link": "#1",
+                    "icon": "e9da"
+                },
+                {
+                    "title": "Category 5",
+                    "link": "#1",
+                    "icon": "e9da"
+                }
+            ]
+        }
+    },
+    {
+        "id": "messageList",
+        "data": {
+            "id": "listElement",
+            "filter": {
+                "id": "filterForm",
+                "method": "post",
+                "action": "url",
+                "sortName": "",
+                "sortType": "",
+                "items": [
+                    {
+                        "type": "search",
+                        "name": "searchElement",
+                        "title": {
+                            "multiKey": "Search.Input"
+                        },
+                        "id": "searchElement",
+                        "placeholder": "Input keywords",
+                        "sortCode": 10,
+                        "value": "",
+                        "tips": {
+                            "content": "Tips message"
+                        }
+                    },
+                    {
+                        "type": "number",
+                        "category": "interval",
+                        "title": {
+                            "multiKey": "Interval.Input"
+                        },
+                        "id": "intervalElement",
+                        "sortCode": 8,
+                        "tips": {
+                            "content": "Interval Tips"
+                        },
+                        "value": {
+                            "begin": {
+                                "name": "beginElement",
+                                "value": "1"
+                            },
+                            "end": {
+                                "name": "endElement",
+                                "value": "3"
+                            }
+                        }
+                    },
+                    {
+                        "type": "checkbox",
+                        "category": "group",
+                        "name": "checkGroup",
+                        "title": {
+                            "multiKey": "Check.Group"
+                        },
+                        "id": "checkGroup",
+                        "sortCode": 6,
+                        "value": [
+                            "value2",
+                            "value4"
+                        ],
+                        "items": [
+                            {
+                                "content": "Option1",
+                                "id": "checkbox1",
+                                "value": "value2"
+                            },
+                            {
+                                "content": "Option2",
+                                "id": "checkbox2",
+                                "value": "value4"
+                            },
+                            {
+                                "content": "Option3",
+                                "id": "checkbox3",
+                                "value": "value6"
+                            }
+                        ],
+                        "tips": {
+                            "content": "CheckGroup Tips"
+                        }
+                    },
+                    {
+                        "type": "radio",
+                        "category": "group",
+                        "name": "radioGroup",
+                        "title": {
+                            "multiKey": "Radio.Group"
+                        },
+                        "id": "radioGroup",
+                        "sortCode": 4,
+                        "value": "value4",
+                        "items": [
+                            {
+                                "content": "Option4",
+                                "id": "radio1",
+                                "value": "value2"
+                            },
+                            {
+                                "content": "Option5",
+                                "id": "radio2",
+                                "value": "value4"
+                            },
+                            {
+                                "content": "Option6",
+                                "id": "radio3",
+                                "value": "value6"
+                            }
+                        ],
+                        "tips": {
+                            "content": "RadioGroup Tips"
+                        }
+                    }
+                ],
+                "buttons": {
+                    "Submit": {
+                        "id": "filterBtn",
+                        "multiKey": "filter.list.btn"
+                    }
+                }
+            },
+            "statistics": [
+                {
+                    "data": "Data 1",
+                    "content": "Data 1",
+                    "index": 1,
+                    "className": "error",
+                    "id": "statistics1",
+                    "title": "Title1"
+                },
+                {
+                    "data": "Data 2",
+                    "content": "Data 2",
+                    "index": 2,
+                    "id": "statistics2",
+                    "title": "Title2"
+                },
+                {
+                    "data": "Data 3",
+                    "content": "Data 3",
+                    "index": 4,
+                    "className": "warning",
+                    "id": "statistics3",
+                    "title": "Title3",
+                    "link": "#"
+                },
+                {
+                    "data": "Data 4",
+                    "content": "Data 4",
+                    "index": 3,
+                    "id": "statistics4",
+                    "title": "Title4"
+                }
+            ],
+            "title": {
+                "multiKey": "Message.List.Title",
+                "content": "",
+                "class": "view-list",
+                "switch": true
+            },
+            "grid": {
+                "selectName": "identifyCode",
+                "header": {
+                    "mainTitle": "Title",
+                    "operatorTitle": "Operators",
+                    "items": [
+                        {
+                            "paramName": "column9",
+                            "width": "10%",
+                            "sort": true,
+                            "multiKey": "Column.Title.9"
+                        },
+                        {
+                            "width": "10%",
+                            "multiKey": "Column.Title.8"
+                        },
+                        {
+                            "width": "10%",
+                            "content": "Column Title 7"
+                        },
+                        {
+                            "width": "10%",
+                            "content": "Column Title 6"
+                        },
+                        {
+                            "width": "10%",
+                            "pattern": "yyyy-MM-dd",
+                            "content": "Column Title 4"
+                        },
+                        {
+                            "paramName": "column3",
+                            "width": "20%",
+                            "sort": true,
+                            "content": "Column Title 3"
+                        },
+                        {
+                            "width": "15%",
+                            "content": "Column Title 2"
+                        },
+                        {
+                            "width": "15%",
+                            "content": "Column Title 1"
+                        }
+                    ]
+                },
+                "pager": {
+                    "formId": "filterForm",
+                    "id": "currentPage",
+                    "limit": {
+                        "id": "pageLimit",
+                        "current": "20",
+                        "multiKey": "Pager.Text",
+                        "items": [
+                            {
+                                "value": "10"
+                            },
+                            {
+                                "value": "20"
+                            },
+                            {
+                                "value": "30"
+                            },
+                            {
+                                "value": "50"
+                            }
+                        ]
+                    },
+                    "totalPage": 18,
+                    "currentPage": 5
+                },
+                "itemData": [
+                    {
+                        "elementId": "elementId",
+                        "link": "details.json",
+                        "openWindow": true,
+                        "abstract": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                        "summary": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                        "title": "Text content Text content Text content Text content Text content Text content Text content Text content",
+                        "score": 4.2,
+                        "properties": [
+                            "Column 9 Text",
+                            "Column 8 Text",
+                            "Column 7 Text",
+                            "Column 6 Text",
+                            1658958745944,
+                            "Column 3 Text",
+                            "Column 2 Text",
+                            "Column 1 Text"
+                        ],
+                        "operators": [
+                            {
+                                "link": "form.json",
+                                "index": 3,
+                                "textContent": "Edit",
+                                "icon": "e9da",
+                                "openWindow": true
+                            },
+                            {
+                                "link": "DeleteLink",
+                                "index": 2,
+                                "textContent": "Delete",
+                                "title": "Delete",
+                                "icon": "e7b5"
+                            },
+                            {
+                                "link": "MultiLink",
+                                "index": 1,
+                                "textContent": "Multilingual",
+                                "title": "Multilingual",
+                                "icon": "e7dc"
+                            }
+                        ],
+                        "avatar": {
+                            "mimeType": "video/mp4",
+                            "resourcePath": "./images/demoVideo.mp4",
+                            "muted": "true"
+                        },
+                        "identifyCode": "1"
+                    },
+                    {
+                        "elementId": "elementId",
+                        "score": 3.0,
+                        "properties": [
+                            "",
+                            "",
+                            "",
+                            "",
+                            "",
+                            "Column 3 Text",
+                            "Column 2 Text",
+                            "Column 1 Text"
+                        ],
+                        "avatar": {
+                            "mimeType": "image/jpg",
+                            "resourcePath": "./images/1.jpg"
+                        },
+                        "link": "details.json",
+                        "identifyCode": "2",
+                        "openWindow": true,
+                        "className": "warning",
+                        "title": "Text content Text content Text content Text content Text content Text content Text content Text content"
+                    },
+                    {
+                        "elementId": "elementId",
+                        "operators": [
+                            {
+                                "link": "form.json",
+                                "index": 3,
+                                "textContent": "Edit",
+                                "title": "Edit",
+                                "icon": "e9da",
+                                "openWindow": true
+                            },
+                            {
+                                "link": "MultiLink",
+                                "index": 1,
+                                "textContent": "Multilingual",
+                                "title": "Multilingual",
+                                "icon": "e7dc"
+                            }
+                        ],
+                        "avatar": {
+                            "mimeType": "video/mp4",
+                            "resourcePath": "./images/demoVideo.mp4",
+                            "muted": "true"
+                        },
+                        "properties": [
+                            "",
+                            "",
+                            "",
+                            "",
+                            "",
+                            "Column 3 Text",
+                            "Column 2 Text",
+                            "Column 1 Text"
+                        ],
+                        "link": "details.json",
+                        "openWindow": true,
+                        "identifyCode": "3",
+                        "abstract": "中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试",
+                        "summary": "中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试",
+                        "title": "Text content Text content Text content Text content Text content Text content Text content Text content"
+                    },
+                    {
+                        "elementId": "elementId",
+                        "key4": "1658958745944",
+                        "link": "details.json",
+                        "openWindow": true,
+                        "properties": [
+                            "Column 9 Text",
+                            "Column 8 Text",
+                            "Column 7 Text",
+                            "Column 6 Text",
+                            1658958745944,
+                            "Column 3 Text",
+                            "Column 2 Text",
+                            "Column 1 Text"
+                        ],
+                        "abstract": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                        "summary": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                        "title": "Text content Text content Text content Text content Text content Text content Text content Text content",
+                        "score": 3.2,
+                        "operators": [
+                            {
+                                "link": "DeleteLink",
+                                "index": 2,
+                                "textContent": "Delete",
+                                "title": "Delete",
+                                "icon": "e7b5"
+                            },
+                            {
+                                "link": "MultiLink",
+                                "index": 1,
+                                "textContent": "Multilingual",
+                                "title": "Multilingual",
+                                "icon": "e7dc"
+                            }
+                        ],
+                        "avatar": {
+                            "mimeType": "image/jpg",
+                            "resourcePath": "./images/1.jpg"
+                        },
+                        "identifyCode": "4"
+                    },
+                    {
+                        "elementId": "elementId",
+                        "score": 3.0,
+                        "avatar": {
+                            "mimeType": "video/mp4",
+                            "resourcePath": "./images/demoVideo.mp4",
+                            "autoplay": true
+                        },
+                        "properties": [
+                            "",
+                            "",
+                            "",
+                            "",
+                            "",
+                            "Column 3 Text",
+                            "Column 2 Text",
+                            "Column 1 Text"
+                        ],
+                        "link": "details.json",
+                        "openWindow": true,
+                        "identifyCode": "5",
+                        "title": "Text content Text content Text content Text content Text content Text content Text content Text content"
+                    },
+                    {
+                        "elementId": "elementId",
+                        "operators": [
+                            {
+                                "link": "form.json",
+                                "index": 3,
+                                "textContent": "Edit",
+                                "title": "Edit",
+                                "icon": "e9da",
+                                "openWindow": true
+                            },
+                            {
+                                "link": "DeleteLink",
+                                "index": 2,
+                                "textContent": "Delete",
+                                "title": "Delete",
+                                "icon": "e7b5"
+                            }
+                        ],
+                        "avatar": {
+                            "mimeType": "image/jpg",
+                            "resourcePath": "./images/1.jpg"
+                        },
+                        "properties": [
+                            "",
+                            "",
+                            "",
+                            "",
+                            "",
+                            "Column 3 Text",
+                            "Column 2 Text",
+                            "Column 1 Text"
+                        ],
+                        "link": "details.json",
+                        "openWindow": true,
+                        "className": "error",
+                        "identifyCode": "6",
+                        "abstract": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                        "summary": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                        "title": "Text content Text content Text content Text content Text content Text content Text content Text content"
+                    },
+                    {
+                        "elementId": "elementId",
+                        "link": "details.json",
+                        "openWindow": true,
+                        "properties": [
+                            "Column 9 Text",
+                            "Column 8 Text",
+                            "Column 7 Text",
+                            "Column 6 Text",
+                            1658958745944,
+                            "Column 3 Text",
+                            "Column 2 Text",
+                            "Column 1 Text"
+                        ],
+                        "abstract": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                        "summary": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                        "title": "Text content Text content Text content Text content Text content Text content Text content Text content",
+                        "score": 4.2,
+                        "operators": [
+                            {
+                                "link": "form.json",
+                                "index": 3,
+                                "textContent": "Edit",
+                                "title": "Edit",
+                                "icon": "e9da",
+                                "openWindow": true
+                            },
+                            {
+                                "link": "DeleteLink",
+                                "index": 2,
+                                "textContent": "Delete",
+                                "title": "Delete",
+                                "icon": "e7b5"
+                            },
+                            {
+                                "link": "MultiLink",
+                                "index": 1,
+                                "textContent": "Multilingual",
+                                "title": "Multilingual",
+                                "icon": "e7dc"
+                            }
+                        ],
+                        "avatar": {
+                            "mimeType": "image/jpg",
+                            "resourcePath": "./images/1.jpg"
+                        },
+                        "identifyCode": "7"
+                    },
+                    {
+                        "elementId": "elementId",
+                        "score": 3.0,
+                        "avatar": {
+                            "mimeType": "image/jpg",
+                            "resourcePath": "./images/1.jpg"
+                        },
+                        "properties": [
+                            "",
+                            "",
+                            "",
+                            "",
+                            "",
+                            "Column 3 Text",
+                            "Column 2 Text",
+                            "Column 1 Text"
+                        ],
+                        "link": "details.json",
+                        "openWindow": true,
+                        "identifyCode": "8",
+                        "title": "Text content Text content Text content Text content Text content Text content Text content Text content"
+                    },
+                    {
+                        "elementId": "elementId",
+                        "operators": [
+                            {
+                                "link": "form.json",
+                                "index": 3,
+                                "textContent": "Edit",
+                                "title": "Edit",
+                                "icon": "e9da",
+                                "openWindow": true
+                            },
+                            {
+                                "link": "MultiLink",
+                                "index": 1,
+                                "textContent": "Multilingual",
+                                "title": "Multilingual",
+                                "icon": "e7dc"
+                            }
+                        ],
+                        "avatar": {
+                            "mimeType": "image/jpg",
+                            "resourcePath": "./images/1.jpg"
+                        },
+                        "properties": [
+                            "",
+                            "",
+                            "",
+                            "",
+                            "",
+                            "Column 3 Text",
+                            "Column 2 Text",
+                            "Column 1 Text"
+                        ],
+                        "link": "details.json",
+                        "openWindow": true,
+                        "identifyCode": "9",
+                        "abstract": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                        "summary": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                        "title": "Text content Text content Text content Text content Text content Text content Text content Text content"
+                    },
+                    {
+                        "elementId": "elementId",
+                        "score": 3.0,
+                        "avatar": {
+                            "mimeType": "image/jpg",
+                            "resourcePath": "./images/1.jpg"
+                        },
+                        "properties": [
+                            "",
+                            "",
+                            "",
+                            "",
+                            "",
+                            "Column 3 Text",
+                            "Column 2 Text",
+                            "Column 1 Text"
+                        ],
+                        "link": "details.json",
+                        "openWindow": true,
+                        "className": "warning",
+                        "identifyCode": "10",
+                        "title": "Text content Text content Text content Text content Text content Text content Text content Text content"
+                    },
+                    {
+                        "elementId": "elementId",
+                        "score": 3.0,
+                        "avatar": {
+                            "mimeType": "image/jpg",
+                            "resourcePath": "./images/1.jpg"
+                        },
+                        "properties": [
+                            "",
+                            "",
+                            "",
+                            "",
+                            "",
+                            "Column 3 Text",
+                            "Column 2 Text",
+                            "Column 1 Text"
+                        ],
+                        "link": "details.json",
+                        "openWindow": true,
+                        "className": "warning",
+                        "identifyCode": "11",
+                        "title": "Text content Text content Text content Text content Text content Text content Text content Text content"
+                    },
+                    {
+                        "elementId": "elementId",
+                        "score": 3.0,
+                        "avatar": {
+                            "mimeType": "image/jpg",
+                            "resourcePath": "./images/1.jpg"
+                        },
+                        "properties": [
+                            "",
+                            "",
+                            "",
+                            "",
+                            "",
+                            "Column 3 Text",
+                            "Column 2 Text",
+                            "Column 1 Text"
+                        ],
+                        "link": "details.json",
+                        "openWindow": true,
+                        "className": "warning",
+                        "identifyCode": "12",
+                        "title": "Text content Text content Text content Text content Text content Text content Text content Text content"
+                    },
+                    {
+                        "elementId": "elementId",
+                        "score": 3.0,
+                        "avatar": {
+                            "mimeType": "image/jpg",
+                            "resourcePath": "./images/1.jpg"
+                        },
+                        "properties": [
+                            "",
+                            "",
+                            "",
+                            "",
+                            "",
+                            "Column 3 Text",
+                            "Column 2 Text",
+                            "Column 1 Text"
+                        ],
+                        "link": "details.json",
+                        "openWindow": true,
+                        "className": "warning",
+                        "identifyCode": "13",
+                        "title": "Text content Text content Text content Text content Text content Text content Text content Text content"
+                    },
+                    {
+                        "elementId": "elementId",
+                        "score": 3.0,
+                        "avatar": {
+                            "mimeType": "image/jpg",
+                            "resourcePath": "./images/1.jpg"
+                        },
+                        "properties": [
+                            "",
+                            "",
+                            "",
+                            "",
+                            "",
+                            "Column 3 Text",
+                            "Column 2 Text",
+                            "Column 1 Text"
+                        ],
+                        "link": "details.json",
+                        "openWindow": true,
+                        "className": "warning",
+                        "identifyCode": "14",
+                        "title": "Text content Text content Text content Text content Text content Text content Text content Text content"
+                    }
+                ],
+                "batchOperators": [
+                    {
+                        "elementId": "elementId",
+                        "link": "ExportUrl",
+                        "icon": "e7cf",
+                        "title": "Export Data"
+                    },
+                    {
+                        "elementId": "importId",
+                        "link": "ImportUrl",
+                        "icon": "eb41",
+                        "title": "Import Data"
+                    }
+                ],
+                "operators": [
+                    {
+                        "elementId": "elementId",
+                        "link": "ExportUrl",
+                        "icon": "e7cf",
+                        "title": "Export Data"
+                    },
+                    {
+                        "elementId": "importId",
+                        "link": "ImportUrl",
+                        "icon": "eb41",
+                        "title": "Import Data"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "calendarForm",
+        "data": {
+            "method": "post",
+            "action": "/#",
+            "title": {
+                "multiKey": "Calendar.Form.title"
+            },
+            "year": "2026",
+            "month": "1",
+            "weekend": false,
+            "calendar": true,
+            "items": {
+                "2026-01-01": [
+                    {
+                        "tagName": "form-item",
+                        "data": {
+                            "type": "radio",
+                            "category": "group",
+                            "title": {
+                                "content": "Foods"
+                            },
+                            "name": "2026-01-01-Foods",
+                            "value": "value4",
+                            "items": [
+                                {
+                                    "content": "Option4",
+                                    "value": "value2"
+                                },
+                                {
+                                    "content": "Option5",
+                                    "value": "value4"
+                                },
+                                {
+                                    "content": "Option6",
+                                    "value": "value6"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "tagName": "form-item",
+                        "data": {
+                            "type": "checkbox",
+                            "category": "group",
+                            "title": {
+                                "content": "Drinks"
+                            },
+                            "name": "2026-01-01-Drinks",
+                            "value": [
+                                "value3",
+                                "value5"
+                            ],
+                            "items": [
+                                {
+                                    "content": "Drink1",
+                                    "value": "value1"
+                                },
+                                {
+                                    "content": "Drink3",
+                                    "value": "value3"
+                                },
+                                {
+                                    "content": "Drink5",
+                                    "value": "value5"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "2026-01-02": [
+                    {
+                        "tagName": "form-item",
+                        "data": {
+                            "type": "radio",
+                            "category": "group",
+                            "title": {
+                                "content": "Foods"
+                            },
+                            "name": "2026-01-02-Foods",
+                            "value": "value4",
+                            "items": [
+                                {
+                                    "content": "Option4",
+                                    "value": "value2"
+                                },
+                                {
+                                    "content": "Option5",
+                                    "value": "value4"
+                                },
+                                {
+                                    "content": "Option6",
+                                    "value": "value6"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "tagName": "form-item",
+                        "data": {
+                            "type": "checkbox",
+                            "category": "group",
+                            "title": {
+                                "content": "Drinks"
+                            },
+                            "name": "2026-01-02-Drinks",
+                            "value": [
+                                "value3",
+                                "value5"
+                            ],
+                            "items": [
+                                {
+                                    "content": "Drink1",
+                                    "value": "value1"
+                                },
+                                {
+                                    "content": "Drink3",
+                                    "value": "value3"
+                                },
+                                {
+                                    "content": "Drink5",
+                                    "value": "value5"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "2026-01-05": [
+                    {
+                        "tagName": "schedule-item",
+                        "data": {
+                            "items": [
+                                {
+                                    "title": "Foods:",
+                                    "content": "Option 4"
+                                },
+                                {
+                                    "title": "Drinks:",
+                                    "content": "Option 3"
+                                }
+                            ],
+                            "operators": [
+                                {
+                                    "title": "Cancel",
+                                    "link": "#cancel"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "2026-01-06": [
+                    {
+                        "tagName": "schedule-item",
+                        "data": {
+                            "items": [
+                                {
+                                    "title": "Foods:",
+                                    "content": "Option 4"
+                                },
+                                {
+                                    "title": "Drinks:",
+                                    "content": "Option 3"
+                                }
+                            ],
+                            "operators": [
+                                {
+                                    "title": "Cancel",
+                                    "link": "#cancel"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "2026-01-07": [
+                    {
+                        "tagName": "schedule-item",
+                        "data": {
+                            "items": [
+                                {
+                                    "title": "Foods:",
+                                    "content": "Option 4"
+                                },
+                                {
+                                    "title": "Drinks:",
+                                    "content": "Option 3"
+                                }
+                            ],
+                            "operators": [
+                                {
+                                    "title": "Cancel",
+                                    "link": "#cancel"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "2026-01-08": [
+                    {
+                        "tagName": "schedule-item",
+                        "data": {
+                            "items": [
+                                {
+                                    "title": "Foods:",
+                                    "content": "Option 4"
+                                },
+                                {
+                                    "title": "Drinks:",
+                                    "content": "Option 3"
+                                }
+                            ],
+                            "operators": [
+                                {
+                                    "title": "Cancel",
+                                    "link": "#cancel"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "2026-01-09": [
+                    {
+                        "tagName": "schedule-item",
+                        "data": {
+                            "items": [
+                                {
+                                    "title": "Foods:",
+                                    "content": "Option 4"
+                                },
+                                {
+                                    "title": "Drinks:",
+                                    "content": "Option 3"
+                                }
+                            ],
+                            "operators": [
+                                {
+                                    "title": "Cancel",
+                                    "link": "#cancel"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "2026-01-12": [
+                    {
+                        "tagName": "form-item",
+                        "data": {
+                            "type": "radio",
+                            "category": "group",
+                            "title": {
+                                "content": "Foods"
+                            },
+                            "name": "2026-01-12-Foods",
+                            "value": "value4",
+                            "items": [
+                                {
+                                    "content": "Option4",
+                                    "value": "value2"
+                                },
+                                {
+                                    "content": "Option5",
+                                    "value": "value4"
+                                },
+                                {
+                                    "content": "Option6",
+                                    "value": "value6"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "tagName": "form-item",
+                        "data": {
+                            "type": "checkbox",
+                            "category": "group",
+                            "title": {
+                                "content": "Drinks"
+                            },
+                            "name": "2026-01-12-Drinks",
+                            "value": [
+                                "value3",
+                                "value5"
+                            ],
+                            "items": [
+                                {
+                                    "content": "Drink1",
+                                    "value": "value1"
+                                },
+                                {
+                                    "content": "Drink3",
+                                    "value": "value3"
+                                },
+                                {
+                                    "content": "Drink5",
+                                    "value": "value5"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "2026-01-13": [
+                    {
+                        "tagName": "form-item",
+                        "data": {
+                            "type": "radio",
+                            "category": "group",
+                            "title": {
+                                "content": "Foods"
+                            },
+                            "name": "2026-01-13-Foods",
+                            "value": "value4",
+                            "items": [
+                                {
+                                    "content": "Option4",
+                                    "value": "value2"
+                                },
+                                {
+                                    "content": "Option5",
+                                    "value": "value4"
+                                },
+                                {
+                                    "content": "Option6",
+                                    "value": "value6"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "tagName": "form-item",
+                        "data": {
+                            "type": "checkbox",
+                            "category": "group",
+                            "title": {
+                                "content": "Drinks"
+                            },
+                            "name": "2026-01-13-Drinks",
+                            "value": [
+                                "value3",
+                                "value5"
+                            ],
+                            "items": [
+                                {
+                                    "content": "Drink1",
+                                    "value": "value1"
+                                },
+                                {
+                                    "content": "Drink3",
+                                    "value": "value3"
+                                },
+                                {
+                                    "content": "Drink5",
+                                    "value": "value5"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "2026-01-14": [
+                    {
+                        "tagName": "form-item",
+                        "data": {
+                            "type": "radio",
+                            "category": "group",
+                            "title": {
+                                "content": "Foods"
+                            },
+                            "name": "2026-01-14-Foods",
+                            "value": "value4",
+                            "items": [
+                                {
+                                    "content": "Option4",
+                                    "value": "value2"
+                                },
+                                {
+                                    "content": "Option5",
+                                    "value": "value4"
+                                },
+                                {
+                                    "content": "Option6",
+                                    "value": "value6"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "tagName": "form-item",
+                        "data": {
+                            "type": "checkbox",
+                            "category": "group",
+                            "title": {
+                                "content": "Drinks"
+                            },
+                            "name": "2026-01-14-Drinks",
+                            "value": [
+                                "value3",
+                                "value5"
+                            ],
+                            "items": [
+                                {
+                                    "content": "Drink1",
+                                    "value": "value1"
+                                },
+                                {
+                                    "content": "Drink3",
+                                    "value": "value3"
+                                },
+                                {
+                                    "content": "Drink5",
+                                    "value": "value5"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "2026-01-15": [
+                    {
+                        "tagName": "form-item",
+                        "data": {
+                            "type": "radio",
+                            "category": "group",
+                            "title": {
+                                "content": "Foods"
+                            },
+                            "name": "2026-01-15-Foods",
+                            "value": "value4",
+                            "items": [
+                                {
+                                    "content": "Option4",
+                                    "value": "value2"
+                                },
+                                {
+                                    "content": "Option5",
+                                    "value": "value4"
+                                },
+                                {
+                                    "content": "Option6",
+                                    "value": "value6"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "tagName": "form-item",
+                        "data": {
+                            "type": "checkbox",
+                            "category": "group",
+                            "title": {
+                                "content": "Drinks"
+                            },
+                            "name": "2026-01-15-Drinks",
+                            "value": [
+                                "value3",
+                                "value5"
+                            ],
+                            "items": [
+                                {
+                                    "content": "Drink1",
+                                    "value": "value1"
+                                },
+                                {
+                                    "content": "Drink3",
+                                    "value": "value3"
+                                },
+                                {
+                                    "content": "Drink5",
+                                    "value": "value5"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "2026-01-16": [
+                    {
+                        "tagName": "form-item",
+                        "data": {
+                            "type": "radio",
+                            "category": "group",
+                            "title": {
+                                "content": "Foods"
+                            },
+                            "name": "2026-01-16-Foods",
+                            "value": "value4",
+                            "items": [
+                                {
+                                    "content": "Option4",
+                                    "value": "value2"
+                                },
+                                {
+                                    "content": "Option5",
+                                    "value": "value4"
+                                },
+                                {
+                                    "content": "Option6",
+                                    "value": "value6"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "tagName": "form-item",
+                        "data": {
+                            "type": "checkbox",
+                            "category": "group",
+                            "title": {
+                                "content": "Drinks"
+                            },
+                            "name": "2026-01-16-Drinks",
+                            "value": [
+                                "value3",
+                                "value5"
+                            ],
+                            "items": [
+                                {
+                                    "content": "Drink1",
+                                    "value": "value1"
+                                },
+                                {
+                                    "content": "Drink3",
+                                    "value": "value3"
+                                },
+                                {
+                                    "content": "Drink5",
+                                    "value": "value5"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "2026-01-19": [
+                    {
+                        "tagName": "form-item",
+                        "data": {
+                            "type": "radio",
+                            "category": "group",
+                            "title": {
+                                "content": "Foods"
+                            },
+                            "name": "2026-01-17-Foods",
+                            "value": "value4",
+                            "items": [
+                                {
+                                    "content": "Option4",
+                                    "value": "value2"
+                                },
+                                {
+                                    "content": "Option5",
+                                    "value": "value4"
+                                },
+                                {
+                                    "content": "Option6",
+                                    "value": "value6"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "tagName": "form-item",
+                        "data": {
+                            "type": "checkbox",
+                            "category": "group",
+                            "title": {
+                                "content": "Drinks"
+                            },
+                            "name": "2026-01-17-Drinks",
+                            "value": [
+                                "value3",
+                                "value5"
+                            ],
+                            "items": [
+                                {
+                                    "content": "Drink1",
+                                    "value": "value1"
+                                },
+                                {
+                                    "content": "Drink3",
+                                    "value": "value3"
+                                },
+                                {
+                                    "content": "Drink5",
+                                    "value": "value5"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "2026-01-20": [
+                    {
+                        "tagName": "form-item",
+                        "data": {
+                            "type": "radio",
+                            "category": "group",
+                            "title": {
+                                "content": "Foods"
+                            },
+                            "name": "2026-01-18-Foods",
+                            "value": "value4",
+                            "items": [
+                                {
+                                    "content": "Option4",
+                                    "value": "value2"
+                                },
+                                {
+                                    "content": "Option5",
+                                    "value": "value4"
+                                },
+                                {
+                                    "content": "Option6",
+                                    "value": "value6"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "tagName": "form-item",
+                        "data": {
+                            "type": "checkbox",
+                            "category": "group",
+                            "title": {
+                                "content": "Drinks"
+                            },
+                            "name": "2026-01-18-Drinks",
+                            "value": [
+                                "value3",
+                                "value5"
+                            ],
+                            "items": [
+                                {
+                                    "content": "Drink1",
+                                    "value": "value1"
+                                },
+                                {
+                                    "content": "Drink3",
+                                    "value": "value3"
+                                },
+                                {
+                                    "content": "Drink5",
+                                    "value": "value5"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "2026-01-21": [
+                    {
+                        "tagName": "form-item",
+                        "data": {
+                            "type": "radio",
+                            "category": "group",
+                            "title": {
+                                "content": "Foods"
+                            },
+                            "name": "2026-01-19-Foods",
+                            "value": "value4",
+                            "items": [
+                                {
+                                    "content": "Option4",
+                                    "value": "value2"
+                                },
+                                {
+                                    "content": "Option5",
+                                    "value": "value4"
+                                },
+                                {
+                                    "content": "Option6",
+                                    "value": "value6"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "tagName": "form-item",
+                        "data": {
+                            "type": "checkbox",
+                            "category": "group",
+                            "title": {
+                                "content": "Drinks"
+                            },
+                            "name": "2026-01-19-Drinks",
+                            "value": [
+                                "value3",
+                                "value5"
+                            ],
+                            "items": [
+                                {
+                                    "content": "Drink1",
+                                    "value": "value1"
+                                },
+                                {
+                                    "content": "Drink3",
+                                    "value": "value3"
+                                },
+                                {
+                                    "content": "Drink5",
+                                    "value": "value5"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "2026-01-22": [
+                    {
+                        "tagName": "schedule-item",
+                        "data": {
+                            "items": [
+                                {
+                                    "title": "Foods:",
+                                    "content": "Option 4"
+                                },
+                                {
+                                    "title": "Drinks:",
+                                    "content": "Option 3"
+                                }
+                            ],
+                            "operators": [
+                                {
+                                    "title": "Cancel",
+                                    "link": "#cancel"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "2026-01-23": [
+                    {
+                        "tagName": "schedule-item",
+                        "data": {
+                            "items": [
+                                {
+                                    "title": "Foods:",
+                                    "content": "Option 4"
+                                },
+                                {
+                                    "title": "Drinks:",
+                                    "content": "Option 3"
+                                }
+                            ],
+                            "operators": [
+                                {
+                                    "title": "Cancel",
+                                    "link": "#cancel"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "2026-01-26": [
+                    {
+                        "tagName": "schedule-item",
+                        "data": {
+                            "items": [
+                                {
+                                    "title": "Foods:",
+                                    "content": "Option 4"
+                                },
+                                {
+                                    "title": "Drinks:",
+                                    "content": "Option 3"
+                                }
+                            ],
+                            "operators": [
+                                {
+                                    "title": "Cancel",
+                                    "link": "#cancel"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "2026-01-27": [
+                    {
+                        "tagName": "schedule-item",
+                        "data": {
+                            "items": [
+                                {
+                                    "title": "Foods:",
+                                    "content": "Option 4"
+                                },
+                                {
+                                    "title": "Drinks:",
+                                    "content": "Option 3"
+                                }
+                            ],
+                            "operators": [
+                                {
+                                    "title": "Cancel",
+                                    "link": "#cancel"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "2026-01-28": [
+                    {
+                        "tagName": "schedule-item",
+                        "data": {
+                            "items": [
+                                {
+                                    "title": "Foods:",
+                                    "content": "Option 4"
+                                },
+                                {
+                                    "title": "Drinks:",
+                                    "content": "Option 3"
+                                }
+                            ],
+                            "operators": [
+                                {
+                                    "title": "Cancel",
+                                    "link": "#cancel"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "2026-01-29": [
+                    {
+                        "tagName": "form-item",
+                        "data": {
+                            "type": "radio",
+                            "category": "group",
+                            "title": {
+                                "content": "Foods"
+                            },
+                            "name": "2026-01-29-Foods",
+                            "value": "value4",
+                            "items": [
+                                {
+                                    "content": "Option4",
+                                    "value": "value2"
+                                },
+                                {
+                                    "content": "Option5",
+                                    "value": "value4"
+                                },
+                                {
+                                    "content": "Option6",
+                                    "value": "value6"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "tagName": "form-item",
+                        "data": {
+                            "type": "checkbox",
+                            "category": "group",
+                            "title": {
+                                "content": "Drinks"
+                            },
+                            "name": "2026-01-29-Drinks",
+                            "value": [
+                                "value3",
+                                "value5"
+                            ],
+                            "items": [
+                                {
+                                    "content": "Drink1",
+                                    "value": "value1"
+                                },
+                                {
+                                    "content": "Drink3",
+                                    "value": "value3"
+                                },
+                                {
+                                    "content": "Drink5",
+                                    "value": "value5"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "2026-01-30": [
+                    {
+                        "tagName": "form-item",
+                        "data": {
+                            "type": "radio",
+                            "category": "group",
+                            "title": {
+                                "content": "Foods"
+                            },
+                            "name": "2026-01-30-Foods",
+                            "value": "value4",
+                            "items": [
+                                {
+                                    "content": "Option4",
+                                    "value": "value2"
+                                },
+                                {
+                                    "content": "Option5",
+                                    "value": "value4"
+                                },
+                                {
+                                    "content": "Option6",
+                                    "value": "value6"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "tagName": "form-item",
+                        "data": {
+                            "type": "checkbox",
+                            "category": "group",
+                            "title": {
+                                "content": "Drinks"
+                            },
+                            "name": "2026-01-30-Drinks",
+                            "value": [
+                                "value3",
+                                "value5"
+                            ],
+                            "items": [
+                                {
+                                    "content": "Drink1",
+                                    "value": "value1"
+                                },
+                                {
+                                    "content": "Drink3",
+                                    "value": "value3"
+                                },
+                                {
+                                    "content": "Drink5",
+                                    "value": "value5"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": "formInfo",
+        "data": {
+            "method": "post",
+            "action": "/#",
+            "title": {
+                "multiKey": "Form.title"
+            },
+            "items": [
+                {
+                    "type": "property",
+                    "class": "formItem",
+                    "title": {
+                        "multiKey": "Property.Name"
+                    },
+                    "value": "Property Content",
+                    "tips": {
+                        "content": "Tips message"
+                    }
+                },
+                {
+                    "type": "select",
+                    "class": "formItem",
+                    "id": "selectElement",
+                    "name": "selectElement",
+                    "value": 4,
+                    "title": {
+                        "multiKey": "Element.label.text"
+                    },
+                    "tips": {
+                        "content": "Tips message"
+                    },
+                    "items": [
+                        {
+                            "text": "option0",
+                            "value": 0
+                        },
+                        {
+                            "text": "option1",
+                            "value": 1
+                        },
+                        {
+                            "text": "option2",
+                            "value": 2
+                        },
+                        {
+                            "text": "option3",
+                            "value": 3
+                        },
+                        {
+                            "text": "option4",
+                            "value": 4
+                        },
+                        {
+                            "text": "option5",
+                            "value": 5
+                        },
+                        {
+                            "text": "option6",
+                            "value": 6
+                        },
+                        {
+                            "text": "option7",
+                            "value": 7
+                        },
+                        {
+                            "text": "option8",
+                            "value": 8
+                        },
+                        {
+                            "text": "option9",
+                            "value": 9
+                        }
+                    ]
+                },
+                {
+                    "type": "textarea",
+                    "class": "formItem",
+                    "id": "textareaElement",
+                    "name": "textareaElement",
+                    "multiKey": "Placeholder.string",
+                    "title": {
+                        "multiKey": "Element.label.text",
+                        "content": "Element label text"
+                    },
+                    "multilingual": true,
+                    "language": "English",
+                    "reference": "Reference context",
+                    "tips": {
+                        "content": "Tips message"
+                    }
+                },
+                {
+                    "type": "email",
+                    "class": "formItem",
+                    "id": "emailElement",
+                    "name": "emailElement",
+                    "autocomplete": "email username",
+                    "placeholder": "Placeholder string",
+                    "title": {
+                        "multiKey": "Element.label.text",
+                        "content": "Element label text"
+                    },
+                    "verify": {
+                        "type": "email"
+                    },
+                    "value": "wmkm0113@gmail.com",
+                    "error": {
+                        "multiKey": "Email.error"
+                    },
+                    "tips": {
+                        "content": "Tips message"
+                    }
+                },
+                {
+                    "type": "password",
+                    "class": "formItem",
+                    "id": "passwordElement",
+                    "name": "passwordElement",
+                    "placeholder": "Placeholder string",
+                    "autocomplete": "new-password",
+                    "title": {
+                        "multiKey": "Element.label.text",
+                        "content": "Element label text"
+                    },
+                    "value": "Initialize value",
+                    "tips": {
+                        "content": "Tips message"
+                    }
+                },
+                {
+                    "type": "hidden",
+                    "class": "formItem",
+                    "id": "hiddenElement",
+                    "name": "hiddenElement",
+                    "placeholder": "Placeholder string",
+                    "title": {
+                        "multiKey": "Element.label.text",
+                        "content": "Element label text"
+                    },
+                    "value": "Initialize value",
+                    "tips": {
+                        "content": "Tips message"
+                    }
+                },
+                {
+                    "type": "text",
+                    "class": "formItem",
+                    "id": "textElement",
+                    "name": "textElement",
+                    "placeholder": "Placeholder string",
+                    "title": {
+                        "multiKey": "Element.label.text",
+                        "content": "Element label text"
+                    },
+                    "value": "123456789",
+                    "multilingual": true,
+                    "verify": {
+                        "regex": "^\\d+$"
+                    },
+                    "language": "简体中文",
+                    "reference": "Reference context",
+                    "tips": {
+                        "content": "Tips message"
+                    }
+                },
+                {
+                    "type": "search",
+                    "class": "formItem",
+                    "id": "searchFormElement",
+                    "name": "searchFormElement",
+                    "placeholder": "Placeholder string",
+                    "title": {
+                        "multiKey": "Element.label.text",
+                        "content": "Element label text"
+                    },
+                    "value": "Initialize value",
+                    "tips": {
+                        "content": "Tips message"
+                    }
+                },
+                {
+                    "type": "number",
+                    "class": "formItem",
+                    "id": "numberElement",
+                    "name": "numberElement",
+                    "placeholder": "Placeholder string",
+                    "title": {
+                        "multiKey": "Element.label.text",
+                        "content": "Element label text"
+                    },
+                    "value": "Initialize value",
+                    "tips": {
+                        "content": "Tips message"
+                    }
+                },
+                {
+                    "type": "number",
+                    "class": "formItem",
+                    "id": "luhnElement",
+                    "name": "luhnElement",
+                    "placeholder": "Bank card number",
+                    "title": {
+                        "content": "Bank card number"
+                    },
+                    "error": {
+                        "content": "Bank card number invalid"
+                    },
+                    "verify": {
+                        "type": "luhn"
+                    },
+                    "tips": {
+                        "content": "Tips message"
+                    }
+                },
+                {
+                    "type": "date",
+                    "class": "formItem",
+                    "id": "dateElement",
+                    "name": "dateElement",
+                    "placeholder": "Placeholder string",
+                    "title": {
+                        "multiKey": "Element.label.text",
+                        "content": "Element label text"
+                    },
+                    "value": "1658958745944",
+                    "tips": {
+                        "content": "Tips message"
+                    }
+                },
+                {
+                    "type": "time",
+                    "class": "formItem",
+                    "id": "timeElement",
+                    "name": "timeElement",
+                    "placeholder": "Placeholder string",
+                    "title": {
+                        "multiKey": "Element.label.text",
+                        "content": "Element label text"
+                    },
+                    "value": "Initialize value",
+                    "tips": {
+                        "content": "Tips message"
+                    }
+                },
+                {
+                    "type": "datetime-local",
+                    "class": "formItem",
+                    "id": "datetimeElement",
+                    "name": "datetimeElement",
+                    "placeholder": "Placeholder string",
+                    "title": {
+                        "multiKey": "Element.label.text",
+                        "content": "Element label text"
+                    },
+                    "value": "1658958745944",
+                    "tips": {
+                        "content": "Tips message"
+                    }
+                },
+                {
+                    "type": "number",
+                    "category": "interval",
+                    "class": "formItem",
+                    "title": {
+                        "multiKey": "Element.label.text",
+                        "content": "Element label text"
+                    },
+                    "value": {
+                        "begin": {
+                            "name": "numberBegin",
+                            "value": "10"
+                        },
+                        "end": {
+                            "name": "numberEnd",
+                            "value": "100"
+                        }
+                    },
+                    "tips": {
+                        "content": "Tips message"
+                    }
+                },
+                {
+                    "type": "date",
+                    "category": "interval",
+                    "class": "formItem",
+                    "title": {
+                        "multiKey": "Element.label.text",
+                        "content": "Element label text"
+                    },
+                    "value": {
+                        "begin": {
+                            "name": "dateBegin",
+                            "value": "1658958745944"
+                        },
+                        "end": {
+                            "name": "dateEnd",
+                            "value": "1658958745944"
+                        }
+                    },
+                    "tips": {
+                        "content": "Tips message"
+                    }
+                },
+                {
+                    "type": "time",
+                    "category": "interval",
+                    "class": "formItem",
+                    "title": {
+                        "multiKey": "Element.label.text",
+                        "content": "Element label text"
+                    },
+                    "value": {
+                        "begin": {
+                            "name": "timeBegin",
+                            "value": "1658958745944"
+                        },
+                        "end": {
+                            "name": "timeEnd",
+                            "value": "1658958745944"
+                        }
+                    },
+                    "tips": {
+                        "content": "Tips message"
+                    }
+                },
+                {
+                    "type": "datetime-local",
+                    "category": "interval",
+                    "class": "formItem",
+                    "title": {
+                        "multiKey": "Element.label.text",
+                        "content": "Element label text"
+                    },
+                    "value": {
+                        "begin": {
+                            "name": "datetimeBegin",
+                            "value": "1658958745944"
+                        },
+                        "end": {
+                            "name": "datetimeEnd",
+                            "value": "1658958745944"
+                        }
+                    },
+                    "tips": {
+                        "content": "Tips message"
+                    }
+                },
+                {
+                    "type": "checkbox",
+                    "category": "group",
+                    "class": "formItem",
+                    "id": "checkBoxGroupElement",
+                    "name": "checkBoxGroupElement",
+                    "value": [
+                        "checkBoxValue2",
+                        "checkBoxValue3"
+                    ],
+                    "title": {
+                        "multiKey": "Element.label.text",
+                        "content": "Element label text"
+                    },
+                    "tips": {
+                        "content": "Tips message"
+                    },
+                    "items": [
+                        {
+                            "id": "checkBoxButtonId1",
+                            "value": "checkBoxValue1",
+                            "content": "checkBox Content",
+                            "textButton": "checkBox Content"
+                        },
+                        {
+                            "id": "checkBoxButtonId2",
+                            "value": "checkBoxValue2",
+                            "content": "checkBox Content",
+                            "textButton": "checkBox Content"
+                        },
+                        {
+                            "id": "checkBoxButtonId3",
+                            "value": "checkBoxValue3",
+                            "content": "checkBox Content",
+                            "textButton": "checkBox Content"
+                        },
+                        {
+                            "id": "checkBoxButtonId4",
+                            "value": "checkBoxValue4",
+                            "content": "checkBox Content",
+                            "textButton": "checkBox Content"
+                        }
+                    ]
+                },
+                {
+                    "type": "radio",
+                    "category": "group",
+                    "class": "formItem",
+                    "id": "radioGroupElement",
+                    "name": "radioGroupElement",
+                    "value": "radioValue2",
+                    "title": {
+                        "multiKey": "Element.label.text",
+                        "content": "Element label text"
+                    },
+                    "items": [
+                        {
+                            "id": "radioButtonId1",
+                            "value": "radioValue1",
+                            "content": "checkBox Content",
+                            "textButton": "Radio Content"
+                        },
+                        {
+                            "id": "radioButtonId2",
+                            "value": "radioValue2",
+                            "content": "checkBox Content",
+                            "textButton": "Radio Content"
+                        },
+                        {
+                            "id": "radioButtonId3",
+                            "value": "radioValue3",
+                            "content": "checkBox Content",
+                            "textButton": "Radio Content"
+                        },
+                        {
+                            "id": "radioButtonId4",
+                            "value": "radioValue4",
+                            "content": "checkBox Content",
+                            "textButton": "Radio Content"
+                        }
+                    ]
+                },
+                {
+                    "type": "file",
+                    "category": "drag",
+                    "class": "formItem",
+                    "title": {
+                        "multiKey": "Element.label.text",
+                        "content": "Element label text"
+                    },
+                    "multilingual": true,
+                    "reference": [
+                        {
+                            "mimeType": "image/jpg",
+                            "resourcePath": "images/1.jpg"
+                        },
+                        {
+                            "mimeType": "image/jpg",
+                            "resourcePath": "images/1.jpg"
+                        }
+                    ],
+                    "value": {
+                        "id": "uploadElement",
+                        "multipleFiles": "true",
+                        "name": "uploadElement"
+                    },
+                    "tips": {
+                        "content": "Tips message"
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "id": "pieChart",
+        "data": {
+            "items": [
+                {
+                    "value": "0.05",
+                    "content": "content1"
+                },
+                {
+                    "value": "0.1",
+                    "content": "content2"
+                },
+                {
+                    "value": "0.15",
+                    "content": "content3"
+                },
+                {
+                    "value": "0.2",
+                    "content": "content4"
+                },
+                {
+                    "value": "0.05",
+                    "content": "content1"
+                },
+                {
+                    "value": "0.1",
+                    "content": "content2"
+                },
+                {
+                    "value": "0.15",
+                    "content": "content3"
+                },
+                {
+                    "value": "0.2",
+                    "content": "content4"
+                }
+            ]
+        }
+    },
+    {
+        "id": "roseChart",
+        "data": {
+            "items": [
+                {
+                    "value": "0.05",
+                    "scale": 0.8,
+                    "content": "content1"
+                },
+                {
+                    "value": "0.1",
+                    "scale": 0.6,
+                    "content": "content2"
+                },
+                {
+                    "value": "0.15",
+                    "scale": 0.32,
+                    "content": "content3"
+                },
+                {
+                    "value": "0.2",
+                    "scale": 0.65,
+                    "content": "content4"
+                },
+                {
+                    "value": "0.05",
+                    "scale": 0.9,
+                    "content": "content1"
+                },
+                {
+                    "value": "0.1",
+                    "scale": 1.0,
+                    "content": "content2"
+                },
+                {
+                    "value": "0.15",
+                    "scale": 0.77,
+                    "content": "content3"
+                },
+                {
+                    "value": "0.2",
+                    "scale": 0.45,
+                    "content": "content4"
+                }
+            ]
+        }
+    },
+    {
+        "id": "circleChart",
+        "data": {
+            "styles": {
+                "gapWidth": "4px"
+            },
+            "items": [
+                {
+                    "value": 0.8,
+                    "content": "content1"
+                },
+                {
+                    "value": 0.6,
+                    "content": "content2"
+                },
+                {
+                    "value": 0.3,
+                    "content": "content3"
+                }
+            ]
+        }
+    },
+    {
+        "id": "barChart",
+        "data": {
+            "styles": {
+                "itemSize": "1.5rem",
+                "sizeY": "100px"
+            },
+            "legend": [
+                {
+                    "content": "Item 1"
+                },
+                {
+                    "content": "Item 2"
+                },
+                {
+                    "content": "Item 3"
+                }
+            ],
+            "markings": [
+                "0%",
+                "25%",
+                "50%",
+                "75%",
+                "100%"
+            ],
+            "items": [
+                {
+                    "title": "2025-07",
+                    "values": [
+                        0.2,
+                        0.3,
+                        0.45
+                    ]
+                },
+                {
+                    "title": "2025-08",
+                    "values": [
+                        0.2,
+                        0.3,
+                        0.45
+                    ]
+                },
+                {
+                    "title": "2025-09",
+                    "values": [
+                        0.2,
+                        0.3,
+                        0.45
+                    ]
+                },
+                {
+                    "title": "2025-10",
+                    "values": [
+                        0.2,
+                        0.3,
+                        0.45
+                    ]
+                },
+                {
+                    "title": "2025-11",
+                    "values": [
+                        0.2,
+                        0.3,
+                        0.45
+                    ]
+                },
+                {
+                    "title": "2025-12",
+                    "values": [
+                        0.2,
+                        0.3,
+                        0.45
+                    ]
+                }
+            ]
+        }
+    },
+    {
+        "id": "columnChart",
+        "data": {
+            "styles": {
+                "itemSize": "1.5rem"
+            },
+            "legend": [
+                {
+                    "content": "Item 1"
+                },
+                {
+                    "content": "Item 2"
+                },
+                {
+                    "content": "Item 3"
+                }
+            ],
+            "items": [
+                {
+                    "title": "2025-01",
+                    "values": [
+                        0.2,
+                        0.3,
+                        0.45
+                    ]
+                },
+                {
+                    "title": "2025-02",
+                    "values": [
+                        "0.2",
+                        "0.3",
+                        "0.45"
+                    ]
+                },
+                {
+                    "title": "2025-03",
+                    "values": [
+                        0.2,
+                        0.3,
+                        0.45
+                    ]
+                },
+                {
+                    "title": "2025-04",
+                    "values": [
+                        0.2,
+                        0.3,
+                        0.45
+                    ]
+                },
+                {
+                    "title": "2025-05",
+                    "values": [
+                        0.2,
+                        0.3,
+                        0.45
+                    ]
+                },
+                {
+                    "title": "2025-06",
+                    "values": [
+                        0.2,
+                        0.3,
+                        0.45
+                    ]
+                },
+                {
+                    "title": "2025-07",
+                    "values": [
+                        0.2,
+                        0.3,
+                        0.45
+                    ]
+                },
+                {
+                    "title": "2025-08",
+                    "values": [
+                        0.2,
+                        0.3,
+                        0.45
+                    ]
+                },
+                {
+                    "title": "2025-09",
+                    "values": [
+                        0.2,
+                        0.3,
+                        0.45
+                    ]
+                },
+                {
+                    "title": "2025-10",
+                    "values": [
+                        0.2,
+                        0.3,
+                        0.45
+                    ]
+                },
+                {
+                    "title": "2025-11",
+                    "values": [
+                        0.2,
+                        0.3,
+                        0.45
+                    ]
+                },
+                {
+                    "title": "2025-12",
+                    "values": [
+                        0.2,
+                        0.3,
+                        0.45
+                    ]
+                }
+            ]
+        }
+    },
+    {
+        "id": "waterfallChart",
+        "data": {
+            "styles": {
+                "itemSize": "1.5rem"
+            },
+            "legend": [
+                {
+                    "content": "Item 1"
+                },
+                {
+                    "content": "Item 2"
+                },
+                {
+                    "content": "Item 3"
+                }
+            ],
+            "markings": [
+                "-100",
+                "-75",
+                "-50",
+                "-25",
+                "0",
+                "25",
+                "50",
+                "75",
+                "100"
+            ],
+            "items": [
+                {
+                    "title": "2025-01",
+                    "values": [
+                        0.2,
+                        -0.3,
+                        0.45
+                    ]
+                },
+                {
+                    "title": "2025-02",
+                    "values": [
+                        "0.2",
+                        "0.3",
+                        "0.45"
+                    ]
+                },
+                {
+                    "title": "2025-03",
+                    "values": [
+                        0.2,
+                        0.3,
+                        0.45
+                    ]
+                },
+                {
+                    "title": "2025-04",
+                    "values": [
+                        0.2,
+                        0.3,
+                        0.45
+                    ]
+                },
+                {
+                    "title": "2025-05",
+                    "values": [
+                        0.2,
+                        0.3,
+                        -0.45
+                    ]
+                },
+                {
+                    "title": "2025-06",
+                    "values": [
+                        0.2,
+                        0.3,
+                        0.45
+                    ]
+                },
+                {
+                    "title": "2025-07",
+                    "values": [
+                        -0.2,
+                        0.3,
+                        0.45
+                    ]
+                },
+                {
+                    "title": "2025-08",
+                    "values": [
+                        0.2,
+                        0.3,
+                        0.45
+                    ]
+                },
+                {
+                    "title": "2025-09",
+                    "values": [
+                        0.2,
+                        0.3,
+                        -0.45
+                    ]
+                },
+                {
+                    "title": "2025-10",
+                    "values": [
+                        0.2,
+                        -0.3,
+                        0.45
+                    ]
+                },
+                {
+                    "title": "2025-11",
+                    "values": [
+                        -0.2,
+                        0.3,
+                        0.45
+                    ]
+                },
+                {
+                    "title": "2025-12",
+                    "values": [
+                        0.2,
+                        0.3,
+                        0.45
+                    ]
+                }
+            ]
+        }
+    },
+    {
+        "id": "k-line",
+        "data": {
+            "styles": {
+                "sizeY": "100px"
+            },
+            "items": [
+                {
+                    "title": "2025-11-29",
+                    "open": 10.2,
+                    "close": 11.5,
+                    "low": 8.3,
+                    "high": 12.8
+                },
+                {
+                    "title": "2025-11-30",
+                    "open": 11.5,
+                    "close": 10.8,
+                    "low": 9.8,
+                    "high": 14.2
+                },
+                {
+                    "title": "2025-12-01",
+                    "open": 10.8,
+                    "close": 13.2,
+                    "low": 10.3,
+                    "high": 16.5
+                },
+                {
+                    "title": "2025-12-02",
+                    "open": 13.2,
+                    "close": 12.6,
+                    "low": 5.3,
+                    "high": 13.8
+                },
+                {
+                    "title": "2025-12-03",
+                    "open": 12.6,
+                    "close": 12.9,
+                    "low": 11.8,
+                    "high": 13.7
+                },
+                {
+                    "title": "2025-12-04",
+                    "open": 12.9,
+                    "close": 13.2,
+                    "low": 12.9,
+                    "high": 17.6
+                },
+                {
+                    "title": "2025-12-05",
+                    "open": 13.2,
+                    "close": 13.5,
+                    "low": 8.3,
+                    "high": 14.2
+                },
+                {
+                    "title": "2025-12-06",
+                    "open": 13.5,
+                    "close": 11.5,
+                    "low": 8.3,
+                    "high": 15.7
+                },
+                {
+                    "title": "2025-12-07",
+                    "open": 11.5,
+                    "close": 14.6,
+                    "low": 10.9,
+                    "high": 15.1
+                },
+                {
+                    "title": "2025-12-08",
+                    "open": 14.6,
+                    "close": 11.5,
+                    "low": 8.3,
+                    "high": 15.8
+                },
+                {
+                    "title": "2025-12-09",
+                    "open": 11.5,
+                    "close": 11.5,
+                    "low": 8.3,
+                    "high": 12.8
+                },
+                {
+                    "title": "2025-12-10",
+                    "open": 10.2,
+                    "close": 11.5,
+                    "low": 8.3,
+                    "high": 12.8
+                },
+                {
+                    "title": "2025-12-11",
+                    "open": 11.5,
+                    "close": 10.8,
+                    "low": 9.8,
+                    "high": 14.2
+                },
+                {
+                    "title": "2025-12-12",
+                    "open": 10.8,
+                    "close": 13.2,
+                    "low": 10.3,
+                    "high": 16.5
+                },
+                {
+                    "title": "2025-12-13",
+                    "open": 13.2,
+                    "close": 12.6,
+                    "low": 5.3,
+                    "high": 13.8
+                },
+                {
+                    "title": "2025-12-14",
+                    "open": 12.6,
+                    "close": 12.9,
+                    "low": 11.8,
+                    "high": 13.7
+                },
+                {
+                    "title": "2025-12-15",
+                    "open": 12.9,
+                    "close": 13.2,
+                    "low": 12.9,
+                    "high": 17.6
+                },
+                {
+                    "title": "2025-12-16",
+                    "open": 13.2,
+                    "close": 13.5,
+                    "low": 8.3,
+                    "high": 14.2
+                },
+                {
+                    "title": "2025-12-17",
+                    "open": 13.5,
+                    "close": 11.5,
+                    "low": 8.3,
+                    "high": 15.7
+                },
+                {
+                    "title": "2025-12-18",
+                    "open": 11.5,
+                    "close": 14.6,
+                    "low": 10.9,
+                    "high": 15.1
+                },
+                {
+                    "title": "2025-12-19",
+                    "open": 14.6,
+                    "close": 11.5,
+                    "low": 8.3,
+                    "high": 15.8
+                },
+                {
+                    "title": "2025-12-20",
+                    "open": 11.5,
+                    "close": 11.5,
+                    "low": 8.3,
+                    "high": 12.8
+                },
+                {
+                    "title": "2025-12-21",
+                    "open": 10.2,
+                    "close": 11.5,
+                    "low": 8.3,
+                    "high": 12.8
+                },
+                {
+                    "title": "2025-12-22",
+                    "open": 11.5,
+                    "close": 10.8,
+                    "low": 9.8,
+                    "high": 14.2
+                },
+                {
+                    "title": "2025-12-23",
+                    "open": 10.8,
+                    "close": 13.2,
+                    "low": 10.3,
+                    "high": 16.5
+                },
+                {
+                    "title": "2025-12-24",
+                    "open": 13.2,
+                    "close": 12.6,
+                    "low": 5.3,
+                    "high": 13.8
+                },
+                {
+                    "title": "2025-12-25",
+                    "open": 12.6,
+                    "close": 12.9,
+                    "low": 11.8,
+                    "high": 13.7
+                },
+                {
+                    "title": "2025-12-26",
+                    "open": 12.9,
+                    "close": 13.2,
+                    "low": 12.9,
+                    "high": 17.6
+                },
+                {
+                    "title": "2025-12-27",
+                    "open": 13.2,
+                    "close": 13.5,
+                    "low": 8.3,
+                    "high": 14.2
+                },
+                {
+                    "title": "2025-12-28",
+                    "open": 13.5,
+                    "close": 11.5,
+                    "low": 8.3,
+                    "high": 15.7
+                },
+                {
+                    "title": "2025-12-29",
+                    "open": 11.5,
+                    "close": 14.6,
+                    "low": 10.9,
+                    "high": 15.1
+                },
+                {
+                    "title": "2025-12-30",
+                    "open": 14.6,
+                    "close": 11.5,
+                    "low": 8.3,
+                    "high": 15.8
+                },
+                {
+                    "title": "2025-12-31",
+                    "open": 11.5,
+                    "close": 11.5,
+                    "low": 8.3,
+                    "high": 12.8
+                }
+            ]
+        }
+    },
+    {
+        "id": "socialGroup",
+        "data": {
+            "multiKey": "Follow.Us",
+            "items": [
+                {
+                    "icon": "e725",
+                    "title": "Facebook",
+                    "link": "#FacebookAddress"
+                },
+                {
+                    "icon": "e7d7",
+                    "title": "LinkedIn",
+                    "link": "#LinkedInAddress"
+                },
+                {
+                    "icon": "e781",
+                    "title": "Github",
+                    "link": "https://github.com/wmkm0113"
+                },
+                {
+                    "icon": "e902",
+                    "title": "Twitter",
+                    "link": "#TwitterAddress"
+                },
+                {
+                    "icon": "e7b9",
+                    "title": "Instagram",
+                    "link": "#InstagramAddress"
+                }
+            ]
+        }
+    },
+    {
+        "id": "addressDetails",
+        "data": {
+            "title": "Address Title",
+            "content": "Room Number, Community name, District name, City name, Country name",
+            "map": {
+                "provider": "google",
+                "location": {
+                    "latitude": "40.009068571369137",
+                    "longitude": "116.4790988860714"
+                }
+            }
+        }
+    },
+    {
+        "id": "corpDetails",
+        "data": {
+            "content": "Corporate details article Corporate details article Corporate details article Corporate details article Corporate details article Corporate details article Corporate details article Corporate details article ",
+            "resources": [
+                {
+                    "mimeType": "image/jpg",
+                    "resourcePath": "images/1.jpg"
+                },
+                {
+                    "mimeType": "video/mp4",
+                    "resourcePath": "images/demoVideo.mp4"
+                },
+                {
+                    "mimeType": "image/jpg",
+                    "resourcePath": "images/1.jpg"
+                },
+                {
+                    "mimeType": "video/mp4",
+                    "resourcePath": "images/demoVideo.mp4"
+                },
+                {
+                    "mimeType": "image/jpg",
+                    "resourcePath": "images/1.jpg"
+                },
+                {
+                    "mimeType": "video/mp4",
+                    "resourcePath": "images/demoVideo.mp4"
+                }
+            ],
+            "addresses": [
+                {
+                    "title": "Address Title 1",
+                    "content": "Room Number, Community name, District name, City name, Country name",
+                    "map": {
+                        "provider": "google",
+                        "location": {
+                            "latitude": "40.009068571369137",
+                            "longitude": "116.4790988860714"
+                        }
+                    }
+                },
+                {
+                    "title": "Address Title 2",
+                    "content": "Room Number, Community name, District name, City name, Country name",
+                    "map": {
+                        "provider": "baidu",
+                        "location": {
+                            "latitude": "40.009068571369137",
+                            "longitude": "116.4790988860714"
+                        }
+                    }
+                },
+                {
+                    "title": "Address Title 3",
+                    "content": "Room Number, Community name, District name, City name, Country name",
+                    "map": {
+                        "provider": "baidu",
+                        "location": {
+                            "latitude": "40.009068571369137",
+                            "longitude": "116.4790988860714"
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "id": "messageDetails",
+        "data": {
+            "title": "Message Title Message Title Message Title Message Title",
+            "properties": [
+                {
+                    "title": "Properties1",
+                    "content": "Content1"
+                },
+                {
+                    "title": "Properties1",
+                    "content": "Content2",
+                    "link": "#"
+                },
+                {
+                    "title": "Properties3",
+                    "content": "Content3"
+                }
+            ],
+            "multiMenu": {
+                "url": "/index.html?lang={languageCode}",
+                "items": [
+                    {
+                        "languageCode": "en",
+                        "languageName": "English"
+                    },
+                    {
+                        "languageCode": "zh_CN",
+                        "languageName": "简体中文"
+                    },
+                    {
+                        "languageCode": "zh_TW",
+                        "languageName": "繁體中文"
+                    }
+                ]
+            },
+            "avatar": {
+                "resourcePath": "images/logo.svg",
+                "mimeType": "image/png"
+            },
+            "summary": "Abstract Message Abstract Message Abstract Message Abstract Message Abstract Message Abstract Message Abstract Message Abstract Message",
+            "content": "Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content",
+            "resources": [
+                {
+                    "mimeType": "image/jpg",
+                    "resourcePath": "images/slides/1.jpg"
+                },
+                {
+                    "mimeType": "image/jpg",
+                    "resourcePath": "images/slides/2.jpg"
+                },
+                {
+                    "mimeType": "image/jpg",
+                    "resourcePath": "images/slides/3.jpg"
+                },
+                {
+                    "mimeType": "image/jpg",
+                    "resourcePath": "images/slides/4.jpg"
+                }
+            ],
+            "attaches": {
+                "title": "Attach Files",
+                "items": [
+                    {
+                        "title": "Attach File1",
+                        "link": "#File1"
+                    },
+                    {
+                        "title": "Attach File2",
+                        "link": "#File2"
+                    },
+                    {
+                        "title": "Attach File3",
+                        "link": "#File3"
+                    },
+                    {
+                        "title": "Attach File4",
+                        "link": "#File4"
+                    },
+                    {
+                        "title": "Attach File5",
+                        "link": "#File5"
+                    }
+                ]
+            },
+            "models": {
+                "title": "Models List",
+                "items": [
+                    {
+                        "link": "#Model1",
+                        "title": "Model 1",
+                        "content": "Model 1 Content",
+                        "avatar": {
+                            "resourcePath": "images/logo.svg",
+                            "mimeType": "image/png"
+                        }
+                    },
+                    {
+                        "link": "#Model2",
+                        "title": "Model 2",
+                        "content": "Model 2 Content",
+                        "avatar": {
+                            "resourcePath": "images/logo.svg",
+                            "mimeType": "image/png"
+                        }
+                    },
+                    {
+                        "link": "#Model3",
+                        "title": "Model 3",
+                        "content": "Model 3 Content",
+                        "avatar": {
+                            "resourcePath": "images/logo.svg",
+                            "mimeType": "image/png"
+                        }
+                    },
+                    {
+                        "link": "#Model4",
+                        "title": "Model 4",
+                        "content": "Model 4 Content",
+                        "avatar": {
+                            "resourcePath": "images/logo.svg",
+                            "mimeType": "image/png"
+                        }
+                    },
+                    {
+                        "link": "#Model5",
+                        "title": "Model 5",
+                        "content": "Model 5 Content",
+                        "avatar": {
+                            "resourcePath": "images/logo.svg",
+                            "mimeType": "image/png"
+                        }
+                    }
+                ]
+            },
+            "accessories": {
+                "title": "Accessories",
+                "items": [
+                    {
+                        "link": "#accessories1",
+                        "title": "Accessories Name 1",
+                        "avatar": {
+                            "resourcePath": "images/demoVideo.mp4",
+                            "mimeType": "video/mp4",
+                            "title": "Accessories Item 1"
+                        }
+                    },
+                    {
+                        "link": "#accessories2",
+                        "title": "Accessories Name 2",
+                        "avatar": {
+                            "resourcePath": "images/logo_zht.svg",
+                            "mimeType": "image/png",
+                            "title": "Accessories Item 1"
+                        }
+                    },
+                    {
+                        "link": "#accessories3",
+                        "title": "Accessories Name 3",
+                        "avatar": {
+                            "resourcePath": "images/logo.svg",
+                            "mimeType": "image/png",
+                            "title": "Accessories Item 1"
+                        }
+                    }
+                ]
+            },
+            "comments": {
+                "title": "Comment List",
+                "items": [
+                    {
+                        "content": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                        "title": "Text content Text content Text content Text content Text content Text content Text content Text content",
+                        "user": {
+                            "avatar": {
+                                "mimeType": "image/jpg",
+                                "resourcePath": "./images/1.jpg"
+                            },
+                            "content": "User Name"
+                        },
+                        "operators": [
+                            {
+                                "type": "button",
+                                "category": "like",
+                                "link": "/like",
+                                "value": 2
+                            },
+                            {
+                                "type": "button",
+                                "category": "favorite",
+                                "link": "/fav"
+                            }
+                        ]
+                    },
+                    {
+                        "content": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content",
+                        "title": "Text content Text content Text content Text content Text content Text content Text content Text content",
+                        "user": {
+                            "avatar": {
+                                "mimeType": "image/jpg",
+                                "resourcePath": "./images/1.jpg"
+                            },
+                            "content": "User Name",
+                            "score": 4
+                        },
+                        "operators": [
+                            {
+                                "type": "button",
+                                "category": "like",
+                                "checked": true,
+                                "link": "/like",
+                                "value": 3
+                            },
+                            {
+                                "type": "button",
+                                "category": "favorite",
+                                "link": "/fav"
+                            }
+                        ]
+                    },
+                    {
+                        "content": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                        "title": "Text content Text content Text content Text content Text content Text content Text content Text content",
+                        "user": {
+                            "avatar": {
+                                "mimeType": "image/jpg",
+                                "resourcePath": "./images/1.jpg"
+                            },
+                            "content": "User Name"
+                        }
+                    },
+                    {
+                        "content": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                        "title": "Text content Text content Text content Text content Text content Text content Text content Text content",
+                        "user": {
+                            "avatar": {
+                                "mimeType": "image/jpg",
+                                "resourcePath": "./images/1.jpg"
+                            },
+                            "content": "User Name",
+                            "score": 4
+                        },
+                        "operators": [
+                            {
+                                "type": "button",
+                                "category": "like",
+                                "link": "/like",
+                                "value": 3
+                            },
+                            {
+                                "type": "button",
+                                "category": "favorite",
+                                "checked": true,
+                                "link": "/fav"
+                            }
+                        ]
+                    },
+                    {
+                        "content": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                        "title": "Text content Text content Text content Text content Text content Text content Text content Text content",
+                        "user": {
+                            "avatar": {
+                                "mimeType": "image/jpg",
+                                "resourcePath": "./images/1.jpg"
+                            },
+                            "content": "User Name",
+                            "score": 4
+                        }
+                    },
+                    {
+                        "content": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                        "title": "Text content Text content Text content Text content Text content Text content Text content Text content",
+                        "user": {
+                            "avatar": {
+                                "mimeType": "image/jpg",
+                                "resourcePath": "./images/1.jpg"
+                            },
+                            "content": "User Name",
+                            "score": 4
+                        }
+                    },
+                    {
+                        "content": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                        "title": "Text content Text content Text content Text content Text content Text content Text content Text content",
+                        "user": {
+                            "avatar": {
+                                "mimeType": "image/jpg",
+                                "resourcePath": "./images/1.jpg"
+                            },
+                            "content": "User Name",
+                            "score": 4
+                        }
+                    },
+                    {
+                        "content": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
+                        "title": "Text content Text content Text content Text content Text content Text content Text content Text content",
+                        "user": {
+                            "avatar": {
+                                "mimeType": "image/jpg",
+                                "resourcePath": "./images/1.jpg"
+                            },
+                            "content": "User Name",
+                            "score": 4
+                        }
+                    }
+                ],
+                "pager": {
+                    "id": "pageNo",
+                    "url": "/comment",
+                    "totalPage": 18,
+                    "currentPage": 5
+                }
+            }
+        }
+    },
+    {
+        "id": "slide",
+        "data": {
+            "transitionTime": 1000,
+            "openWindow": false,
+            "timeOut": 5000,
+            "slideType": 7,
+            "items": [
+                {
+                    "link": "#",
+                    "title": "Title 1",
+                    "avatar": {
+                        "mimeType": "image/jpg",
+                        "resourcePath": "./images/slides/1.jpg"
+                    }
+                },
+                {
+                    "link": "#",
+                    "title": "Title 2",
+                    "avatar": {
+                        "mimeType": "image/jpg",
+                        "resourcePath": "./images/slides/2.jpg"
+                    }
+                },
+                {
+                    "title": "Title 3",
+                    "avatar": {
+                        "mimeType": "image/jpg",
+                        "resourcePath": "./images/slides/3.jpg"
+                    }
+                },
+                {
+                    "title": "Title 4",
+                    "avatar": {
+                        "mimeType": "image/jpg",
+                        "resourcePath": "./images/slides/4.jpg"
+                    }
+                },
+                {
+                    "title": "Title 5",
+                    "avatar": {
+                        "mimeType": "video/mp4",
+                        "resourcePath": "./images/demoVideo.mp4"
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "id": "contentBanner",
+        "data": {
+            "content": "Banner Title",
+            "avatar": {
+                "mimeType": "image/jpg",
+                "resourcePath": "./images/slides/1.jpg"
+            }
+        }
+    },
+    {
+        "id": "widgetLink",
+        "data": {
+            "link": "#widgetButton",
+            "title": "Widget",
+            "avatar": {
+                "mimeType": "image/jpg",
+                "resourcePath": "images/1.jpg"
+            }
+        }
+    },
+    {
+        "id": "progressNumberRender",
+        "data": {
+            "percent": 27
+        }
+    },
+    {
+        "id": "numberRender",
+        "data": {
+            "percent": 27
+        }
+    },
+    {
+        "id": "numberRingRender",
+        "data": {
+            "percent": 27
+        }
+    },
+    {
+        "id": "progressDetailsRender",
+        "data": {
+            "processed": 4466304,
+            "total": 13032864
+        }
+    },
+    {
+        "id": "progressDetailsRingRender",
+        "data": {
+            "processed": 4466304,
+            "total": 13032864
+        }
+    },
+    {
+        "id": "detailsRender",
+        "data": {
+            "processed": 4466304,
+            "total": 13032864
+        }
+    }
+]

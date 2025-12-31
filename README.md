@@ -1,8 +1,11 @@
 # Cell
+
 The Simple and High Performance Progressive JavaScript Framework Using ECMAScript6.
 
 ## menu-element
+
 Data Format:
+
 ```
 {
     "data": 
@@ -59,6 +62,7 @@ Data Format:
 ```
 
 ## social-group
+
 ```
 {
     "textContent": "Follow Us",
@@ -84,7 +88,9 @@ Data Format:
 ```
 
 ## slide-show
+
 slideType option: slideLeft/slideTop/slideRight/slideBottom/zoomIn/zoomOut/opacityIn/opacityOut
+
 ```
 {
     "width": "100%",
@@ -121,6 +127,7 @@ slideType option: slideLeft/slideTop/slideRight/slideBottom/zoomIn/zoomOut/opaci
 ```
 
 ## message-list
+
 ```
 {
     "id" : "listElement",
