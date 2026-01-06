@@ -38,52 +38,86 @@ class RSAKey {
                 _prefix = "";
                 break;
         }
-        this._exponent = BigInt(_prefix + _exponent);
-        this._modulus = BigInt(_prefix + _modulus);
-        this._highIndex = 0n;
-        let _value = this._modulus;
-        while (Number(_value | 0n) !== 0) {
-            this._highIndex++;
-            _value >>= 1n;
-        }
-        let _b2k = 1n << (2n * this._highIndex);
-        this._mu = _b2k / this._modulus;
-        this._bkPlus = 1n << (this._highIndex + (2n << 3n));
+        this._exponent = BigInt(_prefix + _exponent);   // e or d
+        this._modulus = BigInt(_prefix + _modulus); // n
     }
 
-    powMod(_hexData) {
+    powMod(_data = 0n) {
         let _result = 1n;
-        let _tempValue = BigInt("0x" + _hexData);
+        let _tempValue = _data % this._modulus;
         let _temp = this._exponent;
-        while (true) {
-            if ((_temp & 1n) !== 0n) {
-                _result = this._modulo(_result * _tempValue);
+        while (_temp > 0n) {
+            const _check = _temp & 1n;
+            if (_check) {
+                _result = (_result * _tempValue) % this._modulus;
             }
             _temp >>= 1n;
-            if ((_temp | 0n) === 0n) {
-                break;
-            }
-            _tempValue = this._modulo(_tempValue * _tempValue);
-        }
-        return _result * 1n;
-    }
-
-    _modulo(x = 0n) {
-        let _modify = (2n << 3n);
-        let _q1 = x >> (this._highIndex - _modify);
-        let _q2 = _q1 * this._mu;
-        let _q3 = _q2 >> (this._highIndex + _modify);
-        let _r1 = x % (2n << (this._highIndex + _modify - 1n));
-        let _r2term = _q3 * this._modulus;
-        let _r2 = _r2term % (2n << (this._highIndex + _modify - 1n));
-        let _result = _r1 - _r2;
-        if (_result < 0n) {
-            _result += this._bkPlus;
-        }
-        while (_result > this._modulus) {
-            _result -= this._modulus;
+            _tempValue = (_tempValue * _tempValue) % this._modulus;
         }
         return _result;
+    }
+}
+
+class PRNG {
+    _seed = [];
+    _i = 0;
+    _j = 0;
+
+    constructor() {
+        const _randomKey = PRNG._randomKey(new Date().getTime());
+        while (this._i < 256) {
+            this._seed[this._i] = this._i;
+            this._i++;
+        }
+        this._i = 0;
+        let _t;
+        while (this._i < 256) {
+            this._j = (this._j + this._seed[this._i] + _randomKey[this._i % _randomKey.length]) & 0xFF;
+            _t = this._seed[this._i];
+            this._seed[this._i] = this._seed[this._j];
+            this._seed[this._j] = _t;
+            this._i++;
+        }
+        this._i = 0;
+        this._j = 0;
+    }
+
+    static _randomKey(_seed = new Date().getTime()) {
+        const _key = [];
+        let _index = 0;
+        if (window.crypto !== undefined && window.crypto.getRandomValues) {
+            const _seed = new Uint8Array(32);
+            crypto.getRandomValues(_seed);
+            for (let i = 0; i < 32; ++i) {
+                _key[_index++] = _seed[i];
+            }
+        }
+        while (_index < 256) {
+            const random = Math.floor(65536 * Math.random());
+            _key[_index++] = random >>> 8;
+            _key[_index++] = random & 0xFF;
+        }
+        _index = 0;
+        _key[_index++] ^= _seed & 0xFF;
+        _key[_index++] ^= (_seed >> 8) & 0xFF;
+        _key[_index++] ^= (_seed >> 16) & 0xFF;
+        _key[_index++] ^= (_seed >> 24) & 0xFF;
+        return _key;
+    }
+
+    getByte() {
+        this._i = (this._i + 1) & 0xFF;
+        this._j = (this._j + this._seed[this._i]) & 0xFF;
+        const t = this._seed[this._i];
+        this._seed[this._i] = this._seed[this._j];
+        this._seed[this._j] = t;
+        return this._seed[(t + this._seed[this._i]) & 0xFF];
+    }
+
+    getBytes(array = []) {
+        for (let i = 0; i < array.length; ++i) {
+            array[i] = this.getByte();
+        }
     }
 }
 
@@ -100,23 +134,23 @@ export default class RSA extends Crypto {
                 this._blockSize = this._maxDigit - 34;
                 break;
             case "OAEPPadding":
-            case "OAEPWithSHA1AndMGF1Padding":
+            case "OAEPWithSHA-1AndMGF1Padding":
                 this._blockSize = this._maxDigit - 42;
                 break;
             case "OAEPWithSHA3-224AndMGF1Padding":
-            case "OAEPWithSHA224AndMGF1Padding":
+            case "OAEPWithSHA-224AndMGF1Padding":
                 this._blockSize = this._maxDigit - 58;
                 break;
             case "OAEPWithSHA3-256AndMGF1Padding":
-            case "OAEPWithSHA256AndMGF1Padding":
+            case "OAEPWithSHA-256AndMGF1Padding":
                 this._blockSize = this._maxDigit - 66;
                 break;
             case "OAEPWithSHA3-384AndMGF1Padding":
-            case "OAEPWithSHA384AndMGF1Padding":
+            case "OAEPWithSHA-384AndMGF1Padding":
                 this._blockSize = this._maxDigit - 98;
                 break;
             case "OAEPWithSHA3-512AndMGF1Padding":
-            case "OAEPWithSHA512AndMGF1Padding":
+            case "OAEPWithSHA-512AndMGF1Padding":
                 this._blockSize = this._maxDigit - 130;
                 break;
             default:
@@ -144,145 +178,230 @@ export default class RSA extends Crypto {
     }
 
     decrypt(str) {
-        let _encData = str.decodeBase64().toHex();
-        if ((_encData.length % this._blockLength) !== 0) {
+        let _encData = str.decodeBase64();
+        if ((_encData.length % this._maxDigit) !== 0) {
             return "";
         }
         let position = 0, _dataBytes = [];
         while (position < _encData.length) {
-            let _blockValue = this._key.powMod(_encData.substring(position, position + this._blockLength));
+            const _block = _encData.slice(position, position + this._maxDigit);
+            const _blockValue = this._key.powMod(_block.toBigInt());
             _dataBytes = _dataBytes.concat(this._removePadding(_blockValue));
-            position += this._blockLength;
+            position += this._maxDigit;
         }
-        return new TextDecoder().decode(new Uint8Array(_dataBytes.flat()));
+        return _dataBytes.toString();
     }
 
     _encrypt(_array) {
+        let _debug = "";
+        _array.forEach(str => {
+            _debug += (", " + str);
+        })
+        console.log(_debug.substring(1, _debug.length));
         let _position = 0, _result = [];
         while (_position < _array.length) {
             let _length = Math.min(_array.length - _position, this._blockSize),
                 _blockData = this._processPadding(_array.slice(_position, _position + _length));
-            let _blockResult = this._key.powMod(_blockData.toString(16)).toByteArray();
-            _result = _blockResult.concat(_result);
-            // _result = _blockResult + _result;
+            this._key.powMod(_blockData.toBigInt()).toByteArray().forEach(b => _result.push(b));
             _position += _length;
         }
         return _result.encodeBase64();
     }
 
     _processPadding(_block) {
-        switch (this._padding) {
-            case "PKCS1Padding":
-                return this._pkcs1Padding(_block);
-            case "OAEPWithSHA-1AndMGF1Padding":
-                return this._oaepPadding(_block, "SHA1");
-            case "OAEPWithSHA-224AndMGF1Padding":
-                return this._oaepPadding(_block, "SHA224");
-            case "OAEPWithSHA-256AndMGF1Padding":
-                return this._oaepPadding(_block, "SHA256");
-            case "OAEPWithSHA-384AndMGF1Padding":
-                return this._oaepPadding(_block, "SHA384");
-            case "OAEPWithSHA-512AndMGF1Padding":
-                return this._oaepPadding(_block, "SHA512");
-            case "OAEPWithSHA3-224AndMGF1Padding":
-                return this._oaepPadding(_block, "SHA3-224");
-            case "OAEPWithSHA3-256AndMGF1Padding":
-                return this._oaepPadding(_block, "SHA3-256");
-            case "OAEPWithSHA3-384AndMGF1Padding":
-                return this._oaepPadding(_block, "SHA3-384");
-            case "OAEPWithSHA3-512AndMGF1Padding":
-                return this._oaepPadding(_block, "SHA3-512");
-            default:
-                return 0n;
+        if (this._padding === "NoPadding") {
+            return _block;
+        } else if (this._padding === "PKCS1Padding") {
+            return this._pkcs1Padding(_block);
+        } else {
+            return this._oaepPadding(_block);
         }
     }
 
     _removePadding(_blockData = 0n) {
-        let _blockBytes = [], _block = _blockData;
-        while (_block > 0n) {
-            _blockBytes.unshift(Number(_block & 0xFFn));
-            _block >>= 8n;
-        }
-        switch (this._padding) {
-            case "PKCS1Padding":
-                return this._pkcs1Remove(_blockBytes);
-            case "OAEPWithSHA-1AndMGF1Padding":
-                return this._oaepRemove(_blockBytes, "SHA1");
-            case "OAEPWithSHA-224AndMGF1Padding":
-                return this._oaepRemove(_blockBytes, "SHA224");
-            case "OAEPWithSHA-256AndMGF1Padding":
-                return this._oaepRemove(_blockBytes, "SHA256");
-            case "OAEPWithSHA-384AndMGF1Padding":
-                return this._oaepRemove(_blockBytes, "SHA384");
-            case "OAEPWithSHA-512AndMGF1Padding":
-                return this._oaepRemove(_blockBytes, "SHA512");
-            case "OAEPWithSHA3-224AndMGF1Padding":
-                return this._oaepRemove(_blockBytes, "SHA3-224");
-            case "OAEPWithSHA3-256AndMGF1Padding":
-                return this._oaepRemove(_blockBytes, "SHA3-256");
-            case "OAEPWithSHA3-384AndMGF1Padding":
-                return this._oaepRemove(_blockBytes, "SHA3-384");
-            case "OAEPWithSHA3-512AndMGF1Padding":
-                return this._oaepRemove(_blockBytes, "SHA3-512");
-            default:
-                return _blockBytes;
+        let _blockBytes = _blockData.toByteArray(this._maxDigit);
+        if (this._padding === "NoPadding") {
+            return _blockBytes;
+        } else if (this._padding === "PKCS1Padding") {
+            return this._pkcs1Remove(_blockBytes);
+        } else {
+            return this._oaepRemove(_blockBytes);
         }
     }
 
     _pkcs1Padding(_block = []) {
-        let _padding = 0n;
         let _paddingLength = this._maxDigit - 3 - _block.length;
         if (_paddingLength < 0) {
             throw new Error(Cell.multiMsg("Value.Padding.Error"));
         }
-        _padding = this._publicKey ? 0x2n : 0x0n;
+        const _result = [];
+        _result.push(this._publicKey ? 0x02 : 0x01);
         for (let _index = 0; _index < _paddingLength; _index++) {
-            _padding <<= 8n;
-            _padding += (this._publicKey) ? BigInt(Math.ceil(Math.random() * 255)) : 0xFFn;
+            _result.push((this._publicKey) ? Math.ceil(Math.random() * 255) : 0xFF);
         }
-        _padding <<= 8n;
-        let _shift = _block.length - 1;
-        while (_shift >= 0) {
-            _padding <<= 8n;
-            _padding += BigInt(_block[_shift]);
-            _shift--;
-        }
-        return _padding;
+        _result.push(0x00);
+        _block.forEach(b => {
+            _result.push(b);
+        });
+        return _result;
     }
 
     _pkcs1Remove(_blockData = []) {
-        if (_blockData.length > 0) {
-            if (_blockData[0] === 0x0 || _blockData[0] === 0x1 || _blockData[0] === 0x2) {
-                let _match = -1, _blockBytes = _blockData;
-                switch (_blockBytes[0]) {
-                    case 0:
-                        _match = 0;
-                        break;
-                    case 1:
-                        _match = 255;
-                        break;
-                }
-                let _position = 1;
-                while (_position < _blockBytes.length) {
-                    if (_blockBytes[_position] === 0) {
-                        break;
-                    }
-                    if (_match !== -1 && _blockBytes[_position] !== _match) {
-                        throw Error(Cell.multiMsg("Value.Padding.Error"));
-                    }
-                    _position++;
-                }
-                if (_position < _blockBytes.length) {
-                    _blockBytes = _blockBytes.slice(_position + 1);
-                }
-                return _blockBytes;
+        if (_blockData.length > 0
+            && (_blockData[0] === 0x0 || _blockData[0] === 0x1 || _blockData[0] === 0x2)) {
+            let _match = -1, _blockBytes = _blockData;
+            switch (_blockBytes[0]) {
+                case 0:
+                    _match = 0;
+                    break;
+                case 1:
+                    _match = 255;
+                    break;
             }
+            let _position = 1;
+            while (_position < _blockBytes.length) {
+                if (_blockBytes[_position] === 0) {
+                    break;
+                }
+                if (_match !== -1 && _blockBytes[_position] !== _match) {
+                    throw Error(Cell.multiMsg("Value.Padding.Error"));
+                }
+                _position++;
+            }
+            if (_position < _blockBytes.length) {
+                _blockBytes = _blockBytes.slice(_position + 1);
+            }
+            return _blockBytes;
         }
         return _blockData;
     }
 
-    _oaepPadding(_block = [], _hash = "") {
-        let _result = 0n, _seedLength = 0;
+    _oaepPadding(_block = []) {
+        let _hash = this._oaep_hash_name();
+        if (_hash.length === 0) {
+            return _block;
+        }
+
+        //  hLen
+        let _seedLength = this._seedLength(_hash);
+        if (_block.length > (this._maxDigit - 2 * _seedLength - 2)) {
+            throw new Error(Cell.multiMsg("Value.Padding.Error"));
+        }
+        //  lHash
+        const _dataBlock = Cell.digestData(_hash, "", false);
+        //  PS
+        const _padLength = this._maxDigit - _block.length - 2 * _seedLength - 2;
+        for (let i = 0; i < _padLength; i++) {
+            _dataBlock.push(0x00);
+        }
+        //  Split flag
+        _dataBlock.push(0x01);
+        //  M
+        _block.forEach(b => _dataBlock.push(b));
+
+        //  Seed
+        const _seed = new Array(_seedLength);
+        new PRNG().getBytes(_seed);
+
+        const dbMask = this._oaep_mgf1(_seed, this._maxDigit - _seedLength - 1, _hash);
+        console.log(dbMask.length);
+        const maskedDB = [];
+        for (let i = 0; i < dbMask.length; i++) {
+            maskedDB[i] = _dataBlock[i] ^ dbMask[i];
+        }
+        const seedMask = this._oaep_mgf1(maskedDB, _seedLength, _hash);
+        const _result = [];
+        let position = 0;
+        _result[position] = 0x00;
+        position++;
+        seedMask.forEach((b, index) => {
+            _result[position] = _seed[index] ^ b;
+            position++;
+        });
+
+        maskedDB.forEach(b => {
+            _result[position] = b;
+            position++;
+        });
+
+        return _result;
+    }
+
+    _oaepRemove(_block = []) {
+        let _hash = this._oaep_hash_name();
+        if (_hash.length === 0) {
+            return _block;
+        }
+        for (let i = 0; i < _block.length; i++) {
+            _block[i] &= 0xFF;
+        }
+        while (_block.length < this._maxDigit) {
+            _block.unshift(0x00);
+        }
+
+        //  hLen
+        const _seedLength = this._seedLength(_hash);
+        const Y = _block[0], maskedSeed = _block.slice(1, _seedLength + 1), maskedDB = _block.slice(_seedLength + 1);
+        let bad = 0;
+        bad |= Y !== 0x00;
+
+        const lHash = Cell.digestData(_hash, "", false);
+        const seedMask = this._oaep_mgf1(maskedDB, _seedLength, _hash);
+        const seed = maskedSeed.XOR(seedMask);
+        const dbMask = this._oaep_mgf1(seed, maskedDB.length, _hash);
+        const dataBlock = maskedDB.XOR(dbMask);
+        for (let i = 0; i < _seedLength; i++) {
+            bad |= dataBlock[i] ^ lHash[i];
+        }
+
+        let position = -1, found = false;
+        for (let i = _seedLength; i < dataBlock.length; i++) {
+            const b = dataBlock[i];
+            if (!found) {
+                if (b === 0x01) {
+                    found = true;
+                    position = i + 1;
+                } else {
+                    bad |= b !== 0x00;
+                }
+            }
+        }
+        bad |= !found;
+
+        if (bad !== 0) {
+            throw new Error(Cell.multiMsg("Value.Padding.Error"));
+        }
+
+        return dataBlock.slice(position);
+    }
+
+    _oaep_hash_name() {
+        switch (this._padding) {
+            case "OAEPWithSHA-1AndMGF1Padding":
+                return "SHA1";
+            case "OAEPWithSHA-224AndMGF1Padding":
+                return "SHA224";
+            case "OAEPWithSHA-256AndMGF1Padding":
+                return "SHA256";
+            case "OAEPWithSHA-384AndMGF1Padding":
+                return "SHA384";
+            case "OAEPWithSHA-512AndMGF1Padding":
+                return "SHA512";
+            case "OAEPWithSHA3-224AndMGF1Padding":
+                return "SHA3-224";
+            case "OAEPWithSHA3-256AndMGF1Padding":
+                return "SHA3-256";
+            case "OAEPWithSHA3-384AndMGF1Padding":
+                return "SHA3-384";
+            case "OAEPWithSHA3-512AndMGF1Padding":
+                return "SHA3-512";
+            default:
+                return "";
+        }
+    }
+
+    _seedLength(_hash = "") {
+        let _seedLength = 0;
         switch (_hash) {
             case "SHA1":
                 _seedLength = 160;
@@ -304,13 +423,32 @@ export default class RSA extends Crypto {
                 _seedLength = 512;
                 break;
         }
-        _seedLength >>= 3;
-        let _lHash = Cell.digestData(_hash, "", false);
-        console.info(_lHash.length);
-        return 0n;
+        return _seedLength >> 3;  //hLen
     }
 
-    _oaepRemove(_block = [], _hash = "") {
+    _oaep_mgf1(_seed, _length, _hash) {
+        let _result = [], _hLen = this._seedLength(_hash);
+        let offset = 0, counter = 0;
+        while (offset < _length) {
+            const length = Math.min(_hLen, _length - offset);
+            const _block = this._hashToBytes(Cell.digestBinary(_hash, _seed.concat(counter.toBytes()), false));
+            _result = _result.concat(_block.slice(0, length));
+            offset += length;
+            counter++;
+        }
+        return _result;
+    }
+
+    _hashToBytes(_hash = []) {
+        const _block = [];
+        _hash.forEach(b => {
+            let count = 4;
+            while (count > 0) {
+                _block.unshift(b & 0xFF);
+                b >>= 8;
+                count--;
+            }
+        });
         return _block;
     }
 }

@@ -18,6 +18,8 @@
  * 1.0.0
  * [New] Interface for MD5/SHA/RSA
  */
+'use strict';
+
 class Int64 {
     constructor(high, low) {
         this._high = high;

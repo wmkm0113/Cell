@@ -1255,16 +1255,18 @@ Object.assign(String.prototype, {
     getBytes() {
         let encode = encodeURIComponent(this);
         let _dataBytes = [];
+        let code;
         for (let _i = 0; _i < encode.length; _i++) {
             let ch = encode.charAt(_i);
             if (ch === '%') {
-                _dataBytes.push(parseInt(encode.charAt(_i + 1) + encode.charAt(_i + 2), 16));
+                code = parseInt(encode.charAt(_i + 1) + encode.charAt(_i + 2), 16);
                 _i += 2;
             } else {
-                _dataBytes.push(ch.charCodeAt(0));
+                code = ch.charCodeAt(0);
             }
+            _dataBytes.push(code);
         }
-        return _dataBytes.reverse();
+        return _dataBytes;
     },
     formatDate(pattern = Comment.DateTime.ISO8601DATETIMEPattern, utc = Comment.DateTime.UTC) {
         if (this.isNum() && Comment.DateTime.Convert) {
@@ -1304,23 +1306,34 @@ Object.assign(Number.prototype, {
             return this.parseTime(utc).format(pattern);
         }
         return this.toString();
+    },
+    toBytes() {
+        const _result = [];
+        let _number = this, count = 0;
+        while (count < 4) {
+            _result.unshift(_number & 0xFF);
+            _number >>= 8;
+            count++;
+        }
+        return _result;
     }
 });
 
 Object.assign(BigInt.prototype, {
-    toByteArray(bigEndian = false) {
-        let array = [];
-        let bigInt = this;
-        while (bigInt > 0) {
-            let value = bigInt % 256n;
-            if (bigEndian) {
-                array.push(Number(value));
-            } else {
-                array.unshift(Number(value));
-            }
-            bigInt >>= 8n;
+    toByteArray(maxDigit = -1) {
+        const _result = [];
+        let _num = this, i = 0;
+        while (_num > 0n) {
+            _result.unshift(Number(_num & 0xFFn));
+            _num >>= 8n;
+            i++;
         }
-        return array;
+        if (maxDigit > 0) {
+            while (_result.length < maxDigit) {
+                _result.unshift(0x00);
+            }
+        }
+        return _result;
     },
 });
 
@@ -1469,6 +1482,16 @@ Object.assign(Date.prototype, {
 });
 
 Object.assign(Array.prototype, {
+    XOR(data = []) {
+        if (this.length !== data.length) {
+            throw new Error("Array length not matched!");
+        }
+        const _result = [];
+        for (let i = 0 ; i < this.length ; i++) {
+            _result[i] = this[i] ^ data[i];
+        }
+        return _result;
+    },
     toHex(separator = "") {
         let _result = "";
         this.forEach(_byte => {
@@ -1477,6 +1500,29 @@ Object.assign(Array.prototype, {
                 _string = "0" + _string;
             }
             _result += (separator + _string);
+        });
+        return _result;
+    },
+    toString() {
+        let _result = "";
+        this.forEach(_byte => {
+            if (_byte < 0) {
+                //  Compatible Java getBytes() result
+                _byte += 256;
+            }
+            if (_byte < 128) {
+                _result += String.fromCharCode(_byte);
+            } else {
+                _result += ("%" + _byte.toString().parseInt().toString(16));
+            }
+        });
+        return decodeURIComponent(_result);
+    },
+    toBigInt() {
+        let _result = 0x00n;
+        this.forEach(b => {
+            _result <<= 8n;
+            _result += BigInt(b);
         });
         return _result;
     },
