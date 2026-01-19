@@ -54,6 +54,19 @@ body > main > article > section > article {
     border-radius: 1rem;
 }
 
+body > main > article > section > article > span[data-type="tabs-item"],
+body > main > article > section > article > span[data-type="group-item"] {
+    width: calc(-0.5rem + 50%);
+}
+
+body > main > article > section > article > span[data-type="tabs-item"] {
+    margin-right: 0.5rem;
+}
+
+body > main > article > section > article > span[data-type="group-item"] {
+    margin-left: 0.5rem;
+}
+
 section#circleChart {
     margin-right: 0;
 }

@@ -11,8 +11,18 @@ html {
     float: none;
 }
 
-body {
+body,
+body > header,
+message-details,
+corporate-details,
+message-list,
+comment-list,
+slide-show,
+form-info {
     width: 100%;
+}
+
+body {
     margin: 0 auto;
     padding: 0;
     background-color: rgb(var(--body-bg-color));
@@ -25,7 +35,6 @@ body.freeze {
 }
 
 body > header {
-    width: 100%;
     height: 3rem;
     background-color: rgb(var(--header-bg-color));
     position: fixed;
@@ -229,6 +238,10 @@ a {
     font-style: normal;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+.icon::before {
+    content: attr(data-content);
 }
 
 .icon-img-lost:before {
@@ -1270,12 +1283,17 @@ input[type="radio"] {
 
 input[type="radio"] + label,
 input[type="checkbox"][data-type="checkbox"] + label {
-    height: 2rem;
+    min-height: 2rem;
     line-height: 2rem;
     padding-left: calc(4px + 1.5rem);
     padding-right: 0.5rem;
     display: block;
     position: relative;
+}
+
+input[type="radio"].hidden + label,
+input[data-type="checkbox"].hidden + label {
+    display: none;
 }
 
 input[type="checkbox"][data-type="checkbox"] + label::before,
@@ -1769,11 +1787,13 @@ span[data-type="property"]::after {
 
 span[data-type="property"]::before {
     content: attr(data-title);
-    padding-right: 0.25rem;
+    padding: 0 0.25rem;
+    border-radius: 0.25rem 0 0 0.25rem;
 }
 
 span[data-type="property"]::after {
     content: attr(data-content, "");
+    padding-left: 0.25rem;
 }
 
 i[data-type="tips"] {
@@ -1869,6 +1889,7 @@ span[data-type="calendar"][data-category="week"] > span[data-type="content"] > s
     line-height: 2rem;
     position: absolute;
     top: 0;
+    left: 0;
     text-align: center;
 }
 
@@ -2048,6 +2069,295 @@ span[data-type="calendar"][data-category="year"] > span[data-type="content"] > s
     text-align: center;
 }
 
+span[data-type="tabs-item"] > span[data-category="group"] {
+    width: 100%;
+    border-bottom: 1px solid rgb(var(--tab-border-color));
+}
+
+span[data-type="tabs-item"] > span[data-category="group"] > input[type="radio"] + label {
+    padding-left: 0.5rem;
+    border-radius: 0.5rem 0.5rem 0 0;
+}
+
+span[data-type="tabs-item"] > span[data-category="group"] > input[type="radio"] + label::before {
+    display: none;
+}
+
+span[data-type="tabs-item"] > span[data-category="group"] > input[type="radio"]:checked + label {
+    background-color: rgb(var(--tab-current-bg-color));
+    color: rgb(var(--tab-current-text-color));
+}
+
+span[data-type="tabs-item"] > span[data-type="data-container"] {
+    width: calc(-1rem - 2px + 100%);
+    padding: 0 0.5rem;
+}
+
+span[data-type="tabs-item"] > span[data-type="data-container"] > span {
+    width: 100%;
+}
+
+span[data-type="array-item"] {
+    width: calc(-1rem + 100%);
+    margin-bottom: 0.5rem;
+    padding: 0.5rem 0.5rem 0 0.5rem;
+    position: relative;
+}
+
+span[data-type="array-item"] > i {
+    position: absolute;
+    width: 1rem;
+    height: 1rem;
+    background-color: rgb(var(--group-remove-btn-bg-color));
+    color: rgb(var(--group-remove-btn-text-color));
+    border-radius: 100%;
+    right: 0;
+    top: 0;
+    cursor: pointer;
+}
+
+span[data-type="group-item"] > a {
+    float: right;
+    box-shadow: none;
+}
+
+span[data-type="form-item"] {
+    width: 100%;
+    margin-bottom: 0.5rem;
+}
+
+span[data-type="form-item"] > i[data-type="tips"] {
+    width: 1.2rem;
+    height: 1.2rem;
+    padding: 0.4rem;
+    line-height: 1.2rem;
+}
+
+span[data-type="form-item"] > i[data-type="tips"]::before {
+    width: 1.2rem;
+    height: 1.2rem;
+    padding: 0;
+    font-size: 1.2rem;
+    line-height: 1.2rem;
+}
+
+span[data-type="form-item"] > input,
+span[data-type="form-item"] > select,
+span[data-type="form-item"] > textarea,
+span[data-type="form-item"] > span {
+    width: max(calc(-3rem + 85%), calc(-13rem + 100%));
+    min-height: calc(-1px + 2rem);
+    line-height: 2rem;
+}
+
+span[data-type="form-item"] > input {
+    padding: 0 0.5rem;
+}
+
+span[data-type="form-item"] > input[data-type="password"] {
+    width: max(calc(-5rem + 85%), calc(-15rem + 100%));
+}
+
+span[data-type="form-item"] > select,
+span[data-type="form-item"] > input[type="search"],
+span[data-type="form-item"] > span[data-category="group"],
+span[data-type="form-item"] > span[data-category="interval"] {
+    width: max(calc(-1rem + 85%), calc(-12rem + 100%));
+}
+
+span[data-type="form-item"] > span[data-category="group"],
+span[data-type="form-item"] > span[data-category="interval"] {
+    padding: 0;
+}
+
+span[data-type="form-item"] > textarea {
+    width: max(calc(-2rem - 2px + 85%), calc(-13rem - 2px + 100%));
+    height: 10rem;
+    border: 1px solid rgb(var(--form-component-border-color));
+    resize: none;
+}
+
+span[data-type="form-item"] > span[data-type="title"] {
+    width: min(15%, 10rem);
+    font-weight: bolder;
+    text-align: right;
+}
+
+span[data-type="form-item"] > span[data-type="error"],
+span[data-type="form-item"] > span[data-type="reference"] {
+    margin-right: 2rem;
+    float: right;
+    display: none;
+}
+
+span[data-type="form-item"] > span > input[type="radio"] + label,
+span[data-type="form-item"] > span > input[type="checkbox"] + label {
+    height: 1.5rem;
+    min-height: 1.5rem;
+    line-height: 1.5rem;
+    margin: 0.25rem 0.5rem 0.25rem 0;
+    padding: 0 1rem;
+    border-radius: 1rem;
+}
+
+span[data-type="form-item"] > span > input[type="radio"] + label:hover,
+span[data-type="form-item"] > span > input[type="checkbox"] + label:hover,
+span[data-type="form-item"] > span > input[type="radio"]:checked + label,
+span[data-type="form-item"] > span > input[type="checkbox"]:checked + label {
+    background-color: rgb(var(--form-component-mock-hover-bg-color));
+    color: rgb(var(--form-component-mock-hover-text-color));
+}
+
+span[data-type="form-item"] > span > input[type="radio"] + label::before,
+span[data-type="form-item"] > span > input[type="radio"] + label::after,
+span[data-type="form-item"] > span > input[type="checkbox"] + label::before {
+    display: none;
+}
+
+span[data-type="form-item"] > input[data-validate="false"] {
+    border-bottom: 1px solid rgb(var(--error-bg-color));
+}
+
+span[data-type="form-item"] > input[data-validate="false"] ~ span[data-type="error"] {
+    min-height: 0;
+    max-height: 2rem;
+    color: rgb(var(--form-component-error-text-color));
+    display: block;
+}
+
+span[data-type="form-item"] > span > input[data-category] {
+    width: calc(-1rem + 50%);
+    padding: 0;
+    text-align: center;
+}
+
+span[data-type="form-item"] > span > span {
+    width: 2rem;
+    height: 2rem;
+    line-height: 2rem;
+    padding: 0;
+    text-align: center;
+    color: rgb(var(--input-text-color));
+}
+
+span[data-type="form-item"] > span[data-type="calendar"] > span[data-type="title"] {
+    width: calc(-8rem + 100%);
+}
+
+span[data-type="form-item"] > span[data-type="calendar"] > span[data-type="header"],
+span[data-type="form-item"] > span[data-type="calendar"] > span[data-type="content"] {
+    width: 100%;
+    height: auto;
+}
+
+span[data-type="form-item"] > input[type="date"],
+span[data-type="form-item"] > input[type="time"],
+span[data-type="form-item"] > input[type="datetime-local"] {
+    position: relative;
+}
+
+span[data-type="form-item"] > input[type="date"]::after,
+span[data-type="form-item"] > input[type="time"]::after,
+span[data-type="form-item"] > input[type="datetime-local"]::after {
+    padding: 0.25rem 0.25rem;
+}
+
+span[data-type="form-item"] > span > input[data-category="end"] {
+    float: right;
+}
+
+span[data-type="form-item"] > input[type="file"][data-type="drag"] {
+    display: none;
+}
+
+span[data-type="form-item"] > input[type="file"][data-type="drag"] + span[data-type="drag"] {
+    width: max(calc(-4rem - 2px + 85%), calc(-12rem - 2px + 100%));
+    height: 12rem;
+    margin-bottom: 1rem;
+    border: 1px dashed rgb(var(--form-component-draw-color));
+}
+
+span[data-type="form-item"] > input[type="file"][data-type="drag"] + span[data-type="drag"]::before {
+    width: 100%;
+    height: 100%;
+    content: "\e6bd";
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10rem;
+    color: rgb(var(--form-component-draw-color));
+}
+
+span[data-type="form-item"] > input[type="file"][data-type="drag"] ~ span[data-type="preview"],
+span[data-type="form-item"] > input[type="file"][data-type="drag"] ~ span[data-type="reference"] {
+    width: calc(-4rem + 80%);
+    height: auto;
+    min-height: 0;
+    margin-right: 2rem;
+    float: right;
+}
+
+span[data-type="form-item"] > input[type="file"][data-type="drag"] ~ span[data-type="preview"] > span {
+    width: calc(-0.8rem - 2px + 20%);
+    margin-right: 1rem;
+    padding-bottom: calc(-0.8rem - 2px + 20%);
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    border: 1px dashed rgb(var(--form-component-draw-color));
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+span[data-type="form-item"] > input[type="file"][data-type="drag"] ~ span[data-type="preview"] > span > i {
+    width: 1rem;
+    height: 1rem;
+    line-height: 1rem;
+    border-radius: 0.8rem;
+    position: absolute;
+    right: -0.5rem;
+    top: -0.5rem;
+    background-color: rgb(var(--form-component-draw-preview-remove-btn-bg-color));
+    color: rgb(var(--form-component-draw-preview-remove-btn-text-color));
+    text-align: center;
+    cursor: pointer;
+}
+
+span[data-type="form-item"] > input[type="file"][data-type="drag"] ~ span[data-type="preview"] > span > i::before {
+    width: 1rem;
+    height: 1rem;
+    line-height: 1rem;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 span[data-type="calendar"] > span[data-type="content"] > span > span[data-type="form-item"] {
     width: 100%;
 }
@@ -2062,6 +2372,7 @@ span[data-type="calendar"] > span[data-type="content"] > span > span[data-type="
     line-height: 1.5rem;
     padding: 0 0.5rem;
     font-weight: bolder;
+    text-align: left;
 }
 
 span[data-type="calendar"] > span[data-type="content"] > span > span[data-type="form-item"] > i,
@@ -2107,16 +2418,18 @@ span[data-type="calendar"] > span[data-type="content"] > span > span[data-type="
 
 span[data-type="calendar"] > span[data-type="content"] > span > span[data-type="schedule-item"] > span[data-type="container"] > span::before {
     font-weight: bolder;
+    text-align: left;
 }
 
 span[data-type="calendar"] > span[data-type="content"] > span > span[data-type="schedule-item"] > span[data-type="container"] > span::after {
     font-size: 0.875rem;
     text-indent: 1.75rem;
+    text-align: left;
 }
 
 span[data-type="calendar"] > span[data-type="content"] > span > span[data-type="form-item"] > span[data-category="group"] > input + label {
     min-width: calc(-2rem + 32%);
-    height: 1.5rem;
+    min-height: 1.5rem;
     line-height: 1.5rem;
     margin: 0.25rem 2% 0.25rem 0;
     padding: 0 1rem;
@@ -2608,204 +2921,6 @@ form[data-type="form"] > span[data-type="title"] {
     font-weight: bolder;
 }
 
-form > span[data-type="items"] > span[data-type="form-item"] {
-    margin-bottom: 0.5rem;
-}
-
-form > span[data-type="items"] > span[data-type="form-item"] > i[data-type="tips"] {
-    width: 1.2rem;
-    height: 1.2rem;
-    padding: 0.4rem;
-    line-height: 1.2rem;
-}
-
-form > span[data-type="items"] > span[data-type="form-item"] > i[data-type="tips"]::before {
-    width: 1.2rem;
-    height: 1.2rem;
-    padding: 0;
-    font-size: 1.2rem;
-    line-height: 1.2rem;
-}
-
-form > span[data-type="items"] > span[data-type="form-item"] > input,
-form > span[data-type="items"] > span[data-type="form-item"] > select,
-form > span[data-type="items"] > span[data-type="form-item"] > textarea,
-form > span[data-type="items"] > span[data-type="form-item"] > span {
-    width: max(calc(-3rem + 85%), calc(-13rem + 100%));
-    min-height: calc(-1px + 2rem);
-    line-height: 2rem;
-}
-
-form > span[data-type="items"] > span[data-type="form-item"] > input {
-    padding: 0 0.5rem;
-}
-
-form > span[data-type="items"] > span[data-type="form-item"] > input[data-type="password"] {
-    width: max(calc(-5rem + 85%), calc(-15rem + 100%));
-}
-
-form > span[data-type="items"] > span[data-type="form-item"] > select,
-form > span[data-type="items"] > span[data-type="form-item"] > input[type="search"],
-form > span[data-type="items"] > span[data-type="form-item"] > span[data-category="group"],
-form > span[data-type="items"] > span[data-type="form-item"] > span[data-category="interval"] {
-    width: max(calc(-1rem + 85%), calc(-12rem + 100%));
-}
-
-form > span[data-type="items"] > span[data-type="form-item"] > span[data-category="group"],
-form > span[data-type="items"] > span[data-type="form-item"] > span[data-category="interval"] {
-    padding: 0;
-}
-
-form > span[data-type="items"] > span[data-type="form-item"] > textarea {
-    width: max(calc(-2rem - 2px + 85%), calc(-13rem - 2px + 100%));
-    height: 10rem;
-    border: 1px solid rgb(var(--form-component-border-color));
-    resize: none;
-}
-
-form > span[data-type="items"] > span[data-type="form-item"] > span[data-type="title"] {
-    width: min(15%, 10rem);
-    font-weight: bolder;
-    text-align: right;
-}
-
-form > span[data-type="items"] > span[data-type="form-item"] > span[data-type="error"],
-form > span[data-type="items"] > span[data-type="form-item"] > span[data-type="reference"] {
-    margin-right: 2rem;
-    float: right;
-    display: none;
-}
-
-form > span[data-type="items"] > span[data-type="form-item"] > span > input[type="radio"] + label,
-form > span[data-type="items"] > span[data-type="form-item"] > span > input[type="checkbox"] + label {
-    height: 1.5rem;
-    line-height: 1.5rem;
-    margin: 0.25rem 0.5rem 0.25rem 0;
-    padding: 0 1rem;
-    border-radius: 1rem;
-}
-
-form > span[data-type="items"] > span[data-type="form-item"] > span > input[type="radio"] + label:hover,
-form > span[data-type="items"] > span[data-type="form-item"] > span > input[type="checkbox"] + label:hover,
-form > span[data-type="items"] > span[data-type="form-item"] > span > input[type="radio"]:checked + label,
-form > span[data-type="items"] > span[data-type="form-item"] > span > input[type="checkbox"]:checked + label {
-    background-color: rgb(var(--form-component-mock-hover-bg-color));
-    color: rgb(var(--form-component-mock-hover-text-color));
-}
-
-form > span[data-type="items"] > span[data-type="form-item"] > span > input[type="radio"] + label::before,
-form > span[data-type="items"] > span[data-type="form-item"] > span > input[type="radio"] + label::after,
-form > span[data-type="items"] > span[data-type="form-item"] > span > input[type="checkbox"] + label::before {
-    display: none;
-}
-
-form > span[data-type="items"] > span[data-type="form-item"] > input[data-validate="false"] {
-    border-bottom: 1px solid rgb(var(--error-bg-color));
-}
-
-form > span[data-type="items"] > span[data-type="form-item"] > input[data-validate="false"] ~ span[data-type="error"] {
-    min-height: 0;
-    max-height: 2rem;
-    color: rgb(var(--form-component-error-text-color));
-    display: block;
-}
-
-form > span[data-type="items"] > span[data-type="form-item"] > span > input[data-category] {
-    width: calc(-1rem + 50%);
-    padding: 0;
-    text-align: center;
-}
-
-form > span[data-type="items"] > span[data-type="form-item"] > span > span {
-    width: 2rem;
-    height: 2rem;
-    line-height: 2rem;
-    padding: 0;
-    text-align: center;
-    color: rgb(var(--input-text-color));
-}
-
-form > span[data-type="items"] > span[data-type="form-item"] > input[type="date"],
-form > span[data-type="items"] > span[data-type="form-item"] > input[type="time"],
-form > span[data-type="items"] > span[data-type="form-item"] > input[type="datetime-local"] {
-    position: relative;
-}
-
-form > span[data-type="items"] > span[data-type="form-item"] > input[type="date"]::after,
-form > span[data-type="items"] > span[data-type="form-item"] > input[type="time"]::after,
-form > span[data-type="items"] > span[data-type="form-item"] > input[type="datetime-local"]::after {
-    padding: 0.25rem 0.25rem;
-}
-
-form > span[data-type="items"] > span[data-type="form-item"] > span > input[data-category="end"] {
-    float: right;
-}
-
-form > span[data-type="items"] > span[data-type="form-item"] > input[type="file"][data-type="drag"] {
-    display: none;
-}
-
-form > span[data-type="items"] > span[data-type="form-item"] > input[type="file"][data-type="drag"] + span[data-type="drag"] {
-    width: max(calc(-4rem - 2px + 85%), calc(-12rem - 2px + 100%));
-    height: 12rem;
-    margin-bottom: 1rem;
-    border: 1px dashed rgb(var(--form-component-draw-color));
-}
-
-form > span[data-type="items"] > span[data-type="form-item"] > input[type="file"][data-type="drag"] + span[data-type="drag"]::before {
-    width: 100%;
-    height: 100%;
-    content: "\e6bd";
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 10rem;
-    color: rgb(var(--form-component-draw-color));
-}
-
-form > span[data-type="items"] > span[data-type="form-item"] > input[type="file"][data-type="drag"] ~ span[data-type="preview"],
-form > span[data-type="items"] > span[data-type="form-item"] > input[type="file"][data-type="drag"] ~ span[data-type="reference"] {
-    width: calc(-4rem + 80%);
-    height: auto;
-    min-height: 0;
-    margin-right: 2rem;
-    float: right;
-}
-
-form > span[data-type="items"] > span[data-type="form-item"] > input[type="file"][data-type="drag"] ~ span[data-type="preview"] > span {
-    width: calc(-0.8rem - 2px + 20%);
-    margin-right: 1rem;
-    padding-bottom: calc(-0.8rem - 2px + 20%);
-    background-position: center;
-    background-size: contain;
-    background-repeat: no-repeat;
-    border: 1px dashed rgb(var(--form-component-draw-color));
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-form > span[data-type="items"] > span[data-type="form-item"] > input[type="file"][data-type="drag"] ~ span[data-type="preview"] > span > i {
-    width: 1rem;
-    height: 1rem;
-    line-height: 1rem;
-    border-radius: 0.8rem;
-    position: absolute;
-    right: -0.5rem;
-    top: -0.5rem;
-    background-color: rgb(var(--form-component-draw-preview-remove-btn-bg-color));
-    color: rgb(var(--form-component-draw-preview-remove-btn-text-color));
-    text-align: center;
-    cursor: pointer;
-}
-
-form > span[data-type="items"] > span[data-type="form-item"] > input[type="file"][data-type="drag"] ~ span[data-type="preview"] > span > i::before {
-    width: 1rem;
-    height: 1rem;
-    line-height: 1rem;
-}
-
 form[data-type="form"] > span[data-type="buttons"] {
     width: calc(-4rem + 100%);
     margin-top: 1rem;
@@ -2821,17 +2936,13 @@ form[data-type="form"] > span[data-type="buttons"] > input[type="reset"] {
     max-width: max-content;
     height: 2rem;
     line-height: 2rem;
-    margin: 0 0 0 1rem;
+    margin: 0 0.5rem;
     padding: 0 1rem;
     background-color: rgb(var(--form-btn-bg-color));
     color: rgb(var(--form-btn-text-color));
     border-radius: 1rem;
     cursor: pointer;
     border-bottom: none;
-}
-
-form[data-type="form"] > span[data-type="buttons"] > input:first-child {
-    margin-left: 0;
 }
 
 form[data-type="form"] > span[data-type="buttons"] > input:disabled {
@@ -2910,6 +3021,25 @@ div[data-type="grid"] > span[data-type="data-grid"] > span[data-type="grid-list"
 
 div[data-type="grid"] > span[data-type="data-grid"] > span[data-type="switch-btn-group"] {
     padding: 1rem 0;
+}
+
+div[data-type="grid"] > span[data-type="data-grid"] > i[data-type="add-btn"] {
+    width: 1.6rem;
+    height: 1.6rem;
+    line-height: 1.6rem;
+    padding: 0.2rem;
+    margin: 1rem 0.5rem;
+    float: right;
+    background-color: rgb(var(--grid-btn-bg-color));
+    color: rgb(var(--grid-btn-text-color));
+    border-radius: 0.4rem;
+    text-align: center;
+    cursor: pointer;
+}
+
+div[data-type="grid"] > span[data-type="data-grid"] > i[data-type="add-btn"]:hover {
+    background-color: rgb(var(--grid-btn-current-bg-color));
+    color: rgb(var(--grid-btn-current-text-color));
 }
 
 div[data-type="grid"] > span[data-type="data-grid"].view-list > span[data-type="grid-list"] > span[data-type="list-record"] {
@@ -3140,6 +3270,7 @@ div[data-type="grid"] > span[data-type="data-grid"] > span[data-type="grid-list"
     width: 2rem;
     padding: 0;
     margin: 0 0.25rem;
+    color: transparent;
 }
 
 div[data-type="grid"] > span[data-type="data-grid"] > span[data-type="grid-list"] > span[data-type="list-record"] > input[data-category="select-all"] + label::before {
@@ -3149,10 +3280,6 @@ div[data-type="grid"] > span[data-type="data-grid"] > span[data-type="grid-list"
     margin: calc(-2px + 0.5rem);
     background-color: rgb(var(--grid-select-all-bg-color));
     top: 0;
-}
-
-div[data-type="grid"] > span[data-type="data-grid"] > span[data-type="grid-list"] > span[data-type="list-record"] > input[data-category="select-all"]:checked + label {
-    color: rgb(var(--grid-select-all-checked-text-color));
 }
 
 div[data-type="grid"] > span[data-type="data-grid"] > span[data-type="grid-list"] > span[data-type="list-record"] > input[data-category="select-all"]:checked + label::before {
@@ -3830,6 +3957,32 @@ section[data-type="slide"] > span[data-type="slide-container"] > a::after {
     color: rgb(var(--slides-title-text-color));
     display: flex;
     justify-content: center;
+}
+
+span[data-type="property"][data-category="info"] {
+    width: calc(-4rem + 100%);
+    padding: 1rem 2rem;
+    border-radius: 1rem;
+    background-color: rgb(var(--section-bg-color));
+    margin-bottom: 1rem;
+}
+
+span[data-type="property"][data-category="info"]::before,
+span[data-type="property"][data-category="info"]::after {
+    width: 100%;
+    line-height: 2rem;
+    display: inline-block;
+}
+
+span[data-type="property"][data-category="info"]::before {
+    content: attr(data-title);
+    font-size: 1.5rem;
+    font-weight: bolder;
+}
+
+span[data-type="property"][data-category="info"]::after {
+    content: attr(data-content);
+    font-size: 1rem;
 }
 
 div[data-type="float"],

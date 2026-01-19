@@ -187,8 +187,7 @@ const _ring = function (element, index, _stepWidth = 0, fillColor = "", sectorDa
  * @param multiKey  property name multilingual message key
  * @param content   property name content
  * @param width     column width
- * @param pattern   date format pattern
- * @param utc       property value is utc timestamp (true/false)
+ * @param timestamp property value is timestamp (true/false)
  * @param sort      property is a sort parameter (true/false)
  *
  * 属性信息定义
@@ -197,26 +196,24 @@ const _ring = function (element, index, _stepWidth = 0, fillColor = "", sectorDa
  * @param multiKey  属性名多语言键值
  * @param content   属性名
  * @param width     数据列宽度
- * @param pattern   时间格式化字符串
- * @param utc       属性值为UTC时间戳 (true/false)
+ * @param timestamp 时间戳数据 (true/false)
  * @param sort      属性是一个可排序的参数 (true/false)
- * @type {{paramName: string, multiKey: string, content: string, width: string, pattern: string, utc: boolean, sort: boolean}}
+ * @type {{paramName: string, multiKey: string, content: string, width: string, timestamp: boolean, sort: boolean}}
  */
 const Property = {
     paramName: "",
     multiKey: "",
     content: "",
     width: "",
-    pattern: "",
-    utc: false,
+    timestamp: false,
     sort: false
 }
 
 const showPicker = function (event) {
-    event.preventDefault();
-    event.stopPropagation();
     if ((event.target.tagName.toLowerCase() === "input")
         && (["date", "time", "datetime-local"].indexOf(event.target.type) !== -1)) {
+        event.preventDefault();
+        event.stopPropagation();
         if (event.target.value.length === 0) {
             event.target.currentDateTime();
         }
@@ -412,7 +409,8 @@ const switchCalendar = function (event, calendar = null, current = null) {
                 month: btn.dataset.hasOwnProperty("month") ? btn.dataset.month : "",
                 week: btn.dataset.hasOwnProperty("week") ? btn.dataset.week : "",
                 weekend: calendar.dataset.hasOwnProperty("weekend") ? calendar.dataset.weekend : "true",
-                beginIndex: calendar.dataset.hasOwnProperty("beginIndex") ? calendar.dataset.beginIndex : "0"
+                beginIndex: calendar.dataset.hasOwnProperty("beginIndex") ? calendar.dataset.beginIndex : "0",
+                loadLink: calendar.dataset.hasOwnProperty("loadLink") ? calendar.dataset.loadLink : ""
             }
         }
     }
@@ -660,7 +658,7 @@ class ResourcesRender extends TagRender {
     }
 
     _setData(element = null, data = {}) {
-        if (element === null) {
+        if (element === null || data === null || Object.keys(data).length === 0) {
             return;
         }
 
@@ -838,6 +836,34 @@ class MockButtonRender extends TagRender {
                                 input.countDown();
                             }
                         });
+                    } else if (element.type.toLowerCase() === "radio") {
+                        labelElement.addEventListener("click", (event) => {
+                            const label = event.target, targetId = label.getAttribute("for");
+                            if (((typeof targetId) === "string") && targetId.length > 0) {
+                                const element = $(targetId);
+                                if (element) {
+                                    if (element.hasAttribute("checked")) {
+                                        element.removeAttribute("checked");
+                                    } else {
+                                        element.setAttribute("checked", "checked");
+                                    }
+                                    if (element.dataset.hasOwnProperty("container")
+                                        && element.dataset.hasOwnProperty("selector")) {
+                                        const container = $(element.dataset.container);
+                                        if (container) {
+                                            container.querySelectorAll(element.dataset.selector)
+                                                .forEach((item) => {
+                                                    if (item.id === element.value) {
+                                                        item.show();
+                                                    } else {
+                                                        item.hide();
+                                                    }
+                                                });
+                                        }
+                                    }
+                                }
+                            }
+                        });
                     }
                 }
             }
@@ -859,10 +885,11 @@ class MockButtonRender extends TagRender {
             if (!element.dataset.hasOwnProperty("category")
                 || ["score", "like", "favorite"].indexOf(element.dataset.category.toLowerCase()) === -1) {
                 let labelText;
-                if (element.dataset.hasOwnProperty("multiKey") && element.dataset.multiKey.length > 0) {
-                    labelText = Cell.multiMsg(element.dataset.multiKey);
-                } else if (element.dataset.hasOwnProperty("content")) {
+                if (element.dataset.hasOwnProperty("content")) {
                     labelText = element.dataset.content;
+                    delete element.dataset.multiKey;
+                } else if (element.dataset.hasOwnProperty("multiKey") && element.dataset.multiKey.length > 0) {
+                    labelText = Cell.multiMsg(element.dataset.multiKey);
                 } else {
                     labelText = element.value;
                 }
@@ -872,6 +899,9 @@ class MockButtonRender extends TagRender {
                 } else {
                     label.value = labelText;
                     label.dataset.value = labelText;
+                }
+                if (element.dataset.hasOwnProperty("tips") && element.dataset.tips.length > 0) {
+                    label.title = element.dataset.tips;
                 }
             }
             if (element.dataset.hasOwnProperty("category")) {
@@ -896,6 +926,9 @@ class MockButtonRender extends TagRender {
 
     _setData(element = null, data = {}) {
         Object.entries(data).forEach(entry => {
+            if (entry[1] === undefined || entry[1] === null) {
+                return;
+            }
             switch (entry[0].toLowerCase()) {
                 case "name":
                     element.name = entry[1];
@@ -986,7 +1019,7 @@ class CalendarRender extends TagRender {
         title.dataset.sortCode = "1";
         element.appendChild(title);
         let parent = element.parentElement;
-        if (parent.matches('span[data-type="content"]')) {
+        if (parent && parent.matches('span[data-type="content"]')) {
             title.addEventListener("click", (event) => switchCalendar(event, parent.parentElement));
         } else {
             title.addEventListener("click", (event) => switchCalendar(event, element));
@@ -1140,11 +1173,14 @@ class CalendarRender extends TagRender {
         if (element === null) {
             return;
         }
-        const category = data.hasOwnProperty("category") ? data.category : "month";
-        element.dataset.weekend = data.hasOwnProperty("weekend") ? data.weekend : "true";
+        const category = data.hasOwnProperty("category") ? data.category.toLowerCase() : "month";
+        element.dataset.weekend = data.hasOwnProperty("weekend") ? data.weekend.toString() : "true";
         element.dataset.beginIndex = data.hasOwnProperty("beginIndex") ? data.beginIndex.toString() : "0";
         element.dataset.switch = data.hasOwnProperty("switch") ? (data.switch.toString() === "true") : "true";
 
+        if (data.hasOwnProperty("dataLink")) {
+            element.dataset.dataLink = data.dataLink;
+        }
         switch (category) {
             case "week":
                 this._weekCalendar(element, data);
@@ -1157,6 +1193,36 @@ class CalendarRender extends TagRender {
                 break;
         }
         this._multilingual(element);
+        if (category !== "year") {
+            this._loadData(element);
+        }
+    }
+
+    _loadData(element = null) {
+        const elements = this._elements(element);
+        if (elements === null) {
+            return;
+        }
+        if (element.dataset.hasOwnProperty("dataLink") && element.dataset.dataLink.length > 0) {
+            const urlAddress =
+                element.dataset.dataLink.replace("{year}", elements.title.dataset.year)
+                    .replace("{month}", elements.title.dataset.month)
+                    .replace("{week}", elements.title.dataset.hasOwnProperty("week") ? elements.title.dataset.week : "-1");
+            Cell.sendRequest(urlAddress).then(data => {
+                if (data.isJSON()) {
+                    const items = data.parseJSON();
+                    Object.entries(items).forEach(([key, value]) => {
+                        const dateArray = key.split("-");
+                        if (dateArray.length === 3) {
+                            const day = elements.content.querySelector(`:scope > span[data-year="${dateArray[0]}"][data-month="${dateArray[1].parseInt()}"][data-current="${dateArray[2].parseInt()}"]`)
+                            if (day) {
+                                this._schedule(day, value);
+                            }
+                        }
+                    });
+                }
+            });
+        }
     }
 
     _elements(element = null) {
@@ -1310,7 +1376,6 @@ class CalendarRender extends TagRender {
             }
             parent = parent.parentElement;
         }
-        const items = data.hasOwnProperty("items") ? data.items : {};
         for (let index = 0; index < appendLimit; index++) {
             current++;
             const day = (index < dayArray.length) ? dayArray[index] : document.createElement("span");
@@ -1321,6 +1386,7 @@ class CalendarRender extends TagRender {
             day.dataset.current = current.toString();
             day.dataset.dayOfWeek = dayOfWeekArray[index % 7];
             day.dataset.beginIndex = beginIndex.toString();
+            day.clearChildNodes();
             if (currentMonth < 0) {
                 day.dataset.year = (year - 1).toString();
                 day.dataset.month = "12";
@@ -1360,7 +1426,6 @@ class CalendarRender extends TagRender {
             } else {
                 delete day.dataset.lastRow;
             }
-            this._schedule(day, items);
         }
         for (let index = appendLimit; index < dayArray.length; index++) {
             elements.content.removeChild(dayArray[index]);
@@ -1425,7 +1490,6 @@ class CalendarRender extends TagRender {
         elements.title.dataset.category = "month";
         elements.title.innerText = Cell.multiMsg("Calendar.Week", week);
 
-        const items = data.hasOwnProperty("items") ? data.items : {};
         const dayArray = elements.content.querySelectorAll(':scope > span');
         for (let index = 0; index < 7; index++) {
             const day = (index < dayArray.length) ? dayArray[index] : document.createElement("span");
@@ -1469,7 +1533,7 @@ class CalendarRender extends TagRender {
             } else {
                 day.removeClass("current");
             }
-            this._schedule(day, items);
+            day.clearChildNodes();
             dateTimestamp += (24 * 60 * 60 * 1000);
         }
         for (let index = 7; index < dayArray.length; index++) {
@@ -1482,31 +1546,22 @@ class CalendarRender extends TagRender {
             return;
         }
         day.clearChildNodes();
-        const year = day.dataset.year.parseInt(), month = day.dataset.month.parseInt(),
-            date = day.dataset.current.parseInt(),
-            currDate = new Date(year, month - 1, date).format(Comment.DateTime.ISO8601DATEPattern);
-        if (currDate.length > 0) {
-            if (plans.hasOwnProperty(currDate)) {
-                plans[currDate]
-                    .filter(plan => plan.hasOwnProperty("tagName") && plan.hasOwnProperty("data"))
-                    .forEach(plan => {
-                        switch (plan.tagName) {
-                            case "form-item":
-                                const formItem = FormItemRender.newInstance();
-                                day._appendChild(formItem);
-                                formItem.data = plan.data;
-                                break;
-                            case "schedule-item":
-                                const scheduleItem = ScheduleItemRender.newInstance();
-                                day._appendChild(scheduleItem);
-                                scheduleItem.data = plan.data;
-                                break;
-                        }
-                    });
-            } else {
-                day.clearChildNodes();
-            }
-        }
+
+        plans.filter(plan => plan.hasOwnProperty("tagName") && plan.hasOwnProperty("data"))
+            .forEach(plan => {
+                switch (plan.tagName) {
+                    case "form-item":
+                        const formItem = FormItemRender.newInstance();
+                        day._appendChild(formItem);
+                        formItem.data = plan.data;
+                        break;
+                    case "schedule-item":
+                        const scheduleItem = ScheduleItemRender.newInstance();
+                        day._appendChild(scheduleItem);
+                        scheduleItem.data = plan.data;
+                        break;
+                }
+            });
     }
 }
 
@@ -1934,12 +1989,14 @@ class InputGroupRender extends TagRender {
         }
         const type = element.dataset.type.toLowerCase();
         const existArray = element.querySelectorAll(`:scope > input[type="${type}"]`);
-        const values = (type === "radio") ? Array(data.value) : data.value;
+        const values = (type === "radio") ? Array.of(data.value) : data.value;
         if (data.hasOwnProperty("id")) {
             element.id = data.id;
         }
         element.generateId();
         if (data.hasOwnProperty("items")) {
+            const container = (type === "radio" && data.hasOwnProperty("container")) ? data.container : null;
+            const selector = (type === "radio" && data.hasOwnProperty("selector")) ? data.selector : null;
             data.items.forEach((item, index) => {
                 const input = (index < existArray.length) ? existArray[index] : document.createElement('input');
                 if (existArray.length <= index) {
@@ -1953,7 +2010,10 @@ class InputGroupRender extends TagRender {
                     value: item.value,
                     multiKey: item.hasOwnProperty("multiKey") ? item.multiKey : "",
                     content: item.hasOwnProperty("content") ? item.content : "",
-                    checked: values.indexOf(item.value) !== -1
+                    tips: item.hasOwnProperty("tips") ? item.tips : "",
+                    checked: values.indexOf(item.value) !== -1,
+                    container: container,
+                    selector: selector
                 };
             })
             for (let index = data.items.length; index < existArray.length; index++) {
@@ -2185,6 +2245,53 @@ class DragUploadRender extends TagRender {
     }
 }
 
+class PropertyRender extends TagRender {
+
+    static newInstance(info = false) {
+        const element = document.createElement("span");
+        element.dataset.type = "property";
+        if (info) {
+            element.dataset.category = "info";
+        }
+        return element;
+    }
+
+    selectors() {
+        return ['span[data-type="property"]'];
+    }
+
+    _enhance(element = null) {
+        element.addEventListener("click", (event) => Cell.eventRequest(event));
+    }
+
+    _setData(element = null, data = {}) {
+        if (data.hasOwnProperty("sortCode")) {
+            element.dataset.sortCode = data.sortCode.toString();
+        }
+        if (data.hasOwnProperty("title") && data.title !== null) {
+            const title = data.title || {};
+            if (title.hasOwnProperty("multiKey") && title.multiKey !== null && title.multiKey.length > 0) {
+                element.dataset.title = Cell.multiMsg(title.multiKey);
+            } else if (title.hasOwnProperty("content")) {
+                element.dataset.title = title.content;
+            } else {
+                element.dataset.title = "";
+            }
+        }
+        let content = data.hasOwnProperty("value") ? data.value : "";
+        if (data.hasOwnProperty("timestamp") && !!data.timestamp) {
+            content = content.formatDate(data.pattern);
+        }
+        element.dataset.content = content;
+        element.setAttribute("title", content);
+        if (data.hasOwnProperty("link") && data.link !== null && data.link !== undefined && data.link.length > 0) {
+            element.dataset.link = data.link;
+        } else {
+            delete element.dataset.link;
+        }
+    }
+}
+
 class ScheduleItemRender extends TagRender {
 
     static newInstance() {
@@ -2223,14 +2330,17 @@ class ScheduleItemRender extends TagRender {
         if (data.hasOwnProperty("items")) {
             const properties = elements.container.querySelectorAll(':scope > span[data-type="property"]');
             data.items.forEach((item, index) => {
-                const property = (index < properties.length) ? properties[index] : document.createElement("span");
+                const property = (index < properties.length) ? properties[index] : PropertyRender.newInstance();
                 if (properties.length <= index) {
                     elements.container._appendChild(property);
-                    property.dataset.type = "property";
                 }
-                property.dataset.sortCode = index.toString();
-                property.dataset.title = item.hasOwnProperty("title") ? item.title : "";
-                property.dataset.content = item.hasOwnProperty("content") ? item.content : "";
+                property.data = {
+                    sortCode: index.toString(),
+                    title: {
+                        content: item.title
+                    },
+                    value: item.content
+                }
             });
             for (let index = data.items.length; index < properties.length; index++) {
                 elements.container.removeChild(properties[index]);
@@ -2265,6 +2375,250 @@ class ScheduleItemRender extends TagRender {
             container: element.querySelector(':scope > span[data-type="container"]'),
             operators: element.querySelector(':scope > span[data-type="operators"]')
         }
+    }
+}
+
+/**
+ * Group form item information render
+ *
+ * 数据组表单项信息渲染器
+ */
+class GroupItemRender extends TagRender {
+
+    static newInstance() {
+        const element = document.createElement("span");
+        element.dataset.type = "group-item";
+        return element;
+    }
+
+    selectors() {
+        return ['span[data-type="group-item"]'];
+    }
+
+    _enhance(element = null) {
+        if (element === null) {
+            return;
+        }
+        element.clearChildNodes();
+
+        const addButton = document.createElement("a");
+        addButton.dataset.mock = "button";
+        addButton.dataset.sortCode = "0";
+        addButton.value = addButton.title = String.fromCodePoint(Comment.Icons.Button.Plus);
+        element._appendChild(addButton);
+        addButton.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            const button = event.target;
+            const container = button.parentElement;
+            if (container && button.dataset.hasOwnProperty("template")) {
+                container.removeChild(button);
+                const total = container.querySelectorAll('span[data-type="array-item"]').length;
+                const item = ArrayItemRender.newInstance();
+                item.generateId();
+                container._appendChild(item);
+                item.dataset.sortCode = total.toString();
+                item.data = {
+                    id: item.id,
+                    items: button.dataset.template.parseJSON()
+                };
+                button.dataset.sortCode = (total + 1).toString();
+                container.sortChildrenBy(':scope > span[data-type="array-item"]', "data-sort-code");
+                container.appendChild(button);
+            }
+        });
+    }
+
+    _setData(element = null, data = {}) {
+        if (element === null || !data.hasOwnProperty("template")) {
+            return;
+        }
+
+        const addButton = element.querySelector(':scope > a[data-mock="button"]');
+        if (addButton === null) {
+            return;
+        }
+
+        addButton.dataset.template = JSON.stringify(data.template);
+
+        element.removeChild(addButton);
+        const dataArray = element.querySelectorAll(':scope > span[data-type="array-item"]');
+        data.items.forEach(((itemData, index) => {
+            const item = (index < dataArray.length) ? dataArray[index] : ArrayItemRender.newInstance();
+            if (dataArray.length <= index) {
+                element._appendChild(item);
+            }
+            item.dataset.sortCode = index.toString();
+            item.data = itemData;
+        }));
+        for (let i = data.items.length; i < dataArray.length; i++) {
+            element.removeChild(dataArray[i]);
+        }
+        addButton.dataset.sortCode = data.items.length.toString();
+        element.sortChildrenBy(':scope > span[data-type="array-item"]', "data-sort-code");
+        element.appendChild(addButton);
+    }
+}
+
+/**
+ * Tabs form item information render
+ *
+ * 标签页表单项信息渲染器
+ */
+class TabsItemRender extends TagRender {
+
+    static newInstance() {
+        const element = document.createElement("span");
+        element.dataset.type = "tabs-item";
+        return element;
+    }
+
+    selectors() {
+        return ['span[data-type="tabs-item"]'];
+    }
+
+    _enhance(element = null) {
+        if (element === null) {
+            return;
+        }
+        element.clearChildNodes();
+
+        const tabContainer = InputGroupRender.newInstance();
+        tabContainer.dataset.sortCode = "0";
+        tabContainer.dataset.type = "radio";
+        element._appendChild(tabContainer);
+
+        const dataContainer = document.createElement("span");
+        dataContainer.generateId();
+        dataContainer.dataset.type = "data-container";
+        dataContainer.dataset.sortCode = "2";
+        element.appendChild(dataContainer);
+    }
+
+    _setData(element = null, data = {}) {
+        const elements = this._elements(element);
+        if (elements === null || !data.hasOwnProperty("name") || !data.hasOwnProperty("items")) {
+            return;
+        }
+
+        const tabItems = [];
+        let value = "";
+        const dataArray = elements.data.querySelectorAll(':scope > span[data-type="array-item"]');
+        data.items.forEach(((itemData, index) => {
+            const item = (index < dataArray.length) ? dataArray[index] : ArrayItemRender.newInstance();
+            if (dataArray.length <= index) {
+                elements.data._appendChild(item);
+            }
+            item.dataset.sortCode = index.toString();
+            item.data = itemData;
+            tabItems[index] = {
+                value: item.id,
+                multiKey: itemData.multiKey,
+                content: itemData.content
+            }
+            if ((itemData.hasOwnProperty("current") && itemData.current.toLowerCase() === "true") || index === 0) {
+                value = item.id;
+                item.show()
+            } else {
+                item.hide();
+            }
+        }));
+        for (let i = data.items.length; i < dataArray.length; i++) {
+            elements.data.removeChild(dataArray[i]);
+        }
+        elements.data.sortChildrenBy(':scope > span[data-type="form-item"]', "data-sort-code");
+        elements.tab.data = {
+            type: "radio",
+            category: "group",
+            name: data.name,
+            container: elements.data.id,
+            selector: ':scope > span[data-type="array-item"]',
+            value: value,
+            items: tabItems
+        };
+    }
+
+    _elements(element = null) {
+        if (element === null) {
+            return null;
+        }
+        return {
+            tab: element.querySelector(':scope > span[data-category="group"]'),
+            data: element.querySelector(':scope > span[data-type="data-container"]')
+        }
+    }
+}
+
+/**
+ * Array form item information render
+ *
+ * 数组表单项信息渲染器
+ */
+class ArrayItemRender extends TagRender {
+
+    static newInstance() {
+        const element = document.createElement("span");
+        element.dataset.type = "array-item";
+        return element;
+    }
+
+    selectors() {
+        return ['span[data-type="array-item"]'];
+    }
+
+    _enhance(element = null) {
+        if (element === null) {
+            return;
+        }
+        element.clearChildNodes();
+        element.generateId();
+
+        const removeButton = document.createElement("i");
+        removeButton.setClass("icon");
+        removeButton.dataset.content = String.fromCodePoint(Comment.Icons.Button.Close);
+        element._appendChild(removeButton);
+        removeButton.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            const button = event.target;
+            if (button.parentElement) {
+                button.parentElement.remove();
+            }
+        })
+    }
+
+    _setData(element = null, data = {}) {
+        if (element === null || !data.hasOwnProperty("id") || !data.hasOwnProperty("items")) {
+            return;
+        }
+
+        if (data.hasOwnProperty("id") && data.id.length > 0) {
+            element.id = data.id;
+        }
+
+        const groupArray = element.parentElement.matches('span[data-type="group-item"]');
+        const removeButton = element.querySelector(':scope > i');
+        if (!!removeButton) {
+            if (groupArray) {
+                removeButton.show();
+            } else {
+                removeButton.hide();
+            }
+        }
+
+        const itemArray = element.querySelectorAll(':scope > span[data-type="form-item"]');
+        data.items.forEach(((itemData, index) => {
+            const item = (index < itemArray.length) ? itemArray[index] : FormItemRender.newInstance();
+            if (itemArray.length <= index) {
+                element._appendChild(item);
+            }
+            item.dataset.sortCode = index.toString();
+            item.data = itemData;
+        }));
+        for (let i = data.length; i < itemArray.length; i++) {
+            element.removeChild(itemArray[i]);
+        }
+        element.sortChildrenBy(':scope > span[data-type="form-item"]', "data-sort-code");
     }
 }
 
@@ -2353,8 +2707,18 @@ class FormItemRender extends TagRender {
                 element.replaceChild(component, elements.component);
             }
         }
+        if (component.dataset.type === "calendar"
+            || component.dataset.type === "tabs-item") {
+            elements.title.hide();
+            elements.tips.hide();
+            component.style.width = "100%";
+        } else {
+            elements.title.show();
+            elements.tips.show();
+            delete component.style.width;
+        }
         component.dataset.sortCode = "2";
-        if (data.hasOwnProperty("category")) {
+        if (data.hasOwnProperty("category") && data.category.length > 0) {
             switch (data.category) {
                 case "group":
                     component.data = {
@@ -2363,6 +2727,9 @@ class FormItemRender extends TagRender {
                         value: data.value,
                         items: data.items
                     }
+                    break;
+                case "drag":
+                    component.data = data;
                     break;
                 default:
                     component.data = data.value || {};
@@ -2430,6 +2797,9 @@ class FormItemRender extends TagRender {
                     component.dataset.type = "password";
                     component.data = component.id;
                     break;
+                case "array":
+                    component.data = data.items;
+                    break;
                 default:
                     if (data.type !== "file" && data.type !== "password" && data.hasOwnProperty("value")) {
                         component.value = data.value;
@@ -2439,7 +2809,16 @@ class FormItemRender extends TagRender {
         }
 
         if (data.hasOwnProperty("reference")) {
-            elements.reference.innerText = data.reference;
+            if ((typeof data.reference) === "string") {
+                elements.reference.innerText = data.reference;
+            } else {
+                elements.reference.clearChildNodes();
+                data.reference.forEach(reference => {
+                    const preview = ResourcesRender.newInstance();
+                    elements.reference._appendChild(preview);
+                    preview.data = reference;
+                })
+            }
         }
 
         if (data.type.toLowerCase() === "hidden") {
@@ -2452,9 +2831,21 @@ class FormItemRender extends TagRender {
 
     _component(category = "", type = "", exist = null) {
         if (category.length > 0) {
-            const selector = category.toLowerCase() === "drag"
-                ? ':scope > input[data-category="drag"][type="file"]'
-                : `:scope > span[data-category="${category}"][data-type="${type}"]`;
+            let selector;
+            switch (category) {
+                case "drag":
+                    selector = ':scope > input[data-category="drag"][type="file"]';
+                    break;
+                case "custom":
+                    selector = `:scope > span[data-type="${type}"]`;
+                    break;
+                case "interval":
+                    selector = `:scope > span[data-category="interval"]`;
+                    break;
+                default:
+                    selector = `:scope > span[data-category="${category}"][data-type="${type}"]`;
+                    break;
+            }
             if (exist === null || !exist.matches(selector)) {
                 switch (category) {
                     case "drag":
@@ -2473,6 +2864,16 @@ class FormItemRender extends TagRender {
                         const interval = IntervalRender.newInstance();
                         interval.dataset.type = type;
                         return interval;
+                    case "custom":
+                        switch (type) {
+                            case "calendar":
+                                return CalendarRender.newInstance();
+                            case "tabs-item":
+                                return TabsItemRender.newInstance();
+                            case "group-item":
+                                return GroupItemRender.newInstance();
+                        }
+                        break;
                 }
             }
             return null;
@@ -2491,13 +2892,19 @@ class FormItemRender extends TagRender {
                 break;
             case "property":
                 if (exist === null || !exist.matches(':scope > span[data-type="property"]')) {
-                    component = document.createElement("span");
-                    component.dataset.type = "property";
+                    component = PropertyRender.newInstance();
                 }
                 break;
             case "password":
                 component = PasswordRender.newInstance();
                 break
+            case "array":
+                if (category === "tab") {
+                    component = TabsItemRender.newInstance();
+                } else {
+                    component = GroupItemRender.newInstance();
+                }
+                break;
             default:
                 if (exist === null || !exist.matches(`:scope > input[type="${type}"]`)) {
                     component = document.createElement("input");
@@ -2637,47 +3044,30 @@ class FormInfoRender extends TagRender {
             elements.title.innerText = "";
             elements.title.hide();
         }
-        if (data.hasOwnProperty("calendar") && data.calendar.toString().toLowerCase() === "true") {
-            let calendar = elements.items.firstElementChild;
-            if (calendar === null || !calendar.matches('span[data-type="calendar"]')) {
-                elements.items.clearChildNodes();
-                calendar = CalendarRender.newInstance();
-                elements.items._appendChild(calendar);
+        const itemsData = data.items || [];
+        const itemArray = elements.items.querySelectorAll(':scope > span[data-type="form-item"]');
+        itemsData.forEach((itemData, index) => {
+            const item = (index < itemArray.length) ? itemArray[index] : FormItemRender.newInstance();
+            if (itemArray.length <= index) {
+                elements.items._appendChild(item);
             }
-            const beginIndex = data.hasOwnProperty("beginIndex") ? data.beginIndex.parseInt() : 0;
-            const date = new Date();
-            calendar.data = {
-                switch: "false",
-                year: data.hasOwnProperty("year") ? data.year : date.getFullYear().toString(),
-                month: data.hasOwnProperty("month") ? data.month : (date.getMonth() + 1).toString(),
-                beginIndex: beginIndex.toString(),
-                week: data.hasOwnProperty("week") ? data.week : date.weekOfYear(beginIndex).toString(),
-                weekend: data.hasOwnProperty("weekend") ? data.weekend : "true",
-                category: data.hasOwnProperty("category") ? data.category : "month",
-                items: data.items || {}
-            };
-        } else {
-            const itemsData = data.items || [];
-            const itemArray = elements.items.querySelectorAll(':scope > span[data-type="form-item"]');
-            itemsData.forEach((itemData, index) => {
-                const item = (index < itemArray.length) ? itemArray[index] : FormItemRender.newInstance();
-                if (itemArray.length <= index) {
-                    item.dataset.type = "form-item";
-                    elements.items._appendChild(item);
-                }
-                item.data = itemData;
-            })
-            for (let i = itemsData.length; i < itemArray.length; i++) {
-                elements.items.removeChild(itemArray[i]);
+            item.dataset.sortCode = index.toString();
+            item.data = itemData;
+            if (itemData.type === "drag" || itemData.type === "file") {
+                element.setAttribute("enctype", "multipart/form-data");
             }
+        });
+        for (let i = itemsData.length; i < itemArray.length; i++) {
+            elements.items.removeChild(itemArray[i]);
         }
+        elements.items.sortChildrenBy(':scope > span[data-type="form-item"]', "data-sort-code");
         if (data.hasOwnProperty("buttons")) {
             const buttonData = data.buttons;
             if (buttonData.hasOwnProperty("Submit")) {
                 elements.submitBtn.data = buttonData.Submit;
                 elements.submitBtn.show();
-                if (buttonData.Submit.hasOwnProperty("intervalTime")) {
-                    elements.submitBtn.dataset.intervalTime = buttonData.Submit.intervalTime;
+                if (buttonData.hasOwnProperty("intervalTime")) {
+                    elements.submitBtn.dataset.intervalTime = buttonData.intervalTime;
                 } else {
                     delete elements.submitBtn.dataset.intervalTime;
                 }
@@ -2735,7 +3125,7 @@ class StatisticsRender extends TagRender {
 
         Object.keys(data).forEach((key) => {
             switch (key.toLowerCase()) {
-                case "classname":
+                case "class":
                     element.setClass(data[key]);
                     break;
                 case "id":
@@ -2747,12 +3137,20 @@ class StatisticsRender extends TagRender {
                 case "index":
                     element.dataset.sortCode = data[key];
                     break;
+                case "title":
+                    const title = data.title;
+                    if (title.hasOwnProperty("multiKey")) {
+                        element.dataset.title = Cell.multiMsg(title.multiKey);
+                    } else if (title.hasOwnProperty("content")) {
+                        element.dataset.title = title.content;
+                    }
+                    break;
                 default:
                     element.dataset[key] = data[key];
                     break;
             }
         });
-        if (Object.keys(data).filter(key => key.toLowerCase() === "classname").length === 0) {
+        if (Object.keys(data).filter(key => key.toLowerCase() === "class").length === 0) {
             element.setClass("");
             if (data.hasOwnProperty("bgColor")) {
                 element.style.backgroundColor = data.bgColor;
@@ -2852,9 +3250,21 @@ class PagerRender extends TagRender {
             if (data.hasOwnProperty("formId")) {
                 element.dataset.formId = data.formId;
             }
-            if (data.hasOwnProperty("id")) {
-                element.dataset.pager = data.id;
+            if (data.hasOwnProperty("pagerParam")) {
+                element.dataset.pager = data.pagerParam;
             }
+
+            if (data.hasOwnProperty("limitParam")
+                && data.hasOwnProperty("currentLimit")
+                && data.hasOwnProperty("items")) {
+                element.dataset.limit = data.limitParam;
+                elements.limit.name = data.limitParam;
+                elements.limit.dataset.value = data.currentLimit;
+                elements.limit.dataset.multiKey = data.hasOwnProperty("multiKey") ? data.multiKey : "";
+                elements.limit.items(data.items);
+                elements.limit.show();
+            }
+
             if (data.hasOwnProperty("limit")) {
                 const limitData = data.limit;
                 if (limitData.hasOwnProperty("id")
@@ -3126,7 +3536,7 @@ class GridListRender extends TagRender {
 
         const filter = FormInfoRender.newInstance();
         filter.dataset.sortCode = "0";
-        element.appendChild(filter);
+        element._appendChild(filter);
 
         //  Create statistics area
         const statistics = document.createElement("span");
@@ -3149,9 +3559,16 @@ class GridListRender extends TagRender {
         switchBtn.dataset.sortCode = "1";
         grid.appendChild(switchBtn);
 
+        const addBtn = document.createElement("i");
+        addBtn.innerText = String.fromCodePoint(Comment.Icons.Button.Plus);
+        addBtn.dataset.type = "add-btn";
+        addBtn.dataset.sortCode = "2";
+        grid.appendChild(addBtn);
+        addBtn.addEventListener("click", (event) => Cell.eventRequest(event));
+
         const header = document.createElement("span");
         header.dataset.type = "grid-header";
-        header.dataset.sortCode = "2";
+        header.dataset.sortCode = "3";
         grid.appendChild(header);
 
         //  Prepare grid header
@@ -3172,12 +3589,12 @@ class GridListRender extends TagRender {
 
         const list = document.createElement("span");
         list.dataset.type = "grid-list";
-        list.dataset.sortCode = "3";
+        list.dataset.sortCode = "4";
         grid.appendChild(list);
 
         const batchBtn = document.createElement("span");
         batchBtn.dataset.type = "batch-btn-group";
-        batchBtn.dataset.sortCode = "4";
+        batchBtn.dataset.sortCode = "5";
         grid.appendChild(batchBtn);
 
         const selectAllBtn = document.createElement("i");
@@ -3201,7 +3618,7 @@ class GridListRender extends TagRender {
         })
 
         const pager = PagerRender.newInstance();
-        pager.dataset.sortCode = "5";
+        pager.dataset.sortCode = "6";
         grid._appendChild(pager);
 
         //  Prepare switch style buttons
@@ -3240,7 +3657,7 @@ class GridListRender extends TagRender {
         });
 
         header.sortChildrenBy(":scope > span", "data-sort-code");
-        grid.sortChildrenBy(":scope > span", "data-sort-code");
+        grid.sortChildrenBy(":scope > *", "data-sort-code");
         element.sortChildrenBy(":scope > span", "data-sort-code");
     }
 
@@ -3250,8 +3667,33 @@ class GridListRender extends TagRender {
         }
         const grid = data.grid || {};
         const elements = this._elements(element);
-        elements.list.dataset.selectName = grid.selectName || "identifyCode";
-        elements.batchBtn.dataset.selectName = grid.selectName || "identifyCode";
+        if (data.hasOwnProperty("class")) {
+            const className = data.class;
+            elements.grid.setClass(className);
+            elements.switchBtn.querySelectorAll(":scope > i")
+                .forEach(itemBtn => {
+                    if (itemBtn.dataset.listType === className) {
+                        itemBtn.appendClass("current");
+                    } else {
+                        itemBtn.removeClass("current");
+                    }
+                });
+        }
+        if (data.hasOwnProperty("addLink")) {
+            elements.addBtn.dataset.link = data.addLink;
+            elements.addBtn.show();
+        } else {
+            elements.addBtn.hide();
+        }
+        if (data.hasOwnProperty("switch")) {
+            if (Boolean(data.switch)) {
+                elements.switchBtn.show();
+            } else {
+                elements.switchBtn.hide();
+            }
+        }
+        elements.list.dataset.selectName = grid.selectName || "";
+        elements.batchBtn.dataset.selectName = grid.selectName || "";
         const statistics = data.statistics || [];
         const statisticsArray = elements.statistics.querySelectorAll(':scope > a[data-type="statistics"]');
         statistics.forEach((statistic, index) => {
@@ -3264,58 +3706,56 @@ class GridListRender extends TagRender {
         for (let i = statistics.length; i < statisticsArray.length; i++) {
             elements.statistics.removeChild(statisticsArray[i]);
         }
+        if (statistics.length === 0) {
+            elements.statistics.style.display = "none";
+        } else {
+            elements.statistics.style.display = "grid";
+        }
         const title = data.title || {};
         if (title.hasOwnProperty("multiKey")) {
+            elements.title.dataset.multiKey = title.multiKey;
             elements.title.innerText = Cell.multiMsg(title.multiKey);
         } else if (title.hasOwnProperty("content")) {
             elements.title.innerText = title.content;
         }
-        if (title.hasOwnProperty("class")) {
-            const className = title.class;
-            elements.grid.setClass(className);
-            elements.switchBtn.querySelectorAll(":scope > i")
-                .forEach(itemBtn => {
-                    if (itemBtn.dataset.listType === className) {
-                        itemBtn.appendClass("current");
-                    } else {
-                        itemBtn.removeClass("current");
-                    }
-                });
-        }
-        if (title.hasOwnProperty("switch")) {
-            if (Boolean(title.switch)) {
-                elements.switchBtn.show();
-            } else {
-                elements.switchBtn.hide();
-            }
-        }
         const header = grid.header || {};
-        elements.header.mainTitle.innerText = header.mainTitle;
-        if (header.hasOwnProperty("operatorTitle")) {
-            elements.header.operators.innerText = Cell.multiMsg(header.operatorTitle);
+        const mainTitle = header.main || {};
+        if (mainTitle.hasOwnProperty("multiKey")) {
+            elements.header.mainTitle.dataset.multiKey = mainTitle.multiKey;
+        } else if (mainTitle.hasOwnProperty("content")) {
+            elements.header.mainTitle.innerText = mainTitle.content;
+        } else {
+            elements.header.mainTitle.innerText = "";
+        }
+        const operatorTitle = header.operator || {};
+        if (operatorTitle.hasOwnProperty("multiKey")) {
+            elements.header.operators.dataset.multiKey = operatorTitle.multiKey;
+        } else if (operatorTitle.hasOwnProperty("content")) {
+            elements.header.operators.innerText = operatorTitle.content;
+        } else {
+            elements.header.operators.innerText = "";
         }
         if (header.hasOwnProperty("items") && (header.items instanceof Array)) {
             const properties = [];
             header.items.forEach((item, index) => {
                 const property = JSON.stringify(Property).parseJSON();
-                if (item.hasOwnProperty("multiKey")) {
-                    property.multiKey = item.multiKey;
+                const propertyTitle = item.title || {};
+                if (propertyTitle.hasOwnProperty("multiKey")) {
+                    property.multiKey = propertyTitle.multiKey;
                 }
-                if (item.hasOwnProperty("content")) {
-                    property.content = item.content;
-                }
+                property.content = propertyTitle.hasOwnProperty("content") ? propertyTitle.content : "";
                 if (item.hasOwnProperty("width")) {
                     property.width = item.width;
-                }
-                if (item.hasOwnProperty("pattern")) {
-                    property.pattern = item.pattern;
-                }
-                if (item.hasOwnProperty("utc")) {
-                    property.utc = item.utc;
                 }
                 property.sort = item.hasOwnProperty("sort") ? item.sort : false;
                 if (property.sort && item.hasOwnProperty("paramName")) {
                     property.paramName = item.paramName;
+                }
+                if (item.hasOwnProperty("timestamp")) {
+                    property.timestamp = (item.timestamp.toString() === "true");
+                    if (property.timestamp) {
+                        property.pattern = item.hasOwnProperty("pattern") ? item.pattern : Comment.DateTime.ISO8601DATETIMEPattern;
+                    }
                 }
                 properties[index] = property;
             });
@@ -3344,7 +3784,7 @@ class GridListRender extends TagRender {
                     item.dataset.paramName = property.paramName;
                     item.style.cursor = "pointer";
                 } else {
-                    delete item.dataset.identifyCode;
+                    delete item.dataset.paramName;
                     item.style.cursor = "auto";
                 }
             });
@@ -3435,12 +3875,15 @@ class GridListRender extends TagRender {
                     list._appendChild(itemElement);
                 }
                 itemElement.data = item;
-            })
+            });
+            for (let i = itemData.length ; i < itemArray.length ; i++) {
+                list.removeChild(itemArray[i]);
+            }
         }
         const pagerData = gridData.hasOwnProperty("pager") ? gridData.pager : {};
         const pager = this._pager(element);
         if (pager !== null && pagerData.hasOwnProperty("totalPage") && pagerData.hasOwnProperty("currentPage")
-            && pagerData.hasOwnProperty("id")) {
+            && pagerData.hasOwnProperty("pagerParam")) {
             pager.data = pagerData;
         } else {
             pager.hide();
@@ -3456,6 +3899,7 @@ class GridListRender extends TagRender {
             statistics: element.querySelector(':scope > span[data-type="statistics"]'),
             grid: grid,
             title: grid.querySelector(':scope > span[data-type="title"]'),
+            addBtn: grid.querySelector(':scope > i[data-type="add-btn"]'),
             switchBtn: grid.querySelector(':scope > span[data-type="switch-btn-group"]'),
             header: {
                 mainTitle: header.querySelector(':scope > span[data-type="main-title"]'),
@@ -3596,13 +4040,16 @@ class ListRecordRender extends TagRender {
         elements.title.setAttribute("href", linkAddress);
         const parent = element.parentElement;
         let selectName = parent.dataset.selectName;
-        if (selectName && selectName.length > 0 && data.hasOwnProperty(selectName)) {
-            const identifier = data[selectName];
+        if (selectName && selectName.length > 0 && data.hasOwnProperty("identifyCode")) {
+            const identifier = data.identifyCode;
             elements.checkBox.data = {
                 name: selectName,
                 id: selectName + identifier,
                 value: identifier
             };
+            elements.checkBox.show();
+        } else {
+            elements.checkBox.hide();
         }
         elements.summary.innerHTML = data.hasOwnProperty("summary") ? data.summary : "";
         if (data.hasOwnProperty("properties")) {
@@ -3612,22 +4059,19 @@ class ListRecordRender extends TagRender {
                 defineCount = defines.length;
             if (properties.length === defineCount) {
                 defines.forEach((define, index) => {
-                    const property = (index < propArray.length) ? propArray[index] : document.createElement("span");
+                    const property = (index < propArray.length) ? propArray[index] : PropertyRender.newInstance();
                     if (propArray.length <= index) {
-                        property.dataset.type = "property";
-                        elements.properties.appendChild(property);
+                        elements.properties._appendChild(property);
                     }
-                    const textContent = (define.multiKey.length === 0) ? define.content : Cell.multiMsg(define.multiKey);
-                    property.dataset.title = textContent + ":";
-                    property.dataset.sortCode = (defineCount - index).toString();
-                    let dataValue = (index < properties.length) ? properties[index] : null;
-                    if (dataValue !== null) {
-                        if (define.pattern.length > 0) {
-                            property.dataset.content = dataValue.formatDate(define.pattern, define.utc);
-                        } else {
-                            property.dataset.content = dataValue;
-                        }
-                        property.setAttribute("title", dataValue);
+                    property.data = {
+                        sortCode: (defineCount - index).toString(),
+                        title: {
+                            multiKey: define.multiKey,
+                            content: define.content
+                        },
+                        timestamp: define.timestamp,
+                        pattern: define.timestamp ? define.pattern : null,
+                        value: (index < properties.length) ? properties[index] : null
                     }
                     property.setStyle("--width:" + define.width);
                 });
@@ -3641,6 +4085,10 @@ class ListRecordRender extends TagRender {
         elements.properties.sortChildrenBy('span[data-type="property"]', "data-sort-code", true);
         if (data.hasOwnProperty("score")) {
             elements.score.data = data.score;
+            delete elements.score.style.visibility;
+        } else {
+            elements.score.data = 0.0;
+            elements.score.style.visibility = "hidden";
         }
         if (data.hasOwnProperty("operators") && (data.operators instanceof Array)) {
             let operatorList = elements.operators.querySelectorAll('a[data-mock="button"]'),
@@ -3664,10 +4112,18 @@ class ListRecordRender extends TagRender {
                 } else {
                     delete operator.dataset.icon;
                 }
-                if (itemData.hasOwnProperty("textContent")) {
-                    const multiContent = Cell.multiMsg(itemData.textContent);
-                    operator.innerHTML = multiContent;
-                    operator.setAttribute("title", multiContent);
+                if (itemData.hasOwnProperty("text")) {
+                    const contentData = itemData.text;
+                    let content = "";
+                    if (contentData.hasOwnProperty("multiKey")) {
+                        content = Cell.multiMsg(contentData.multiKey);
+                        operator.dataset.multiKey = contentData.multiKey;
+                    } else if (contentData.hasOwnProperty("content")) {
+                        content = contentData.content;
+                        delete operator.dataset.multiKey;
+                    }
+                    operator.innerText = content;
+                    operator.setAttribute("title", content);
                 }
                 if (itemData.hasOwnProperty("openWindow")) {
                     operator.dataset.openWindow = itemData.openWindow;
@@ -3834,7 +4290,6 @@ class MenuRender extends TagRender {
         link.dataset.type = "main";
         link.dataset.sortCode = "0";
         element.appendChild(link);
-        link.hide();
         link.addEventListener("click", (event) => Cell.eventRequest(event));
 
         const items = document.createElement("span");
@@ -3865,10 +4320,10 @@ class MenuRender extends TagRender {
             elements.main.href = "#";
         }
 
-        let display = false;
-        if (data.hasOwnProperty("icon")) {
-            display = true;
+        if (data.hasOwnProperty("icon") && data.icon !== null && data.icon.length > 0) {
             elements.main.dataset.icon = String.fromCodePoint(Number.parseInt(data.icon, 16));
+        } else {
+            delete elements.main.dataset.icon;
         }
 
         let textContent = "";
@@ -3878,15 +4333,12 @@ class MenuRender extends TagRender {
         } else if (data.hasOwnProperty("title")) {
             textContent = data.title;
         }
-        if (textContent.length !== 0) {
-            display = true;
-            elements.main.setAttribute("title", textContent);
-            elements.main.innerText = textContent;
-        }
-        if (display) {
-            elements.main.show();
+        elements.main.setAttribute("title", textContent);
+        elements.main.innerText = textContent;
+        if (data.hasOwnProperty("targetId") && data.targetId.length > 0) {
+            elements.main.dataset.targetId = data.targetId;
         } else {
-            elements.main.hide();
+            delete elements.main.dataset.targetId;
         }
         if (data.hasOwnProperty("items")) {
             const itemArray = elements.items.querySelectorAll(':scope > span[data-type="menu"]');
@@ -4027,17 +4479,6 @@ class MapRender extends TagRender {
                     element.map.centerAndZoom(new Point(element.dataset.longitude.parseFloat(), element.dataset.latitude.parseFloat()), 15);
                     return true;
                 }
-                // if ((typeof BMapGL) !== "undefined") {
-                //     if ((typeof element.map) === "undefined") {
-                //         const mapInstance = new BMapGL.Map(element.id);
-                //         mapInstance.enableScrollWheelZoom(true);
-                //         mapInstance.addControl(new BMapGL.NavigationControl());
-                //         mapInstance.addControl(new BMapGL.ScaleControl());
-                //         element.map = mapInstance;
-                //     }
-                //     element.map.centerAndZoom(new BMapGL.Point(element.dataset.longitude.parseFloat(), element.dataset.latitude.parseFloat()), 15);
-                //     return true;
-                // }
                 break;
             case "google":
                 if ((typeof google) !== "undefined") {
@@ -4367,6 +4808,12 @@ class DetailsRender extends TagRender {
             elements.resources.removeChild(resourceArray[index]);
         }
 
+        if (resources.length === 0) {
+            elements.resources.hide();
+        } else {
+            elements.resources.show();
+        }
+
         if (element.dataset.category.toLowerCase() === "corporate") {
             const addresses = data.hasOwnProperty("addresses") ? data.addresses : [];
             const addressArray = elements.addresses.querySelectorAll(':scope > section[data-type="address"]');
@@ -4389,19 +4836,18 @@ class DetailsRender extends TagRender {
                 const properties = data.properties;
                 const propertyList = elements.properties.querySelectorAll(':scope > span[data-type="property"]');
                 properties.forEach((prop, index) => {
-                    const property = (index < propertyList.length) ? propertyList[index] : document.createElement("span");
+                    const property = (index < propertyList.length) ? propertyList[index] : PropertyRender.newInstance();
                     if (propertyList.length <= index) {
-                        property.dataset.type = "property";
-                        elements.properties.appendChild(property);
+                        elements.properties._appendChild(property);
                         property.addEventListener("click", (event) => Cell.eventRequest(event));
                     }
-                    property.dataset.sortCode = index.toString();
-                    property.dataset.title = prop.hasOwnProperty("title") ? prop.title : "";
-                    property.dataset.content = prop.hasOwnProperty("content") ? prop.content : "";
-                    if (prop.hasOwnProperty("link")) {
-                        property.dataset.link = prop.link;
-                    } else {
-                        delete property.dataset.link;
+                    property.data = {
+                        sortCode: index.toString(),
+                        title: {
+                            content: prop.title
+                        },
+                        value: prop.content,
+                        link: prop.hasOwnProperty("link") ? prop.link : ""
                     }
                 });
                 for (let index = properties.length; index < propertyList.length; index++) {
@@ -4977,7 +5423,11 @@ export {
     InputGroupRender,
     IntervalRender,
     DragUploadRender,
+    PropertyRender,
     ScheduleItemRender,
+    GroupItemRender,
+    TabsItemRender,
+    ArrayItemRender,
     FormItemRender,
     FormInfoRender,
     CommentRecordRender,

@@ -84,6 +84,8 @@ class EnhancedElement extends CustomElement {
         if (this.dataset.hasOwnProperty("initData")) {
             const initData = this.dataset.initData;
             this._render(initData.isJSON() ? initData.parseJSON() : initData);
+        } else if (this.dataset.hasOwnProperty("code")) {
+            Cell._initData(this);
         }
     }
 
@@ -98,10 +100,6 @@ class EnhancedElement extends CustomElement {
 }
 
 class TipsElement extends EnhancedElement {
-    constructor() {
-        super();
-    }
-
     static tagName() {
         return "tips-icon";
     }
@@ -142,10 +140,6 @@ class ScoreElement extends EnhancedElement {
 }
 
 class ResourceElement extends EnhancedElement {
-    constructor() {
-        super();
-    }
-
     static tagName() {
         return "resource-details";
     }
@@ -156,10 +150,6 @@ class ResourceElement extends EnhancedElement {
 }
 
 class BannerElement extends EnhancedElement {
-    constructor() {
-        super();
-    }
-
     static tagName() {
         return "link-banner";
     }
@@ -200,10 +190,6 @@ class ChartElement extends EnhancedElement {
 }
 
 class MessageDetailsElement extends EnhancedElement {
-    constructor() {
-        super();
-    }
-
     static tagName() {
         return "message-details";
     }
@@ -214,10 +200,6 @@ class MessageDetailsElement extends EnhancedElement {
 }
 
 class CorporateDetailsElement extends EnhancedElement {
-    constructor() {
-        super();
-    }
-
     static tagName() {
         return "corporate-details";
     }
@@ -228,10 +210,6 @@ class CorporateDetailsElement extends EnhancedElement {
 }
 
 class MultiMenuElement extends EnhancedElement {
-    constructor() {
-        super();
-    }
-
     static tagName() {
         return "menu-multi";
     }
@@ -242,10 +220,6 @@ class MultiMenuElement extends EnhancedElement {
 }
 
 class MenuElement extends EnhancedElement {
-    constructor() {
-        super();
-    }
-
     static tagName() {
         return "menu-element";
     }
@@ -256,10 +230,6 @@ class MenuElement extends EnhancedElement {
 }
 
 class MessageListElement extends EnhancedElement {
-    constructor() {
-        super();
-    }
-
     static tagName() {
         return "message-list";
     }
@@ -270,10 +240,6 @@ class MessageListElement extends EnhancedElement {
 }
 
 class CommentListElement extends EnhancedElement {
-    constructor() {
-        super();
-    }
-
     static tagName() {
         return "comment-list";
     }
@@ -284,10 +250,6 @@ class CommentListElement extends EnhancedElement {
 }
 
 class SocialGroupElement extends EnhancedElement {
-    constructor() {
-        super();
-    }
-
     static tagName() {
         return "social-group";
     }
@@ -298,10 +260,6 @@ class SocialGroupElement extends EnhancedElement {
 }
 
 class SlideElement extends EnhancedElement {
-    constructor() {
-        super();
-    }
-
     static tagName() {
         return "slide-show";
     }
@@ -320,10 +278,6 @@ class SlideElement extends EnhancedElement {
 }
 
 class CalendarElement extends EnhancedElement {
-    constructor() {
-        super();
-    }
-
     static tagName() {
         return "calendar-element";
     }
@@ -334,10 +288,6 @@ class CalendarElement extends EnhancedElement {
 }
 
 class FormItemElement extends EnhancedElement {
-    constructor() {
-        super();
-    }
-
     static tagName() {
         return "form-item";
     }
@@ -348,10 +298,6 @@ class FormItemElement extends EnhancedElement {
 }
 
 class FormInfoElement extends EnhancedElement {
-    constructor() {
-        super();
-    }
-
     static tagName() {
         return "form-info";
     }
@@ -361,8 +307,38 @@ class FormInfoElement extends EnhancedElement {
     }
 }
 
+class GroupItemElement extends EnhancedElement {
+    static tagName() {
+        return "group-item";
+    }
+
+    newElement() {
+        return Renders.GroupItemRender.newInstance();
+    }
+}
+
+class TabsItemElement extends EnhancedElement {
+    static tagName() {
+        return "tabs-item";
+    }
+
+    newElement() {
+        return Renders.TabsItemRender.newInstance();
+    }
+}
+
+class PropertyElement extends EnhancedElement {
+    static tagName() {
+        return "property-info";
+    }
+
+    newElement() {
+        return Renders.PropertyRender.newInstance(true);
+    }
+}
+
 export {
     CustomElement, EnhancedElement, TipsElement, ProgressElement, ScoreElement, ResourceElement, BannerElement, ButtonElement, ChartElement,
     MessageDetailsElement, CorporateDetailsElement, MultiMenuElement, MenuElement, MessageListElement, CommentListElement,
-    SocialGroupElement, SlideElement, CalendarElement, FormItemElement, FormInfoElement
+    SocialGroupElement, SlideElement, CalendarElement, FormItemElement, FormInfoElement, GroupItemElement, TabsItemElement, PropertyElement
 }

@@ -35,10 +35,6 @@ import SHA from "../crypto/SHA.js";
 import * as Renders from "../render/Renders.js";
 import * as Components from "../components/Components.js";
 
-const FONT_ARRAY = ["url('../src/fonts/iconfont.woff2?t=1651372046520') format('woff2')",
-    "url('../src/fonts/iconfont.woff?t=1651372046520') format('woff')",
-    "url('../src/fonts/iconfont.woff2?t=1651372046520') format('woff2')"];
-
 const Options = {
     async: true,
     stream: false,
@@ -55,9 +51,9 @@ const ELEMENTS = [
     Components.TipsElement, Components.ProgressElement, Components.ScoreElement, Components.ResourceElement,
     Components.BannerElement, Components.ButtonElement, Components.ChartElement, Components.MessageDetailsElement,
     Components.CorporateDetailsElement, Components.MultiMenuElement, Components.MenuElement,
-    Components.MessageListElement, Components.CommentListElement,
+    Components.MessageListElement, Components.CommentListElement, Components.PropertyElement,
     Components.SocialGroupElement, Components.SlideElement, Components.CalendarElement,
-    Components.FormItemElement, Components.FormInfoElement
+    Components.FormItemElement, Components.FormInfoElement, Components.GroupItemElement, Components.TabsItemElement
 ];
 
 const listener = function () {
@@ -161,7 +157,8 @@ class CellJS {
                 break;
         }
         this._notify = setInterval(Cell._scheduleNotify, this._config.notify.period);
-        this._loadFont();
+        this.loadFont("iconfont", {display: "block"},
+            "/fonts/iconfont.woff2?t=1679629706726", "/fonts/iconfont.woff?t=1679629706726", "/fonts/iconfont.ttf?t=1679629706726");
         this._render();
 
         if (this._config.maps.Google.ApiKey.length > 0) {
@@ -235,14 +232,23 @@ class CellJS {
         this._loggerBuffer = [];
     }
 
-    _loadFont(index = 0) {
-        if (FONT_ARRAY.length <= index) {
-            return;
+    loadFont(name = "", descriptors = {}, ...paths) {
+        const webFont = new Commons.WebFont(name, descriptors);
+        const _paths = [];
+        paths.forEach(path => {
+            if (path.startsWith("http")) {
+                //  Font file storage at CDN
+                _paths.push(path);
+            } else {
+                //  Load local font file
+                _paths.push(this._config.fontPrefixPath + path);
+            }
+        })
+        webFont.paths(..._paths);
+        const fontFace = webFont.generate();
+        if (fontFace !== null) {
+            fontFace.load().then(font => document.fonts.add(font));
         }
-        new FontFace("iconfont", FONT_ARRAY[index], {display: "block"})
-            .load()
-            .then(font => document.fonts.add(font))
-            .catch(() => Cell._loadFont(index + 1));
     }
 
     _scheduleNotify() {
@@ -526,7 +532,7 @@ class CellJS {
             }
             this.debug("Component.Path.Data", urlAddress);
             this.sendRequest(this._config.contextPath + urlAddress)
-                .then((responseText) => element.data = responseText)
+                .then((responseText) => element.data = responseText.parseJSON())
                 .catch((errorMsg) => this.error("Error.Message", errorMsg));
         }
     }
@@ -557,32 +563,23 @@ class CellJS {
                 if (_floatWindow) {
                     retrieveWindow("float").data = responseData.data;
                 } else {
-                    if (responseData.data instanceof Array) {
-                        responseData.data.forEach(dataItem => {
-                            if (dataItem.hasOwnProperty("id") && dataItem.hasOwnProperty("tagName")) {
-                                const parent = dataItem.hasOwnProperty("parentId") ? $(dataItem.parentId) : document.body;
-                                let bindElement = parent.querySelector(`${dataItem.tagName}[id="${dataItem.id}"]`);
-                                if (bindElement === null) {
-                                    bindElement = document.createElement(dataItem.tagName);
-                                    bindElement.id = dataItem.id;
-                                    parent.appendChild(bindElement);
+                    const data = responseData.data;
+                    Object.keys(data).forEach(key => {
+                        const element = $(key);
+                        if (element) {
+                            data[key].forEach(childData => {
+                                if (childData.hasOwnProperty("id") && childData.hasOwnProperty("tagName") && childData.hasOwnProperty("data")) {
+                                    let target = element.querySelector(`:scope > ${childData.tagName}[id="${childData.id}"]`);
+                                    if (target === null) {
+                                        target = document.createElement(childData.tagName);
+                                        target.id = childData.id;
+                                        element.appendChild(target);
+                                    }
+                                    target.data = childData.data;
                                 }
-                                if (dataItem.hasOwnProperty("data")) {
-                                    bindElement.data = JSON.stringify(dataItem.data);
-                                } else if (dataItem.hasOwnProperty("dataCode")) {
-                                    bindElement.dataset.code = dataItem.dataCode;
-                                    Cell._initData(bindElement);
-                                }
-                            }
-                        });
-                    } else {
-                        if (targetId.length > 0) {
-                            const _element = $(targetId);
-                            if (_element) {
-                                _element.data = responseData.data;
-                            }
+                            });
                         }
-                    }
+                    });
                 }
             }
             if (responseData.hasOwnProperty("notify")) {
@@ -766,25 +763,38 @@ class CellJS {
 
     submitForm(formElement, parameters = {}) {
         if (formElement && !formElement.dataset.disabled && formElement.validate()) {
-            if (formElement.action.indexOf("#") >= 0) {
-                window.location.hash = formElement.action.substring(formElement.action.indexOf("#"));
-                return;
+            if (formElement.dataset.hasOwnProperty("targetId") && formElement.dataset.targetId.length > 0) {
+                if (formElement.action.indexOf("#") >= 0) {
+                    window.location.hash = formElement.action.substring(formElement.action.indexOf("#"));
+                    return;
+                }
+                const formData = formElement.formData();
+                Object.keys(parameters).forEach((key) => formData.data.append(key, parameters[key]));
+                if (Cell._modeEnabled(Commons.DebugMode.DEBUG)) {
+                    Cell.debug("Submit.Form.Data", formData.uploadFile, formData.uploadProgress, JSON.stringify(Object.fromEntries(formData.data.toMap())));
+                }
+                Cell.sendRequest(formElement.action, {
+                        method: formElement.getAttribute("method"),
+                        uploadFile: formData.uploadFile,
+                        uploadProgress: formData.uploadProgress
+                    },
+                    formData.data)
+                    .then((responseText) =>
+                        Cell._response(responseText, false, formElement.url(), formElement.dataset.targetId))
+                    .catch((errorMsg) => Cell.error("Error.Message", errorMsg));
+            } else {
+                formElement.querySelectorAll('input[type="password"]')
+                    .forEach(input => {
+                        if (input.dataset.hasOwnProperty("encResult") && input.value === input.dataset.encResult) {
+                            //  Password value was encrypted and not modified, ignore process
+                            return;
+                        }
+                        const encResult = Cell.digest(input.value);
+                        input.value = encResult
+                        input.dataset.encResult = encResult;
+                    });
+                formElement.submit();
             }
-            const formData = formElement.formData();
-            Object.keys(parameters).forEach((key) => formData.data.append(key, parameters[key]));
-            if (Cell._modeEnabled(Commons.DebugMode.DEBUG)) {
-                Cell.debug("Submit.Form.Data", formData.uploadFile, formData.uploadProgress, JSON.stringify(Object.fromEntries(formData.data.toMap())));
-            }
-            Cell.sendRequest(formElement.action, {
-                    method: formElement.getAttribute("method"),
-                    uploadFile: formData.uploadFile,
-                    uploadProgress: formData.uploadProgress
-                },
-                formData.data)
-                .then((responseText) =>
-                    Cell._response(responseText, false, formElement.url(),
-                        formElement.dataset.hasOwnProperty("targetId") ? formElement.dataset.targetId : ""))
-                .catch((errorMsg) => Cell.error("Error.Message", errorMsg));
         }
     }
 

@@ -11,6 +11,15 @@
         }
     },
     {
+        "id": "property",
+        "data": {
+            "title": {
+                "content": "Property Name"
+            },
+            "value": "Property content"
+        }
+    },
+    {
         "id": "topMenu",
         "data": {
             "class": "topMenu",
@@ -126,6 +135,8 @@
         "id": "messageList",
         "data": {
             "id": "listElement",
+            "class": "view-list",
+            "switch": true,
             "filter": {
                 "id": "filterForm",
                 "method": "post",
@@ -244,119 +255,138 @@
             },
             "statistics": [
                 {
-                    "data": "Data 1",
                     "content": "Data 1",
                     "index": 1,
-                    "className": "error",
+                    "class": "error",
                     "id": "statistics1",
-                    "title": "Title1"
+                    "title": {
+                        "content": "Title1"
+                    }
                 },
                 {
-                    "data": "Data 2",
                     "content": "Data 2",
                     "index": 2,
                     "id": "statistics2",
-                    "title": "Title2"
+                    "title": {
+                        "content": "Title2"
+                    }
                 },
                 {
-                    "data": "Data 3",
                     "content": "Data 3",
                     "index": 4,
-                    "className": "warning",
+                    "class": "warning",
                     "id": "statistics3",
-                    "title": "Title3",
+                    "title": {
+                        "content": "Title3"
+                    },
                     "link": "#"
                 },
                 {
-                    "data": "Data 4",
                     "content": "Data 4",
                     "index": 3,
                     "id": "statistics4",
-                    "title": "Title4"
+                    "title": {
+                        "content": "Title4"
+                    }
                 }
             ],
             "title": {
                 "multiKey": "Message.List.Title",
-                "content": "",
-                "class": "view-list",
-                "switch": true
+                "content": ""
             },
             "grid": {
                 "selectName": "identifyCode",
                 "header": {
-                    "mainTitle": "Title",
-                    "operatorTitle": "Operators",
+                    "main": {
+                        "content": "Title"
+                    },
+                    "operator": {
+                        "content": "Operators"
+                    },
                     "items": [
                         {
                             "paramName": "column9",
                             "width": "10%",
                             "sort": true,
-                            "multiKey": "Column.Title.9"
+                            "title": {
+                                "multiKey": "Column.Title.9"
+                            }
                         },
                         {
                             "width": "10%",
-                            "multiKey": "Column.Title.8"
+                            "title": {
+                                "multiKey": "Column.Title.8"
+                            }
                         },
                         {
                             "width": "10%",
-                            "content": "Column Title 7"
+                            "title": {
+                                "content": "Column Title 7"
+                            }
                         },
                         {
                             "width": "10%",
-                            "content": "Column Title 6"
+                            "title": {
+                                "content": "Column Title 6"
+                            }
                         },
                         {
                             "width": "10%",
+                            "timestamp": "true",
                             "pattern": "yyyy-MM-dd",
-                            "content": "Column Title 4"
+                            "title": {
+                                "content": "Column Title 4"
+                            }
                         },
                         {
                             "paramName": "column3",
                             "width": "20%",
                             "sort": true,
-                            "content": "Column Title 3"
+                            "title": {
+                                "content": "Column Title 3"
+                            }
                         },
                         {
                             "width": "15%",
-                            "content": "Column Title 2"
+                            "title": {
+                                "content": "Column Title 2"
+                            }
                         },
                         {
                             "width": "15%",
-                            "content": "Column Title 1"
+                            "title": {
+                                "content": "Column Title 1"
+                            }
                         }
                     ]
                 },
                 "pager": {
                     "formId": "filterForm",
-                    "id": "currentPage",
-                    "limit": {
-                        "id": "pageLimit",
-                        "current": "20",
-                        "multiKey": "Pager.Text",
-                        "items": [
-                            {
-                                "value": "10"
-                            },
-                            {
-                                "value": "20"
-                            },
-                            {
-                                "value": "30"
-                            },
-                            {
-                                "value": "50"
-                            }
-                        ]
-                    },
+                    "pagerParam": "currentPage",
+                    "limitParam": "pageLimit",
+                    "currentLimit": "20",
+                    "multiKey": "Pager.Text",
+                    "items": [
+                        {
+                            "value": "10"
+                        },
+                        {
+                            "value": "20"
+                        },
+                        {
+                            "value": "30"
+                        },
+                        {
+                            "value": "50"
+                        }
+                    ],
                     "totalPage": 18,
                     "currentPage": 5
                 },
                 "itemData": [
                     {
-                        "elementId": "elementId",
                         "link": "details.json",
                         "openWindow": true,
-                        "abstract": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
                         "summary": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
                         "title": "Text content Text content Text content Text content Text content Text content Text content Text content",
                         "score": 4.2,
@@ -374,22 +404,26 @@
                             {
                                 "link": "form.json",
                                 "index": 3,
-                                "textContent": "Edit",
+                                "text": {
+                                    "content": "Edit"
+                                },
                                 "icon": "e9da",
                                 "openWindow": true
                             },
                             {
                                 "link": "DeleteLink",
                                 "index": 2,
-                                "textContent": "Delete",
-                                "title": "Delete",
+                                "text": {
+                                    "content": "Delete"
+                                },
                                 "icon": "e7b5"
                             },
                             {
                                 "link": "MultiLink",
                                 "index": 1,
-                                "textContent": "Multilingual",
-                                "title": "Multilingual",
+                                "text": {
+                                    "content": "Multilingual"
+                                },
                                 "icon": "e7dc"
                             }
                         ],
@@ -401,7 +435,6 @@
                         "identifyCode": "1"
                     },
                     {
-                        "elementId": "elementId",
                         "score": 3.0,
                         "properties": [
                             "",
@@ -424,7 +457,6 @@
                         "title": "Text content Text content Text content Text content Text content Text content Text content Text content"
                     },
                     {
-                        "elementId": "elementId",
                         "operators": [
                             {
                                 "link": "form.json",
@@ -460,13 +492,10 @@
                         "link": "details.json",
                         "openWindow": true,
                         "identifyCode": "3",
-                        "abstract": "中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试",
                         "summary": "中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试",
                         "title": "Text content Text content Text content Text content Text content Text content Text content Text content"
                     },
                     {
-                        "elementId": "elementId",
-                        "key4": "1658958745944",
                         "link": "details.json",
                         "openWindow": true,
                         "properties": [
@@ -479,7 +508,6 @@
                             "Column 2 Text",
                             "Column 1 Text"
                         ],
-                        "abstract": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
                         "summary": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
                         "title": "Text content Text content Text content Text content Text content Text content Text content Text content",
                         "score": 3.2,
@@ -506,7 +534,6 @@
                         "identifyCode": "4"
                     },
                     {
-                        "elementId": "elementId",
                         "score": 3.0,
                         "avatar": {
                             "mimeType": "video/mp4",
@@ -529,7 +556,6 @@
                         "title": "Text content Text content Text content Text content Text content Text content Text content Text content"
                     },
                     {
-                        "elementId": "elementId",
                         "operators": [
                             {
                                 "link": "form.json",
@@ -565,12 +591,10 @@
                         "openWindow": true,
                         "className": "error",
                         "identifyCode": "6",
-                        "abstract": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
                         "summary": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
                         "title": "Text content Text content Text content Text content Text content Text content Text content Text content"
                     },
                     {
-                        "elementId": "elementId",
                         "link": "details.json",
                         "openWindow": true,
                         "properties": [
@@ -583,7 +607,6 @@
                             "Column 2 Text",
                             "Column 1 Text"
                         ],
-                        "abstract": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
                         "summary": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
                         "title": "Text content Text content Text content Text content Text content Text content Text content Text content",
                         "score": 4.2,
@@ -618,7 +641,6 @@
                         "identifyCode": "7"
                     },
                     {
-                        "elementId": "elementId",
                         "score": 3.0,
                         "avatar": {
                             "mimeType": "image/jpg",
@@ -640,7 +662,6 @@
                         "title": "Text content Text content Text content Text content Text content Text content Text content Text content"
                     },
                     {
-                        "elementId": "elementId",
                         "operators": [
                             {
                                 "link": "form.json",
@@ -675,12 +696,10 @@
                         "link": "details.json",
                         "openWindow": true,
                         "identifyCode": "9",
-                        "abstract": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
                         "summary": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
                         "title": "Text content Text content Text content Text content Text content Text content Text content Text content"
                     },
                     {
-                        "elementId": "elementId",
                         "score": 3.0,
                         "avatar": {
                             "mimeType": "image/jpg",
@@ -703,7 +722,6 @@
                         "title": "Text content Text content Text content Text content Text content Text content Text content Text content"
                     },
                     {
-                        "elementId": "elementId",
                         "score": 3.0,
                         "avatar": {
                             "mimeType": "image/jpg",
@@ -726,7 +744,6 @@
                         "title": "Text content Text content Text content Text content Text content Text content Text content Text content"
                     },
                     {
-                        "elementId": "elementId",
                         "score": 3.0,
                         "avatar": {
                             "mimeType": "image/jpg",
@@ -749,7 +766,6 @@
                         "title": "Text content Text content Text content Text content Text content Text content Text content Text content"
                     },
                     {
-                        "elementId": "elementId",
                         "score": 3.0,
                         "avatar": {
                             "mimeType": "image/jpg",
@@ -772,7 +788,6 @@
                         "title": "Text content Text content Text content Text content Text content Text content Text content Text content"
                     },
                     {
-                        "elementId": "elementId",
                         "score": 3.0,
                         "avatar": {
                             "mimeType": "image/jpg",
@@ -795,29 +810,13 @@
                         "title": "Text content Text content Text content Text content Text content Text content Text content Text content"
                     }
                 ],
-                "batchOperators": [
-                    {
-                        "elementId": "elementId",
-                        "link": "ExportUrl",
-                        "icon": "e7cf",
-                        "title": "Export Data"
-                    },
-                    {
-                        "elementId": "importId",
-                        "link": "ImportUrl",
-                        "icon": "eb41",
-                        "title": "Import Data"
-                    }
-                ],
                 "operators": [
                     {
-                        "elementId": "elementId",
                         "link": "ExportUrl",
                         "icon": "e7cf",
                         "title": "Export Data"
                     },
                     {
-                        "elementId": "importId",
                         "link": "ImportUrl",
                         "icon": "eb41",
                         "title": "Import Data"
@@ -834,926 +833,23 @@
             "title": {
                 "multiKey": "Calendar.Form.title"
             },
-            "year": "2026",
-            "month": "1",
-            "weekend": false,
-            "calendar": true,
-            "items": {
-                "2026-01-01": [
-                    {
-                        "tagName": "form-item",
-                        "data": {
-                            "type": "radio",
-                            "category": "group",
-                            "title": {
-                                "content": "Foods"
-                            },
-                            "name": "2026-01-01-Foods",
-                            "value": "value4",
-                            "items": [
-                                {
-                                    "content": "Option4",
-                                    "value": "value2"
-                                },
-                                {
-                                    "content": "Option5",
-                                    "value": "value4"
-                                },
-                                {
-                                    "content": "Option6",
-                                    "value": "value6"
-                                }
-                            ]
-                        }
+            "items": [
+                {
+                    "type": "calendar",
+                    "category": "custom",
+                    "class": "formItem",
+                    "title": {
+                        "multiKey": "Element.label.text",
+                        "content": "Element label text"
                     },
-                    {
-                        "tagName": "form-item",
-                        "data": {
-                            "type": "checkbox",
-                            "category": "group",
-                            "title": {
-                                "content": "Drinks"
-                            },
-                            "name": "2026-01-01-Drinks",
-                            "value": [
-                                "value3",
-                                "value5"
-                            ],
-                            "items": [
-                                {
-                                    "content": "Drink1",
-                                    "value": "value1"
-                                },
-                                {
-                                    "content": "Drink3",
-                                    "value": "value3"
-                                },
-                                {
-                                    "content": "Drink5",
-                                    "value": "value5"
-                                }
-                            ]
-                        }
+                    "value": {
+                        "year": "2026",
+                        "month": "1",
+                        "weekend": false,
+                        "dataLink": "/demo/calendar.json?year={year}&month={month}&week={week}"
                     }
-                ],
-                "2026-01-02": [
-                    {
-                        "tagName": "form-item",
-                        "data": {
-                            "type": "radio",
-                            "category": "group",
-                            "title": {
-                                "content": "Foods"
-                            },
-                            "name": "2026-01-02-Foods",
-                            "value": "value4",
-                            "items": [
-                                {
-                                    "content": "Option4",
-                                    "value": "value2"
-                                },
-                                {
-                                    "content": "Option5",
-                                    "value": "value4"
-                                },
-                                {
-                                    "content": "Option6",
-                                    "value": "value6"
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        "tagName": "form-item",
-                        "data": {
-                            "type": "checkbox",
-                            "category": "group",
-                            "title": {
-                                "content": "Drinks"
-                            },
-                            "name": "2026-01-02-Drinks",
-                            "value": [
-                                "value3",
-                                "value5"
-                            ],
-                            "items": [
-                                {
-                                    "content": "Drink1",
-                                    "value": "value1"
-                                },
-                                {
-                                    "content": "Drink3",
-                                    "value": "value3"
-                                },
-                                {
-                                    "content": "Drink5",
-                                    "value": "value5"
-                                }
-                            ]
-                        }
-                    }
-                ],
-                "2026-01-05": [
-                    {
-                        "tagName": "schedule-item",
-                        "data": {
-                            "items": [
-                                {
-                                    "title": "Foods:",
-                                    "content": "Option 4"
-                                },
-                                {
-                                    "title": "Drinks:",
-                                    "content": "Option 3"
-                                }
-                            ],
-                            "operators": [
-                                {
-                                    "title": "Cancel",
-                                    "link": "#cancel"
-                                }
-                            ]
-                        }
-                    }
-                ],
-                "2026-01-06": [
-                    {
-                        "tagName": "schedule-item",
-                        "data": {
-                            "items": [
-                                {
-                                    "title": "Foods:",
-                                    "content": "Option 4"
-                                },
-                                {
-                                    "title": "Drinks:",
-                                    "content": "Option 3"
-                                }
-                            ],
-                            "operators": [
-                                {
-                                    "title": "Cancel",
-                                    "link": "#cancel"
-                                }
-                            ]
-                        }
-                    }
-                ],
-                "2026-01-07": [
-                    {
-                        "tagName": "schedule-item",
-                        "data": {
-                            "items": [
-                                {
-                                    "title": "Foods:",
-                                    "content": "Option 4"
-                                },
-                                {
-                                    "title": "Drinks:",
-                                    "content": "Option 3"
-                                }
-                            ],
-                            "operators": [
-                                {
-                                    "title": "Cancel",
-                                    "link": "#cancel"
-                                }
-                            ]
-                        }
-                    }
-                ],
-                "2026-01-08": [
-                    {
-                        "tagName": "schedule-item",
-                        "data": {
-                            "items": [
-                                {
-                                    "title": "Foods:",
-                                    "content": "Option 4"
-                                },
-                                {
-                                    "title": "Drinks:",
-                                    "content": "Option 3"
-                                }
-                            ],
-                            "operators": [
-                                {
-                                    "title": "Cancel",
-                                    "link": "#cancel"
-                                }
-                            ]
-                        }
-                    }
-                ],
-                "2026-01-09": [
-                    {
-                        "tagName": "schedule-item",
-                        "data": {
-                            "items": [
-                                {
-                                    "title": "Foods:",
-                                    "content": "Option 4"
-                                },
-                                {
-                                    "title": "Drinks:",
-                                    "content": "Option 3"
-                                }
-                            ],
-                            "operators": [
-                                {
-                                    "title": "Cancel",
-                                    "link": "#cancel"
-                                }
-                            ]
-                        }
-                    }
-                ],
-                "2026-01-12": [
-                    {
-                        "tagName": "form-item",
-                        "data": {
-                            "type": "radio",
-                            "category": "group",
-                            "title": {
-                                "content": "Foods"
-                            },
-                            "name": "2026-01-12-Foods",
-                            "value": "value4",
-                            "items": [
-                                {
-                                    "content": "Option4",
-                                    "value": "value2"
-                                },
-                                {
-                                    "content": "Option5",
-                                    "value": "value4"
-                                },
-                                {
-                                    "content": "Option6",
-                                    "value": "value6"
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        "tagName": "form-item",
-                        "data": {
-                            "type": "checkbox",
-                            "category": "group",
-                            "title": {
-                                "content": "Drinks"
-                            },
-                            "name": "2026-01-12-Drinks",
-                            "value": [
-                                "value3",
-                                "value5"
-                            ],
-                            "items": [
-                                {
-                                    "content": "Drink1",
-                                    "value": "value1"
-                                },
-                                {
-                                    "content": "Drink3",
-                                    "value": "value3"
-                                },
-                                {
-                                    "content": "Drink5",
-                                    "value": "value5"
-                                }
-                            ]
-                        }
-                    }
-                ],
-                "2026-01-13": [
-                    {
-                        "tagName": "form-item",
-                        "data": {
-                            "type": "radio",
-                            "category": "group",
-                            "title": {
-                                "content": "Foods"
-                            },
-                            "name": "2026-01-13-Foods",
-                            "value": "value4",
-                            "items": [
-                                {
-                                    "content": "Option4",
-                                    "value": "value2"
-                                },
-                                {
-                                    "content": "Option5",
-                                    "value": "value4"
-                                },
-                                {
-                                    "content": "Option6",
-                                    "value": "value6"
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        "tagName": "form-item",
-                        "data": {
-                            "type": "checkbox",
-                            "category": "group",
-                            "title": {
-                                "content": "Drinks"
-                            },
-                            "name": "2026-01-13-Drinks",
-                            "value": [
-                                "value3",
-                                "value5"
-                            ],
-                            "items": [
-                                {
-                                    "content": "Drink1",
-                                    "value": "value1"
-                                },
-                                {
-                                    "content": "Drink3",
-                                    "value": "value3"
-                                },
-                                {
-                                    "content": "Drink5",
-                                    "value": "value5"
-                                }
-                            ]
-                        }
-                    }
-                ],
-                "2026-01-14": [
-                    {
-                        "tagName": "form-item",
-                        "data": {
-                            "type": "radio",
-                            "category": "group",
-                            "title": {
-                                "content": "Foods"
-                            },
-                            "name": "2026-01-14-Foods",
-                            "value": "value4",
-                            "items": [
-                                {
-                                    "content": "Option4",
-                                    "value": "value2"
-                                },
-                                {
-                                    "content": "Option5",
-                                    "value": "value4"
-                                },
-                                {
-                                    "content": "Option6",
-                                    "value": "value6"
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        "tagName": "form-item",
-                        "data": {
-                            "type": "checkbox",
-                            "category": "group",
-                            "title": {
-                                "content": "Drinks"
-                            },
-                            "name": "2026-01-14-Drinks",
-                            "value": [
-                                "value3",
-                                "value5"
-                            ],
-                            "items": [
-                                {
-                                    "content": "Drink1",
-                                    "value": "value1"
-                                },
-                                {
-                                    "content": "Drink3",
-                                    "value": "value3"
-                                },
-                                {
-                                    "content": "Drink5",
-                                    "value": "value5"
-                                }
-                            ]
-                        }
-                    }
-                ],
-                "2026-01-15": [
-                    {
-                        "tagName": "form-item",
-                        "data": {
-                            "type": "radio",
-                            "category": "group",
-                            "title": {
-                                "content": "Foods"
-                            },
-                            "name": "2026-01-15-Foods",
-                            "value": "value4",
-                            "items": [
-                                {
-                                    "content": "Option4",
-                                    "value": "value2"
-                                },
-                                {
-                                    "content": "Option5",
-                                    "value": "value4"
-                                },
-                                {
-                                    "content": "Option6",
-                                    "value": "value6"
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        "tagName": "form-item",
-                        "data": {
-                            "type": "checkbox",
-                            "category": "group",
-                            "title": {
-                                "content": "Drinks"
-                            },
-                            "name": "2026-01-15-Drinks",
-                            "value": [
-                                "value3",
-                                "value5"
-                            ],
-                            "items": [
-                                {
-                                    "content": "Drink1",
-                                    "value": "value1"
-                                },
-                                {
-                                    "content": "Drink3",
-                                    "value": "value3"
-                                },
-                                {
-                                    "content": "Drink5",
-                                    "value": "value5"
-                                }
-                            ]
-                        }
-                    }
-                ],
-                "2026-01-16": [
-                    {
-                        "tagName": "form-item",
-                        "data": {
-                            "type": "radio",
-                            "category": "group",
-                            "title": {
-                                "content": "Foods"
-                            },
-                            "name": "2026-01-16-Foods",
-                            "value": "value4",
-                            "items": [
-                                {
-                                    "content": "Option4",
-                                    "value": "value2"
-                                },
-                                {
-                                    "content": "Option5",
-                                    "value": "value4"
-                                },
-                                {
-                                    "content": "Option6",
-                                    "value": "value6"
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        "tagName": "form-item",
-                        "data": {
-                            "type": "checkbox",
-                            "category": "group",
-                            "title": {
-                                "content": "Drinks"
-                            },
-                            "name": "2026-01-16-Drinks",
-                            "value": [
-                                "value3",
-                                "value5"
-                            ],
-                            "items": [
-                                {
-                                    "content": "Drink1",
-                                    "value": "value1"
-                                },
-                                {
-                                    "content": "Drink3",
-                                    "value": "value3"
-                                },
-                                {
-                                    "content": "Drink5",
-                                    "value": "value5"
-                                }
-                            ]
-                        }
-                    }
-                ],
-                "2026-01-19": [
-                    {
-                        "tagName": "form-item",
-                        "data": {
-                            "type": "radio",
-                            "category": "group",
-                            "title": {
-                                "content": "Foods"
-                            },
-                            "name": "2026-01-17-Foods",
-                            "value": "value4",
-                            "items": [
-                                {
-                                    "content": "Option4",
-                                    "value": "value2"
-                                },
-                                {
-                                    "content": "Option5",
-                                    "value": "value4"
-                                },
-                                {
-                                    "content": "Option6",
-                                    "value": "value6"
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        "tagName": "form-item",
-                        "data": {
-                            "type": "checkbox",
-                            "category": "group",
-                            "title": {
-                                "content": "Drinks"
-                            },
-                            "name": "2026-01-17-Drinks",
-                            "value": [
-                                "value3",
-                                "value5"
-                            ],
-                            "items": [
-                                {
-                                    "content": "Drink1",
-                                    "value": "value1"
-                                },
-                                {
-                                    "content": "Drink3",
-                                    "value": "value3"
-                                },
-                                {
-                                    "content": "Drink5",
-                                    "value": "value5"
-                                }
-                            ]
-                        }
-                    }
-                ],
-                "2026-01-20": [
-                    {
-                        "tagName": "form-item",
-                        "data": {
-                            "type": "radio",
-                            "category": "group",
-                            "title": {
-                                "content": "Foods"
-                            },
-                            "name": "2026-01-18-Foods",
-                            "value": "value4",
-                            "items": [
-                                {
-                                    "content": "Option4",
-                                    "value": "value2"
-                                },
-                                {
-                                    "content": "Option5",
-                                    "value": "value4"
-                                },
-                                {
-                                    "content": "Option6",
-                                    "value": "value6"
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        "tagName": "form-item",
-                        "data": {
-                            "type": "checkbox",
-                            "category": "group",
-                            "title": {
-                                "content": "Drinks"
-                            },
-                            "name": "2026-01-18-Drinks",
-                            "value": [
-                                "value3",
-                                "value5"
-                            ],
-                            "items": [
-                                {
-                                    "content": "Drink1",
-                                    "value": "value1"
-                                },
-                                {
-                                    "content": "Drink3",
-                                    "value": "value3"
-                                },
-                                {
-                                    "content": "Drink5",
-                                    "value": "value5"
-                                }
-                            ]
-                        }
-                    }
-                ],
-                "2026-01-21": [
-                    {
-                        "tagName": "form-item",
-                        "data": {
-                            "type": "radio",
-                            "category": "group",
-                            "title": {
-                                "content": "Foods"
-                            },
-                            "name": "2026-01-19-Foods",
-                            "value": "value4",
-                            "items": [
-                                {
-                                    "content": "Option4",
-                                    "value": "value2"
-                                },
-                                {
-                                    "content": "Option5",
-                                    "value": "value4"
-                                },
-                                {
-                                    "content": "Option6",
-                                    "value": "value6"
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        "tagName": "form-item",
-                        "data": {
-                            "type": "checkbox",
-                            "category": "group",
-                            "title": {
-                                "content": "Drinks"
-                            },
-                            "name": "2026-01-19-Drinks",
-                            "value": [
-                                "value3",
-                                "value5"
-                            ],
-                            "items": [
-                                {
-                                    "content": "Drink1",
-                                    "value": "value1"
-                                },
-                                {
-                                    "content": "Drink3",
-                                    "value": "value3"
-                                },
-                                {
-                                    "content": "Drink5",
-                                    "value": "value5"
-                                }
-                            ]
-                        }
-                    }
-                ],
-                "2026-01-22": [
-                    {
-                        "tagName": "schedule-item",
-                        "data": {
-                            "items": [
-                                {
-                                    "title": "Foods:",
-                                    "content": "Option 4"
-                                },
-                                {
-                                    "title": "Drinks:",
-                                    "content": "Option 3"
-                                }
-                            ],
-                            "operators": [
-                                {
-                                    "title": "Cancel",
-                                    "link": "#cancel"
-                                }
-                            ]
-                        }
-                    }
-                ],
-                "2026-01-23": [
-                    {
-                        "tagName": "schedule-item",
-                        "data": {
-                            "items": [
-                                {
-                                    "title": "Foods:",
-                                    "content": "Option 4"
-                                },
-                                {
-                                    "title": "Drinks:",
-                                    "content": "Option 3"
-                                }
-                            ],
-                            "operators": [
-                                {
-                                    "title": "Cancel",
-                                    "link": "#cancel"
-                                }
-                            ]
-                        }
-                    }
-                ],
-                "2026-01-26": [
-                    {
-                        "tagName": "schedule-item",
-                        "data": {
-                            "items": [
-                                {
-                                    "title": "Foods:",
-                                    "content": "Option 4"
-                                },
-                                {
-                                    "title": "Drinks:",
-                                    "content": "Option 3"
-                                }
-                            ],
-                            "operators": [
-                                {
-                                    "title": "Cancel",
-                                    "link": "#cancel"
-                                }
-                            ]
-                        }
-                    }
-                ],
-                "2026-01-27": [
-                    {
-                        "tagName": "schedule-item",
-                        "data": {
-                            "items": [
-                                {
-                                    "title": "Foods:",
-                                    "content": "Option 4"
-                                },
-                                {
-                                    "title": "Drinks:",
-                                    "content": "Option 3"
-                                }
-                            ],
-                            "operators": [
-                                {
-                                    "title": "Cancel",
-                                    "link": "#cancel"
-                                }
-                            ]
-                        }
-                    }
-                ],
-                "2026-01-28": [
-                    {
-                        "tagName": "schedule-item",
-                        "data": {
-                            "items": [
-                                {
-                                    "title": "Foods:",
-                                    "content": "Option 4"
-                                },
-                                {
-                                    "title": "Drinks:",
-                                    "content": "Option 3"
-                                }
-                            ],
-                            "operators": [
-                                {
-                                    "title": "Cancel",
-                                    "link": "#cancel"
-                                }
-                            ]
-                        }
-                    }
-                ],
-                "2026-01-29": [
-                    {
-                        "tagName": "form-item",
-                        "data": {
-                            "type": "radio",
-                            "category": "group",
-                            "title": {
-                                "content": "Foods"
-                            },
-                            "name": "2026-01-29-Foods",
-                            "value": "value4",
-                            "items": [
-                                {
-                                    "content": "Option4",
-                                    "value": "value2"
-                                },
-                                {
-                                    "content": "Option5",
-                                    "value": "value4"
-                                },
-                                {
-                                    "content": "Option6",
-                                    "value": "value6"
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        "tagName": "form-item",
-                        "data": {
-                            "type": "checkbox",
-                            "category": "group",
-                            "title": {
-                                "content": "Drinks"
-                            },
-                            "name": "2026-01-29-Drinks",
-                            "value": [
-                                "value3",
-                                "value5"
-                            ],
-                            "items": [
-                                {
-                                    "content": "Drink1",
-                                    "value": "value1"
-                                },
-                                {
-                                    "content": "Drink3",
-                                    "value": "value3"
-                                },
-                                {
-                                    "content": "Drink5",
-                                    "value": "value5"
-                                }
-                            ]
-                        }
-                    }
-                ],
-                "2026-01-30": [
-                    {
-                        "tagName": "form-item",
-                        "data": {
-                            "type": "radio",
-                            "category": "group",
-                            "title": {
-                                "content": "Foods"
-                            },
-                            "name": "2026-01-30-Foods",
-                            "value": "value4",
-                            "items": [
-                                {
-                                    "content": "Option4",
-                                    "value": "value2"
-                                },
-                                {
-                                    "content": "Option5",
-                                    "value": "value4"
-                                },
-                                {
-                                    "content": "Option6",
-                                    "value": "value6"
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        "tagName": "form-item",
-                        "data": {
-                            "type": "checkbox",
-                            "category": "group",
-                            "title": {
-                                "content": "Drinks"
-                            },
-                            "name": "2026-01-30-Drinks",
-                            "value": [
-                                "value3",
-                                "value5"
-                            ],
-                            "items": [
-                                {
-                                    "content": "Drink1",
-                                    "value": "value1"
-                                },
-                                {
-                                    "content": "Drink3",
-                                    "value": "value3"
-                                },
-                                {
-                                    "content": "Drink5",
-                                    "value": "value5"
-                                }
-                            ]
-                        }
-                    }
-                ]
-            }
+                }
+            ]
         }
     },
     {
@@ -2125,26 +1221,22 @@
                         {
                             "id": "checkBoxButtonId1",
                             "value": "checkBoxValue1",
-                            "content": "checkBox Content",
-                            "textButton": "checkBox Content"
+                            "content": "checkBox Content"
                         },
                         {
                             "id": "checkBoxButtonId2",
                             "value": "checkBoxValue2",
-                            "content": "checkBox Content",
-                            "textButton": "checkBox Content"
+                            "content": "checkBox Content"
                         },
                         {
                             "id": "checkBoxButtonId3",
                             "value": "checkBoxValue3",
-                            "content": "checkBox Content",
-                            "textButton": "checkBox Content"
+                            "content": "checkBox Content"
                         },
                         {
                             "id": "checkBoxButtonId4",
                             "value": "checkBoxValue4",
-                            "content": "checkBox Content",
-                            "textButton": "checkBox Content"
+                            "content": "checkBox Content"
                         }
                     ]
                 },
@@ -2163,26 +1255,22 @@
                         {
                             "id": "radioButtonId1",
                             "value": "radioValue1",
-                            "content": "checkBox Content",
-                            "textButton": "Radio Content"
+                            "content": "Radio Content"
                         },
                         {
                             "id": "radioButtonId2",
                             "value": "radioValue2",
-                            "content": "checkBox Content",
-                            "textButton": "Radio Content"
+                            "content": "Radio Content"
                         },
                         {
                             "id": "radioButtonId3",
                             "value": "radioValue3",
-                            "content": "checkBox Content",
-                            "textButton": "Radio Content"
+                            "content": "Radio Content"
                         },
                         {
                             "id": "radioButtonId4",
                             "value": "radioValue4",
-                            "content": "checkBox Content",
-                            "textButton": "Radio Content"
+                            "content": "Radio Content"
                         }
                     ]
                 },
@@ -2213,6 +1301,191 @@
                     "tips": {
                         "content": "Tips message"
                     }
+                }
+            ]
+        }
+    },
+    {
+        "id": "groupComponent",
+        "data": {
+            "template": [
+                {
+                    "type": "text",
+                    "name": "userNameElement",
+                    "placeholder": "Placeholder string",
+                    "title": {
+                        "multiKey": "Element.label.text",
+                        "content": "Element label text"
+                    },
+                    "tips": {
+                        "content": "Tips message"
+                    }
+                },
+                {
+                    "type": "password",
+                    "name": "passWordElement",
+                    "placeholder": "Placeholder string",
+                    "title": {
+                        "multiKey": "Element.label.text",
+                        "content": "Element label text"
+                    },
+                    "tips": {
+                        "content": "Tips message"
+                    }
+                }
+            ],
+            "items": [
+                {
+                    "id": "item1",
+                    "items": [
+                        {
+                            "type": "text",
+                            "name": "userNameElement",
+                            "placeholder": "Placeholder string",
+                            "title": {
+                                "multiKey": "Element.label.text",
+                                "content": "Element label text"
+                            },
+                            "value": "Initialize value",
+                            "tips": {
+                                "content": "Tips message"
+                            }
+                        },
+                        {
+                            "type": "password",
+                            "name": "passWordElement",
+                            "placeholder": "Placeholder string",
+                            "title": {
+                                "multiKey": "Element.label.text",
+                                "content": "Element label text"
+                            },
+                            "value": "Initialize value",
+                            "tips": {
+                                "content": "Tips message"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id": "item2",
+                    "items": [
+                        {
+                            "type": "text",
+                            "name": "userNameElement",
+                            "placeholder": "Placeholder string",
+                            "title": {
+                                "multiKey": "Element.label.text",
+                                "content": "Element label text"
+                            },
+                            "value": "Initialize value",
+                            "tips": {
+                                "content": "Tips message"
+                            }
+                        },
+                        {
+                            "type": "password",
+                            "name": "passWordElement",
+                            "placeholder": "Placeholder string",
+                            "title": {
+                                "multiKey": "Element.label.text",
+                                "content": "Element label text"
+                            },
+                            "value": "Initialize value",
+                            "tips": {
+                                "content": "Tips message"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    {
+        "id": "tabComponent",
+        "data": {
+            "name": "auth_type",
+            "items": [
+                {
+                    "id": "userAuth",
+                    "content": "User Auth",
+                    "items": [
+                        {
+                            "type": "text",
+                            "id": "userNameElement",
+                            "name": "userNameElement",
+                            "placeholder": "Placeholder string",
+                            "title": {
+                                "multiKey": "Element.label.text",
+                                "content": "Element label text"
+                            },
+                            "value": "Initialize value",
+                            "tips": {
+                                "content": "Tips message"
+                            }
+                        },
+                        {
+                            "type": "password",
+                            "id": "passWordElement",
+                            "name": "passWordElement",
+                            "placeholder": "Placeholder string",
+                            "title": {
+                                "multiKey": "Element.label.text",
+                                "content": "Element label text"
+                            },
+                            "value": "Initialize value",
+                            "tips": {
+                                "content": "Tips message"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id": "certAuth",
+                    "content": "Cert Auth",
+                    "items": [
+                        {
+                            "type": "text",
+                            "id": "certNameElement",
+                            "name": "certNameElement",
+                            "placeholder": "Placeholder string",
+                            "title": {
+                                "multiKey": "Element.label.text",
+                                "content": "Element label text"
+                            },
+                            "value": "Initialize value",
+                            "tips": {
+                                "content": "Tips message"
+                            }
+                        },
+                        {
+                            "type": "file",
+                            "category": "drag",
+                            "class": "formItem",
+                            "title": {
+                                "multiKey": "Element.label.text",
+                                "content": "Element label text"
+                            },
+                            "multilingual": true,
+                            "reference": [
+                                {
+                                    "mimeType": "image/jpg",
+                                    "resourcePath": "images/1.jpg"
+                                },
+                                {
+                                    "mimeType": "image/jpg",
+                                    "resourcePath": "images/1.jpg"
+                                }
+                            ],
+                            "value": {
+                                "id": "certElement",
+                                "multipleFiles": "false",
+                                "name": "certElement"
+                            },
+                            "tips": {
+                                "content": "Tips message"
+                            }
+                        }
+                    ]
                 }
             ]
         }
@@ -3309,7 +2582,7 @@
                     }
                 ],
                 "pager": {
-                    "id": "pageNo",
+                    "pagerParam": "pageNo",
                     "url": "/comment",
                     "totalPage": 18,
                     "currentPage": 5

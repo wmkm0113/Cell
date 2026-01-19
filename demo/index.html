@@ -16,6 +16,7 @@
         Comment.DateTime.UTC = true;
         Config.debugMode = DebugMode.DEBUG;
         Config.colorMode = ColorMode.System;
+        Config.fontPrefixPath = "/src";
         Config.multi = {
             codes: ["zh-CN", "en-US"],
             default: "zh-CN",
@@ -23,8 +24,6 @@
         };
         //  Freeze header to the top of window
         Config.freeze = ['aside[id="aside"]'];
-        Config.security.RSA.modulus = "b03d0b864320ffd2f3ebe84e3e59217ab4a3691262931634ab308b69ae1cb158c8affd02bbc3ab87e923804f7a135078b73cffafc8c1b557403fd96b0e22cec65c2767f9a6f028d80c64bdc601caaf2b74f1d0dac9ecf3837b0222ea9aa46a5b4613eb9b1a9dec2ec88d75653606085658e7858a2b0fc039de85213ef3b51dd3";
-        Config.security.RSA.exponent = "1f51b1df19c5df009f9d604aab54ce98ce4a2ded78fc1799a3847c79fad99980a425764a8a90a2c683dd6dbb71ffc5b0b62b8e6ab03c105c618c1738a9a9f0e1ce2779294edb5df516bfd88e13f55eec0efc48f100034eca1553008fafb9d78af9811a5a82c3a67cea7b886a108112e00f2aa55597b042004033170839729f0d";
 
         // Setting the API Key value of Map
         // Config.maps.Google.ApiKey = "";
@@ -33,7 +32,6 @@
     <script src="../src/core/Cell.js" type="module"></script>
     <script type="module">
         window.addEventListener("load", () => {
-            console.log(Cell.encData("Test测试TestTest测试TestTestTest测试TestTestTestTest测试TestTestTestTestTest测试TestTestTestTestTestTest测试TestTestTestTestTestTestTest测试TestTestTestTestTest测试"));
             Cell.sendRequest("./data.json")
                 .then(responseText => responseText.parseJSON().forEach((item => $(item.id).data = item.data)))
                 .catch((error) => Cell.error(error));
@@ -79,6 +77,8 @@
                 <input type="button" data-category="like" id="likeBtn" value="2"/>
                 <input type="button" data-category="favorite" id="favBtn" data-status="true"/>
                 <span data-type="calendar" id="calendar"></span>
+                <span data-type="tabs-item" id="tabComponent"></span>
+                <span data-type="group-item" id="groupComponent"></span>
             </article>
         </section>
         <section id="charts">
@@ -115,6 +115,7 @@
     <aside id="aside">
         <nav id="asideMenu"></nav>
         <a data-type="banner" id="widgetLink"></a>
+        <span data-type="property" data-category="info" id="property"></span>
         <section data-type="address" id="addressDetails"></section>
     </aside>
 </main>

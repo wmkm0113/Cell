@@ -28,6 +28,9 @@
  */
 'use strict';
 
+const DAY_TIME_MILLISECONDS = 24n * 60n * 60n * 1000n;
+const DAT_COUNT_OF_MONTH = [31n, 28n, 31n, 30n, 31n, 30n, 31n, 31n, 30n, 31n, 30n, 31n];
+
 const Comment = {
     Version: "1.0.2",
     Language: navigator.language,
@@ -38,6 +41,11 @@ const Comment = {
     Icons: {
         Connector: "-",
         Multilingual: Number.parseInt("eb8e", 16),
+        Button: {
+            Plus: Number.parseInt("e853", 16),
+            Minus: Number.parseInt("e7fa", 16),
+            Close: Number.parseInt("e6b7", 16)
+        },
         Score: {
             Fill: Number.parseInt("eab5", 16),
             Half: Number.parseInt("eac0", 16),
@@ -199,6 +207,7 @@ const SlideType = {
 Object.freeze(SlideType);
 const Config = {
     contextPath: "",
+    fontPrefixPath: "",
     componentPath: "",
     debugMode: DebugMode.INFO,
     multi: {
@@ -301,7 +310,57 @@ const $$ = function () {
     }
 }
 
-export {Comment, RegexLibrary, Config, DragUpload, ColorMode, DebugMode, SlideType, $, $$};
+const FONT_EXT_TYPE_MAPPING = {
+    "ttf": "truetype",
+    "woff": "woff",
+    "woff2": "woff2",
+    "eot": "eot",
+    "otf": "otf",
+    "svg": "svg"
+};
+
+class WebFont {
+    _name = "";
+    _pathArray = {};
+    _descriptors = {}
+
+    constructor(name, descriptors = {}) {
+        if ((typeof name) === "string") {
+            this._name = name;
+        }
+        this._descriptors = descriptors;
+    }
+
+    paths(...paths) {
+        paths.forEach(path => {
+            let index = path.lastIndexOf(".");
+            let ext = index > 0 ? path.substring(index + 1) : path;
+            index = ext.indexOf("?");
+            if (index >= 0) {
+                ext = ext.substring(0, index);
+            }
+            ext = ext.toLowerCase();
+            const _type = FONT_EXT_TYPE_MAPPING.hasOwnProperty(ext) ? FONT_EXT_TYPE_MAPPING[ext] : "";
+            if (_type.length > 0) {
+                this._pathArray[_type] = path;
+            }
+        })
+        console.log(this._pathArray);
+    }
+
+    generate() {
+        if (this._name.length === 0 || this._pathArray.length === 0) {
+            return null;
+        }
+        let _urlArray = "";
+        Object.keys(this._pathArray).forEach(type => {
+            _urlArray += `, url("${this._pathArray[type]}") format("${type}")`;
+        })
+        return new FontFace(this._name, _urlArray, this._descriptors);
+    }
+}
+
+export {Comment, RegexLibrary, Config, DragUpload, ColorMode, DebugMode, SlideType, $, $$, WebFont};
 
 const validate = function (element = HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement) {
     let _result = true;
@@ -532,6 +591,11 @@ Object.assign(Element.prototype, {
             }
         }
     },
+    remove() {
+        if (this.parentElement) {
+            this.parentElement.removeChild(this);
+        }
+    },
     sortChildrenBy(selectors = "", attributeName = "", _sortDesc = false) {
         if (!attributeName || !selectors || attributeName.length === 0) {
             return;
@@ -555,7 +619,7 @@ Object.assign(Element.prototype, {
                 }
             });
             childNodes.forEach(childNode => {
-                this.removeChild(childNode);
+                childNode.remove();
                 this.appendChild(childNode);
             });
         }
@@ -755,11 +819,11 @@ Object.assign(HTMLInputElement.prototype, {
             case "time":
             case "datetime-local":
                 if (Comment.DateTime.Convert) {
-                    let milliseconds = Date.parse(this.value);
+                    let milliseconds = BigInt(Date.parse(this.value));
                     if (Comment.DateTime.UTC) {
                         milliseconds += Comment.DateTime.TimeZoneOffset;
                     }
-                    return milliseconds;
+                    return milliseconds.toString();
                 }
                 break;
             case "file":
@@ -1269,8 +1333,50 @@ Object.assign(String.prototype, {
         return _dataBytes;
     },
     formatDate(pattern = Comment.DateTime.ISO8601DATETIMEPattern, utc = Comment.DateTime.UTC) {
-        if (this.isNum() && Comment.DateTime.Convert) {
-            return this.parseInt().parseTime(utc).format(pattern);
+        if (this.length > 0 && Comment.DateTime.Convert) {
+            try {
+                let bigint = BigInt(this);
+                if (bigint) {
+
+                }
+                if (utc) {
+                    bigint -= BigInt(Comment.DateTime.TimeZoneOffset);
+                }
+
+                let year = 1970;
+                while (true) {
+                    bigint -= (365n * DAY_TIME_MILLISECONDS);
+                    if (year.leapYear()) {
+                        bigint -= DAY_TIME_MILLISECONDS;
+                    }
+                    year++;
+                    if (bigint < (365n * DAY_TIME_MILLISECONDS)) {
+                        break;
+                    }
+                }
+                let month = 1, step = DAT_COUNT_OF_MONTH[month - 1] * DAY_TIME_MILLISECONDS;
+                while (true) {
+                    if (bigint < step) {
+                        break;
+                    }
+                    month++;
+                    bigint -= step;
+                    step = DAT_COUNT_OF_MONTH[month - 1] * DAY_TIME_MILLISECONDS;
+                }
+                let day = 1;
+                while (true) {
+                    if (bigint < DAY_TIME_MILLISECONDS) {
+                        break;
+                    }
+                    bigint -= DAY_TIME_MILLISECONDS;
+                    day++;
+                }
+                const date = new Date();
+                date.setFullYear(year, month - 1, day);
+                return date.format(pattern);
+            } catch (e) {
+                return this;
+            }
         }
         return this;
     }
@@ -1285,6 +1391,9 @@ Object.assign(Number.prototype, {
             _date.setTime(this);
         }
         return _date;
+    },
+    leapYear() {
+        return (this % 4 === 0 && this % 100 !== 0) || (this % 400 === 0)
     },
     safeRotateLeft(_count) {
         return (this << _count) | (this >>> (32 - _count));
@@ -1487,7 +1596,7 @@ Object.assign(Array.prototype, {
             throw new Error("Array length not matched!");
         }
         const _result = [];
-        for (let i = 0 ; i < this.length ; i++) {
+        for (let i = 0; i < this.length; i++) {
             _result[i] = this[i] ^ data[i];
         }
         return _result;
