@@ -257,7 +257,7 @@ const Config = {
             paramName: "BMapGL"
         }
     },
-    elements: []
+    components: []
 };
 Object.seal(Config);
 
@@ -344,8 +344,7 @@ class WebFont {
             if (_type.length > 0) {
                 this._pathArray[_type] = path;
             }
-        })
-        console.log(this._pathArray);
+        });
     }
 
     generate() {
@@ -433,12 +432,6 @@ const countDown = function (element = null) {
 Object.assign(Document.prototype, {
     remWidth() {
         return this.documentElement.styles().fontSize.parseInt();
-    },
-    scrollPosition() {
-        return {
-            top: document.documentElement.scrollTop || document.body.scrollTop,
-            left: document.documentElement.scrollLeft || document.body.scrollLeft
-        }
     }
 })
 
@@ -543,13 +536,6 @@ Object.assign(Element.prototype, {
             return scrollTop > this.dataset.offsetTop.parseInt();
         }
         return false;
-    },
-    inViewPort() {
-        const viewPortHeight = window.innerHeight || document.documentElement.clientHeight,
-            viewPortWidth = window.innerWidth || document.documentElement.clientWidth,
-            scrollPosition = document.scrollPosition();
-        let {top, left} = this.getBoundingClientRect();
-        return (top - scrollPosition.top) < viewPortHeight && (left - scrollPosition.left) < viewPortWidth;
     },
     removeEvent(_eventName, _operateFunc) {
         this.removeEventListener(_eventName, _operateFunc, false);
@@ -969,7 +955,7 @@ Object.assign(HTMLSpanElement.prototype, {
         }
     },
     loadResource() {
-        if (!this.isLazyLoad() || this.dataset.loaded === "true" || !this.inViewPort()) {
+        if (!this.isLazyLoad() || this.dataset.loaded === "true") {
             return;
         }
         if (this.dataset.hasOwnProperty("mimeType") && this.dataset.hasOwnProperty("resourcePath")) {

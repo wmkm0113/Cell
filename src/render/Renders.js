@@ -667,7 +667,6 @@ class ResourcesRender extends TagRender {
                 delete element.dataset.loaded;
             }
             Object.keys(data).forEach((key) => element.dataset[key] = data[key]);
-            element.loadResource();
         }
     }
 }
@@ -3876,7 +3875,7 @@ class GridListRender extends TagRender {
                 }
                 itemElement.data = item;
             });
-            for (let i = itemData.length ; i < itemArray.length ; i++) {
+            for (let i = itemData.length; i < itemArray.length; i++) {
                 list.removeChild(itemArray[i]);
             }
         }
@@ -4175,10 +4174,10 @@ class ListRecordRender extends TagRender {
 
 class MenuRender extends TagRender {
 
-    static newInstance(multi = false) {
+    static newInstance(_type = "menu") {
         //  Default using nav tag
         const menu = document.createElement("nav");
-        menu.dataset.type = multi ? "multi" : "menu";
+        menu.dataset.type = _type;
         return menu;
     }
 
@@ -4257,12 +4256,14 @@ class MenuRender extends TagRender {
             elements.main.dataset.langCode = data.code;
         }
 
+        const title = data.title || {};
+
         let textContent = "";
-        if (data.hasOwnProperty("multiKey")) {
-            elements.main.dataset.multiKey = data.multiKey;
-            textContent = Cell.multiMsg(data.multiKey);
-        } else if (data.hasOwnProperty("title")) {
-            textContent = data.title;
+        if (title.hasOwnProperty("multiKey")) {
+            elements.main.dataset.multiKey = title.multiKey;
+            textContent = Cell.multiMsg(title.multiKey);
+        } else if (title.hasOwnProperty("content")) {
+            textContent = title.content;
         }
         elements.main.setAttribute("title", textContent);
         elements.main.innerText = textContent;
@@ -4277,8 +4278,7 @@ class MenuRender extends TagRender {
             elements.main.show();
         }
         if (data.hasOwnProperty("items")) {
-            if ((element.dataset.type.toLowerCase() === "multi" && !element.dataset.hasOwnProperty("category"))
-                || (element.dataset.type.toLowerCase() === "menu")) {
+            if (!element.dataset.hasOwnProperty("category") || (element.dataset.type.toLowerCase() === "menu")) {
                 const itemArray = elements.items.querySelectorAll(`:scope > ${element.tagName}[data-type="${element.dataset.type}"][data-category="item"]`);
                 data.items.forEach((itemData, index) => {
                     const item = index < itemArray.length ? itemArray[index] : document.createElement(element.tagName);
@@ -4309,80 +4309,6 @@ class MenuRender extends TagRender {
         }
         if (element !== null) {
             elements.main = element.querySelector(':scope > a[data-type="main"]');
-            elements.items = element.querySelector(':scope > span[data-type="items"]');
-        }
-        return elements;
-    }
-}
-
-class SocialGroupRender extends TagRender {
-
-    static newInstance() {
-        const socialGroup = document.createElement("section");
-        socialGroup.dataset.type = "social-group";
-        return socialGroup;
-    }
-
-    selectors() {
-        return ['section[data-type="social-group"]'];
-    }
-
-    _enhance(element = null) {
-        if (element === null) {
-            return;
-        }
-
-        element.clearChildNodes();
-
-        const title = document.createElement("h4");
-        title.dataset.sortCode = "0";
-        element.appendChild(title);
-
-        const items = document.createElement("span");
-        items.dataset.type = "items";
-        items.dataset.sortCode = "1";
-        element.appendChild(items);
-    }
-
-    _setData(element = null, data) {
-        if (element === null) {
-            return;
-        }
-
-        const elements = this._elements(element);
-        if (data.hasOwnProperty("multiKey")) {
-            elements.title.innerText = Cell.multiMsg(data.multiKey);
-        } else {
-            elements.title.innerText = data.hasOwnProperty("title") ? data.title : "";
-        }
-
-        const items = data.hasOwnProperty("items") ? data.items : [];
-        const linkArray = elements.items.querySelectorAll(':scope > a');
-        items.forEach((item, index) => {
-            const link = (index < linkArray.length) ? linkArray[index] : document.createElement("a");
-            if (linkArray.length <= index) {
-                elements.items.appendChild(link);
-            }
-            if (item.hasOwnProperty("icon")) {
-                link.dataset.icon = String.fromCodePoint(Number.parseInt(item.icon, 16));
-            }
-            if (item.hasOwnProperty("title")) {
-                link.title = item.title;
-            }
-            link.href = item.hasOwnProperty("link") ? item.link : "#";
-        });
-        for (let index = items.length; index < linkArray.length; index++) {
-            elements.items.removeChild(items[index]);
-        }
-    }
-
-    _elements(element = null) {
-        const elements = {
-            title: null,
-            items: null
-        }
-        if (element) {
-            elements.title = element.querySelector(':scope > h4[data-sort-code="0"]');
             elements.items = element.querySelector(':scope > span[data-type="items"]');
         }
         return elements;
@@ -4517,6 +4443,9 @@ class AddressRender extends TagRender {
         if (element === null) {
             return;
         }
+        if (data.hasOwnProperty("sortCode")) {
+            element.dataset.sortCode = data.sortCode;
+        }
         const elements = this._elements(element);
         if (data.hasOwnProperty("multiKey")) {
             elements.title.innerText = Cell.multiMsg(data.multiKey);
@@ -4545,6 +4474,85 @@ class AddressRender extends TagRender {
             elements.map = element.querySelector(':scope > div[data-type="map"]');
         }
         return elements;
+    }
+}
+
+class AccessoriesRender extends TagRender {
+
+    static newInstance() {
+        const accessories = document.createElement("span");
+        accessories.dataset.type = "accessories";
+        return accessories;
+    }
+
+    selectors() {
+        return ['span[data-type="accessories"]'];
+    }
+
+    _enhance(element = null) {
+        if (element === null) {
+            return;
+        }
+
+        element.clearChildNodes();
+
+        const title = document.createElement("h4");
+        title.dataset.type = "title";
+        title.dataset.sortCode = "0";
+        element._appendChild(title);
+
+        const container = document.createElement("span");
+        container.dataset.type = "container";
+        container.dataset.sortCode = "1";
+        element._appendChild(container);
+    }
+
+    _setData(element = null, data = {}) {
+        const elements = this._elements(element);
+        if (elements === null) {
+            return;
+        }
+
+        const title = data.title || {};
+        if (title.hasOwnProperty("multiKey")) {
+            elements.title.innerText = Cell.multiMsg(title.multiKey);
+            elements.title.show();
+        } else if (title.hasOwnProperty("content")) {
+            elements.title.innerText = title.content;
+            elements.title.show();
+        } else {
+            elements.title.hide();
+        }
+
+        const items = data.hasOwnProperty("items") ? data.items : [];
+        const itemArray = elements.container.querySelectorAll(':scope > a[data-type="banner"]');
+        items.forEach((itemData, index) => {
+            const model = (index < itemArray.length) ? itemArray[index] : BannerRender.newInstance();
+            if (itemArray.length <= index) {
+                elements.container._appendChild(model);
+            }
+            model.dataset.sortCode = index.toString();
+            model.data = itemData;
+        });
+        for (let index = itemArray.length; index < itemArray.length; index++) {
+            elements.container.removeChild(itemArray[index]);
+        }
+
+        if (elements.container.querySelectorAll(':scope > a[data-type="banner"]').length === 0) {
+            elements.container.hide();
+        } else {
+            elements.container.show();
+        }
+    }
+
+    _elements(element = null) {
+        if (element === null) {
+            return null;
+        }
+        return {
+            title: element.querySelector(':scope > h4[data-type="title"]'),
+            container: element.querySelector(':scope > span[data-type="container"]')
+        }
     }
 }
 
@@ -4691,18 +4699,13 @@ class DetailsRender extends TagRender {
             models.dataset.sortCode = "8";
             element._appendChild(models);
 
-            const accessoriesTitle = document.createElement("h4");
-            accessoriesTitle.dataset.type = "accessoriesTitle";
-            accessoriesTitle.dataset.sortCode = "9";
-            element._appendChild(accessoriesTitle);
-
             const accessories = document.createElement("span");
-            accessories.dataset.type = "accessories";
-            accessories.dataset.sortCode = "10";
+            accessories.dataset.type = "accessoriesContainer";
+            accessories.dataset.sortCode = "9";
             element._appendChild(accessories);
 
             const commentList = CommentListRender.newInstance();
-            commentList.dataset.sortCode = "11";
+            commentList.dataset.sortCode = "10";
             element._appendChild(commentList);
         } else if (element.dataset.category.toLowerCase() === "user") {
             const avatar = ResourcesRender.newInstance();
@@ -4766,6 +4769,7 @@ class DetailsRender extends TagRender {
             for (let index = addresses.length; index < addressArray.length; index++) {
                 elements.addresses.removeChild(addressArray[index]);
             }
+            elements.addresses.sortChildrenBy(':scope > section[data-type="address"]', "data-sort-code");
         } else if (element.dataset.category.toLowerCase() === "message") {
             if (data.hasOwnProperty("title")) {
                 elements.title.innerText = data.title;
@@ -4782,9 +4786,7 @@ class DetailsRender extends TagRender {
                     }
                     property.data = {
                         sortCode: index.toString(),
-                        title: {
-                            content: prop.title
-                        },
+                        title: prop.title,
                         value: prop.content,
                         link: prop.hasOwnProperty("link") ? prop.link : ""
                     }
@@ -4862,35 +4864,24 @@ class DetailsRender extends TagRender {
             }
 
             if (data.hasOwnProperty("accessories")) {
-                const accessoriesData = data.accessories;
-                if (accessoriesData.hasOwnProperty("multiKey")) {
-                    elements.accessories.title.innerText = Cell.multiMsg(accessoriesData.multiKey);
-                    elements.accessories.title.show();
-                } else if (accessoriesData.hasOwnProperty("title")) {
-                    elements.accessories.title.innerText = accessoriesData.title;
-                    elements.accessories.title.show();
-                } else {
-                    elements.accessories.title.hide();
-                }
-
-                const accessoriesItems = accessoriesData.hasOwnProperty("items") ? accessoriesData.items : [];
-                const accessoriesArray = elements.accessories.container.querySelectorAll(':scope > a[data-type="banner"]');
-                accessoriesItems.forEach((itemData, index) => {
-                    const model = (index < accessoriesArray.length) ? accessoriesArray[index] : BannerRender.newInstance();
-                    if (accessoriesArray.length <= index) {
-                        elements.accessories.container._appendChild(model);
+                const itemData = (data.accessories instanceof Array) ? data.accessories : Array.of(data.accessories);
+                const itemArray = elements.accessories.querySelectorAll('span[data-type="accessories"]');
+                itemData.forEach((item, index) => {
+                    const accessories = (index < itemArray.length) ? itemArray[index] : AccessoriesRender.newInstance();
+                    if (itemArray.length <= index) {
+                        elements.accessories._appendChild(accessories);
                     }
-                    model.dataset.sortCode = index.toString();
-                    model.data = itemData;
+                    accessories.data = item;
+                    accessories.dataset.sortCode = index.toString();
                 });
-                for (let index = accessoriesItems.length; index < accessoriesArray.length; index++) {
-                    elements.accessories.container.removeChild(accessoriesArray[index]);
+                for (let index = itemData.length; index < itemArray.length; index++) {
+                    elements.accessories.removeChild(itemArray[index]);
                 }
 
-                if (elements.accessories.container.querySelectorAll(':scope > a[data-type="banner"]').length === 0) {
-                    elements.accessories.container.hide();
+                if (elements.accessories.querySelectorAll(':scope > span[data-type="accessories"]').length === 0) {
+                    elements.accessories.hide();
                 } else {
-                    elements.accessories.container.show();
+                    elements.accessories.show();
                 }
             } else {
                 elements.accessories.title.hide();
@@ -4937,10 +4928,7 @@ class DetailsRender extends TagRender {
                     title: element.querySelector(':scope > h4[data-type="modelTitle"]'),
                     container: element.querySelector(':scope > span[data-type="models"]')
                 },
-                accessories: {
-                    title: element.querySelector(':scope > h4[data-type="accessoriesTitle"]'),
-                    container: element.querySelector(':scope > span[data-type="accessories"]')
-                },
+                accessories: element.querySelector(':scope > span[data-type="accessoriesContainer"]'),
                 comment: element.querySelector(':scope > span[data-type="comment-list"]')
             }
         } else if (element.dataset.category.toLowerCase() === "user") {
@@ -5020,7 +5008,7 @@ class SlideRender extends TagRender {
         const openWindow = Boolean(data.openWindow);
         const transitionTime = data.hasOwnProperty("transitionTime") ? data.transitionTime.parseInt() : 0;
         const timeout = element.dataset.timeout.parseInt();
-        const slideType = data.hasOwnProperty("slideType") ? data.slideType.parseInt() : SlideType.ScrollLeft;
+        const slideType = data.hasOwnProperty("slideType") ? SlideType[data.slideType] : SlideType.ScrollLeft;
 
         const items = data.hasOwnProperty("items") ? data.items.filter(item => item.hasOwnProperty("avatar")) : [];
         const sortArray = elements.sort.querySelectorAll(':scope > i');
@@ -5376,9 +5364,9 @@ export {
     GridListRender,
     ListRecordRender,
     MenuRender,
-    SocialGroupRender,
     MapRender,
     AddressRender,
+    AccessoriesRender,
     AttachesRender,
     DetailsRender,
     SlideRender,

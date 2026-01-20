@@ -99,6 +99,8 @@ body {
     --menu-category-item-text-color: 27, 27, 27;
     --social-group-bg-color: ;
     --social-group-text-color: 5, 110, 183;
+    --social-group-hover-bg-color: 223, 241, 255;
+    --social-group-hover-text-color: 5, 110, 183;
     --details-bg-color: 255, 255, 255;
     --details-title-border-color: 129, 185, 255;
     --details-summary-color: 128, 128, 128;

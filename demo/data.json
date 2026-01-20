@@ -25,85 +25,125 @@
             "class": "topMenu",
             "items": [
                 {
-                    "multiKey": "Menu.1",
+                    "title": {
+                        "multiKey": "Menu.1"
+                    },
                     "link": "#Link1"
                 },
                 {
-                    "multiKey": "Menu.2",
+                    "title": {
+                        "multiKey": "Menu.2"
+                    },
                     "items": [
                         {
-                            "multiKey": "Mock.Elements",
+                            "title": {
+                                "multiKey": "Mock.Elements"
+                            },
                             "link": "#mockElement",
                             "items": [
                                 {
-                                    "multiKey": "Mock.Elements",
+                                    "title": {
+                                        "multiKey": "Mock.Elements"
+                                    },
                                     "link": "#mockElement"
                                 },
                                 {
-                                    "multiKey": "Chart.Widgets",
+                                    "title": {
+                                        "multiKey": "Chart.Widgets"
+                                    },
                                     "link": "#charts"
                                 },
                                 {
-                                    "multiKey": "Message.List",
+                                    "title": {
+                                        "multiKey": "Message.List"
+                                    },
                                     "link": "#listDemo"
                                 },
                                 {
-                                    "multiKey": "Form.Info",
+                                    "title": {
+                                        "multiKey": "Form.Info"
+                                    },
                                     "link": "#formDemo"
                                 },
                                 {
-                                    "multiKey": "Message.Details",
+                                    "title": {
+                                        "multiKey": "Message.Details"
+                                    },
                                     "link": "#detailsDemo"
                                 },
                                 {
-                                    "multiKey": "Corporate.Details",
+                                    "title": {
+                                        "multiKey": "Corporate.Details"
+                                    },
                                     "link": "#corpDetailsDemo"
                                 },
                                 {
-                                    "title": "Address Details",
+                                    "title": {
+                                        "content": "Address Details"
+                                    },
                                     "link": "#addressDetails"
                                 }
                             ]
                         },
                         {
-                            "multiKey": "Chart.Widgets",
+                            "title": {
+                                "multiKey": "Chart.Widgets"
+                            },
                             "link": "#charts"
                         },
                         {
-                            "multiKey": "Message.List",
+                            "title": {
+                                "multiKey": "Message.List"
+                            },
                             "link": "#listDemo"
                         },
                         {
-                            "multiKey": "Form.Info",
+                            "title": {
+                                "multiKey": "Form.Info"
+                            },
                             "link": "#formDemo"
                         },
                         {
-                            "multiKey": "Message.Details",
+                            "title": {
+                                "multiKey": "Message.Details"
+                            },
                             "link": "#detailsDemo"
                         },
                         {
-                            "multiKey": "Corporate.Details",
+                            "title": {
+                                "multiKey": "Corporate.Details"
+                            },
                             "link": "#corpDetailsDemo"
                         },
                         {
-                            "title": "Address Details",
+                            "title": {
+                                "content": "Address Details"
+                            },
                             "link": "#addressDetails"
                         }
                     ]
                 },
                 {
-                    "multiKey": "Menu.3",
+                    "title": {
+                        "multiKey": "Menu.3"
+                    },
                     "items": [
                         {
-                            "title": "Child Menu 1",
+                            "title": {
+                                "content": "Child Menu 1"
+                            },
                             "link": "#Link3-1"
                         },
                         {
-                            "title": "Child Menu 2",
+                            "title": {
+                                "content": "Child Menu 2"
+                            },
                             "link": "#Link3-2"
                         },
                         {
-                            "title": "Child Menu 3",
+                            "title": {
+                                "content": "Child Menu 3"
+                            },
                             "link": "#Link3-3"
                         }
                     ]
@@ -118,11 +158,15 @@
             "items": [
                 {
                     "code": "en-US",
-                    "title": "English"
+                    "title": {
+                        "content": "English"
+                    }
                 },
                 {
                     "code": "zh-CN",
-                    "title": "简体中文"
+                    "title": {
+                        "content": "简体中文"
+                    }
                 }
             ]
         }
@@ -131,30 +175,42 @@
         "id": "asideMenu",
         "data": {
             "class": "category",
-            "multiKey": "Category.Name",
+            "title": {
+                "multiKey": "Category.Name"
+            },
             "items": [
                 {
-                    "title": "Category1",
+                    "title": {
+                        "content": "Category1"
+                    },
                     "link": "#1",
                     "icon": "e9da"
                 },
                 {
-                    "title": "Category 2",
+                    "title": {
+                        "content": "Category 2"
+                    },
                     "link": "#1",
                     "icon": "e9da"
                 },
                 {
-                    "title": "Category 3",
+                    "title": {
+                        "content": "Category 3"
+                    },
                     "link": "#1",
                     "icon": "e9da"
                 },
                 {
-                    "title": "Category 4",
+                    "title": {
+                        "content": "Category 4"
+                    },
                     "link": "#1",
                     "icon": "e9da"
                 },
                 {
-                    "title": "Category 5",
+                    "title": {
+                        "content": "Category 5"
+                    },
                     "link": "#1",
                     "icon": "e9da"
                 }
@@ -2194,31 +2250,44 @@
     {
         "id": "socialGroup",
         "data": {
-            "multiKey": "Follow.Us",
+            "class": "socialMenu",
+            "title": {
+                "multiKey": "Follow.Us"
+            },
             "items": [
                 {
                     "icon": "e725",
-                    "title": "Facebook",
+                    "title": {
+                        "content": "Facebook"
+                    },
                     "link": "#FacebookAddress"
                 },
                 {
                     "icon": "e7d7",
-                    "title": "LinkedIn",
+                    "title": {
+                        "content": "LinkedIn"
+                    },
                     "link": "#LinkedInAddress"
                 },
                 {
                     "icon": "e781",
-                    "title": "Github",
+                    "title": {
+                        "content": "Github"
+                    },
                     "link": "https://github.com/wmkm0113"
                 },
                 {
                     "icon": "e902",
-                    "title": "Twitter",
+                    "title": {
+                        "content": "Twitter"
+                    },
                     "link": "#TwitterAddress"
                 },
                 {
                     "icon": "e7b9",
-                    "title": "Instagram",
+                    "title": {
+                        "content": "Instagram"
+                    },
                     "link": "#InstagramAddress"
                 }
             ]
@@ -2311,36 +2380,25 @@
             "title": "Message Title Message Title Message Title Message Title",
             "properties": [
                 {
-                    "title": "Properties1",
+                    "title": {
+                        "content": "Properties1"
+                    },
                     "content": "Content1"
                 },
                 {
-                    "title": "Properties1",
+                    "title": {
+                        "content": "Properties1"
+                    },
                     "content": "Content2",
                     "link": "#"
                 },
                 {
-                    "title": "Properties3",
+                    "title": {
+                        "content": "Properties3"
+                    },
                     "content": "Content3"
                 }
             ],
-            "multiMenu": {
-                "url": "/index.html?lang={languageCode}",
-                "items": [
-                    {
-                        "languageCode": "en",
-                        "languageName": "English"
-                    },
-                    {
-                        "languageCode": "zh_CN",
-                        "languageName": "简体中文"
-                    },
-                    {
-                        "languageCode": "zh_TW",
-                        "languageName": "繁體中文"
-                    }
-                ]
-            },
             "avatar": {
                 "resourcePath": "images/logo.svg",
                 "mimeType": "image/png"
@@ -2440,38 +2498,76 @@
                     }
                 ]
             },
-            "accessories": {
-                "title": "Accessories",
-                "items": [
-                    {
-                        "link": "#accessories1",
-                        "title": "Accessories Name 1",
-                        "avatar": {
-                            "resourcePath": "images/demoVideo.mp4",
-                            "mimeType": "video/mp4",
-                            "title": "Accessories Item 1"
-                        }
+            "accessories": [
+                {
+                    "title": {
+                        "content": "Accessories"
                     },
-                    {
-                        "link": "#accessories2",
-                        "title": "Accessories Name 2",
-                        "avatar": {
-                            "resourcePath": "images/logo_zht.svg",
-                            "mimeType": "image/png",
-                            "title": "Accessories Item 1"
+                    "items": [
+                        {
+                            "link": "#accessories1",
+                            "title": "Accessories Name 1",
+                            "avatar": {
+                                "resourcePath": "images/demoVideo.mp4",
+                                "mimeType": "video/mp4",
+                                "title": "Accessories Item 1"
+                            }
+                        },
+                        {
+                            "link": "#accessories2",
+                            "title": "Accessories Name 2",
+                            "avatar": {
+                                "resourcePath": "images/logo_zht.svg",
+                                "mimeType": "image/png",
+                                "title": "Accessories Item 1"
+                            }
+                        },
+                        {
+                            "link": "#accessories3",
+                            "title": "Accessories Name 3",
+                            "avatar": {
+                                "resourcePath": "images/logo.svg",
+                                "mimeType": "image/png",
+                                "title": "Accessories Item 1"
+                            }
                         }
+                    ]
+                },
+                {
+                    "title": {
+                        "content": "Accessories 2"
                     },
-                    {
-                        "link": "#accessories3",
-                        "title": "Accessories Name 3",
-                        "avatar": {
-                            "resourcePath": "images/logo.svg",
-                            "mimeType": "image/png",
-                            "title": "Accessories Item 1"
+                    "items": [
+                        {
+                            "link": "#accessories1",
+                            "title": "Accessories Name 1",
+                            "avatar": {
+                                "resourcePath": "images/demoVideo.mp4",
+                                "mimeType": "video/mp4",
+                                "title": "Accessories Item 1"
+                            }
+                        },
+                        {
+                            "link": "#accessories2",
+                            "title": "Accessories Name 2",
+                            "avatar": {
+                                "resourcePath": "images/logo_zht.svg",
+                                "mimeType": "image/png",
+                                "title": "Accessories Item 1"
+                            }
+                        },
+                        {
+                            "link": "#accessories3",
+                            "title": "Accessories Name 3",
+                            "avatar": {
+                                "resourcePath": "images/logo.svg",
+                                "mimeType": "image/png",
+                                "title": "Accessories Item 1"
+                            }
                         }
-                    }
-                ]
-            },
+                    ]
+                }
+            ],
             "comments": {
                 "title": "Comment List",
                 "items": [
@@ -2625,8 +2721,8 @@
         "data": {
             "transitionTime": 1000,
             "openWindow": false,
-            "timeOut": 5000,
-            "slideType": 7,
+            "timeout": 5000,
+            "slideType": "ScrollLeft",
             "items": [
                 {
                     "link": "#",

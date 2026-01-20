@@ -262,11 +262,6 @@ export default class CRC extends Crypto {
         CRC.REGISTER("CRC-32/JAMCRC", 32, 0x04C11DB7, 0xFFFFFFFF, 0x00000000, true, true);
         CRC.REGISTER("CRC-32/MPEG-2", 32, 0x04C11DB7, 0xFFFFFFFF, 0x00000000, false, false);
         CRC.REGISTER("CRC-32/XFER", 32, 0x000000AF, 0x00000000, 0x00000000, false, false);
-        if (Cell._modeEnabled(DebugMode.DEBUG)) {
-            for (const name of Object.keys(CRC_CONSTANT)) {
-                Cell.debug("CRC.Test", name, Cell.digestData(name, "123456"), CRC_TEST[name]);
-            }
-        }
     }
 
     static REGISTER(name, bit, polynomial, init = 0x00, xorOut = 0x00,

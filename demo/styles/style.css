@@ -102,13 +102,15 @@ body > main > aside > section[data-type="address"] {
     background-color: rgb(var(--section-bg-color));
 }
 
-body > footer > *[data-type="social-group"] {
+body > footer > nav[data-type="social"],
+body > footer > menu[data-type="social"] {
     width: 15rem;
     float: right;
     margin-bottom: 1rem;
 }
 
-body > footer > *[data-type="social-group"] > span[data-type="items"] > a {
+body > footer > nav[data-type="social"] > span[data-type="items"] > nav > a,
+body > footer > menu[data-type="social"] > span[data-type="items"] > menu > a {
     color: #F2F2F7;
 }
 

@@ -109,18 +109,31 @@ class TipsElement extends EnhancedElement {
     }
 }
 
-class ProgressElement extends EnhancedElement {
-    constructor(ring = false) {
+class ProgressRingElement extends EnhancedElement {
+    constructor() {
         super();
-        this._ring = ring;
     }
 
     static tagName() {
-        return "progress-element";
+        return "progress-ring";
     }
 
     newElement() {
-        return Renders.ProgressRender.newInstance(this._ring);
+        return Renders.ProgressRender.newInstance(true);
+    }
+}
+
+class ProgressBarElement extends EnhancedElement {
+    constructor() {
+        super();
+    }
+
+    static tagName() {
+        return "progress-bar";
+    }
+
+    newElement() {
+        return Renders.ProgressRender.newInstance(false);
     }
 }
 
@@ -180,12 +193,88 @@ class ChartElement extends EnhancedElement {
         this._style = style;
     }
 
+    newElement() {
+        return Renders.ChartRender.newInstance(this._style);
+    }
+}
+
+class PieChartElement extends ChartElement {
+    constructor() {
+        super("pie");
+    }
+
     static tagName() {
-        return "chart-element";
+        return "chart-pie";
+    }
+}
+
+class RoseChartElement extends ChartElement {
+    constructor() {
+        super("rose");
+    }
+
+    static tagName() {
+        return "chart-rose";
+    }
+}
+
+class CircleChartElement extends ChartElement {
+    constructor() {
+        super("circle");
+    }
+
+    static tagName() {
+        return "chart-circle";
+    }
+}
+
+class ColumnChartElement extends ChartElement {
+    constructor() {
+        super("column");
+    }
+
+    static tagName() {
+        return "chart-column";
+    }
+}
+
+class WaterfallChartElement extends ChartElement {
+    constructor() {
+        super("waterfall");
+    }
+
+    static tagName() {
+        return "chart-waterfall";
+    }
+}
+
+class BarChartElement extends ChartElement {
+    constructor() {
+        super("bar");
+    }
+
+    static tagName() {
+        return "chart-bar";
+    }
+}
+
+class KlineChartElement extends ChartElement {
+    constructor() {
+        super("k-line");
+    }
+
+    static tagName() {
+        return "chart-k-line";
+    }
+}
+
+class AddressDetailsElement extends EnhancedElement {
+    static tagName() {
+        return "address-details";
     }
 
     newElement() {
-        return Renders.ChartRender.newInstance(this._style);
+        return Renders.AddressRender.newInstance();
     }
 }
 
@@ -215,7 +304,7 @@ class MultiMenuElement extends EnhancedElement {
     }
 
     newElement() {
-        return Renders.MenuRender.newInstance(true);
+        return Renders.MenuRender.newInstance("multi");
     }
 }
 
@@ -225,7 +314,7 @@ class MenuElement extends EnhancedElement {
     }
 
     newElement() {
-        return Renders.MenuRender.newInstance();
+        return Renders.MenuRender.newInstance("menu");
     }
 }
 
@@ -251,11 +340,11 @@ class CommentListElement extends EnhancedElement {
 
 class SocialGroupElement extends EnhancedElement {
     static tagName() {
-        return "social-group";
+        return "menu-social";
     }
 
     newElement() {
-        return Renders.SocialGroupRender.newInstance();
+        return Renders.MenuRender.newInstance("social");
     }
 }
 
@@ -338,7 +427,9 @@ class PropertyElement extends EnhancedElement {
 }
 
 export {
-    CustomElement, EnhancedElement, TipsElement, ProgressElement, ScoreElement, ResourceElement, BannerElement, ButtonElement, ChartElement,
-    MessageDetailsElement, CorporateDetailsElement, MultiMenuElement, MenuElement, MessageListElement, CommentListElement,
-    SocialGroupElement, SlideElement, CalendarElement, FormItemElement, FormInfoElement, GroupItemElement, TabsItemElement, PropertyElement
+    CustomElement, EnhancedElement, TipsElement, ProgressRingElement, ProgressBarElement, ScoreElement, ResourceElement,
+    BannerElement, ButtonElement, PieChartElement, RoseChartElement, CircleChartElement, ColumnChartElement,
+    WaterfallChartElement, BarChartElement, KlineChartElement, AddressDetailsElement, MessageDetailsElement,
+    CorporateDetailsElement, MultiMenuElement, MenuElement, MessageListElement, CommentListElement, SocialGroupElement,
+    SlideElement, CalendarElement, FormItemElement, FormInfoElement, GroupItemElement, TabsItemElement, PropertyElement
 }

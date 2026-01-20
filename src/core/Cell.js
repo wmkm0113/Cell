@@ -47,24 +47,6 @@ const Options = {
     uploadProgress: ""
 }
 
-const ELEMENTS = [
-    Components.TipsElement, Components.ProgressElement, Components.ScoreElement, Components.ResourceElement,
-    Components.BannerElement, Components.ButtonElement, Components.ChartElement, Components.MessageDetailsElement,
-    Components.CorporateDetailsElement, Components.MultiMenuElement, Components.MenuElement,
-    Components.MessageListElement, Components.CommentListElement, Components.PropertyElement,
-    Components.SocialGroupElement, Components.SlideElement, Components.CalendarElement,
-    Components.FormItemElement, Components.FormInfoElement, Components.GroupItemElement, Components.TabsItemElement
-];
-
-const listener = function () {
-    document.querySelectorAll("span[data-type='lazy']")
-        .forEach(resource => {
-            if (resource.inViewPort()) {
-                resource.loadResource();
-            }
-        });
-}
-
 const retrieveWindow = function (type = "") {
     if (type.length === 0) {
         return null;
@@ -87,6 +69,7 @@ class CellJS {
     _colorListener = -1;
     _registeredRenders = new Map();
     _observer = null;
+    _lazyObserver = null;
 
     constructor() {
         this._config = JSON.stringify(Commons.Config).parseJSON();
@@ -104,21 +87,14 @@ class CellJS {
             childList: true,
             subtree: true
         });
+        this._lazyObserver = new IntersectionObserver(this._lazyLoad);
         this._languageCode = this._config.multi.default;
         this._initMulti();
         this._languageCode.setLanguage();
         [CRC, MD5, SHA, RSA].forEach(crypto => this._registerCrypto(crypto));
-        Object.values(Renders).forEach(render => this._register(render));
-        ELEMENTS.concat(this._config.elements)
-            .filter(component => component.tagName !== undefined && (typeof component.tagName) === "function")
-            .forEach(component => {
-                let tagName = component.tagName();
-                if (tagName !== null) {
-                    if (customElements.get(tagName) === undefined) {
-                        customElements.define(tagName, component);
-                    }
-                }
-            });
+        Object.values(Renders).forEach(render => this.registerRender(render));
+        Object.values(Components).forEach(component => this.registerComponent(component));
+        this._config.components.forEach(component => this.registerComponent(component));
         window.onload = this.scrollPage;
         window.onscroll = this.scrollPage;
         window.onresize = this.scale;
@@ -212,10 +188,6 @@ class CellJS {
         }
 
         Cell.info("Success.Initialize.Result");
-
-        if (Cell._modeEnabled(Commons.DebugMode.DEBUG)) {
-            CRC.test();
-        }
     }
 
     destroy() {
@@ -226,6 +198,7 @@ class CellJS {
             clearInterval(this._colorListener);
         }
         this._observer.disconnect();
+        this._lazyObserver.disconnect();
         this._observer = null;
         this._multiInfo = {};
         this._multilingual = false;
@@ -309,11 +282,22 @@ class CellJS {
         }
     }
 
-    _register(render) {
+    registerRender(render) {
         if (render) {
             const enhanceRender = new render();
             if (enhanceRender.selectors().length > 0) {
                 enhanceRender.selectors().forEach(selector => this._registeredRenders.set(selector, enhanceRender));
+            }
+        }
+    }
+
+    registerComponent(component) {
+        if (component.tagName !== undefined && (typeof component.tagName) === "function") {
+            const tagName = component.tagName();
+            if (tagName !== null && tagName.length > 0) {
+                if (customElements.get(tagName) === undefined) {
+                    customElements.define(tagName, component);
+                }
             }
         }
     }
@@ -336,6 +320,19 @@ class CellJS {
                     this._renderElement(item, render);
                     Cell.multilingual(item);
                 }));
+        $$('span[data-type="lazy"]:not([data-monitor="true"])').forEach((item) => {
+            this._lazyObserver.observe(item);
+            item.dataset.monitor = "true";
+        });
+    }
+
+    _lazyLoad(entries, observer) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.loadResource();
+                observer.unobserve(entry.target);
+            }
+        })
     }
 
     _colorMode() {
@@ -667,8 +664,7 @@ class CellJS {
             _request.onreadystatechange = function () {
                 if (this.readyState === 3 || this.readyState === 4) {
                     if (this.readyState === 4 || stream) {
-                        Cell.debug("Link.Path.Data", url, this.method);
-                        Cell.debug("Status.Data.Response", this.status);
+                        Cell.debug("Link.Path.Data", url, this.method, this.status);
 
                         let languageCode = this.getResponseHeader("languageCode");
                         if (languageCode !== null) {
@@ -960,9 +956,7 @@ class CellJS {
         window.$$ = Commons.$$;
         window.Cell = new CellJS();
         window.Cell.init();
-        window.addEventListener("scroll", listener);
         window.addEventListener("beforeunload", () => {
-            window.removeEventListener("scroll", listener);
             window.Cell.destroy();
             delete window.$;
             delete window.$$;

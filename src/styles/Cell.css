@@ -106,7 +106,7 @@ a {
         grid-template-columns: repeat(1, 1fr);
     }
 
-    span[data-type="details"][data-category="message"] > span[data-type="accessories"] {
+    span[data-type="details"][data-category="message"] > span[data-type="accessoriesContainer"] > span[data-type="accessories"] > span[data-type="container"] {
         grid-template-columns: repeat(2, 1fr);
     }
 }
@@ -132,7 +132,7 @@ a {
         grid-template-columns: repeat(2, 1fr);
     }
 
-    span[data-type="details"][data-category="message"] > span[data-type="accessories"] {
+    span[data-type="details"][data-category="message"] > span[data-type="accessoriesContainer"] > span[data-type="accessories"] > span[data-type="container"] {
         grid-template-columns: repeat(3, 1fr);
     }
 }
@@ -158,7 +158,7 @@ a {
         grid-template-columns: repeat(3, 1fr);
     }
 
-    span[data-type="details"][data-category="message"] > span[data-type="accessories"] {
+    span[data-type="details"][data-category="message"] > span[data-type="accessoriesContainer"] > span[data-type="accessories"] > span[data-type="container"] {
         grid-template-columns: repeat(4, 1fr);
     }
 }
@@ -184,7 +184,7 @@ a {
         grid-template-columns: repeat(4, 1fr);
     }
 
-    span[data-type="details"][data-category="message"] > span[data-type="accessories"] {
+    span[data-type="details"][data-category="message"] > span[data-type="accessoriesContainer"] > span[data-type="accessories"] > span[data-type="container"] {
         grid-template-columns: repeat(5, 1fr);
     }
 }
@@ -210,7 +210,7 @@ a {
         grid-template-columns: repeat(5, 1fr);
     }
 
-    span[data-type="details"][data-category="message"] > span[data-type="accessories"] {
+    span[data-type="details"][data-category="message"] > span[data-type="accessoriesContainer"] > span[data-type="accessories"] > span[data-type="container"] {
         grid-template-columns: repeat(6, 1fr);
     }
 }
@@ -3639,32 +3639,43 @@ menu[data-category] > a::before {
     line-height: 2rem;
 }
 
-*[data-type="social-group"],
-*[data-type="social-group"] > h4,
-*[data-type="social-group"] > span[data-type="items"] {
+nav[data-type="social"],
+nav[data-type="social"] > a,
+nav[data-type="social"] > span[data-type="items"],
+menu[data-type="social"],
+menu[data-type="social"] > a,
+menu[data-type="social"] > span[data-type="items"] {
     width: 100%;
 }
 
-*[data-type="social-group"] > h4 {
+nav[data-type="social"] > a,
+menu[data-type="social"] > a {
     height: 3rem;
     margin: 0 auto;
     line-height: 3rem;
+    font-size: 1.5rem;
+    font-weight: bolder;
 }
 
-*[data-type="social-group"] {
+nav[data-type="social"],
+menu[data-type="social"] {
     background-color: rgb(var(--social-group-bg-color));
 }
 
-*[data-type="social-group"] > span[data-type="items"] > a {
+nav[data-type="social"] > span[data-type="items"] > nav,
+menu[data-type="social"] > span[data-type="items"] > menu {
     width: 2rem;
     height: 2rem;
     line-height: 2rem;
     text-align: center;
     margin: 0.5rem;
     color: rgb(var(--social-group-text-color));
+    overflow: hidden;
+    border-radius: 100%;
 }
 
-*[data-type="social-group"] > span[data-type="items"] > a::before {
+nav[data-type="social"] > span[data-type="items"] > nav > a::before,
+menu[data-type="social"] > span[data-type="items"] > menu > a::before {
     content: attr(data-icon);
     width: 2rem;
     height: 2rem;
@@ -3672,6 +3683,24 @@ menu[data-category] > a::before {
     text-align: center;
     font-size: 1.5rem;
     display: inline-block;
+}
+
+nav[data-type="social"] > span[data-type="items"] > nav > a,
+nav[data-type="social"] > span[data-type="items"] > nav > a::before,
+menu[data-type="social"] > span[data-type="items"] > menu > a,
+menu[data-type="social"] > span[data-type="items"] > menu > a::before {
+    padding: 0;
+}
+
+nav[data-type="social"] > span[data-type="items"] > nav:hover,
+menu[data-type="social"] > span[data-type="items"] > menu:hover {
+    background-color: rgb(var(--social-group-hover-bg-color));
+    color: rgb(var(--social-group-hover-text-color));
+}
+
+nav[data-type="social"] > span[data-type="items"] > nav:hover > a,
+menu[data-type="social"] > span[data-type="items"] > menu:hover > a {
+    color: rgb(var(--social-group-hover-text-color));
 }
 
 section[data-type="address"] {
@@ -3778,14 +3807,20 @@ span[data-type="details"][data-category="message"] > span[data-type="summary"] {
     font-size: 1rem;
 }
 
+span[data-type="accessories"] > span[data-type="container"],
 span[data-type="details"][data-category="message"] > span[data-type="content"],
 span[data-type="details"][data-category="message"] > span[data-type="resources"],
 span[data-type="details"][data-category="message"] > span[data-type="attaches"],
 span[data-type="details"][data-category="message"] > span[data-type="models"],
-span[data-type="details"][data-category="message"] > span[data-type="accessories"] {
+span[data-type="details"][data-category="message"] > span[data-type="accessoriesContainer"],
+span[data-type="details"][data-category="message"] > span[data-type="accessoriesContainer"] > span {
     width: 100%;
     line-height: 2rem;
     margin-top: 1rem;
+}
+
+span[data-type="details"][data-category="message"] > span[data-type="accessoriesContainer"] > span:first-child {
+    margin-top: 0;
 }
 
 span[data-type="details"][data-category="message"] > span[data-type="content"],
@@ -3794,6 +3829,7 @@ span[data-type="details"][data-category="message"] > span[data-type="content"] >
     text-indent: 2rem;
 }
 
+span[data-type="accessories"] > h4,
 span[data-type="details"][data-category="message"] > h4,
 span[data-type="details"][data-category="message"] > span[data-type="attaches"] > h4,
 span[data-type="details"][data-category="message"] > span[data-type="models"] > h4 {
@@ -3803,13 +3839,14 @@ span[data-type="details"][data-category="message"] > span[data-type="models"] > 
     margin-left: 1rem;
 }
 
+span[data-type="accessories"] > h4,
 span[data-type="details"][data-category="message"] > h4 {
     margin-top: 1rem;
 }
 
 span[data-type="details"] > span[data-type="resources"],
 span[data-type="details"][data-category="message"] > span[data-type="models"],
-span[data-type="details"][data-category="message"] > span[data-type="accessories"] {
+span[data-type="details"][data-category="message"] > span[data-type="accessoriesContainer"] > span[data-type="accessories"] > span[data-type="container"] {
     display: grid;
     grid-gap: 1rem;
 }
@@ -3831,13 +3868,13 @@ span[data-type="details"][data-category="message"] > span[data-type="attaches"] 
     color: rgb(var(--details-attaches-item-hover-text-color));
 }
 
-span[data-type="details"][data-category="message"] > span[data-type="accessories"] > a,
+span[data-type="details"][data-category="message"] > span[data-type="accessoriesContainer"] > span[data-type="accessories"] > span[data-type="container"] > a,
 span[data-type="details"][data-category="message"] > span[data-type="models"] > a {
     margin: 0 auto;
     cursor: pointer;
 }
 
-span[data-type="details"][data-category="message"] > span[data-type="accessories"] > a {
+span[data-type="details"][data-category="message"] > span[data-type="accessoriesContainer"] > span[data-type="accessories"] > span[data-type="container"] > a {
     width: 100%;
     height: 8rem;
 }
@@ -3875,7 +3912,7 @@ span[data-type="details"][data-category="message"] > span[data-type="models"] > 
     background: transparent;
 }
 
-span[data-type="details"][data-category="message"] > span[data-type="accessories"] > a:after {
+span[data-type="details"][data-category="message"] > span[data-type="accessoriesContainer"] > span[data-type="accessories"] > span[data-type="container"] > a:after {
     content: attr(title, "");
     width: 100%;
     height: 100%;
@@ -3889,7 +3926,7 @@ span[data-type="details"][data-category="message"] > span[data-type="accessories
     align-items: center;
 }
 
-span[data-type="details"][data-category="message"] > span[data-type="accessories"] > a:hover:after {
+span[data-type="details"][data-category="message"] > span[data-type="accessoriesContainer"] > span[data-type="accessories"] > span[data-type="container"] > a:hover:after {
     display: none;
 }
 
