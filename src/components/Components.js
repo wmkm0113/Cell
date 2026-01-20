@@ -215,13 +215,13 @@ class MultiMenuElement extends EnhancedElement {
     }
 
     newElement() {
-        return Renders.MultiMenuRender.newInstance();
+        return Renders.MenuRender.newInstance(true);
     }
 }
 
 class MenuElement extends EnhancedElement {
     static tagName() {
-        return "menu-element";
+        return "menu-info";
     }
 
     newElement() {

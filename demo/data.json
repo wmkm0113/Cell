@@ -33,7 +33,37 @@
                     "items": [
                         {
                             "multiKey": "Mock.Elements",
-                            "link": "#mockElement"
+                            "link": "#mockElement",
+                            "items": [
+                                {
+                                    "multiKey": "Mock.Elements",
+                                    "link": "#mockElement"
+                                },
+                                {
+                                    "multiKey": "Chart.Widgets",
+                                    "link": "#charts"
+                                },
+                                {
+                                    "multiKey": "Message.List",
+                                    "link": "#listDemo"
+                                },
+                                {
+                                    "multiKey": "Form.Info",
+                                    "link": "#formDemo"
+                                },
+                                {
+                                    "multiKey": "Message.Details",
+                                    "link": "#detailsDemo"
+                                },
+                                {
+                                    "multiKey": "Corporate.Details",
+                                    "link": "#corpDetailsDemo"
+                                },
+                                {
+                                    "title": "Address Details",
+                                    "link": "#addressDetails"
+                                }
+                            ]
                         },
                         {
                             "multiKey": "Chart.Widgets",
@@ -84,15 +114,15 @@
     {
         "id": "multiMenu",
         "data": {
-            "class": "multi",
+            "class": "multiMenu",
             "items": [
                 {
                     "code": "en-US",
-                    "name": "English"
+                    "title": "English"
                 },
                 {
                     "code": "zh-CN",
-                    "name": "简体中文"
+                    "title": "简体中文"
                 }
             ]
         }

@@ -4173,110 +4173,17 @@ class ListRecordRender extends TagRender {
     }
 }
 
-class MultiMenuRender extends TagRender {
-    static newInstance() {
+class MenuRender extends TagRender {
+
+    static newInstance(multi = false) {
+        //  Default using nav tag
         const menu = document.createElement("nav");
-        menu.dataset.type = "multi";
+        menu.dataset.type = multi ? "multi" : "menu";
         return menu;
     }
 
     selectors() {
-        return ['nav[data-type="multi"]', 'menu[data-type="multi"]'];
-    }
-
-    _enhance(element = null) {
-        if (element === null) {
-            return;
-        }
-
-        element.clearChildNodes();
-
-        const icon = document.createElement("i");
-        icon.dataset.sortCode = "0";
-        icon.innerText = String.fromCodePoint(Comment.Icons.Multilingual);
-        element.appendChild(icon);
-
-        const items = document.createElement("span");
-        items.dataset.type = "items";
-        items.dataset.sortCode = "1";
-        element.appendChild(items);
-    }
-
-    _setData(element = null, data = {}) {
-        if (element === null) {
-            return;
-        }
-        const container = this._container(element);
-        if (container === null) {
-            return;
-        }
-        if (data.hasOwnProperty("class")) {
-            element.setClass(data.class);
-        }
-        element.dataset.linkTemplate = data.hasOwnProperty("linkTemplate") ? data.linkTemplate : "#";
-        element.dataset.targetId = data.hasOwnProperty("targetId") ? data.targetId : "";
-        if (data.hasOwnProperty("items")) {
-            const items = ((data.items instanceof Array) ? data.items : [data.items]),
-                itemArray = container.querySelectorAll("a");
-            items.filter(item => item.hasOwnProperty("code") && item.hasOwnProperty("name"))
-                .forEach((itemData, index) => {
-                    const item = (index < itemArray.length) ? itemArray[index] : document.createElement("a");
-                    if (itemArray.length <= index) {
-                        item.addEventListener("click", (event) => {
-                            const target = event.target,
-                                multiMenu = target.parentElement.parentElement;
-                            if (target.dataset.hasOwnProperty("langCode")) {
-                                const langCode = target.dataset.langCode;
-                                Cell.language = langCode;
-                                if (langCode.length > 0) {
-                                    if (multiMenu && multiMenu.dataset.hasOwnProperty("linkTemplate")) {
-                                        const link = multiMenu.dataset.linkTemplate.replaceAll("{languageCode}", langCode);
-                                        if (link.length > 0) {
-                                            target.href = link;
-                                            target.dataset.targetId =
-                                                multiMenu.dataset.hasOwnProperty("targetId") ? multiMenu.dataset.targetId : "";
-                                            Cell.eventRequest(event);
-                                        }
-                                    }
-                                }
-                            }
-                        });
-                        container.appendChild(item);
-                    }
-                    item.dataset.langCode = itemData.code;
-                    item.innerText = itemData.name;
-                    item.dataset.sortCode = itemData.hasOwnProperty("sortCode") ? itemData.sortCode : "0";
-                });
-            for (let index = items.length; index < itemArray.length; index++) {
-                container.removeChild(itemArray[index]);
-            }
-            container.sortChildrenBy(':scope > a', "data-sort-code", true);
-        } else {
-            container.clearChildNodes();
-        }
-        if (container.childList().length === 0) {
-            element.hide();
-        } else {
-            element.show();
-        }
-    }
-
-    _container(element = null) {
-        if (element === null) {
-            return null;
-        }
-        return element.querySelector(':scope > span[data-type="items"]');
-    }
-}
-
-class MenuRender extends TagRender {
-
-    static newInstance() {
-        return document.createElement("nav");
-    }
-
-    selectors() {
-        return ['nav:not([data-type])', 'menu:not([data-type])'];
+        return ['nav[data-type]', 'menu[data-type]'];
     }
 
     _enhance(element = null) {
@@ -4290,7 +4197,25 @@ class MenuRender extends TagRender {
         link.dataset.type = "main";
         link.dataset.sortCode = "0";
         element.appendChild(link);
-        link.addEventListener("click", (event) => Cell.eventRequest(event));
+        link.addEventListener("click", (event) => {
+            const target = event.target;
+            if (target.dataset.hasOwnProperty("langCode") && target.parentElement.dataset.type === "multi") {
+                const langCode = target.dataset.langCode;
+                if (langCode.length > 0) {
+                    Cell.language = langCode;
+                    if (document.body.dataset.hasOwnProperty("multiTemplate")) {
+                        const link = document.body.dataset.multiTemplate.replaceAll("{languageCode}", langCode);
+                        if (link.length > 0) {
+                            target.href = link;
+                        }
+                    }
+                }
+            }
+            Cell.eventRequest(event);
+        });
+        if (element.dataset.type.toLowerCase() === "multi" && !element.dataset.hasOwnProperty("category")) {
+            link.dataset.icon = String.fromCodePoint(Comment.Icons.Multilingual);
+        }
 
         const items = document.createElement("span");
         items.dataset.type = "items";
@@ -4320,10 +4245,16 @@ class MenuRender extends TagRender {
             elements.main.href = "#";
         }
 
-        if (data.hasOwnProperty("icon") && data.icon !== null && data.icon.length > 0) {
-            elements.main.dataset.icon = String.fromCodePoint(Number.parseInt(data.icon, 16));
-        } else {
-            delete elements.main.dataset.icon;
+        if (element.dataset.type.toLowerCase() === "menu" || element.dataset.hasOwnProperty("category")) {
+            if (data.hasOwnProperty("icon") && data.icon !== null && data.icon.length > 0) {
+                elements.main.dataset.icon = String.fromCodePoint(Number.parseInt(data.icon, 16));
+            } else {
+                delete elements.main.dataset.icon;
+            }
+        }
+
+        if (element.dataset.type.toLowerCase() === "multi" && data.hasOwnProperty("code")) {
+            elements.main.dataset.langCode = data.code;
         }
 
         let textContent = "";
@@ -4340,20 +4271,28 @@ class MenuRender extends TagRender {
         } else {
             delete elements.main.dataset.targetId;
         }
+        if (textContent.length === 0 && !elements.main.dataset.hasOwnProperty("icon")) {
+            elements.main.hide();
+        } else {
+            elements.main.show();
+        }
         if (data.hasOwnProperty("items")) {
-            const itemArray = elements.items.querySelectorAll(':scope > span[data-type="menu"]');
-            data.items.forEach((itemData, index) => {
-                const item = index < itemArray.length ? itemArray[index] : document.createElement("span");
-                if (itemArray.length <= index) {
-                    item.dataset.type = "menu";
-                    this._enhance(item);
-                    elements.items.appendChild(item);
+            if ((element.dataset.type.toLowerCase() === "multi" && !element.dataset.hasOwnProperty("category"))
+                || (element.dataset.type.toLowerCase() === "menu")) {
+                const itemArray = elements.items.querySelectorAll(`:scope > ${element.tagName}[data-type="${element.dataset.type}"][data-category="item"]`);
+                data.items.forEach((itemData, index) => {
+                    const item = index < itemArray.length ? itemArray[index] : document.createElement(element.tagName);
+                    if (itemArray.length <= index) {
+                        item.dataset.type = element.dataset.type;
+                        item.dataset.category = "item";
+                        elements.items._appendChild(item);
+                    }
+                    item.dataset.sortCode = index.toString();
+                    item.data = itemData;
+                });
+                for (let index = data.items.length; index < itemArray.length; index++) {
+                    elements.items.removeChild(itemArray[index]);
                 }
-                item.dataset.sortCode = index.toString();
-                this._renderMenu(item, itemData);
-            });
-            for (let index = data.items.length; index < itemArray.length; index++) {
-                elements.items.removeChild(itemArray[index]);
             }
         }
         if (elements.items.childList().length === 0) {
@@ -5436,7 +5375,6 @@ export {
     PagerRender,
     GridListRender,
     ListRecordRender,
-    MultiMenuRender,
     MenuRender,
     SocialGroupRender,
     MapRender,

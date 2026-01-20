@@ -1261,8 +1261,8 @@ select:focus {
 }
 
 select > option {
-    background-color: rgb(var(--pager-current-bg-color));
-    color: rgb(var(--pager-current-text-color));
+    background-color: rgb(var(--pager-item-bg-color));
+    color: rgb(var(--pager-text-color));
 }
 
 select > option:hover {
@@ -3445,152 +3445,92 @@ div[data-type="grid"] > span[data-type="data-grid"] > span[data-type="pager"] {
     float: right;
 }
 
-menu, nav {
+menu:not([data-category]), nav:not([data-category]) {
     margin-left: 1rem;
 }
 
-span[data-type="menu"] {
+nav > a,
+menu > a {
+    padding: 0 1rem;
+}
+
+nav.topMenu,
+menu.topMenu {
     height: 3rem;
     cursor: pointer;
 }
 
-span[data-type="menu"] > a {
-    padding: 0 1rem;
-}
-
-span[data-type="menu"] > a::before {
-    max-width: 2rem;
-    content: attr(data-icon);
-    line-height: 3rem;
-    margin-right: 0.5rem;
-    display: flex;
-    justify-content: center;
-    float: left;
-}
-
-span[data-type="menu"] > span[data-type="items"] {
-    width: 100%;
-    max-height: 2rem;
-    position: absolute;
-    top: 3rem;
-    left: 0;
-    background-color: rgb(var(--menu-item-bg-color));
-    display: none;
-}
-
-span[data-type="menu"] > span[data-type="items"] > span[data-type="menu"] {
-    height: 2rem;
-}
-
-menu[data-type="multi"]:hover > span[data-type="items"],
-nav[data-type="multi"]:hover > span[data-type="items"],
-span[data-type="menu"]:hover > span[data-type="items"] {
-    display: block;
-}
-
-span[data-type="items"] > span[data-type="menu"] > a {
-    height: 2rem;
-    line-height: 2rem;
-    font-size: 1rem;
-    font-weight: normal;
-    color: rgb(var(--menu-item-text-color));
-    text-align: center;
-}
-
-menu > a::before,
-nav > a::before,
-span[data-type="items"] > span[data-type="menu"] > a::before {
-    content: attr(data-icon);
-    line-height: 2rem;
-    text-align: center;
-    display: inline-block;
-}
-
-menu.category > span[data-type="items"] > span[data-type="menu"]:hover,
-nav.category > span[data-type="items"] > span[data-type="menu"]:hover,
-menu[data-type="multi"] > span[data-type="items"] > a:hover,
-nav[data-type="multi"] > span[data-type="items"] > a:hover,
-span[data-type="items"] > span[data-type="menu"]:hover {
-    background-color: rgb(var(--menu-item-hover-bg-color));
-}
-
-menu[data-type="multi"] > span[data-type="items"] > a:hover,
-nav[data-type="multi"] > span[data-type="items"] > a:hover,
-span[data-type="items"] > span[data-type="menu"]:hover > a {
-    color: rgb(var(--menu-item-hover-text-color));
-}
-
-menu[data-type="multi"]:hover > span[data-type="items"],
-nav[data-type="multi"]:hover > span[data-type="items"],
-menu > span[data-type="items"] > span[data-type="menu"]:hover,
-nav > span[data-type="items"] > span[data-type="menu"]:hover {
-    background-color: rgb(var(--menu-hover-bg-color));
-}
-
-menu.topMenu > span[data-type="items"] > span[data-type="menu"] > a,
-nav.topMenu > span[data-type="items"] > span[data-type="menu"] > a {
+nav.topMenu > a,
+nav.topMenu > span[data-type="items"],
+nav.topMenu > span[data-type="items"] > nav,
+nav.topMenu > span[data-type="items"] > nav > a,
+menu.topMenu > a,
+menu.topMenu > span[data-type="items"],
+menu.topMenu > span[data-type="items"] > menu,
+menu.topMenu > span[data-type="items"] > menu > a {
     height: 3rem;
     line-height: 3rem;
-    color: rgb(var(--menu-text-color));
-    font-weight: bolder;
-    text-align: center;
 }
 
-menu > span[data-type="items"] > span[data-type="menu"]:hover > a,
-nav > span[data-type="items"] > span[data-type="menu"]:hover > a {
+nav.topMenu > span[data-type="items"] > nav > a,
+menu.topMenu > span[data-type="items"] > menu > a {
+    color: rgb(var(--text-color));
+}
+
+nav.topMenu > span[data-type="items"] > nav:hover > a,
+menu.topMenu > span[data-type="items"] > menu:hover > a {
+    font-weight: bolder;
+    background-color: rgb(var(--menu-hover-bg-color));
     color: rgb(var(--menu-hover-text-color));
 }
 
-menu[data-type="multi"],
-nav[data-type="multi"] {
-    width: 3rem;
+nav.topMenu > span[data-type="items"] > nav > span[data-type="items"],
+menu.topMenu > span[data-type="items"] > menu > span[data-type="items"] {
+    top: 3rem;
+}
+
+nav.multiMenu,
+menu.multiMenu {
     height: 3rem;
-    position: relative;
-    cursor: pointer;
     float: right;
 }
 
-menu[data-type="multi"] > i,
-nav[data-type="multi"] > i {
-    width: 2rem;
-    height: 2rem;
-    line-height: 2rem;
-    padding: 0.5rem;
-    display: flex;
-    justify-content: center;
-    font-size: 1.5rem;
-}
-
-menu[data-type="multi"] > span[data-type="items"],
-nav[data-type="multi"] > span[data-type="items"] {
-    width: max-content;
-    position: absolute;
-    top: 3rem;
-    right: 0;
-    display: none;
-}
-
-menu[data-type="multi"] > span[data-type="items"] > a,
-nav[data-type="multi"] > span[data-type="items"] > a {
-    height: 2rem;
-    line-height: 2rem;
-    padding: 0 1rem;
-    font-size: 1rem;
-    color: rgb(var(--menu-item-text-color));
-}
-
-menu[data-type="multi"]:hover,
-nav[data-type="multi"]:hover {
+nav.multiMenu:hover,
+menu.multiMenu:hover {
     background-color: rgb(var(--menu-hover-bg-color));
+    color: rgb(var(--menu-hover-text-color));
 }
 
-menu[data-type="multi"]:hover > i,
-nav[data-type="multi"]:hover > i {
-    color: rgb(var(--menu-hover-text-color));;
+nav.multiMenu > a,
+menu.multiMenu > a {
+    padding: 0;
 }
 
-menu.category,
-nav.category {
+nav.multiMenu > a::before,
+menu.multiMenu > a::before {
+    width: 3rem;
+    max-width: 3rem;
+    font-size: 1.5rem;
+    margin-right: 0;
+}
+
+nav.multiMenu > span[data-type="items"],
+menu.multiMenu > span[data-type="items"] {
+    width: 100%;
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 3rem;
+    background-color: rgb(var(--menu-hover-bg-color));
+    text-align: right;
+}
+
+nav.multiMenu > span[data-type="items"] > nav,
+menu.multiMenu > span[data-type="items"] > menu {
+    float: right;
+}
+
+nav.category, menu.category {
     width: 100%;
     height: auto;
     margin-left: 0;
@@ -3599,8 +3539,8 @@ nav.category {
     background-color: rgb(var(--menu-category-bg-color, var(--section-bg-color)))
 }
 
-menu.category > a,
-nav.category > a {
+nav.category > a,
+menu.category > a {
     width: calc(-2rem + 100%);
     height: 3rem;
     line-height: 3rem;
@@ -3612,26 +3552,91 @@ nav.category > a {
     font-weight: bolder;
 }
 
-menu.category > span[data-type="items"],
-nav.category > span[data-type="items"] {
+nav.category > span[data-type="items"],
+menu.category > span[data-type="items"] {
     width: 100%;
     height: auto;
     display: block;
 }
 
-menu.category > span[data-type="items"] > span[data-type="menu"],
-nav.category > span[data-type="items"] > span[data-type="menu"] {
+nav.category > span[data-type="items"] > nav,
+menu.category > span[data-type="items"] > menu {
     width: 100%;
-    height: 2.5rem;
-    line-height: 2.5rem;
+    height: 2rem;
+    line-height: 2rem;
 }
 
-menu.category > span[data-type="items"] > span[data-type="menu"] > a,
-nav.category > span[data-type="items"] > span[data-type="menu"] > a {
-    width: calc(-3rem + 100%);
-    padding: 0.25rem 1.5rem;
+nav.category > span[data-type="items"] > nav > a,
+menu.category > span[data-type="items"] > menu > a {
+    width: calc(-2rem + 100%);
+    padding: 0 1rem;
     color: rgb(var(--menu-category-item-text-color));
     text-align: left;
+}
+
+nav > a::before,
+menu > a::before {
+    max-width: 2rem;
+    content: attr(data-icon);
+    line-height: 3rem;
+    margin-right: 0.5rem;
+    display: flex;
+    justify-content: center;
+    float: left;
+}
+
+nav[data-category] > span[data-type="items"],
+menu[data-category] > span[data-type="items"] {
+    width: 100%;
+    max-height: 2rem;
+    position: absolute;
+    top: 2rem;
+    left: 0;
+    background-color: rgb(var(--menu-item-bg-color));
+    display: none;
+}
+
+nav[data-category] > span[data-type="items"] > nav,
+menu[data-category] > span[data-type="items"] > menu {
+    height: 2rem;
+}
+
+menu:hover > span[data-type="items"],
+nav:hover > span[data-type="items"] {
+    display: block;
+}
+
+span[data-type="items"] > nav > a,
+span[data-type="items"] > menu > a {
+    height: 2rem;
+    line-height: 2rem;
+    font-size: 1rem;
+    font-weight: normal;
+    color: rgb(var(--menu-item-text-color));
+    text-align: center;
+}
+
+span[data-type="items"] > nav:hover,
+span[data-type="items"] > menu:hover {
+    background-color: rgb(var(--menu-item-hover-bg-color));
+}
+
+span[data-type="items"] > nav:hover > a,
+span[data-type="items"] > menu:hover > a {
+    color: rgb(var(--menu-item-hover-text-color));
+}
+
+nav > a::before,
+menu > a::before {
+    content: attr(data-icon);
+    text-align: center;
+    display: inline-block;
+}
+
+nav[data-category] > a::before,
+menu[data-category] > a::before {
+    width: 2rem;
+    line-height: 2rem;
 }
 
 *[data-type="social-group"],

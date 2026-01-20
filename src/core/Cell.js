@@ -555,6 +555,9 @@ class CellJS {
                 responseData.description.setDescription();
                 this.debug("Description.Data.Response", responseData.description);
             }
+            if (responseData.hasOwnProperty("multiTemplate")) {
+                document.body.dataset.multiTemplate = responseData.multiTemplate;
+            }
             if (responseData.hasOwnProperty("data")) {
                 this.debug("Info.Data.Response", JSON.stringify(responseData.data), _floatWindow);
                 if (!_floatWindow) {
