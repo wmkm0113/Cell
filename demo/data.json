@@ -471,7 +471,7 @@
                 },
                 "itemData": [
                     {
-                        "link": "details.json",
+                        "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/details.json",
                         "openWindow": true,
                         "summary": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
                         "title": "Text content Text content Text content Text content Text content Text content Text content Text content",
@@ -488,7 +488,7 @@
                         ],
                         "operators": [
                             {
-                                "link": "form.json",
+                                "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/form.json",
                                 "index": 3,
                                 "text": {
                                     "content": "Edit"
@@ -515,7 +515,7 @@
                         ],
                         "avatar": {
                             "mimeType": "video/mp4",
-                            "resourcePath": "./images/demoVideo.mp4",
+                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/demoVideo.mp4",
                             "muted": "true"
                         },
                         "identifyCode": "1"
@@ -534,9 +534,9 @@
                         ],
                         "avatar": {
                             "mimeType": "image/jpg",
-                            "resourcePath": "./images/1.jpg"
+                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
                         },
-                        "link": "details.json",
+                        "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/details.json",
                         "identifyCode": "2",
                         "openWindow": true,
                         "className": "warning",
@@ -545,7 +545,7 @@
                     {
                         "operators": [
                             {
-                                "link": "form.json",
+                                "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/form.json",
                                 "index": 3,
                                 "textContent": "Edit",
                                 "title": "Edit",
@@ -562,7 +562,7 @@
                         ],
                         "avatar": {
                             "mimeType": "video/mp4",
-                            "resourcePath": "./images/demoVideo.mp4",
+                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/demoVideo.mp4",
                             "muted": "true"
                         },
                         "properties": [
@@ -575,14 +575,14 @@
                             "Column 2 Text",
                             "Column 1 Text"
                         ],
-                        "link": "details.json",
+                        "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/details.json",
                         "openWindow": true,
                         "identifyCode": "3",
                         "summary": "中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试",
                         "title": "Text content Text content Text content Text content Text content Text content Text content Text content"
                     },
                     {
-                        "link": "details.json",
+                        "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/details.json",
                         "openWindow": true,
                         "properties": [
                             "Column 9 Text",
@@ -615,7 +615,7 @@
                         ],
                         "avatar": {
                             "mimeType": "image/jpg",
-                            "resourcePath": "./images/1.jpg"
+                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
                         },
                         "identifyCode": "4"
                     },
@@ -623,7 +623,7 @@
                         "score": 3.0,
                         "avatar": {
                             "mimeType": "video/mp4",
-                            "resourcePath": "./images/demoVideo.mp4",
+                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/demoVideo.mp4",
                             "autoplay": true
                         },
                         "properties": [
@@ -636,7 +636,7 @@
                             "Column 2 Text",
                             "Column 1 Text"
                         ],
-                        "link": "details.json",
+                        "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/details.json",
                         "openWindow": true,
                         "identifyCode": "5",
                         "title": "Text content Text content Text content Text content Text content Text content Text content Text content"
@@ -644,7 +644,7 @@
                     {
                         "operators": [
                             {
-                                "link": "form.json",
+                                "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/form.json",
                                 "index": 3,
                                 "textContent": "Edit",
                                 "title": "Edit",
@@ -661,7 +661,7 @@
                         ],
                         "avatar": {
                             "mimeType": "image/jpg",
-                            "resourcePath": "./images/1.jpg"
+                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
                         },
                         "properties": [
                             "",
@@ -698,7 +698,7 @@
                         "score": 4.2,
                         "operators": [
                             {
-                                "link": "form.json",
+                                "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/form.json",
                                 "index": 3,
                                 "textContent": "Edit",
                                 "title": "Edit",
@@ -722,7 +722,7 @@
                         ],
                         "avatar": {
                             "mimeType": "image/jpg",
-                            "resourcePath": "./images/1.jpg"
+                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
                         },
                         "identifyCode": "7"
                     },
@@ -730,7 +730,7 @@
                         "score": 3.0,
                         "avatar": {
                             "mimeType": "image/jpg",
-                            "resourcePath": "./images/1.jpg"
+                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
                         },
                         "properties": [
                             "",
@@ -742,7 +742,7 @@
                             "Column 2 Text",
                             "Column 1 Text"
                         ],
-                        "link": "details.json",
+                        "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/details.json",
                         "openWindow": true,
                         "identifyCode": "8",
                         "title": "Text content Text content Text content Text content Text content Text content Text content Text content"
@@ -750,7 +750,7 @@
                     {
                         "operators": [
                             {
-                                "link": "form.json",
+                                "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/form.json",
                                 "index": 3,
                                 "textContent": "Edit",
                                 "title": "Edit",
@@ -767,7 +767,7 @@
                         ],
                         "avatar": {
                             "mimeType": "image/jpg",
-                            "resourcePath": "./images/1.jpg"
+                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
                         },
                         "properties": [
                             "",
@@ -779,7 +779,7 @@
                             "Column 2 Text",
                             "Column 1 Text"
                         ],
-                        "link": "details.json",
+                        "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/details.json",
                         "openWindow": true,
                         "identifyCode": "9",
                         "summary": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
@@ -789,7 +789,7 @@
                         "score": 3.0,
                         "avatar": {
                             "mimeType": "image/jpg",
-                            "resourcePath": "./images/1.jpg"
+                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
                         },
                         "properties": [
                             "",
@@ -801,7 +801,7 @@
                             "Column 2 Text",
                             "Column 1 Text"
                         ],
-                        "link": "details.json",
+                        "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/details.json",
                         "openWindow": true,
                         "className": "warning",
                         "identifyCode": "10",
@@ -811,7 +811,7 @@
                         "score": 3.0,
                         "avatar": {
                             "mimeType": "image/jpg",
-                            "resourcePath": "./images/1.jpg"
+                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
                         },
                         "properties": [
                             "",
@@ -823,7 +823,7 @@
                             "Column 2 Text",
                             "Column 1 Text"
                         ],
-                        "link": "details.json",
+                        "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/details.json",
                         "openWindow": true,
                         "className": "warning",
                         "identifyCode": "11",
@@ -833,7 +833,7 @@
                         "score": 3.0,
                         "avatar": {
                             "mimeType": "image/jpg",
-                            "resourcePath": "./images/1.jpg"
+                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
                         },
                         "properties": [
                             "",
@@ -845,7 +845,7 @@
                             "Column 2 Text",
                             "Column 1 Text"
                         ],
-                        "link": "details.json",
+                        "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/details.json",
                         "openWindow": true,
                         "className": "warning",
                         "identifyCode": "12",
@@ -855,7 +855,7 @@
                         "score": 3.0,
                         "avatar": {
                             "mimeType": "image/jpg",
-                            "resourcePath": "./images/1.jpg"
+                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
                         },
                         "properties": [
                             "",
@@ -867,7 +867,7 @@
                             "Column 2 Text",
                             "Column 1 Text"
                         ],
-                        "link": "details.json",
+                        "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/details.json",
                         "openWindow": true,
                         "className": "warning",
                         "identifyCode": "13",
@@ -877,7 +877,7 @@
                         "score": 3.0,
                         "avatar": {
                             "mimeType": "image/jpg",
-                            "resourcePath": "./images/1.jpg"
+                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
                         },
                         "properties": [
                             "",
@@ -889,7 +889,7 @@
                             "Column 2 Text",
                             "Column 1 Text"
                         ],
-                        "link": "details.json",
+                        "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/details.json",
                         "openWindow": true,
                         "className": "warning",
                         "identifyCode": "14",
@@ -932,7 +932,7 @@
                         "year": "2026",
                         "month": "1",
                         "weekend": false,
-                        "dataLink": "/demo/calendar.json?year={year}&month={month}&week={week}"
+                        "dataLink": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/calendar.json?year={year}&month={month}&week={week}"
                     }
                 }
             ]
@@ -1372,11 +1372,11 @@
                     "reference": [
                         {
                             "mimeType": "image/jpg",
-                            "resourcePath": "images/1.jpg"
+                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
                         },
                         {
                             "mimeType": "image/jpg",
-                            "resourcePath": "images/1.jpg"
+                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
                         }
                     ],
                     "value": {
@@ -1555,11 +1555,11 @@
                             "reference": [
                                 {
                                     "mimeType": "image/jpg",
-                                    "resourcePath": "images/1.jpg"
+                                    "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
                                 },
                                 {
                                     "mimeType": "image/jpg",
-                                    "resourcePath": "images/1.jpg"
+                                    "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
                                 }
                             ],
                             "value": {
@@ -2314,27 +2314,27 @@
             "resources": [
                 {
                     "mimeType": "image/jpg",
-                    "resourcePath": "images/1.jpg"
+                    "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
                 },
                 {
                     "mimeType": "video/mp4",
-                    "resourcePath": "images/demoVideo.mp4"
+                    "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/demoVideo.mp4"
                 },
                 {
                     "mimeType": "image/jpg",
-                    "resourcePath": "images/1.jpg"
+                    "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
                 },
                 {
                     "mimeType": "video/mp4",
-                    "resourcePath": "images/demoVideo.mp4"
+                    "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/demoVideo.mp4"
                 },
                 {
                     "mimeType": "image/jpg",
-                    "resourcePath": "images/1.jpg"
+                    "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
                 },
                 {
                     "mimeType": "video/mp4",
-                    "resourcePath": "images/demoVideo.mp4"
+                    "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/demoVideo.mp4"
                 }
             ],
             "addresses": [
@@ -2400,7 +2400,7 @@
                 }
             ],
             "avatar": {
-                "resourcePath": "images/logo.svg",
+                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/logo.svg",
                 "mimeType": "image/png"
             },
             "summary": "Abstract Message Abstract Message Abstract Message Abstract Message Abstract Message Abstract Message Abstract Message Abstract Message",
@@ -2408,19 +2408,19 @@
             "resources": [
                 {
                     "mimeType": "image/jpg",
-                    "resourcePath": "images/slides/1.jpg"
+                    "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/slides/1.jpg"
                 },
                 {
                     "mimeType": "image/jpg",
-                    "resourcePath": "images/slides/2.jpg"
+                    "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/slides/2.jpg"
                 },
                 {
                     "mimeType": "image/jpg",
-                    "resourcePath": "images/slides/3.jpg"
+                    "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/slides/3.jpg"
                 },
                 {
                     "mimeType": "image/jpg",
-                    "resourcePath": "images/slides/4.jpg"
+                    "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/slides/4.jpg"
                 }
             ],
             "attaches": {
@@ -2456,7 +2456,7 @@
                         "title": "Model 1",
                         "content": "Model 1 Content",
                         "avatar": {
-                            "resourcePath": "images/logo.svg",
+                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/logo.svg",
                             "mimeType": "image/png"
                         }
                     },
@@ -2465,7 +2465,7 @@
                         "title": "Model 2",
                         "content": "Model 2 Content",
                         "avatar": {
-                            "resourcePath": "images/logo.svg",
+                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/logo.svg",
                             "mimeType": "image/png"
                         }
                     },
@@ -2474,7 +2474,7 @@
                         "title": "Model 3",
                         "content": "Model 3 Content",
                         "avatar": {
-                            "resourcePath": "images/logo.svg",
+                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/logo.svg",
                             "mimeType": "image/png"
                         }
                     },
@@ -2483,7 +2483,7 @@
                         "title": "Model 4",
                         "content": "Model 4 Content",
                         "avatar": {
-                            "resourcePath": "images/logo.svg",
+                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/logo.svg",
                             "mimeType": "image/png"
                         }
                     },
@@ -2492,7 +2492,7 @@
                         "title": "Model 5",
                         "content": "Model 5 Content",
                         "avatar": {
-                            "resourcePath": "images/logo.svg",
+                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/logo.svg",
                             "mimeType": "image/png"
                         }
                     }
@@ -2508,7 +2508,7 @@
                             "link": "#accessories1",
                             "title": "Accessories Name 1",
                             "avatar": {
-                                "resourcePath": "images/demoVideo.mp4",
+                                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/demoVideo.mp4",
                                 "mimeType": "video/mp4",
                                 "title": "Accessories Item 1"
                             }
@@ -2517,7 +2517,7 @@
                             "link": "#accessories2",
                             "title": "Accessories Name 2",
                             "avatar": {
-                                "resourcePath": "images/logo_zht.svg",
+                                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/logo_zht.svg",
                                 "mimeType": "image/png",
                                 "title": "Accessories Item 1"
                             }
@@ -2526,7 +2526,7 @@
                             "link": "#accessories3",
                             "title": "Accessories Name 3",
                             "avatar": {
-                                "resourcePath": "images/logo.svg",
+                                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/logo.svg",
                                 "mimeType": "image/png",
                                 "title": "Accessories Item 1"
                             }
@@ -2542,7 +2542,7 @@
                             "link": "#accessories1",
                             "title": "Accessories Name 1",
                             "avatar": {
-                                "resourcePath": "images/demoVideo.mp4",
+                                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/demoVideo.mp4",
                                 "mimeType": "video/mp4",
                                 "title": "Accessories Item 1"
                             }
@@ -2551,7 +2551,7 @@
                             "link": "#accessories2",
                             "title": "Accessories Name 2",
                             "avatar": {
-                                "resourcePath": "images/logo_zht.svg",
+                                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/logo_zht.svg",
                                 "mimeType": "image/png",
                                 "title": "Accessories Item 1"
                             }
@@ -2560,7 +2560,7 @@
                             "link": "#accessories3",
                             "title": "Accessories Name 3",
                             "avatar": {
-                                "resourcePath": "images/logo.svg",
+                                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/logo.svg",
                                 "mimeType": "image/png",
                                 "title": "Accessories Item 1"
                             }
@@ -2577,7 +2577,7 @@
                         "user": {
                             "avatar": {
                                 "mimeType": "image/jpg",
-                                "resourcePath": "./images/1.jpg"
+                                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
                             },
                             "content": "User Name"
                         },
@@ -2601,7 +2601,7 @@
                         "user": {
                             "avatar": {
                                 "mimeType": "image/jpg",
-                                "resourcePath": "./images/1.jpg"
+                                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
                             },
                             "content": "User Name",
                             "score": 4
@@ -2627,7 +2627,7 @@
                         "user": {
                             "avatar": {
                                 "mimeType": "image/jpg",
-                                "resourcePath": "./images/1.jpg"
+                                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
                             },
                             "content": "User Name"
                         }
@@ -2638,7 +2638,7 @@
                         "user": {
                             "avatar": {
                                 "mimeType": "image/jpg",
-                                "resourcePath": "./images/1.jpg"
+                                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
                             },
                             "content": "User Name",
                             "score": 4
@@ -2664,7 +2664,7 @@
                         "user": {
                             "avatar": {
                                 "mimeType": "image/jpg",
-                                "resourcePath": "./images/1.jpg"
+                                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
                             },
                             "content": "User Name",
                             "score": 4
@@ -2676,7 +2676,7 @@
                         "user": {
                             "avatar": {
                                 "mimeType": "image/jpg",
-                                "resourcePath": "./images/1.jpg"
+                                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
                             },
                             "content": "User Name",
                             "score": 4
@@ -2688,7 +2688,7 @@
                         "user": {
                             "avatar": {
                                 "mimeType": "image/jpg",
-                                "resourcePath": "./images/1.jpg"
+                                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
                             },
                             "content": "User Name",
                             "score": 4
@@ -2700,7 +2700,7 @@
                         "user": {
                             "avatar": {
                                 "mimeType": "image/jpg",
-                                "resourcePath": "./images/1.jpg"
+                                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
                             },
                             "content": "User Name",
                             "score": 4
@@ -2729,7 +2729,7 @@
                     "title": "Title 1",
                     "avatar": {
                         "mimeType": "image/jpg",
-                        "resourcePath": "./images/slides/1.jpg"
+                        "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/slides/1.jpg"
                     }
                 },
                 {
@@ -2737,28 +2737,28 @@
                     "title": "Title 2",
                     "avatar": {
                         "mimeType": "image/jpg",
-                        "resourcePath": "./images/slides/2.jpg"
+                        "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/slides/2.jpg"
                     }
                 },
                 {
                     "title": "Title 3",
                     "avatar": {
                         "mimeType": "image/jpg",
-                        "resourcePath": "./images/slides/3.jpg"
+                        "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/slides/3.jpg"
                     }
                 },
                 {
                     "title": "Title 4",
                     "avatar": {
                         "mimeType": "image/jpg",
-                        "resourcePath": "./images/slides/4.jpg"
+                        "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/slides/4.jpg"
                     }
                 },
                 {
                     "title": "Title 5",
                     "avatar": {
                         "mimeType": "video/mp4",
-                        "resourcePath": "./images/demoVideo.mp4"
+                        "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/demoVideo.mp4"
                     }
                 }
             ]
@@ -2770,7 +2770,7 @@
             "content": "Banner Title",
             "avatar": {
                 "mimeType": "image/jpg",
-                "resourcePath": "./images/slides/1.jpg"
+                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/slides/1.jpg"
             }
         }
     },
@@ -2781,7 +2781,7 @@
             "title": "Widget",
             "avatar": {
                 "mimeType": "image/jpg",
-                "resourcePath": "images/1.jpg"
+                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
             }
         }
     },

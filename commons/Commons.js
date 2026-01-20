@@ -212,7 +212,7 @@ const Config = {
     debugMode: DebugMode.INFO,
     multi: {
         codes: [],
-        default: "",
+        default: Comment.Language,
         path: "/scripts/multi/{languageCode}.json"
     },
     notify: {

@@ -88,6 +88,9 @@ class CellJS {
             subtree: true
         });
         this._lazyObserver = new IntersectionObserver(this._lazyLoad);
+        if (this._config.multi.codes.length > 0 && this._config.multi.codes.indexOf(this._config.multi.default) === -1) {
+            this._config.multi.default = this._config.multi.codes[0];
+        }
         this._languageCode = this._config.multi.default;
         this._initMulti();
         this._languageCode.setLanguage();
@@ -629,8 +632,10 @@ class CellJS {
                 _request.open(_options.method, url, _options.async);
             }
             _request.method = _options.method;
-            _request.setRequestHeader("Cache-Control", "no-cache");
-            _request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+            if (url.startsWith(window.location.origin)) {
+                _request.setRequestHeader("Cache-Control", "no-cache");
+                _request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+            }
             if (_options.stream) {
                 _request.setRequestHeader("Accept", "text/event-stream");
             }
@@ -665,15 +670,17 @@ class CellJS {
                 if (this.readyState === 3 || this.readyState === 4) {
                     if (this.readyState === 4 || stream) {
                         Cell.debug("Link.Path.Data", url, this.method, this.status);
-
-                        let languageCode = this.getResponseHeader("languageCode");
-                        if (languageCode !== null) {
-                            Cell.language = languageCode;
-                            Cell.debug("Modify.Language.Code", languageCode);
-                        }
-                        let _jwtToken = this.getResponseHeader("Authentication");
-                        if (_jwtToken !== null) {
-                            sessionStorage.setItem("JWTToken", _jwtToken);
+                        const origin = url.startsWith(window.location.origin);
+                        if (origin) {
+                            let languageCode = this.getResponseHeader("languageCode");
+                            if (languageCode !== null) {
+                                Cell.language = languageCode;
+                                Cell.debug("Modify.Language.Code", languageCode);
+                            }
+                            let _jwtToken = this.getResponseHeader("Authentication");
+                            if (_jwtToken !== null) {
+                                sessionStorage.setItem("JWTToken", _jwtToken);
+                            }
                         }
                         if (this.status === 301 || this.status === 302 || this.status === 307) {
                             let _redirectPath = this.getResponseHeader("Location");
@@ -687,7 +694,7 @@ class CellJS {
                             }
                         } else if (_request.status === 200) {
                             let _responseText = _request.responseText;
-                            if (Boolean(this.getResponseHeader("Data-Encrypted"))) {
+                            if (origin && Boolean(this.getResponseHeader("Data-Encrypted"))) {
                                 Cell.debug("Decrypt.Data.Response");
                                 _responseText = Cell.decData(_responseText);
                             }

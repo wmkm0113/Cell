@@ -6,22 +6,21 @@
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
     <link rel="shortcut icon" href="./favicon.ico"/>
     <link rel="icon" type="image/svg+xml" sizes="16x16" href="./images/icon.svg"/>
-    <link rel="stylesheet" href="../src/styles/Cell.css"/>
-    <link rel="stylesheet" href="../src/styles/theme.css"/>
-    <link rel="stylesheet" href="./styles/style.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/styles/Cell.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/styles/theme.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/styles/style.css"/>
     <script type="module">
-        import {Config, Comment, DebugMode, ColorMode} from "../src/commons/Commons.js";
+        import {Config, Comment, DebugMode, ColorMode} from "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/commons/Commons.js";
 
         Comment.DateTime.Convert = true;
         Comment.DateTime.UTC = true;
         Config.debugMode = DebugMode.DEBUG;
         Config.colorMode = ColorMode.System;
-        Config.fontPrefixPath = "/src";
         Config.multi = {
-            codes: ["zh-CN", "en-US"],
-            default: "zh-CN",
-            path: "../src/multi/{languageCode}.json"
+            codes: ["en-US", "zh-CN"],
+            path: "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/multi/{languageCode}.json"
         };
+        Config.fontPrefixPath = "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta";
         //  Freeze header to the top of window
         Config.freeze = ['aside[id="aside"]'];
 
@@ -29,10 +28,10 @@
         // Config.maps.Google.ApiKey = "";
         // Config.maps.Baidu.ApiKey = "";
     </script>
-    <script src="../src/core/Cell.js" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/core/Cell.js" type="module"></script>
     <script type="module">
         window.addEventListener("load", () => {
-            Cell.sendRequest("./data.json")
+            Cell.sendRequest("https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/data.json")
                 .then(responseText => responseText.parseJSON().forEach((item => $(item.id).data = item.data)))
                 .catch((error) => Cell.error(error));
             Cell.multilingual();

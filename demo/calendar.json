@@ -1,0 +1,937 @@
+{
+    "2026-01-01": [
+        {
+            "tagName": "form-item",
+            "data": {
+                "type": "radio",
+                "category": "group",
+                "title": {
+                    "content": "Foods"
+                },
+                "name": "2026-01-01-Foods",
+                "value": "value4",
+                "items": [
+                    {
+                        "content": "Option4",
+                        "value": "value2"
+                    },
+                    {
+                        "content": "Option5",
+                        "value": "value4"
+                    },
+                    {
+                        "content": "Option6",
+                        "value": "value6"
+                    }
+                ]
+            }
+        },
+        {
+            "tagName": "form-item",
+            "data": {
+                "type": "checkbox",
+                "category": "group",
+                "title": {
+                    "content": "Drinks"
+                },
+                "name": "2026-01-01-Drinks",
+                "value": [
+                    "value3",
+                    "value5"
+                ],
+                "items": [
+                    {
+                        "content": "Drink1",
+                        "value": "value1"
+                    },
+                    {
+                        "content": "Drink3",
+                        "value": "value3"
+                    },
+                    {
+                        "content": "Drink5",
+                        "value": "value5"
+                    }
+                ]
+            }
+        }
+    ],
+    "2026-01-02": [
+        {
+            "tagName": "form-item",
+            "data": {
+                "type": "radio",
+                "category": "group",
+                "title": {
+                    "content": "Foods"
+                },
+                "name": "2026-01-02-Foods",
+                "value": "value4",
+                "items": [
+                    {
+                        "content": "Option4",
+                        "value": "value2"
+                    },
+                    {
+                        "content": "Option5",
+                        "value": "value4"
+                    },
+                    {
+                        "content": "Option6",
+                        "value": "value6"
+                    }
+                ]
+            }
+        },
+        {
+            "tagName": "form-item",
+            "data": {
+                "type": "checkbox",
+                "category": "group",
+                "title": {
+                    "content": "Drinks"
+                },
+                "name": "2026-01-02-Drinks",
+                "value": [
+                    "value3",
+                    "value5"
+                ],
+                "items": [
+                    {
+                        "content": "Drink1",
+                        "value": "value1"
+                    },
+                    {
+                        "content": "Drink3",
+                        "value": "value3"
+                    },
+                    {
+                        "content": "Drink5",
+                        "value": "value5"
+                    }
+                ]
+            }
+        }
+    ],
+    "2026-01-05": [
+        {
+            "tagName": "schedule-item",
+            "data": {
+                "items": [
+                    {
+                        "title": "Foods:",
+                        "content": "Option 4"
+                    },
+                    {
+                        "title": "Drinks:",
+                        "content": "Option 3"
+                    }
+                ],
+                "operators": [
+                    {
+                        "title": "Cancel",
+                        "link": "#cancel"
+                    }
+                ]
+            }
+        },
+        {
+            "tagName": "schedule-item",
+            "data": {
+                "items": [
+                    {
+                        "title": "Foods:",
+                        "content": "Option 4"
+                    },
+                    {
+                        "title": "Drinks:",
+                        "content": "Option 3"
+                    }
+                ],
+                "operators": [
+                    {
+                        "title": "Cancel",
+                        "link": "#cancel"
+                    }
+                ]
+            }
+        }
+    ],
+    "2026-01-06": [
+        {
+            "tagName": "schedule-item",
+            "data": {
+                "items": [
+                    {
+                        "title": "Foods:",
+                        "content": "Option 4"
+                    },
+                    {
+                        "title": "Drinks:",
+                        "content": "Option 3"
+                    }
+                ],
+                "operators": [
+                    {
+                        "title": "Cancel",
+                        "link": "#cancel"
+                    }
+                ]
+            }
+        }
+    ],
+    "2026-01-07": [
+        {
+            "tagName": "schedule-item",
+            "data": {
+                "items": [
+                    {
+                        "title": "Foods:",
+                        "content": "Option 4"
+                    },
+                    {
+                        "title": "Drinks:",
+                        "content": "Option 3"
+                    }
+                ],
+                "operators": [
+                    {
+                        "title": "Cancel",
+                        "link": "#cancel"
+                    }
+                ]
+            }
+        }
+    ],
+    "2026-01-08": [
+        {
+            "tagName": "schedule-item",
+            "data": {
+                "items": [
+                    {
+                        "title": "Foods:",
+                        "content": "Option 4"
+                    },
+                    {
+                        "title": "Drinks:",
+                        "content": "Option 3"
+                    }
+                ],
+                "operators": [
+                    {
+                        "title": "Cancel",
+                        "link": "#cancel"
+                    }
+                ]
+            }
+        }
+    ],
+    "2026-01-09": [
+        {
+            "tagName": "schedule-item",
+            "data": {
+                "items": [
+                    {
+                        "title": "Foods:",
+                        "content": "Option 4"
+                    },
+                    {
+                        "title": "Drinks:",
+                        "content": "Option 3"
+                    }
+                ],
+                "operators": [
+                    {
+                        "title": "Cancel",
+                        "link": "#cancel"
+                    }
+                ]
+            }
+        }
+    ],
+    "2026-01-12": [
+        {
+            "tagName": "form-item",
+            "data": {
+                "type": "radio",
+                "category": "group",
+                "title": {
+                    "content": "Foods"
+                },
+                "name": "2026-01-12-Foods",
+                "value": "value4",
+                "items": [
+                    {
+                        "content": "Option4",
+                        "value": "value2"
+                    },
+                    {
+                        "content": "Option5",
+                        "value": "value4"
+                    },
+                    {
+                        "content": "Option6",
+                        "value": "value6"
+                    }
+                ]
+            }
+        },
+        {
+            "tagName": "form-item",
+            "data": {
+                "type": "checkbox",
+                "category": "group",
+                "title": {
+                    "content": "Drinks"
+                },
+                "name": "2026-01-12-Drinks",
+                "value": [
+                    "value3",
+                    "value5"
+                ],
+                "items": [
+                    {
+                        "content": "Drink1",
+                        "value": "value1"
+                    },
+                    {
+                        "content": "Drink3",
+                        "value": "value3"
+                    },
+                    {
+                        "content": "Drink5",
+                        "value": "value5"
+                    }
+                ]
+            }
+        }
+    ],
+    "2026-01-13": [
+        {
+            "tagName": "form-item",
+            "data": {
+                "type": "radio",
+                "category": "group",
+                "title": {
+                    "content": "Foods"
+                },
+                "name": "2026-01-13-Foods",
+                "value": "value4",
+                "items": [
+                    {
+                        "content": "Option4",
+                        "value": "value2"
+                    },
+                    {
+                        "content": "Option5",
+                        "value": "value4"
+                    },
+                    {
+                        "content": "Option6",
+                        "value": "value6"
+                    }
+                ]
+            }
+        },
+        {
+            "tagName": "form-item",
+            "data": {
+                "type": "checkbox",
+                "category": "group",
+                "title": {
+                    "content": "Drinks"
+                },
+                "name": "2026-01-13-Drinks",
+                "value": [
+                    "value3",
+                    "value5"
+                ],
+                "items": [
+                    {
+                        "content": "Drink1",
+                        "value": "value1"
+                    },
+                    {
+                        "content": "Drink3",
+                        "value": "value3"
+                    },
+                    {
+                        "content": "Drink5",
+                        "value": "value5"
+                    }
+                ]
+            }
+        }
+    ],
+    "2026-01-14": [
+        {
+            "tagName": "form-item",
+            "data": {
+                "type": "radio",
+                "category": "group",
+                "title": {
+                    "content": "Foods"
+                },
+                "name": "2026-01-14-Foods",
+                "value": "value4",
+                "items": [
+                    {
+                        "content": "Option4",
+                        "value": "value2"
+                    },
+                    {
+                        "content": "Option5",
+                        "value": "value4"
+                    },
+                    {
+                        "content": "Option6",
+                        "value": "value6"
+                    }
+                ]
+            }
+        },
+        {
+            "tagName": "form-item",
+            "data": {
+                "type": "checkbox",
+                "category": "group",
+                "title": {
+                    "content": "Drinks"
+                },
+                "name": "2026-01-14-Drinks",
+                "value": [
+                    "value3",
+                    "value5"
+                ],
+                "items": [
+                    {
+                        "content": "Drink1",
+                        "value": "value1"
+                    },
+                    {
+                        "content": "Drink3",
+                        "value": "value3"
+                    },
+                    {
+                        "content": "Drink5",
+                        "value": "value5"
+                    }
+                ]
+            }
+        }
+    ],
+    "2026-01-15": [
+        {
+            "tagName": "form-item",
+            "data": {
+                "type": "radio",
+                "category": "group",
+                "title": {
+                    "content": "Foods"
+                },
+                "name": "2026-01-15-Foods",
+                "value": "value4",
+                "items": [
+                    {
+                        "content": "Option4",
+                        "value": "value2"
+                    },
+                    {
+                        "content": "Option5",
+                        "value": "value4"
+                    },
+                    {
+                        "content": "Option6",
+                        "value": "value6"
+                    }
+                ]
+            }
+        },
+        {
+            "tagName": "form-item",
+            "data": {
+                "type": "checkbox",
+                "category": "group",
+                "title": {
+                    "content": "Drinks"
+                },
+                "name": "2026-01-15-Drinks",
+                "value": [
+                    "value3",
+                    "value5"
+                ],
+                "items": [
+                    {
+                        "content": "Drink1",
+                        "value": "value1"
+                    },
+                    {
+                        "content": "Drink3",
+                        "value": "value3"
+                    },
+                    {
+                        "content": "Drink5",
+                        "value": "value5"
+                    }
+                ]
+            }
+        }
+    ],
+    "2026-01-16": [
+        {
+            "tagName": "form-item",
+            "data": {
+                "type": "radio",
+                "category": "group",
+                "title": {
+                    "content": "Foods"
+                },
+                "name": "2026-01-16-Foods",
+                "value": "value4",
+                "items": [
+                    {
+                        "content": "Option4",
+                        "value": "value2"
+                    },
+                    {
+                        "content": "Option5",
+                        "value": "value4"
+                    },
+                    {
+                        "content": "Option6",
+                        "value": "value6"
+                    }
+                ]
+            }
+        },
+        {
+            "tagName": "form-item",
+            "data": {
+                "type": "checkbox",
+                "category": "group",
+                "title": {
+                    "content": "Drinks"
+                },
+                "name": "2026-01-16-Drinks",
+                "value": [
+                    "value3",
+                    "value5"
+                ],
+                "items": [
+                    {
+                        "content": "Drink1",
+                        "value": "value1"
+                    },
+                    {
+                        "content": "Drink3",
+                        "value": "value3"
+                    },
+                    {
+                        "content": "Drink5",
+                        "value": "value5"
+                    }
+                ]
+            }
+        }
+    ],
+    "2026-01-19": [
+        {
+            "tagName": "form-item",
+            "data": {
+                "type": "radio",
+                "category": "group",
+                "title": {
+                    "content": "Foods"
+                },
+                "name": "2026-01-17-Foods",
+                "value": "value4",
+                "items": [
+                    {
+                        "content": "Option4",
+                        "value": "value2"
+                    },
+                    {
+                        "content": "Option5",
+                        "value": "value4"
+                    },
+                    {
+                        "content": "Option6",
+                        "value": "value6"
+                    }
+                ]
+            }
+        },
+        {
+            "tagName": "form-item",
+            "data": {
+                "type": "checkbox",
+                "category": "group",
+                "title": {
+                    "content": "Drinks"
+                },
+                "name": "2026-01-17-Drinks",
+                "value": [
+                    "value3",
+                    "value5"
+                ],
+                "items": [
+                    {
+                        "content": "Drink1",
+                        "value": "value1"
+                    },
+                    {
+                        "content": "Drink3",
+                        "value": "value3"
+                    },
+                    {
+                        "content": "Drink5",
+                        "value": "value5"
+                    }
+                ]
+            }
+        }
+    ],
+    "2026-01-20": [
+        {
+            "tagName": "form-item",
+            "data": {
+                "type": "radio",
+                "category": "group",
+                "title": {
+                    "content": "Foods"
+                },
+                "name": "2026-01-18-Foods",
+                "value": "value4",
+                "items": [
+                    {
+                        "content": "Option4",
+                        "value": "value2"
+                    },
+                    {
+                        "content": "Option5",
+                        "value": "value4"
+                    },
+                    {
+                        "content": "Option6",
+                        "value": "value6"
+                    }
+                ]
+            }
+        },
+        {
+            "tagName": "form-item",
+            "data": {
+                "type": "checkbox",
+                "category": "group",
+                "title": {
+                    "content": "Drinks"
+                },
+                "name": "2026-01-18-Drinks",
+                "value": [
+                    "value3",
+                    "value5"
+                ],
+                "items": [
+                    {
+                        "content": "Drink1",
+                        "value": "value1"
+                    },
+                    {
+                        "content": "Drink3",
+                        "value": "value3"
+                    },
+                    {
+                        "content": "Drink5",
+                        "value": "value5"
+                    }
+                ]
+            }
+        }
+    ],
+    "2026-01-21": [
+        {
+            "tagName": "form-item",
+            "data": {
+                "type": "radio",
+                "category": "group",
+                "title": {
+                    "content": "Foods"
+                },
+                "name": "2026-01-19-Foods",
+                "value": "value4",
+                "items": [
+                    {
+                        "content": "Option4",
+                        "value": "value2"
+                    },
+                    {
+                        "content": "Option5",
+                        "value": "value4"
+                    },
+                    {
+                        "content": "Option6",
+                        "value": "value6"
+                    }
+                ]
+            }
+        },
+        {
+            "tagName": "form-item",
+            "data": {
+                "type": "checkbox",
+                "category": "group",
+                "title": {
+                    "content": "Drinks"
+                },
+                "name": "2026-01-19-Drinks",
+                "value": [
+                    "value3",
+                    "value5"
+                ],
+                "items": [
+                    {
+                        "content": "Drink1",
+                        "value": "value1"
+                    },
+                    {
+                        "content": "Drink3",
+                        "value": "value3"
+                    },
+                    {
+                        "content": "Drink5",
+                        "value": "value5"
+                    }
+                ]
+            }
+        }
+    ],
+    "2026-01-22": [
+        {
+            "tagName": "schedule-item",
+            "data": {
+                "items": [
+                    {
+                        "title": "Foods:",
+                        "content": "Option 4"
+                    },
+                    {
+                        "title": "Drinks:",
+                        "content": "Option 3"
+                    }
+                ],
+                "operators": [
+                    {
+                        "title": "Cancel",
+                        "link": "#cancel"
+                    }
+                ]
+            }
+        }
+    ],
+    "2026-01-23": [
+        {
+            "tagName": "schedule-item",
+            "data": {
+                "items": [
+                    {
+                        "title": "Foods:",
+                        "content": "Option 4"
+                    },
+                    {
+                        "title": "Drinks:",
+                        "content": "Option 3"
+                    }
+                ],
+                "operators": [
+                    {
+                        "title": "Cancel",
+                        "link": "#cancel"
+                    }
+                ]
+            }
+        }
+    ],
+    "2026-01-26": [
+        {
+            "tagName": "schedule-item",
+            "data": {
+                "items": [
+                    {
+                        "title": "Foods:",
+                        "content": "Option 4"
+                    },
+                    {
+                        "title": "Drinks:",
+                        "content": "Option 3"
+                    }
+                ],
+                "operators": [
+                    {
+                        "title": "Cancel",
+                        "link": "#cancel"
+                    }
+                ]
+            }
+        }
+    ],
+    "2026-01-27": [
+        {
+            "tagName": "schedule-item",
+            "data": {
+                "items": [
+                    {
+                        "title": "Foods:",
+                        "content": "Option 4"
+                    },
+                    {
+                        "title": "Drinks:",
+                        "content": "Option 3"
+                    }
+                ],
+                "operators": [
+                    {
+                        "title": "Cancel",
+                        "link": "#cancel"
+                    }
+                ]
+            }
+        }
+    ],
+    "2026-01-28": [
+        {
+            "tagName": "schedule-item",
+            "data": {
+                "items": [
+                    {
+                        "title": "Foods:",
+                        "content": "Option 4"
+                    },
+                    {
+                        "title": "Drinks:",
+                        "content": "Option 3"
+                    }
+                ],
+                "operators": [
+                    {
+                        "title": "Cancel",
+                        "link": "#cancel"
+                    }
+                ]
+            }
+        }
+    ],
+    "2026-01-29": [
+        {
+            "tagName": "form-item",
+            "data": {
+                "type": "radio",
+                "category": "group",
+                "title": {
+                    "content": "Foods"
+                },
+                "name": "2026-01-29-Foods",
+                "value": "value4",
+                "items": [
+                    {
+                        "content": "Option4",
+                        "value": "value2"
+                    },
+                    {
+                        "content": "Option5",
+                        "value": "value4"
+                    },
+                    {
+                        "content": "Option6",
+                        "value": "value6"
+                    }
+                ]
+            }
+        },
+        {
+            "tagName": "form-item",
+            "data": {
+                "type": "checkbox",
+                "category": "group",
+                "title": {
+                    "content": "Drinks"
+                },
+                "name": "2026-01-29-Drinks",
+                "value": [
+                    "value3",
+                    "value5"
+                ],
+                "items": [
+                    {
+                        "content": "Drink1",
+                        "value": "value1"
+                    },
+                    {
+                        "content": "Drink3",
+                        "value": "value3"
+                    },
+                    {
+                        "content": "Drink5",
+                        "value": "value5"
+                    }
+                ]
+            }
+        }
+    ],
+    "2026-01-30": [
+        {
+            "tagName": "form-item",
+            "data": {
+                "type": "radio",
+                "category": "group",
+                "title": {
+                    "content": "Foods"
+                },
+                "name": "2026-01-30-Foods",
+                "value": "value4",
+                "items": [
+                    {
+                        "content": "Option4",
+                        "value": "value2"
+                    },
+                    {
+                        "content": "Option5",
+                        "value": "value4"
+                    },
+                    {
+                        "content": "Option6",
+                        "value": "value6"
+                    }
+                ]
+            }
+        },
+        {
+            "tagName": "form-item",
+            "data": {
+                "type": "checkbox",
+                "category": "group",
+                "title": {
+                    "content": "Drinks"
+                },
+                "name": "2026-01-30-Drinks",
+                "value": [
+                    "value3",
+                    "value5"
+                ],
+                "items": [
+                    {
+                        "content": "Drink1",
+                        "value": "value1"
+                    },
+                    {
+                        "content": "Drink3",
+                        "value": "value3"
+                    },
+                    {
+                        "content": "Drink5",
+                        "value": "value5"
+                    }
+                ]
+            }
+        }
+    ]
+}
