@@ -4,6 +4,17 @@
         "data": 3.5
     },
     {
+        "id": "mockSwitch",
+        "data": {
+            "content": "Switch content",
+            "value": "Switch value",
+            "icons": {
+                "enable": "e83d",
+                "disable": "e67c"
+            }
+        }
+    },
+    {
         "id": "calendar",
         "data": {
             "beginIndex": 5,
@@ -412,13 +423,14 @@
                         },
                         {
                             "width": "10%",
+                            "category": "price",
                             "title": {
                                 "content": "Column Title 6"
                             }
                         },
                         {
                             "width": "10%",
-                            "timestamp": "true",
+                            "category": "timestamp",
                             "pattern": "yyyy-MM-dd",
                             "title": {
                                 "content": "Column Title 4"
@@ -471,7 +483,7 @@
                 },
                 "itemData": [
                     {
-                        "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/details.json",
+                        "link": "details.json",
                         "openWindow": true,
                         "summary": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
                         "title": "Text content Text content Text content Text content Text content Text content Text content Text content",
@@ -480,7 +492,7 @@
                             "Column 9 Text",
                             "Column 8 Text",
                             "Column 7 Text",
-                            "Column 6 Text",
+                            "10240",
                             1658958745944,
                             "Column 3 Text",
                             "Column 2 Text",
@@ -488,7 +500,7 @@
                         ],
                         "operators": [
                             {
-                                "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/form.json",
+                                "link": "form.json",
                                 "index": 3,
                                 "text": {
                                     "content": "Edit"
@@ -499,6 +511,7 @@
                             {
                                 "link": "DeleteLink",
                                 "index": 2,
+                                "extra": true,
                                 "text": {
                                     "content": "Delete"
                                 },
@@ -515,7 +528,7 @@
                         ],
                         "avatar": {
                             "mimeType": "video/mp4",
-                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/demoVideo.mp4",
+                            "resourcePath": "./images/demoVideo.mp4",
                             "muted": "true"
                         },
                         "identifyCode": "1"
@@ -526,7 +539,7 @@
                             "",
                             "",
                             "",
-                            "",
+                            "10240",
                             "",
                             "Column 3 Text",
                             "Column 2 Text",
@@ -534,9 +547,9 @@
                         ],
                         "avatar": {
                             "mimeType": "image/jpg",
-                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
+                            "resourcePath": "./images/1.jpg"
                         },
-                        "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/details.json",
+                        "link": "/demo/details.json",
                         "identifyCode": "2",
                         "openWindow": true,
                         "className": "warning",
@@ -545,50 +558,52 @@
                     {
                         "operators": [
                             {
-                                "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/form.json",
+                                "link": "form.json",
                                 "index": 3,
-                                "textContent": "Edit",
-                                "title": "Edit",
+                                "text": {
+                                    "content": "Edit"
+                                },
                                 "icon": "e9da",
                                 "openWindow": true
                             },
                             {
                                 "link": "MultiLink",
                                 "index": 1,
-                                "textContent": "Multilingual",
-                                "title": "Multilingual",
+                                "text": {
+                                    "content": "Multilingual"
+                                },
                                 "icon": "e7dc"
                             }
                         ],
                         "avatar": {
                             "mimeType": "video/mp4",
-                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/demoVideo.mp4",
+                            "resourcePath": "./images/demoVideo.mp4",
                             "muted": "true"
                         },
                         "properties": [
                             "",
                             "",
                             "",
-                            "",
+                            "10240",
                             "",
                             "Column 3 Text",
                             "Column 2 Text",
                             "Column 1 Text"
                         ],
-                        "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/details.json",
+                        "link": "details.json",
                         "openWindow": true,
                         "identifyCode": "3",
                         "summary": "中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试中文测试",
                         "title": "Text content Text content Text content Text content Text content Text content Text content Text content"
                     },
                     {
-                        "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/details.json",
+                        "link": "details.json",
                         "openWindow": true,
                         "properties": [
                             "Column 9 Text",
                             "Column 8 Text",
                             "Column 7 Text",
-                            "Column 6 Text",
+                            "10240",
                             1658958745944,
                             "Column 3 Text",
                             "Column 2 Text",
@@ -597,25 +612,29 @@
                         "summary": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
                         "title": "Text content Text content Text content Text content Text content Text content Text content Text content",
                         "score": 3.2,
+                        "className": "error",
                         "operators": [
                             {
                                 "link": "DeleteLink",
                                 "index": 2,
-                                "textContent": "Delete",
-                                "title": "Delete",
+                                "extra": true,
+                                "text": {
+                                    "content": "Delete"
+                                },
                                 "icon": "e7b5"
                             },
                             {
                                 "link": "MultiLink",
                                 "index": 1,
-                                "textContent": "Multilingual",
-                                "title": "Multilingual",
+                                "text": {
+                                    "content": "Multilingual"
+                                },
                                 "icon": "e7dc"
                             }
                         ],
                         "avatar": {
                             "mimeType": "image/jpg",
-                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
+                            "resourcePath": "./images/1.jpg"
                         },
                         "identifyCode": "4"
                     },
@@ -623,7 +642,7 @@
                         "score": 3.0,
                         "avatar": {
                             "mimeType": "video/mp4",
-                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/demoVideo.mp4",
+                            "resourcePath": "./images/demoVideo.mp4",
                             "autoplay": true
                         },
                         "properties": [
@@ -636,7 +655,7 @@
                             "Column 2 Text",
                             "Column 1 Text"
                         ],
-                        "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/details.json",
+                        "link": "details.json",
                         "openWindow": true,
                         "identifyCode": "5",
                         "title": "Text content Text content Text content Text content Text content Text content Text content Text content"
@@ -644,24 +663,27 @@
                     {
                         "operators": [
                             {
-                                "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/form.json",
+                                "link": "form.json",
                                 "index": 3,
-                                "textContent": "Edit",
-                                "title": "Edit",
+                                "text": {
+                                    "content": "Edit"
+                                },
                                 "icon": "e9da",
                                 "openWindow": true
                             },
                             {
                                 "link": "DeleteLink",
                                 "index": 2,
-                                "textContent": "Delete",
-                                "title": "Delete",
+                                "extra": true,
+                                "text": {
+                                    "content": "Delete"
+                                },
                                 "icon": "e7b5"
                             }
                         ],
                         "avatar": {
                             "mimeType": "image/jpg",
-                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
+                            "resourcePath": "./images/1.jpg"
                         },
                         "properties": [
                             "",
@@ -687,7 +709,7 @@
                             "Column 9 Text",
                             "Column 8 Text",
                             "Column 7 Text",
-                            "Column 6 Text",
+                            "10240",
                             1658958745944,
                             "Column 3 Text",
                             "Column 2 Text",
@@ -698,31 +720,35 @@
                         "score": 4.2,
                         "operators": [
                             {
-                                "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/form.json",
+                                "link": "form.json",
                                 "index": 3,
-                                "textContent": "Edit",
-                                "title": "Edit",
+                                "text": {
+                                    "content": "Edit"
+                                },
                                 "icon": "e9da",
                                 "openWindow": true
                             },
                             {
                                 "link": "DeleteLink",
                                 "index": 2,
-                                "textContent": "Delete",
-                                "title": "Delete",
+                                "extra": true,
+                                "text": {
+                                    "content": "Delete"
+                                },
                                 "icon": "e7b5"
                             },
                             {
                                 "link": "MultiLink",
                                 "index": 1,
-                                "textContent": "Multilingual",
-                                "title": "Multilingual",
+                                "text": {
+                                    "content": "Multilingual"
+                                },
                                 "icon": "e7dc"
                             }
                         ],
                         "avatar": {
                             "mimeType": "image/jpg",
-                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
+                            "resourcePath": "./images/1.jpg"
                         },
                         "identifyCode": "7"
                     },
@@ -730,7 +756,7 @@
                         "score": 3.0,
                         "avatar": {
                             "mimeType": "image/jpg",
-                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
+                            "resourcePath": "./images/1.jpg"
                         },
                         "properties": [
                             "",
@@ -742,7 +768,7 @@
                             "Column 2 Text",
                             "Column 1 Text"
                         ],
-                        "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/details.json",
+                        "link": "details.json",
                         "openWindow": true,
                         "identifyCode": "8",
                         "title": "Text content Text content Text content Text content Text content Text content Text content Text content"
@@ -750,24 +776,26 @@
                     {
                         "operators": [
                             {
-                                "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/form.json",
+                                "link": "form.json",
                                 "index": 3,
-                                "textContent": "Edit",
-                                "title": "Edit",
+                                "text": {
+                                    "content": "Edit"
+                                },
                                 "icon": "e9da",
                                 "openWindow": true
                             },
                             {
                                 "link": "MultiLink",
                                 "index": 1,
-                                "textContent": "Multilingual",
-                                "title": "Multilingual",
+                                "text": {
+                                    "content": "Multilingual"
+                                },
                                 "icon": "e7dc"
                             }
                         ],
                         "avatar": {
                             "mimeType": "image/jpg",
-                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
+                            "resourcePath": "./images/1.jpg"
                         },
                         "properties": [
                             "",
@@ -779,7 +807,7 @@
                             "Column 2 Text",
                             "Column 1 Text"
                         ],
-                        "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/details.json",
+                        "link": "details.json",
                         "openWindow": true,
                         "identifyCode": "9",
                         "summary": "Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content Abstract content ",
@@ -789,7 +817,7 @@
                         "score": 3.0,
                         "avatar": {
                             "mimeType": "image/jpg",
-                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
+                            "resourcePath": "./images/1.jpg"
                         },
                         "properties": [
                             "",
@@ -801,7 +829,7 @@
                             "Column 2 Text",
                             "Column 1 Text"
                         ],
-                        "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/details.json",
+                        "link": "details.json",
                         "openWindow": true,
                         "className": "warning",
                         "identifyCode": "10",
@@ -811,7 +839,7 @@
                         "score": 3.0,
                         "avatar": {
                             "mimeType": "image/jpg",
-                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
+                            "resourcePath": "./images/1.jpg"
                         },
                         "properties": [
                             "",
@@ -823,7 +851,7 @@
                             "Column 2 Text",
                             "Column 1 Text"
                         ],
-                        "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/details.json",
+                        "link": "details.json",
                         "openWindow": true,
                         "className": "warning",
                         "identifyCode": "11",
@@ -833,7 +861,7 @@
                         "score": 3.0,
                         "avatar": {
                             "mimeType": "image/jpg",
-                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
+                            "resourcePath": "./images/1.jpg"
                         },
                         "properties": [
                             "",
@@ -845,7 +873,7 @@
                             "Column 2 Text",
                             "Column 1 Text"
                         ],
-                        "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/details.json",
+                        "link": "details.json",
                         "openWindow": true,
                         "className": "warning",
                         "identifyCode": "12",
@@ -855,7 +883,7 @@
                         "score": 3.0,
                         "avatar": {
                             "mimeType": "image/jpg",
-                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
+                            "resourcePath": "./images/1.jpg"
                         },
                         "properties": [
                             "",
@@ -867,7 +895,7 @@
                             "Column 2 Text",
                             "Column 1 Text"
                         ],
-                        "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/details.json",
+                        "link": "details.json",
                         "openWindow": true,
                         "className": "warning",
                         "identifyCode": "13",
@@ -877,7 +905,7 @@
                         "score": 3.0,
                         "avatar": {
                             "mimeType": "image/jpg",
-                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
+                            "resourcePath": "./images/1.jpg"
                         },
                         "properties": [
                             "",
@@ -889,7 +917,7 @@
                             "Column 2 Text",
                             "Column 1 Text"
                         ],
-                        "link": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/details.json",
+                        "link": "details.json",
                         "openWindow": true,
                         "className": "warning",
                         "identifyCode": "14",
@@ -932,7 +960,7 @@
                         "year": "2026",
                         "month": "1",
                         "weekend": false,
-                        "dataLink": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/calendar.json?year={year}&month={month}&week={week}"
+                        "dataLink": "/demo/calendar.json?year={year}&month={month}&week={week}"
                     }
                 }
             ]
@@ -1084,6 +1112,18 @@
                     }
                 },
                 {
+                    "type": "square-payment",
+                    "class": "formItem",
+                    "title": {
+                        "multiKey": "Element.label.text",
+                        "content": "Element label text"
+                    },
+                    "name": "token",
+                    "tips": {
+                        "content": "Tips message"
+                    }
+                },
+                {
                     "type": "text",
                     "class": "formItem",
                     "id": "textElement",
@@ -1178,7 +1218,7 @@
                         "multiKey": "Element.label.text",
                         "content": "Element label text"
                     },
-                    "value": "Initialize value",
+                    "value": "1658958745944",
                     "tips": {
                         "content": "Tips message"
                     }
@@ -1372,11 +1412,11 @@
                     "reference": [
                         {
                             "mimeType": "image/jpg",
-                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
+                            "resourcePath": "./images/1.jpg"
                         },
                         {
                             "mimeType": "image/jpg",
-                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
+                            "resourcePath": "./images/1.jpg"
                         }
                     ],
                     "value": {
@@ -1555,11 +1595,11 @@
                             "reference": [
                                 {
                                     "mimeType": "image/jpg",
-                                    "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
+                                    "resourcePath": "./images/1.jpg"
                                 },
                                 {
                                     "mimeType": "image/jpg",
-                                    "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
+                                    "resourcePath": "./images/1.jpg"
                                 }
                             ],
                             "value": {
@@ -1688,7 +1728,6 @@
         "id": "barChart",
         "data": {
             "styles": {
-                "itemSize": "1.5rem",
                 "sizeY": "100px"
             },
             "legend": [
@@ -1764,9 +1803,6 @@
     {
         "id": "columnChart",
         "data": {
-            "styles": {
-                "itemSize": "1.5rem"
-            },
             "legend": [
                 {
                     "content": "Item 1"
@@ -1881,9 +1917,6 @@
     {
         "id": "waterfallChart",
         "data": {
-            "styles": {
-                "itemSize": "1.5rem"
-            },
             "legend": [
                 {
                     "content": "Item 1"
@@ -2311,32 +2344,62 @@
         "id": "corpDetails",
         "data": {
             "content": "Corporate details article Corporate details article Corporate details article Corporate details article Corporate details article Corporate details article Corporate details article Corporate details article ",
-            "resources": [
-                {
-                    "mimeType": "image/jpg",
-                    "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
-                },
-                {
-                    "mimeType": "video/mp4",
-                    "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/demoVideo.mp4"
-                },
-                {
-                    "mimeType": "image/jpg",
-                    "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
-                },
-                {
-                    "mimeType": "video/mp4",
-                    "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/demoVideo.mp4"
-                },
-                {
-                    "mimeType": "image/jpg",
-                    "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
-                },
-                {
-                    "mimeType": "video/mp4",
-                    "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/demoVideo.mp4"
-                }
-            ],
+            "resources": {
+                "gridColumn": 4,
+                "gridGap": "0.5rem",
+                "items": [
+                    {
+                        "column": 3,
+                        "row": 3,
+                        "data": {
+                            "mimeType": "image/jpg",
+                            "resourcePath": "./images/1.jpg"
+                        }
+                    },
+                    {
+                        "data": {
+                            "mimeType": "image/jpg",
+                            "resourcePath": "./images/1.jpg"
+                        }
+                    },
+                    {
+                        "data": {
+                            "mimeType": "video/mp4",
+                            "resourcePath": "./images/demoVideo.mp4"
+                        }
+                    },
+                    {
+                        "data": {
+                            "mimeType": "image/jpg",
+                            "resourcePath": "./images/1.jpg"
+                        }
+                    },
+                    {
+                        "data": {
+                            "mimeType": "video/mp4",
+                            "resourcePath": "./images/demoVideo.mp4"
+                        }
+                    },
+                    {
+                        "data": {
+                            "mimeType": "image/jpg",
+                            "resourcePath": "./images/1.jpg"
+                        }
+                    },
+                    {
+                        "data": {
+                            "mimeType": "video/mp4",
+                            "resourcePath": "./images/demoVideo.mp4"
+                        }
+                    },
+                    {
+                        "data": {
+                            "mimeType": "image/jpg",
+                            "resourcePath": "./images/1.jpg"
+                        }
+                    }
+                ]
+            },
             "addresses": [
                 {
                     "title": "Address Title 1",
@@ -2400,29 +2463,115 @@
                 }
             ],
             "avatar": {
-                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/logo.svg",
+                "resourcePath": "/demo/images/logo.svg",
                 "mimeType": "image/png"
             },
             "summary": "Abstract Message Abstract Message Abstract Message Abstract Message Abstract Message Abstract Message Abstract Message Abstract Message",
-            "content": "Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content",
-            "resources": [
+            "selector": "body > main > aside > span[data-type='contents']",
+            "content": [
                 {
-                    "mimeType": "image/jpg",
-                    "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/slides/1.jpg"
+                    "title": "Section 1",
+                    "content": "Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content"
                 },
                 {
-                    "mimeType": "image/jpg",
-                    "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/slides/2.jpg"
+                    "title": "Section 2",
+                    "content": "Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content"
                 },
                 {
-                    "mimeType": "image/jpg",
-                    "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/slides/3.jpg"
+                    "title": "Section 3",
+                    "content": "Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content"
                 },
                 {
-                    "mimeType": "image/jpg",
-                    "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/slides/4.jpg"
+                    "title": "Section 4",
+                    "content": "Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content Message Content"
                 }
             ],
+            "resources": {
+                "items": [
+                    {
+                        "column": 3,
+                        "row": 3,
+                        "data": {
+                            "mimeType": "image/jpg",
+                            "resourcePath": "./images/1.jpg"
+                        }
+                    },
+                    {
+                        "column": 2,
+                        "row": 2,
+                        "data": {
+                            "mimeType": "video/mp4",
+                            "resourcePath": "./images/demoVideo.mp4"
+                        }
+                    },
+                    {
+                        "data": {
+                            "mimeType": "image/jpg",
+                            "resourcePath": "./images/1.jpg"
+                        }
+                    },
+                    {
+                        "data": {
+                            "mimeType": "video/mp4",
+                            "resourcePath": "./images/demoVideo.mp4"
+                        }
+                    },
+                    {
+                        "data": {
+                            "mimeType": "image/jpg",
+                            "resourcePath": "./images/1.jpg"
+                        }
+                    },
+                    {
+                        "data": {
+                            "mimeType": "video/mp4",
+                            "resourcePath": "./images/demoVideo.mp4"
+                        }
+                    },
+                    {
+                        "data": {
+                            "mimeType": "image/jpg",
+                            "resourcePath": "./images/1.jpg"
+                        }
+                    },
+                    {
+                        "data": {
+                            "mimeType": "video/mp4",
+                            "resourcePath": "./images/demoVideo.mp4"
+                        }
+                    },
+                    {
+                        "data": {
+                            "mimeType": "image/jpg",
+                            "resourcePath": "./images/1.jpg"
+                        }
+                    },
+                    {
+                        "data": {
+                            "mimeType": "video/mp4",
+                            "resourcePath": "./images/demoVideo.mp4"
+                        }
+                    },
+                    {
+                        "data": {
+                            "mimeType": "image/jpg",
+                            "resourcePath": "./images/1.jpg"
+                        }
+                    },
+                    {
+                        "data": {
+                            "mimeType": "video/mp4",
+                            "resourcePath": "./images/demoVideo.mp4"
+                        }
+                    },
+                    {
+                        "data": {
+                            "mimeType": "image/jpg",
+                            "resourcePath": "./images/1.jpg"
+                        }
+                    }
+                ]
+            },
             "attaches": {
                 "title": "Attach Files",
                 "items": [
@@ -2453,46 +2602,56 @@
                 "items": [
                     {
                         "link": "#Model1",
-                        "title": "Model 1",
+                        "title": {
+                            "content": "Model 1"
+                        },
                         "content": "Model 1 Content",
                         "avatar": {
-                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/logo.svg",
+                            "resourcePath": "./images/logo.svg",
                             "mimeType": "image/png"
                         }
                     },
                     {
                         "link": "#Model2",
-                        "title": "Model 2",
+                        "title": {
+                            "content": "Model 2"
+                        },
                         "content": "Model 2 Content",
                         "avatar": {
-                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/logo.svg",
+                            "resourcePath": "./images/logo.svg",
                             "mimeType": "image/png"
                         }
                     },
                     {
                         "link": "#Model3",
-                        "title": "Model 3",
+                        "title": {
+                            "content": "Model 3"
+                        },
                         "content": "Model 3 Content",
                         "avatar": {
-                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/logo.svg",
+                            "resourcePath": "./images/logo.svg",
                             "mimeType": "image/png"
                         }
                     },
                     {
                         "link": "#Model4",
-                        "title": "Model 4",
+                        "title": {
+                            "content": "Model 4"
+                        },
                         "content": "Model 4 Content",
                         "avatar": {
-                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/logo.svg",
+                            "resourcePath": "./images/logo.svg",
                             "mimeType": "image/png"
                         }
                     },
                     {
                         "link": "#Model5",
-                        "title": "Model 5",
+                        "title": {
+                            "content": "Model 5"
+                        },
                         "content": "Model 5 Content",
                         "avatar": {
-                            "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/logo.svg",
+                            "resourcePath": "./images/logo.svg",
                             "mimeType": "image/png"
                         }
                     }
@@ -2506,27 +2665,33 @@
                     "items": [
                         {
                             "link": "#accessories1",
-                            "title": "Accessories Name 1",
+                            "title": {
+                                "content": "Accessories Name 1"
+                            },
                             "avatar": {
-                                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/demoVideo.mp4",
+                                "resourcePath": "./images/demoVideo.mp4",
                                 "mimeType": "video/mp4",
                                 "title": "Accessories Item 1"
                             }
                         },
                         {
                             "link": "#accessories2",
-                            "title": "Accessories Name 2",
+                            "title": {
+                                "content": "Accessories Name 2"
+                            },
                             "avatar": {
-                                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/logo_zht.svg",
+                                "resourcePath": "./images/logo_zht.svg",
                                 "mimeType": "image/png",
                                 "title": "Accessories Item 1"
                             }
                         },
                         {
                             "link": "#accessories3",
-                            "title": "Accessories Name 3",
+                            "title": {
+                                "content": "Accessories Name 3"
+                            },
                             "avatar": {
-                                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/logo.svg",
+                                "resourcePath": "./images/logo.svg",
                                 "mimeType": "image/png",
                                 "title": "Accessories Item 1"
                             }
@@ -2540,27 +2705,33 @@
                     "items": [
                         {
                             "link": "#accessories1",
-                            "title": "Accessories Name 1",
+                            "title": {
+                                "content": "Accessories Name 1"
+                            },
                             "avatar": {
-                                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/demoVideo.mp4",
+                                "resourcePath": "./images/demoVideo.mp4",
                                 "mimeType": "video/mp4",
                                 "title": "Accessories Item 1"
                             }
                         },
                         {
                             "link": "#accessories2",
-                            "title": "Accessories Name 2",
+                            "title": {
+                                "content": "Accessories Name 2"
+                            },
                             "avatar": {
-                                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/logo_zht.svg",
+                                "resourcePath": "./images/logo_zht.svg",
                                 "mimeType": "image/png",
                                 "title": "Accessories Item 1"
                             }
                         },
                         {
                             "link": "#accessories3",
-                            "title": "Accessories Name 3",
+                            "title": {
+                                "content": "Accessories Name 3"
+                            },
                             "avatar": {
-                                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/logo.svg",
+                                "resourcePath": "./images/logo.svg",
                                 "mimeType": "image/png",
                                 "title": "Accessories Item 1"
                             }
@@ -2577,7 +2748,7 @@
                         "user": {
                             "avatar": {
                                 "mimeType": "image/jpg",
-                                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
+                                "resourcePath": "./images/1.jpg"
                             },
                             "content": "User Name"
                         },
@@ -2601,7 +2772,7 @@
                         "user": {
                             "avatar": {
                                 "mimeType": "image/jpg",
-                                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
+                                "resourcePath": "./images/1.jpg"
                             },
                             "content": "User Name",
                             "score": 4
@@ -2627,7 +2798,7 @@
                         "user": {
                             "avatar": {
                                 "mimeType": "image/jpg",
-                                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
+                                "resourcePath": "./images/1.jpg"
                             },
                             "content": "User Name"
                         }
@@ -2638,7 +2809,7 @@
                         "user": {
                             "avatar": {
                                 "mimeType": "image/jpg",
-                                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
+                                "resourcePath": "./images/1.jpg"
                             },
                             "content": "User Name",
                             "score": 4
@@ -2664,7 +2835,7 @@
                         "user": {
                             "avatar": {
                                 "mimeType": "image/jpg",
-                                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
+                                "resourcePath": "./images/1.jpg"
                             },
                             "content": "User Name",
                             "score": 4
@@ -2676,7 +2847,7 @@
                         "user": {
                             "avatar": {
                                 "mimeType": "image/jpg",
-                                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
+                                "resourcePath": "./images/1.jpg"
                             },
                             "content": "User Name",
                             "score": 4
@@ -2688,7 +2859,7 @@
                         "user": {
                             "avatar": {
                                 "mimeType": "image/jpg",
-                                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
+                                "resourcePath": "./images/1.jpg"
                             },
                             "content": "User Name",
                             "score": 4
@@ -2700,7 +2871,7 @@
                         "user": {
                             "avatar": {
                                 "mimeType": "image/jpg",
-                                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
+                                "resourcePath": "./images/1.jpg"
                             },
                             "content": "User Name",
                             "score": 4
@@ -2726,39 +2897,49 @@
             "items": [
                 {
                     "link": "#",
-                    "title": "Title 1",
+                    "title": {
+                        "content": "Title 1"
+                    },
                     "avatar": {
                         "mimeType": "image/jpg",
-                        "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/slides/1.jpg"
+                        "resourcePath": "./images/slides/1.jpg"
                     }
                 },
                 {
                     "link": "#",
-                    "title": "Title 2",
+                    "title": {
+                        "content": "Title 2"
+                    },
                     "avatar": {
                         "mimeType": "image/jpg",
-                        "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/slides/2.jpg"
+                        "resourcePath": "./images/slides/2.jpg"
                     }
                 },
                 {
-                    "title": "Title 3",
+                    "title": {
+                        "content": "Title 3"
+                    },
                     "avatar": {
                         "mimeType": "image/jpg",
-                        "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/slides/3.jpg"
+                        "resourcePath": "./images/slides/3.jpg"
                     }
                 },
                 {
-                    "title": "Title 4",
+                    "title": {
+                        "content": "Title 4"
+                    },
                     "avatar": {
                         "mimeType": "image/jpg",
-                        "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/slides/4.jpg"
+                        "resourcePath": "./images/slides/4.jpg"
                     }
                 },
                 {
-                    "title": "Title 5",
+                    "title": {
+                        "content": "Title 5"
+                    },
                     "avatar": {
                         "mimeType": "video/mp4",
-                        "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/demoVideo.mp4"
+                        "resourcePath": "./images/demoVideo.mp4"
                     }
                 }
             ]
@@ -2767,10 +2948,12 @@
     {
         "id": "contentBanner",
         "data": {
-            "content": "Banner Title",
+            "title": {
+                "content": "Banner Title"
+            },
             "avatar": {
                 "mimeType": "image/jpg",
-                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/slides/1.jpg"
+                "resourcePath": "./images/slides/1.jpg"
             }
         }
     },
@@ -2778,10 +2961,12 @@
         "id": "widgetLink",
         "data": {
             "link": "#widgetButton",
-            "title": "Widget",
+            "title": {
+                "content": "Widget"
+            },
             "avatar": {
                 "mimeType": "image/jpg",
-                "resourcePath": "https://cdn.jsdelivr.net/gh/wmkm0113/Cell@v0.9.0-beta/demo/images/1.jpg"
+                "resourcePath": "./images/1.jpg"
             }
         }
     },

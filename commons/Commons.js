@@ -82,7 +82,7 @@ const Comment = {
     DateTime: {
         Convert: false,
         UTC: false,
-        TimeZoneOffset: new Date().getTimezoneOffset() * 60 * 1000,
+        TimeZoneOffset: BigInt(new Date().getTimezoneOffset() * 60 * 1000),
         ISO8601DATEPattern: "yyyy-MM-dd",
         ISO8601TIMEPattern: "HH:mm:ss",
         ISO8601DATETIMEPattern: "yyyy-MM-ddTHH:mm:ss"
@@ -207,12 +207,11 @@ const SlideType = {
 Object.freeze(SlideType);
 const Config = {
     contextPath: "",
-    fontPrefixPath: "",
     componentPath: "",
     debugMode: DebugMode.INFO,
     multi: {
         codes: [],
-        default: Comment.Language,
+        default: "en-US",
         path: "/scripts/multi/{languageCode}.json"
     },
     notify: {
@@ -260,6 +259,12 @@ const Config = {
     components: []
 };
 Object.seal(Config);
+
+const SquarePayment = {
+    AppId: "",
+    LocationId: ""
+}
+Object.seal(SquarePayment);
 
 const DragUpload = {
     identifyCode: "",
@@ -359,7 +364,7 @@ class WebFont {
     }
 }
 
-export {Comment, RegexLibrary, Config, DragUpload, ColorMode, DebugMode, SlideType, $, $$, WebFont};
+export {Comment, RegexLibrary, Config, SquarePayment, DragUpload, ColorMode, DebugMode, SlideType, $, $$, WebFont};
 
 const validate = function (element = HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement) {
     let _result = true;
@@ -794,22 +799,25 @@ Object.assign(HTMLInputElement.prototype, {
         }
     },
 
-    parseValue() {
+    async parseValue() {
         switch (this.type.toLowerCase()) {
             case "password":
                 if (Cell) {
-                    return Cell.digest(this.value);
+                    return await Cell.digest(this.value);
                 }
-                break
+                break;
             case "date":
             case "time":
             case "datetime-local":
                 if (Comment.DateTime.Convert) {
-                    let milliseconds = BigInt(Date.parse(this.value));
-                    if (Comment.DateTime.UTC) {
-                        milliseconds += Comment.DateTime.TimeZoneOffset;
+                    const date = Date.parse(this.value);
+                    if (!isNaN(date)) {
+                        let milliseconds = BigInt(date);
+                        if (Comment.DateTime.UTC) {
+                            milliseconds += Comment.DateTime.TimeZoneOffset;
+                        }
+                        return milliseconds.toString();
                     }
-                    return milliseconds.toString();
                 }
                 break;
             case "file":
@@ -867,10 +875,10 @@ Object.assign(HTMLTextAreaElement.prototype, {
 });
 
 Object.assign(HTMLFormElement.prototype, {
-    url() {
+    async url() {
         let url = this.action;
         if (this.method.toLowerCase() === "get") {
-            const formData = this.formData();
+            const formData = await this.formData();
             if (formData.data != null) {
                 let queryString = "";
                 for (let key of formData.data.keys()) {
@@ -883,36 +891,34 @@ Object.assign(HTMLFormElement.prototype, {
         }
         return url;
     },
-    formData() {
+    async formData() {
         let uploadFile = false, data = new FormData(), uploadProgress = "";
-        Array.from(this.querySelectorAll("input, select, textarea"))
-            .filter(input => {
-                if (input.name.length === 0) {
-                    return false;
-                }
-                if (input.type.toLowerCase() === "checkbox" || input.type.toLowerCase() === "radio") {
-                    return input.checked;
-                } else if (input.type.toLowerCase() === "file") {
-                    return (input.dragFiles !== undefined);
-                } else {
-                    return input.value !== null && input.value.length > 0;
-                }
-            })
-            .forEach(input => {
-                const value = input.parseValue();
-                if (value instanceof Array) {
-                    uploadFile = true;
-                    value.forEach(file => {
-                        if (file instanceof File) {
-                            data.append(input.name, file, file.name);
-                        } else {
-                            data.append(input.name, file.content, file.fileName);
-                        }
-                    });
-                } else {
+        for (const input of this.querySelectorAll("input, select, textarea")) {
+            if (input.name.length === 0) {
+                continue;
+            }
+            if ((input.type.toLowerCase() === "checkbox" || input.type.toLowerCase() === "radio") && !input.checked) {
+                continue;
+            }
+            if (input.type.toLowerCase() === "file" && input.dragFiles === undefined) {
+                continue;
+            }
+            const value = await input.parseValue();
+            if (value instanceof Array) {
+                uploadFile = true;
+                value.forEach(file => {
+                    if (file instanceof File) {
+                        data.append(input.name, file, file.name);
+                    } else {
+                        data.append(input.name, file.content, file.fileName);
+                    }
+                });
+            } else {
+                if (value !== null && value.length > 0) {
                     data.append(input.name, value);
                 }
-            });
+            }
+        }
         if (uploadFile && this.dataset.uploadProgress) {
             uploadProgress = this.dataset.uploadProgress;
         }
@@ -1199,7 +1205,7 @@ Object.assign(String.prototype, {
         }
         return Object.values(RegexLibrary.Number).filter(regex => regex.test(this.trim())).length > 0;
     },
-    parseInt(radix) {
+    parseInt(radix = null) {
         return parseInt(this, radix === null ? 10 : radix);
     },
     parseFloat() {
@@ -1318,7 +1324,7 @@ Object.assign(String.prototype, {
         }
         return _dataBytes;
     },
-    formatDate(pattern = Comment.DateTime.ISO8601DATETIMEPattern, utc = Comment.DateTime.UTC) {
+    toDate(utc = Comment.DateTime.UTC) {
         if (this.length > 0 && Comment.DateTime.Convert) {
             try {
                 let bigint = BigInt(this);
@@ -1326,7 +1332,7 @@ Object.assign(String.prototype, {
 
                 }
                 if (utc) {
-                    bigint -= BigInt(Comment.DateTime.TimeZoneOffset);
+                    bigint -= Comment.DateTime.TimeZoneOffset;
                 }
 
                 let year = 1970;
@@ -1359,9 +1365,18 @@ Object.assign(String.prototype, {
                 }
                 const date = new Date();
                 date.setFullYear(year, month - 1, day);
-                return date.format(pattern);
+                return date;
             } catch (e) {
-                return this;
+                console.error(e);
+            }
+        }
+        return null;
+    },
+    formatDate(pattern = Comment.DateTime.ISO8601DATETIMEPattern, utc = Comment.DateTime.UTC) {
+        if (this.length > 0 && Comment.DateTime.Convert) {
+            const date = this.toDate(utc);
+            if (!!date) {
+                return date.format(pattern);
             }
         }
         return this;
@@ -1370,13 +1385,7 @@ Object.assign(String.prototype, {
 
 Object.assign(Number.prototype, {
     parseTime(utc = Comment.DateTime.UTC) {
-        let _date = new Date();
-        if (utc) {
-            _date.setTime(this - Comment.DateTime.TimeZoneOffset);
-        } else {
-            _date.setTime(this);
-        }
-        return _date;
+        return BigInt(this).toString().toDate(utc);
     },
     leapYear() {
         return (this % 4 === 0 && this % 100 !== 0) || (this % 400 === 0)
@@ -1411,6 +1420,14 @@ Object.assign(Number.prototype, {
             count++;
         }
         return _result;
+    },
+    toPrice() {
+        const value = this.parseInt();
+        if (!!value) {
+            const cent = value % 100;
+            return Math.trunc(value / 100) + "." + ((cent < 10) ? ("0" + cent.toString()) : cent.toString());
+        }
+        return "";
     }
 });
 
@@ -1530,8 +1547,8 @@ Object.assign(Date.prototype, {
         if (posLon < 0) {
             _fixTime *= -1;
         }
-        let _currentUTC = new Date().getTime() + Comment.DateTime.TimeZoneOffset,
-            _gpsTime = new Date(_currentUTC + _fixTime),
+        let _currentUTC = BigInt(new Date().getTime()) + Comment.DateTime.TimeZoneOffset,
+            _gpsTime = (_currentUTC + BigInt(_fixTime)).toString().toDate(false),
             _gpsMonth = _gpsTime.getMonth() + 1, _gpsDay = _gpsTime.getDate(),
             RD = 180 / Math.PI, B5 = Math.PI * posLat / 180,
             N = (275 * _gpsMonth / 9) - 2 * ((_gpsMonth + 9) / 12) + _gpsDay - 30,
@@ -1540,7 +1557,7 @@ Object.assign(Date.prototype, {
             SD = 0.3978 * Math.sin(L0 + C), CD = Math.sqrt(1 - SD * SD),
             SC = (SD * Math.sin(B5) + 0.0145) / (Math.cos(B5) * CD);
         let Sun = {};
-        let UTC;
+        const UTC = _currentUTC.toString().toDate(false);
         if (SC < -1) {
             //  Polar Night
             Sun.Polar = "Night";
@@ -1552,7 +1569,6 @@ Object.assign(Date.prototype, {
             Sun.Polar = "Day";
             Sun.SunRise = -1;
             Sun.SunSet = -1;
-            UTC = new Date(_currentUTC);
             UTC.setHours(12);
             UTC.setMinutes(0);
             Sun.Noon = UTC.getTime();
@@ -1560,13 +1576,11 @@ Object.assign(Date.prototype, {
             Sun.Polar = "Normal";
             let C3 = RD * Math.atan(SC / Math.sqrt(1 - Math.pow(SC, 2))), R1 = 6 - (posLon + C2 + C3) / 15,
                 HR = Math.floor(R1), MR = Math.floor((R1 - HR) * 60);
-            UTC = new Date(_currentUTC);
             UTC.setHours(HR);
             UTC.setMinutes(MR);
             Sun.SunRise = UTC.getTime();
             let S1 = 18 - (posLon + C2 - C3) / 15,
                 HS = Math.floor(S1), MS = Math.floor((S1 - HS) * 60);
-            UTC = new Date(_currentUTC);
             UTC.setHours(HS);
             UTC.setMinutes(MS);
             Sun.SunSet = UTC.getTime();
@@ -1586,32 +1600,6 @@ Object.assign(Array.prototype, {
             _result[i] = this[i] ^ data[i];
         }
         return _result;
-    },
-    toHex(separator = "") {
-        let _result = "";
-        this.forEach(_byte => {
-            let _string = Number(_byte).toString(16);
-            if (_string.length < 2) {
-                _string = "0" + _string;
-            }
-            _result += (separator + _string);
-        });
-        return _result;
-    },
-    toString() {
-        let _result = "";
-        this.forEach(_byte => {
-            if (_byte < 0) {
-                //  Compatible Java getBytes() result
-                _byte += 256;
-            }
-            if (_byte < 128) {
-                _result += String.fromCharCode(_byte);
-            } else {
-                _result += ("%" + _byte.toString().parseInt().toString(16));
-            }
-        });
-        return decodeURIComponent(_result);
     },
     toBigInt() {
         let _result = 0x00n;

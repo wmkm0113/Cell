@@ -28,12 +28,9 @@
 
 import * as Commons from "../commons/Commons.js";
 import {Crypto} from "../crypto/Crypto.js";
-import CRC from "../crypto/CRC.js";
-import MD5 from "../crypto/MD5.js";
-import RSA from "../crypto/RSA.js";
-import SHA from "../crypto/SHA.js";
-import * as Renders from "../render/Renders.js";
-import * as Components from "../components/Components.js";
+import {TagRender} from "../components/Components.js";
+
+const DEFAULT_COMPONENTS = ["Enhance", "Mock", "Calendar", "Charts", "Details", "Form", "List", "Slides"];
 
 const Options = {
     async: true,
@@ -47,13 +44,270 @@ const Options = {
     uploadProgress: ""
 }
 
+const confirmDialog = function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const target = event.target, element = target.parentElement;
+    if (target.dataset.type === "confirm" && element.confirm) {
+        element.confirm(event);
+    }
+    closeDialog(event);
+}
+
+const closeDialog = function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const element = event.target.parentElement;
+    element.hide();
+    delete element.dataset.category;
+    delete element.confirm;
+    document.body.removeClass("freeze");
+}
+
+class WindowRender extends TagRender {
+
+    static newInstance(type = "") {
+        if (type.length === 0) {
+            return null;
+        }
+        const target = document.createElement("div");
+        target.dataset.type = type;
+        return target;
+    }
+
+    static selectors() {
+        return ['body > div[data-type="dialog"]', 'body > div[data-type="float"]', 'body > div[data-type="notify"]'];
+    }
+
+    async _enhance(element = null) {
+        if (element === null) {
+            return;
+        }
+        element.clearChildNodes();
+
+        switch (element.dataset.type.toLowerCase()) {
+            case "dialog":
+                const message = document.createElement("span");
+                message.dataset.type = "message";
+                message.dataset.sortCode = "0";
+                element.appendChild(message);
+
+                const confirmBtn = document.createElement("button");
+                confirmBtn.dataset.type = "confirm";
+                confirmBtn.dataset.sortCode = "1";
+                confirmBtn.dataset.multiKey = "OK.Button";
+                element._appendChild(confirmBtn);
+                confirmBtn.addEventListener("click", (event) => confirmDialog(event));
+
+                const cancelBtn = document.createElement("button");
+                cancelBtn.dataset.type = "cancel";
+                cancelBtn.dataset.sortCode = "2";
+                cancelBtn.dataset.multiKey = "Cancel.Button";
+                element._appendChild(cancelBtn);
+                cancelBtn.addEventListener("click", (event) => closeDialog(event));
+                break;
+            case "notify":
+                const floatNotify = document.createElement("section");
+                floatNotify.dataset.type = "float-notify";
+                element.appendChild(floatNotify);
+                floatNotify.hide();
+
+                const notifyBtn = document.createElement("i");
+                notifyBtn.setClass("icon-bell-ring");
+                element.appendChild(notifyBtn);
+                notifyBtn.addEventListener("click", (event) => {
+                    event.stopPropagation();
+                    if (element.hasClass("notify")) {
+                        document.body.style.overflow = "auto";
+                        element.removeClass("notify");
+                    } else {
+                        document.body.style.overflow = "hidden";
+                        element.appendClass("notify");
+                    }
+                });
+
+                const notification = document.createElement("section");
+                notification.dataset.type = "notification";
+                element.appendChild(notification);
+                break;
+            case "float":
+                const closeBtn = document.createElement("i");
+                closeBtn.setClass("icon-close");
+                closeBtn.addEventListener("click", (event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    document.body.removeClass("freeze");
+                    element.hide();
+                });
+                element.appendChild(closeBtn);
+
+                const details = document.createElement("div");
+                details.dataset.type = "details";
+                element.appendChild(details);
+
+                const scrollBar = document.createElement("span");
+                scrollBar.dataset.type = "scroll-bar";
+                element._appendChild(scrollBar);
+                break;
+        }
+        await Cell.multilingual(element);
+    }
+
+    async _setData(element = null, data) {
+        if (element === null || data.length === 0) {
+            return;
+        }
+        switch (element.dataset.type.toLowerCase()) {
+            case "dialog":
+                let textContent = "";
+                if (data.hasOwnProperty("multiKey")) {
+                    textContent = Cell.multiMsg(data.multiKey);
+                } else if (data.hasOwnProperty("content")) {
+                    textContent = data.content;
+                }
+
+                if (textContent.length === 0) {
+                    return;
+                }
+
+                const message = element.querySelector('span[data-type="message"]');
+                if (message) {
+                    message.innerText = textContent;
+                    element.dataset.category = data.hasOwnProperty("confirm") ? "confirm" : "alter";
+                    if (data.hasOwnProperty("confirm")) {
+                        element.confirm = data.confirm;
+                    }
+                    document.body.appendClass("freeze");
+                    element.show();
+                }
+                break;
+            case "notify":
+                const elements = this._elements(element);
+                if (elements) {
+                    const dataArray = data instanceof Array ? data : [data];
+                    dataArray.forEach((notifyData) => {
+                        elements.float.appendChild(this._newNotify(notifyData));
+                        elements.notification.appendChild(this._newNotify(notifyData));
+                    });
+                    if (elements.notification.querySelectorAll(":scope > a").length === 0) {
+                        elements.button.setClass("icon-bell");
+                        elements.notification.hide();
+                        elements.float.hide();
+                    } else {
+                        elements.button.setClass("icon-bell-ring");
+                        elements.float.show();
+                        const timeout = element.dataset.hasOwnProperty("timeout") ? element.dataset.timeout.parseInt() : 5000;
+                        window.setTimeout(() => elements.float.hide(), timeout);
+                    }
+                }
+                break;
+            case "float":
+                this._details(element).then((details) => {
+                    details.clearChildNodes();
+                    const dataArray = data instanceof Array ? data : [data];
+                    dataArray.filter(itemData => itemData.hasOwnProperty("tagName") && itemData.hasOwnProperty("data"))
+                        .forEach(itemData => {
+                            const tagElement = document.createElement(itemData.tagName);
+                            if (itemData.hasOwnProperty("type")) {
+                                tagElement.dataset.type = itemData.type;
+                            }
+                            details._appendChild(tagElement);
+                            tagElement.data = itemData.data;
+                        });
+                    document.body.appendClass("freeze");
+                    element.show();
+                });
+                break;
+        }
+    }
+
+    _newNotify(data = {}) {
+        if (data.hasOwnProperty("text") && data.hasOwnProperty("identify")) {
+            const notify = document.createElement("a");
+            notify.id = data.identify;
+            notify.addEventListener("click", (event) => Cell.eventRequest(event));
+            notify.title = data.text;
+            notify.href = data.hasOwnProperty("link") ? data.link : "#";
+            const closeBtn = document.createElement("i");
+            closeBtn.dataset.type = "close-btn";
+            closeBtn.dataset.sortCode = "0";
+            closeBtn.setClass("icon-close");
+            closeBtn.style.zIndex = "2";
+            closeBtn.addEventListener("click", (event) => {
+                event.stopPropagation();
+                const current = event.target.parentElement;
+                const notify = current.parentElement.parentElement;
+                const floatNotify = notify.querySelector(`:scope > section[data-type="float-notify"] > a[id="${current.id}"]`),
+                    floatWindow = floatNotify == null ? null : floatNotify.parentElement;
+                let emptyNotifications = false;
+                if (floatNotify) {
+                    floatWindow.removeChild(floatNotify);
+                    if (floatWindow.childList().length === 0) {
+                        emptyNotifications = true;
+                    }
+                }
+                const notification = notify.querySelector(`:scope > section[data-type="notification"] > a[id="${current.id}"]`),
+                    notifyWindow = notification === null ? null : notification.parentElement;
+                if (notification) {
+                    notifyWindow.removeChild(notification);
+                    if (notifyWindow.childList().length === 0) {
+                        emptyNotifications = true;
+                    }
+                }
+
+                if (emptyNotifications) {
+                    floatWindow.hide();
+                    const notifyBtn = notify.querySelector(":scope > i");
+                    if (notifyBtn) {
+                        notifyBtn.setClass("icon-bell");
+                        notifyBtn.hide();
+                    }
+                    notify.removeClass("notify");
+                    document.body.style.overflow = "auto";
+                }
+            });
+            notify.appendChild(closeBtn);
+            if (data.hasOwnProperty("imgPath")) {
+                notify.dataset.imgPath = data.imgPath;
+                notify.setAttribute("style", `--icon: url('${data.imgPath}')`);
+            } else if (data.hasOwnProperty("icon")) {
+                notify.dataset.icon = data.icon;
+            }
+            return notify;
+        }
+        return null;
+    }
+
+    _elements(element = null) {
+        if (element === null) {
+            return null;
+        }
+        return {
+            float: element.querySelector(':scope > section[data-type="float-notify"]'),
+            button: element.querySelector(':scope > i'),
+            notification: element.querySelector(':scope > section[data-type="notification"]')
+        };
+    }
+
+    _details(element = null) {
+        return new Promise((resolve, reject) => {
+            const details = (element === null) ? null : element.querySelector('div[data-type="details"]');
+            if (details) {
+                resolve(details);
+            } else {
+                reject("Element not exists");
+            }
+        });
+    }
+}
+
 const retrieveWindow = function (type = "") {
     if (type.length === 0) {
         return null;
     }
     let target = document.body.querySelector(`:scope > div[data-type="${type}"]`);
     if (target === null) {
-        target = Renders.WindowRender.newInstance(type);
+        target = WindowRender.newInstance(type);
         if (target !== null) {
             document.body._appendChild(target);
         }
@@ -70,6 +324,10 @@ class CellJS {
     _registeredRenders = new Map();
     _observer = null;
     _lazyObserver = null;
+    _contentsObserver = null;
+    _loadLanguages = [];
+    _minimum = false;
+    _rootPath = "";
 
     constructor() {
         this._config = JSON.stringify(Commons.Config).parseJSON();
@@ -78,6 +336,22 @@ class CellJS {
 
         this._darkMode = false;
         this._multiInfo = {};
+        this._minimum = import.meta.url.toLowerCase().endsWith(".min.js");
+        this._rootPath = import.meta.url.substring(0, import.meta.url.length - `/core/Cell${this._minimum ? ".min" : ""}.js`.length);
+    }
+
+    async loadComponent(name = "") {
+        if (name.length === 0) {
+            return;
+        }
+        return new Promise((resolve, reject) => {
+            const script = document.createElement("script");
+            script.type = "module";
+            script.src = `${this._rootPath}/components/impl/${name}.js`;
+            script.onload = () => resolve(script);
+            script.onerror = () => reject(new Error(`Script load error for ${name}`));
+            document.head.appendChild(script);
+        });
     }
 
     init() {
@@ -88,16 +362,21 @@ class CellJS {
             subtree: true
         });
         this._lazyObserver = new IntersectionObserver(this._lazyLoad);
+        this._contentsObserver = new IntersectionObserver(this._contents);
         if (this._config.multi.codes.length > 0 && this._config.multi.codes.indexOf(this._config.multi.default) === -1) {
             this._config.multi.default = this._config.multi.codes[0];
         }
-        this._languageCode = this._config.multi.default;
-        this._initMulti();
+        (async () => await this.languageCode(Comment.Language))();
+        this._initStyles();
+        (async () => await this._initMulti())();
         this._languageCode.setLanguage();
-        [CRC, MD5, SHA, RSA].forEach(crypto => this._registerCrypto(crypto));
-        Object.values(Renders).forEach(render => this.registerRender(render));
-        Object.values(Components).forEach(component => this.registerComponent(component));
-        this._config.components.forEach(component => this.registerComponent(component));
+        // [CRC, MD5, SHA, RSA].forEach(crypto => this._registerCrypto(crypto));
+        // Object.values(Renders).forEach(render => this.registerRender(render));
+        // Object.values(Components).forEach(component => this.registerComponent(component));
+        this.registerRenders(WindowRender);
+        for (const name of DEFAULT_COMPONENTS.concat(this._config.components)) {
+            (async () => await this.loadComponent(name))();
+        }
         window.onload = this.scrollPage;
         window.onscroll = this.scrollPage;
         window.onresize = this.scale;
@@ -137,60 +416,59 @@ class CellJS {
         }
         this._notify = setInterval(Cell._scheduleNotify, this._config.notify.period);
         this.loadFont("iconfont", {display: "block"},
-            "/fonts/iconfont.woff2?t=1679629706726", "/fonts/iconfont.woff?t=1679629706726", "/fonts/iconfont.ttf?t=1679629706726");
+            "iconfont.woff2?t=1679629706726", "iconfont.woff?t=1679629706726", "iconfont.ttf?t=1679629706726");
         this._render();
 
         if (this._config.maps.Google.ApiKey.length > 0) {
-            (g => {
-                let h, a, k, p = Cell.multiMsg("Map.API", "Google"), c = "google", l = "importLibrary", q = "__ib__",
-                    m = document, b = window;
-                b = b[c] || (b[c] = {});
-                let d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams,
-                    u = () => h || (h = new Promise(async (f, n) => {
-                        await (a = m.createElement("script"));
-                        e.set("libraries", [...r] + "");
-                        for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]);
-                        e.set("callback", c + ".maps." + q);
-                        a.src = `https://maps.${c}apis.com/maps/api/js?` + e;
-                        d[q] = f;
-                        a.onerror = () => h = n(Error(Cell.multiMsg("Map.Load.Error", p)));
-                        a.nonce = m.querySelector("script[nonce]")?.nonce || "";
-                        m.head.append(a)
-                    }));
-                d[l] ? Cell.warn("Map.Reload.Warning", p, g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n))
-            })({
+            this._scriptLoader("Google", "maps", "https://maps.googleapis.com/maps/api/js", {
                 key: this._config.maps.Google.ApiKey,
                 v: this._config.maps.Google.version
             });
         }
         if (this._config.maps.Baidu.ApiKey.length > 0) {
-            (b => {
-                let h, a, k, p = Cell.multiMsg("Map.API", "Baidu"), c = "baidu", l = "importLibrary", q = "__ib__",
-                    d = document, w = window;
-                w = w[c] || (w[c] = {});
-                const m = w.maps || (w.maps = {}), e = new URLSearchParams,
-                    u = () => h || (h = new Promise(async (f, n) => {
-                        await (a = d.createElement("script"));
-                        for (k in b) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), b[k]);
-                        e.set("callback", c + ".maps." + q);
-                        a.src = "https://api.map.baidu.com/api?" + e;
-                        a.onerror = () => h = n(new Error(Cell.multiMsg("Map.Load.Error", p)));
-                        m[q] = () => {
-                            m[l] = () => window.explain(this._config.maps.Baidu.paramName);
-                            delete m[q];
-                            f();
-                        };
-                        d.head.append(a);
-                    }));
-                m[l] ? Cell.warn("Map.Reload.Warning", p, b) : m[l] = (f, n) => u().then(() => m[l](f, n));
-            })({
+            this._scriptLoader("Baidu", "maps", "https://api.map.baidu.com/api", {
                 ak: this._config.maps.Baidu.ApiKey,
                 v: this._config.maps.Baidu.version,
                 type: this._config.maps.Baidu.type
+            }, () => {
+                window["baidu"].maps.importLibrary = () => window.explain(this._config.maps.Baidu.paramName);
+                delete window["baidu"].maps.__ib__;
             });
         }
 
         Cell.info("Success.Initialize.Result");
+    }
+
+    _scriptLoader(name = "", type = "", src = "", options = {}, callback = null) {
+        let h, a, k, p = Cell.multiMsg("Map.API", name), c = name.toLowerCase(),
+            l = "importLibrary", q = "__ib__", m = document, b = window;
+        b = b[c] || (b[c] = {});
+        let d = b[type] || (b[type] = {}), r = new Set, e = new URLSearchParams,
+            u = () => h || (h = new Promise(async (f, n) => {
+                await (a = m.createElement("script"));
+                const names = [];
+                r.forEach(value => {
+                    if (value) {
+                        names.push(value);
+                    }
+                })
+                if (names.length > 0) {
+                    e.set("libraries", names.join(","));
+                }
+                for (k in options) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), options[k]);
+                e.set("callback", [c, type, q].join("."));
+                a.src = src + "?" + e;
+                d[q] = () => {
+                    if (callback !== null) {
+                        callback.apply(this);
+                    }
+                    f();
+                };
+                a.onerror = () => h = n(Error(Cell.multiMsg("Map.Load.Error", p)));
+                a.nonce = m.querySelector("script[nonce]")?.nonce || "";
+                m.head.append(a);
+            }));
+        d[l] ? Cell.warn("Map.Reload.Warning", p, window[name.toLowerCase()]) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n));
     }
 
     destroy() {
@@ -201,8 +479,11 @@ class CellJS {
             clearInterval(this._colorListener);
         }
         this._observer.disconnect();
-        this._lazyObserver.disconnect();
         this._observer = null;
+        this._lazyObserver.disconnect();
+        this._lazyObserver = null;
+        this._contentsObserver.disconnect();
+        this._contentsObserver = null;
         this._multiInfo = {};
         this._multilingual = false;
         this._loggerBuffer = [];
@@ -217,7 +498,7 @@ class CellJS {
                 _paths.push(path);
             } else {
                 //  Load local font file
-                _paths.push(this._config.fontPrefixPath + path);
+                _paths.push(`${this._rootPath}/fonts/${path}`);
             }
         })
         webFont.paths(..._paths);
@@ -240,69 +521,70 @@ class CellJS {
         }
     }
 
-    _initMulti() {
-        if (this._multilingual) {
-            return;
-        }
-        if ((this._config.multi === null) || (this._config.multi.codes.length === 0)
-            || (this._config.multi.path.length === 0) || (this._config.multi.path.indexOf("{languageCode}") === -1)
-            || (this._config.multi.codes.indexOf(this._config.multi.default) === -1)) {
+    _initStyles() {
+        const scriptPath = import.meta.url, index = scriptPath.indexOf("core/Cell");
+        const script = Array.from(document.head.querySelectorAll("script")).filter(script => script.src === scriptPath).at(0);
+        const styles = document.createElement("link");
+        styles.rel = "stylesheet";
+        styles.type = "text/css";
+        styles.href = scriptPath.substring(0, index) + "styles/Cell.css";
+        document.head.insertBefore(styles, script);
+    }
+
+    async _initMulti() {
+        if ((this._config.multi.path.length === 0) || (this._config.multi.path.indexOf("{languageCode}") === -1)
+            || (this._config.multi.codes.indexOf(this._languageCode) === -1)) {
             console.debug("Multilingual was not configured or invalid, ignore load multilingual information");
-            return;
+            return false;
+        }
+        if (this._loadLanguages.indexOf(this._languageCode) !== -1) {
+            return true;
         }
 
         let url = this._config.contextPath + this._config.multi.path;
-        let _loadLanguages = [];
-        this._config.multi.codes
-            .filter(languageCode => typeof languageCode === "string")
-            .forEach(languageCode => {
-                //  Use synchronous request to initialize multilingual information
-                Cell.sendRequest(url.replace("{languageCode}", languageCode))
-                    .then((responseText) => {
-                        if (responseText.isJSON()) {
-                            this._multiInfo[languageCode] = responseText.parseJSON();
-                        }
-                    })
-                    .catch((errorMsg) => {
-                        console.error("Load multilingual resource failed! Path: " + url, errorMsg);
-                    })
-                    .finally(() => {
-                        _loadLanguages.push(languageCode);
-                        this._initMultiCount(_loadLanguages.length);
-                    });
+        return Cell.sendRequest(url.replace("{languageCode}", this._languageCode))
+            .then((responseText) => {
+                if (responseText.isJSON()) {
+                    this._multiInfo[this._languageCode] = responseText.parseJSON();
+                }
+                this._loggerBuffer.forEach(buffer => {
+                    const args = buffer.args.split("|");
+                    this._log(buffer.level, buffer.key, ...args);
+                });
+                this._loggerBuffer = [];
+                return true;
+            })
+            .catch((errorMsg) => {
+                console.error("Load multilingual resource failed! Path: " + url, errorMsg);
+                return false;
+            })
+            .finally(() => {
+                this._loadLanguages.push(this._languageCode);
             });
     }
 
-    _initMultiCount(count = 0) {
-        this._multilingual = (this._config.multi.codes.length === count);
-        if (this._multilingual) {
-            this._loggerBuffer.forEach(buffer => {
-                const args = buffer.args.split("|");
-                this._log(buffer.level, buffer.key, ...args);
-            });
-            this._loggerBuffer = [];
-            this.multilingual();
-        }
+    registerRenders(...renders) {
+        renders.forEach(render => {
+            render.selectors().forEach(selector => this._registeredRenders.set(selector, new render()));
+        })
     }
 
-    registerRender(render) {
-        if (render) {
-            const enhanceRender = new render();
-            if (enhanceRender.selectors().length > 0) {
-                enhanceRender.selectors().forEach(selector => this._registeredRenders.set(selector, enhanceRender));
-            }
-        }
-    }
-
-    registerComponent(component) {
-        if (component.tagName !== undefined && (typeof component.tagName) === "function") {
-            const tagName = component.tagName();
-            if (tagName !== null && tagName.length > 0) {
+    registerComponents(...components) {
+        components.forEach(component => {
+            if (component.tagName !== undefined && (typeof component.tagName) === "function") {
+                const tagName = component.tagName();
                 if (customElements.get(tagName) === undefined) {
                     customElements.define(tagName, component);
                 }
             }
+        });
+    }
+
+    observeContent(element = null) {
+        if (element === null) {
+            return;
         }
+        this._contentsObserver.observe(element);
     }
 
     _preRender(element = null) {
@@ -316,16 +598,59 @@ class CellJS {
         })
     }
 
+    _resize() {
+        //  Resize all rendered elements
+        this._registeredRenders.forEach((render, selector) =>
+            $$(selector + "[data-render='true']")
+                .forEach((item) => render.resize(item)));
+    }
+
     _render() {
         this._registeredRenders.forEach((render, selector) =>
             $$(selector + ":not([data-render='true'])")
-                .forEach((item) => {
+                .forEach(async (item) => {
                     this._renderElement(item, render);
-                    Cell.multilingual(item);
+                    await Cell.multilingual(item);
                 }));
         $$('span[data-type="lazy"]:not([data-monitor="true"])').forEach((item) => {
             this._lazyObserver.observe(item);
             item.dataset.monitor = "true";
+        });
+    }
+
+    _contents(entries) {
+        entries.reverse().forEach(entry => {
+            const target = entry.target;
+            if (target.dataset.hasOwnProperty("selector") && target.dataset.selector.length > 0) {
+                const contents = document.querySelector(target.dataset.selector);
+                if (!!contents) {
+                    if (entry.isIntersecting) {
+                        target.dataset.top = entry.boundingClientRect.top.toString();
+                        Array.from(contents.querySelectorAll(':scope > span[data-id]'))
+                            .forEach(item => {
+                                if (item.dataset.id === target.id) {
+                                    item.appendClass("current");
+                                } else {
+                                    item.removeClass("current");
+                                }
+                            });
+                    } else {
+                        const current = contents.querySelector(`:scope > span[data-id="${target.id}"]`);
+                        if (!!current && current.hasClass("current")) {
+                            let next = null;
+                            if (entry.boundingClientRect.top < entry.intersectionRect.top) {
+                                next = current.nextElementSibling;
+                            } else if (entry.boundingClientRect.top > entry.intersectionRect.top) {
+                                next = current.previousElementSibling;
+                            }
+                            if (!!next) {
+                                current.removeClass("current");
+                                next.appendClass("current");
+                            }
+                        }
+                    }
+                }
+            }
         });
     }
 
@@ -340,18 +665,20 @@ class CellJS {
 
     _colorMode() {
         this._registeredRenders.forEach((render, selector) =>
-            $$(selector).forEach((item) => render.colorMode(item, this._darkMode)));
+            $$(selector).forEach(async (item) => await render.colorMode(item, this._darkMode)));
     }
 
     _renderElement(element = null, render = null) {
         if (element === null || render === null) {
             return;
         }
-        render._enhance(element);
+        (async (element) => await render._enhance(element))(element);
         Object.defineProperty(element, "data", {
             set(data) {
-                render._prepare(element, data);
-                render._setData(element, data);
+                (async () => {
+                await render._prepare(element, data);
+                await render._setData(element, data);
+                })();
             }
         })
         element.dataset.render = "true";
@@ -391,7 +718,7 @@ class CellJS {
                 this._loggerBuffer.push(logDetails);
                 return;
             }
-            let _multiMsg = Cell.multiMsg(messageKey, ...args);
+            let _multiMsg = this.multiMsg(messageKey, ...args);
             switch (debugMode) {
                 case Commons.DebugMode.DEBUG:
                     console.debug(_multiMsg);
@@ -411,7 +738,7 @@ class CellJS {
 
     multiMsg(messageKey = "", ...args) {
         let multiMessage = "";
-        if (Commons.RegexLibrary.Multilingual_Key.test(messageKey)) {
+        if (Commons.RegexLibrary.Multilingual_Key.test(messageKey) || Commons.RegexLibrary.Language_Code.test(messageKey)) {
             let languageCode = this._langCurrent();
             if (languageCode.length > 0 && this._multiInfo.hasOwnProperty(languageCode)) {
                 if (this._multiInfo[languageCode].hasOwnProperty(messageKey)) {
@@ -446,49 +773,53 @@ class CellJS {
         return languageCode;
     }
 
-    multilingual(element = document.body) {
-        element.querySelectorAll('[data-multi-key]')
-            .forEach(element => {
-                const textContent = Cell.multiMsg(element.dataset.multiKey);
-                if (element.tagName.toLowerCase() === "input") {
-                    if (element.dataset.hasOwnProperty("category")
-                        && ["score", "like", "favorite", "select-all"].indexOf(element.dataset.category.toLowerCase()) >= 0) {
-                        return;
-                    }
-                    switch (element.type.toLowerCase()) {
-                        case "submit":
-                        case "reset":
-                            element.value = textContent;
-                            element.dataset.value = textContent;
-                            break;
-                        case "checkbox":
-                        case "radio":
-                        case "button":
-                            const label = element.nextElementSibling;
-                            if (label) {
-                                label.innerText = textContent;
+    async multilingual(element = document.body) {
+        await this._initMulti().then(result => {
+            if (result) {
+                element.querySelectorAll('[data-multi-key]')
+                    .forEach(element => {
+                        const textContent = Cell.multiMsg(element.dataset.multiKey);
+                        if (element.tagName.toLowerCase() === "input") {
+                            if (element.dataset.hasOwnProperty("category")
+                                && ["score", "like", "favorite", "select-all"].indexOf(element.dataset.category.toLowerCase()) >= 0) {
+                                return;
                             }
-                            break;
-                        default:
+                            switch (element.type.toLowerCase()) {
+                                case "submit":
+                                case "reset":
+                                    element.value = textContent;
+                                    element.dataset.value = textContent;
+                                    break;
+                                case "checkbox":
+                                case "radio":
+                                case "button":
+                                    const label = element.nextElementSibling;
+                                    if (label) {
+                                        label.innerText = textContent;
+                                    }
+                                    break;
+                                default:
+                                    element.placeholder = textContent;
+                                    break;
+                            }
+                        } else if (element.tagName.toLowerCase() === "textarea") {
                             element.placeholder = textContent;
-                            break;
-                    }
-                } else if (element.tagName.toLowerCase() === "textarea") {
-                    element.placeholder = textContent;
-                } else if (element.tagName.toLowerCase() === "select") {
-                    element.items();
-                } else if (element.matches('i[data-type="tips"]')) {
-                    element.dataset.content = textContent;
-                } else {
-                    element.innerText = textContent;
-                    if (element.tagName.toLowerCase() === "a" || element.tagName.toLowerCase() === "span") {
-                        element.setAttribute("title", textContent);
-                    }
-                }
-            });
-        this._registeredRenders.forEach((render, selector) =>
-            element.querySelectorAll(selector + "[data-multi='true']")
-                .forEach(renderElement => render._multilingual(renderElement)));
+                        } else if (element.tagName.toLowerCase() === "select") {
+                            element.items();
+                        } else if (element.matches('i[data-type="tips"]')) {
+                            element.dataset.content = textContent;
+                        } else {
+                            element.innerText = textContent;
+                            if (element.tagName.toLowerCase() === "a" || element.tagName.toLowerCase() === "span") {
+                                element.setAttribute("title", textContent);
+                            }
+                        }
+                    });
+                this._registeredRenders.forEach((render, selector) =>
+                    element.querySelectorAll(selector + "[data-multi='true']")
+                        .forEach(renderElement => render._multilingual(renderElement)));
+            }
+        });
     }
 
     alert(message = "") {
@@ -598,7 +929,7 @@ class CellJS {
                 _element.innerHTML = ("" + responseText);
             }
         }
-        if (linkAddress.length > 0) {
+        if (linkAddress.length > 0 && linkAddress.endsWith(".html")) {
             history.pushState(null, title, linkAddress);
         }
         return true;
@@ -649,24 +980,26 @@ class CellJS {
             if (_options.contentType.length > 0) {
                 _request.setRequestHeader("Content-Type", _options.contentType);
             }
-            if (_options.uploadFile) {
-                _request.setRequestHeader("Content-Type", "multipart/form-data");
-                if (_options.uploadProgress.length > 0) {
-                    _request.upload.addEventListener("progress",
-                        (event) => {
-                            const progress = $(_options.uploadProgress);
-                            const percent = (event.loaded / event.total) * 100;
-                            progress.setAttribute("value", percent.toString());
-                            progress.data = {
-                                "processed": event.loaded.toString(),
-                                "total": event.total.toString()
-                            }
-                        });
+            if (_options.method.toLowerCase() === "post") {
+                if (_options.uploadFile) {
+                    _request.setRequestHeader("Content-Type", "multipart/form-data");
+                    if (_options.uploadProgress.length > 0) {
+                        _request.upload.addEventListener("progress",
+                            (event) => {
+                                const progress = $(_options.uploadProgress);
+                                const percent = (event.loaded / event.total) * 100;
+                                progress.setAttribute("value", percent.toString());
+                                progress.data = {
+                                    "processed": event.loaded.toString(),
+                                    "total": event.total.toString()
+                                }
+                            });
+                    }
                 }
             }
             let processLength = 0;
             const stream = options.stream || false;
-            _request.onreadystatechange = function () {
+            _request.onreadystatechange = async function () {
                 if (this.readyState === 3 || this.readyState === 4) {
                     if (this.readyState === 4 || stream) {
                         Cell.debug("Link.Path.Data", url, this.method, this.status);
@@ -674,7 +1007,7 @@ class CellJS {
                         if (origin) {
                             let languageCode = this.getResponseHeader("languageCode");
                             if (languageCode !== null) {
-                                Cell.language = languageCode;
+                                await Cell.languageCode(languageCode);
                                 Cell.debug("Modify.Language.Code", languageCode);
                             }
                             let _jwtToken = this.getResponseHeader("Authentication");
@@ -688,9 +1021,9 @@ class CellJS {
                                 Cell.debug("Redirect.Path.Data", _redirectPath);
                                 let _newOption = JSON.stringify(Options).parseJSON();
                                 Object.extend(_newOption, _options);
-                                Cell.sendRequest(_redirectPath, _newOption, parameters).then(resolve).catch(reject);
+                                return Cell.sendRequest(_redirectPath, _newOption, parameters).then(resolve).catch(reject);
                             } else {
-                                reject(_request);
+                                return reject(_request);
                             }
                         } else if (_request.status === 200) {
                             let _responseText = _request.responseText;
@@ -713,24 +1046,28 @@ class CellJS {
                                 }
                                 _responseText = _partData;
                             }
-                            resolve(_responseText);
+                            return resolve(_responseText);
                         } else {
-                            reject(_request.status);
+                            return reject(_request.status);
                         }
                     }
                 }
             };
             _request.ontimeout = function () {
-                reject(_request);
+                return reject(_request);
             };
             _request.onerror = function () {
-                reject(_request);
+                return reject(_request);
             };
-            _request.send(parameters);
+            if (_options.method === "head") {
+                _request.send();
+            } else {
+                _request.send(parameters);
+            }
         });
     }
 
-    eventRequest(event, options = {}, parameters = null) {
+    async eventRequest(event, options = {}, parameters = null) {
         if (!Commons.Comment.Browser.IE || Commons.Comment.Browser.IE11) {
             event.preventDefault();
         }
@@ -738,7 +1075,7 @@ class CellJS {
         let target = event.currentTarget;
         if (target.dataset.disabled == null || target.dataset.disabled === "false") {
             if (target.tagName.toLowerCase() === "form") {
-                return this.submitForm(target);
+                return await this.submitForm(target);
             } else {
                 let url = target.tagName.toLowerCase() === "a" ? target.href : target.dataset.link;
                 if (url !== undefined && url.length > 0 && url !== "#") {
@@ -753,11 +1090,10 @@ class CellJS {
                         window.location = url;
                     }
                 }
-                if (target.tagName.toLowerCase() === "a") {
-                    return false;
-                }
+                return target.tagName.toLowerCase() !== "a";
             }
         }
+        return false;
     }
 
     closeWindow() {
@@ -767,14 +1103,19 @@ class CellJS {
         }
     }
 
-    submitForm(formElement, parameters = {}) {
+    async submitForm(formElement, parameters = {}) {
         if (formElement && !formElement.dataset.disabled && formElement.validate()) {
+            for (const selector of this._registeredRenders.keys()) {
+                for (const element of formElement.querySelectorAll(selector)) {
+                    await this._registeredRenders.get(selector)._process(element);
+                }
+            }
             if (formElement.dataset.hasOwnProperty("targetId") && formElement.dataset.targetId.length > 0) {
                 if (formElement.action.indexOf("#") >= 0) {
                     window.location.hash = formElement.action.substring(formElement.action.indexOf("#"));
-                    return;
+                    return true;
                 }
-                const formData = formElement.formData();
+                const formData = await formElement.formData();
                 Object.keys(parameters).forEach((key) => formData.data.append(key, parameters[key]));
                 if (Cell._modeEnabled(Commons.DebugMode.DEBUG)) {
                     Cell.debug("Submit.Form.Data", formData.uploadFile, formData.uploadProgress, JSON.stringify(Object.fromEntries(formData.data.toMap())));
@@ -785,23 +1126,15 @@ class CellJS {
                         uploadProgress: formData.uploadProgress
                     },
                     formData.data)
-                    .then((responseText) =>
-                        Cell._response(responseText, false, formElement.url(), formElement.dataset.targetId))
+                    .then(async (responseText) =>
+                        Cell._response(responseText, false, await formElement.url(), formElement.dataset.targetId))
                     .catch((errorMsg) => Cell.error("Error.Message", errorMsg));
             } else {
-                formElement.querySelectorAll('input[type="password"]')
-                    .forEach(input => {
-                        if (input.dataset.hasOwnProperty("encResult") && input.value === input.dataset.encResult) {
-                            //  Password value was encrypted and not modified, ignore process
-                            return;
-                        }
-                        const encResult = Cell.digest(input.value);
-                        input.value = encResult
-                        input.dataset.encResult = encResult;
-                    });
                 formElement.submit();
             }
+            return true;
         }
+        return false;
     }
 
     darkMode() {
@@ -843,15 +1176,17 @@ class CellJS {
         this._colorMode();
     }
 
-    set language(languageCode) {
-        if (this._languageCode !== languageCode) {
-            document.documentElement.lang = languageCode;
-            this._languageCode = languageCode;
-            this.multilingual();
+    async languageCode(languageCode) {
+        const langCode = (this._config.multi.codes.indexOf(languageCode) === -1) ? this._config.multi.default : languageCode;
+        if (this._languageCode !== langCode) {
+            document.documentElement.lang = langCode;
+            this._languageCode = langCode;
+            this._initMulti().then()
+            await this.multilingual();
         }
     }
 
-    digest(data) {
+    async digest(data) {
         if (this._config.security.password.encrypt) {
             return this.digestData(this._config.security.password.digest, data);
         } else {
@@ -860,53 +1195,78 @@ class CellJS {
         }
     }
 
-    encData(data) {
-        if (this._config.security.RSA.exponent.length > 0 && this._config.security.RSA.modulus.length > 0) {
-            return this["RSA"].newInstance(this._config.security.RSA).encrypt(data);
-        } else {
-            return data;
-        }
+    async encData(data) {
+        return this._initRSA().then(crypto => (crypto === null) ? data : crypto.encrypt(data));
     }
 
-    decData(data) {
-        if (this._config.security.RSA.exponent.length > 0 && this._config.security.RSA.modulus.length > 0) {
-            return this["RSA"].newInstance(this._config.security.RSA).decrypt(data);
-        } else {
-            return data;
-        }
+    async decData(data) {
+        return this._initRSA().then(crypto => (crypto === null) ? data : crypto.decrypt(data));
     }
 
-    digestData(method, data, hex = true, key = "", outBit = -1) {
-        let digest = this._initDigest(method, key, outBit);
-        if (digest === null) {
-            Cell.error("Digest.Unknown.Algorithm");
-            return data;
-        }
-        digest.append(data);
-        return digest.finish(hex);
+    async digestData(method, data, hex = true, key = "", outBit = -1) {
+        return this._initDigest(method, key, outBit)
+            .then(digest => {
+                if (digest === null) {
+                    Cell.error("Digest.Unknown.Algorithm");
+                    return data;
+                }
+                digest.append(data);
+                return digest.finish(hex);
+            });
     }
 
     digestBinary(method, dataBytes = [], hex = true, key = "", outBit = -1) {
-        let digest = this._initDigest(method, key, outBit);
-        if (digest === null) {
-            Cell.error("Digest.Unknown.Algorithm");
-            return dataBytes;
-        }
-        digest.appendBinary(dataBytes);
-        return digest.finish(hex);
+        return this._initDigest(method, key, outBit)
+            .then(digest => {
+                if (digest === null) {
+                    Cell.error("Digest.Unknown.Algorithm");
+                    return dataBytes;
+                }
+                digest.appendBinary(dataBytes);
+                return digest.finish(hex);
+            });
     }
 
-    _initDigest(method = "", key = "", outBit = -1) {
-        if (method.startsWith("CRC")) {
-            return this["CRC"].newInstance(method);
-        } else if (method.toUpperCase().indexOf("MD5") !== -1) {
-            return this["MD5"].newInstance(key);
-        } else if (method.toUpperCase().indexOf("SHA") !== -1) {
-            return this["SHA"].newInstance(method, key, outBit);
-        } else if (this.hasOwnProperty(method) && this[method] instanceof Crypto) {
-            return this[method].newInstance(method, key, outBit);
+    async _initRSA() {
+        return this._initCrypto("RSA")
+            .then(crypto => {
+                if (this._config.security.RSA.exponent.length > 0 && this._config.security.RSA.modulus.length > 0) {
+                    return crypto.newInstance(this._config.security.RSA);
+                }
+                return null;
+            })
+    }
+
+    async _initDigest(method = "", key = "", outBit = -1) {
+        return this._initCrypto(method)
+            .then(digest => {
+                if (digest !== null) {
+                    if (method.startsWith("CRC")) {
+                        return digest.newInstance(method);
+                    } else if (method.toUpperCase().indexOf("MD5") !== -1) {
+                        return digest.newInstance(key);
+                    } else if (method.toUpperCase().indexOf("SHA") !== -1) {
+                        return digest.newInstance(method, key, outBit);
+                    } else if (this.hasOwnProperty(method) && this[method] instanceof Crypto) {
+                        return digest.newInstance(method, key, outBit);
+                    }
+                }
+                return null;
+            });
+    }
+
+    async _initCrypto(method = "") {
+        if (method.length === 0) {
+            return null;
         }
-        return null;
+        const moduleName = method.startsWith("CRC") ? "CRC" : method;
+        if (!this.hasOwnProperty(moduleName)) {
+            const modulePath = `../crypto/${moduleName}.js`;
+            this.debug("Loading.Crypto", moduleName, modulePath);
+            const crypto = await import(modulePath);
+            this._registerCrypto(crypto.default);
+        }
+        return this[moduleName];
     }
 
     _registerCrypto(provider) {
@@ -935,6 +1295,7 @@ class CellJS {
         } else {
             document.body.style.scale = ("" + (clientWidth / 3840));
         }
+        Cell._resize();
     }
 
     scrollPage() {
@@ -962,7 +1323,7 @@ class CellJS {
         window.$ = Commons.$;
         window.$$ = Commons.$$;
         window.Cell = new CellJS();
-        window.Cell.init();
+        Cell.init();
         window.addEventListener("beforeunload", () => {
             window.Cell.destroy();
             delete window.$;

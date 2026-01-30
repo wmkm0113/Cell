@@ -102,6 +102,10 @@ body > main > aside > section[data-type="address"] {
     background-color: rgb(var(--section-bg-color));
 }
 
+body > main > aside > a[data-type="banner"][data-content]::after {
+    display: none;
+}
+
 body > footer > nav[data-type="social"],
 body > footer > menu[data-type="social"] {
     width: 15rem;

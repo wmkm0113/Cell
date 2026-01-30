@@ -16,7 +16,62 @@
  */
 "use strict";
 
-import * as Renders from "../render/Renders.js";
+/**
+ * Generate random color code (format: #FFFFFF)
+ *
+ * @returns {string} Generated random color code
+ *
+ * 生成随机颜色代码（格式：#FFFFFF）
+ *
+ * @returns {string} 生成的颜色代码
+ */
+const randomColor = function () {
+    let randColor = "";
+    while (true) {
+        let color = Math.floor(Math.random() * 255).toString(16);
+        if (color.length === 1) {
+            randColor += "0";
+        }
+        randColor += color;
+        if (randColor.length >= 6) {
+            break;
+        }
+    }
+    return "#" + randColor;
+}
+
+/**
+ * Render ring by given data
+ *
+ * @param element       Container element
+ * @param index         Ring index number
+ * @param _stepWidth    Value of ring width + gap width
+ * @param fillColor     Custom ring fill color
+ * @param sectorData    Ring data
+ *
+ * 使用给定的数据生成圆环
+ *
+ * @param element       环形图容器
+ * @param index         数据环索引值
+ * @param _stepWidth    环宽度+间隔宽度值
+ * @param fillColor     自定义未完成的颜色
+ * @param sectorData    数据环信息
+ */
+const ring = function (element, index, _stepWidth = 0, fillColor = "", sectorData = {}) {
+    const _progress = Math.floor(sectorData.value * 100),
+        _last = 100 - _progress,
+        _position = Math.floor((index * _stepWidth) / 2),
+        sectionArray = element.getElementsByTagName("section");
+    const section = (index < sectionArray.length) ? sectionArray[index] : document.createElement("section");
+    if (sectionArray.length <= index) {
+        element.appendChild(section);
+    }
+    let styles = `--position: ${_position}px; --ring-width: ${element.dataset.ringWidth}; --ring-color: ${sectorData.color}; --progress: ${_progress}%; --last: ${_last}%;`;
+    if (fillColor.length > 0) {
+        styles += ` --fill-color: ${fillColor};`;
+    }
+    section.setAttribute("style", styles);
+}
 
 class CustomElement extends HTMLElement {
     constructor() {
@@ -24,13 +79,17 @@ class CustomElement extends HTMLElement {
         this._shadowRoot = this.attachShadow({mode: "closed"});
         Object.defineProperty(this, "data", {
             set(data = null) {
-                this._render(data);
+                this._setData(data);
             }
         });
     }
 
     static tagName() {
         return "";
+    }
+
+    static newInstance() {
+        return document.createElement(this.tagName());
     }
 
     connectedCallback() {}
@@ -61,375 +120,76 @@ class CustomElement extends HTMLElement {
         this.appendChild(element);
     }
 
-    _render(data = {}) {
+    _setData(data = {}) {
+    }
+}
+
+class TagRender {
+
+    static newInstance() {
+        return null;
+    }
+
+    static selectors() {
+        return [];
+    }
+
+    async colorMode(element = null, darkMode = false) {
+    }
+
+    async resize(element = null) {
+    }
+
+    async _enhance(element = null) {
+    }
+
+    async _prepare(element = null, data) {
+    }
+
+    async _setData(element = null, data) {
+    }
+
+    _multilingual(element = null) {
+    }
+
+    async _process(element = null) {
     }
 }
 
 class EnhancedElement extends CustomElement {
-    constructor() {
+    constructor(render = TagRender) {
         super();
         this._addSlot("element");
         this._element = null;
+        this._render = render;
     }
 
     connectedCallback() {
         super.connectedCallback();
         if (this._element === null) {
-            this._element = this.newElement();
-            if (this._element) {
+            this._element = this._newElement();
+            if (!!this._element) {
                 this._element.setAttribute("slot", "element");
                 super._appendChild(this._element);
             }
         }
         if (this.dataset.hasOwnProperty("initData")) {
             const initData = this.dataset.initData;
-            this._render(initData.isJSON() ? initData.parseJSON() : initData);
+            this._setData(initData.isJSON() ? initData.parseJSON() : initData);
         } else if (this.dataset.hasOwnProperty("code")) {
             Cell._initData(this);
         }
     }
 
-    newElement() {
-    }
-
-    _render(data) {
+    _setData(data) {
         if (data) {
             this._element.data = data;
         }
     }
-}
 
-class TipsElement extends EnhancedElement {
-    static tagName() {
-        return "tips-icon";
-    }
-
-    newElement() {
-        return Renders.TipsRender.newInstance();
+    _newElement() {
+        return this._render.newInstance();
     }
 }
 
-class ProgressRingElement extends EnhancedElement {
-    constructor() {
-        super();
-    }
-
-    static tagName() {
-        return "progress-ring";
-    }
-
-    newElement() {
-        return Renders.ProgressRender.newInstance(true);
-    }
-}
-
-class ProgressBarElement extends EnhancedElement {
-    constructor() {
-        super();
-    }
-
-    static tagName() {
-        return "progress-bar";
-    }
-
-    newElement() {
-        return Renders.ProgressRender.newInstance(false);
-    }
-}
-
-class ScoreElement extends EnhancedElement {
-    constructor(rate = false) {
-        super();
-        this._rate = rate;
-    }
-
-    static tagName() {
-        return "score-element";
-    }
-
-    newElement() {
-        return Renders.ScoreRender.newInstance(this._rate);
-    }
-}
-
-class ResourceElement extends EnhancedElement {
-    static tagName() {
-        return "resource-details";
-    }
-
-    newElement() {
-        return Renders.ResourcesRender.newInstance();
-    }
-}
-
-class BannerElement extends EnhancedElement {
-    static tagName() {
-        return "link-banner";
-    }
-
-    newElement() {
-        return Renders.BannerRender.newInstance();
-    }
-}
-
-class ButtonElement extends EnhancedElement {
-    constructor(type = "") {
-        super();
-        this._type = type;
-    }
-
-    static tagName() {
-        return "mock-button";
-    }
-
-    newElement() {
-        return Renders.MockButtonRender.newInstance(this._type);
-    }
-}
-
-class ChartElement extends EnhancedElement {
-    constructor(style = "") {
-        super();
-        this._style = style;
-    }
-
-    newElement() {
-        return Renders.ChartRender.newInstance(this._style);
-    }
-}
-
-class PieChartElement extends ChartElement {
-    constructor() {
-        super("pie");
-    }
-
-    static tagName() {
-        return "chart-pie";
-    }
-}
-
-class RoseChartElement extends ChartElement {
-    constructor() {
-        super("rose");
-    }
-
-    static tagName() {
-        return "chart-rose";
-    }
-}
-
-class CircleChartElement extends ChartElement {
-    constructor() {
-        super("circle");
-    }
-
-    static tagName() {
-        return "chart-circle";
-    }
-}
-
-class ColumnChartElement extends ChartElement {
-    constructor() {
-        super("column");
-    }
-
-    static tagName() {
-        return "chart-column";
-    }
-}
-
-class WaterfallChartElement extends ChartElement {
-    constructor() {
-        super("waterfall");
-    }
-
-    static tagName() {
-        return "chart-waterfall";
-    }
-}
-
-class BarChartElement extends ChartElement {
-    constructor() {
-        super("bar");
-    }
-
-    static tagName() {
-        return "chart-bar";
-    }
-}
-
-class KlineChartElement extends ChartElement {
-    constructor() {
-        super("k-line");
-    }
-
-    static tagName() {
-        return "chart-k-line";
-    }
-}
-
-class AddressDetailsElement extends EnhancedElement {
-    static tagName() {
-        return "address-details";
-    }
-
-    newElement() {
-        return Renders.AddressRender.newInstance();
-    }
-}
-
-class MessageDetailsElement extends EnhancedElement {
-    static tagName() {
-        return "message-details";
-    }
-
-    newElement() {
-        return Renders.DetailsRender.newInstance("message");
-    }
-}
-
-class CorporateDetailsElement extends EnhancedElement {
-    static tagName() {
-        return "corporate-details";
-    }
-
-    newElement() {
-        return Renders.DetailsRender.newInstance("corporate");
-    }
-}
-
-class MultiMenuElement extends EnhancedElement {
-    static tagName() {
-        return "menu-multi";
-    }
-
-    newElement() {
-        return Renders.MenuRender.newInstance("multi");
-    }
-}
-
-class MenuElement extends EnhancedElement {
-    static tagName() {
-        return "menu-info";
-    }
-
-    newElement() {
-        return Renders.MenuRender.newInstance("menu");
-    }
-}
-
-class MessageListElement extends EnhancedElement {
-    static tagName() {
-        return "message-list";
-    }
-
-    newElement() {
-        return Renders.GridListRender.newInstance();
-    }
-}
-
-class CommentListElement extends EnhancedElement {
-    static tagName() {
-        return "comment-list";
-    }
-
-    newElement() {
-        return Renders.CommentListRender.newInstance();
-    }
-}
-
-class SocialGroupElement extends EnhancedElement {
-    static tagName() {
-        return "menu-social";
-    }
-
-    newElement() {
-        return Renders.MenuRender.newInstance("social");
-    }
-}
-
-class SlideElement extends EnhancedElement {
-    static tagName() {
-        return "slide-show";
-    }
-
-    disconnectedCallback() {
-        super.disconnectedCallback();
-        if (this._element !== null && this._element.dataset.hasOwnProperty("timer")) {
-            window.clearInterval(this._element.data.timer);
-            delete this._element.dataset.timer;
-        }
-    }
-
-    newElement() {
-        return Renders.SlideRender.newInstance();
-    }
-}
-
-class CalendarElement extends EnhancedElement {
-    static tagName() {
-        return "calendar-element";
-    }
-
-    newElement() {
-        return Renders.CalendarRender.newInstance();
-    }
-}
-
-class FormItemElement extends EnhancedElement {
-    static tagName() {
-        return "form-item";
-    }
-
-    newElement() {
-        return Renders.FormItemRender.newInstance();
-    }
-}
-
-class FormInfoElement extends EnhancedElement {
-    static tagName() {
-        return "form-info";
-    }
-
-    newElement() {
-        return Renders.FormInfoRender.newInstance();
-    }
-}
-
-class GroupItemElement extends EnhancedElement {
-    static tagName() {
-        return "group-item";
-    }
-
-    newElement() {
-        return Renders.GroupItemRender.newInstance();
-    }
-}
-
-class TabsItemElement extends EnhancedElement {
-    static tagName() {
-        return "tabs-item";
-    }
-
-    newElement() {
-        return Renders.TabsItemRender.newInstance();
-    }
-}
-
-class PropertyElement extends EnhancedElement {
-    static tagName() {
-        return "property-info";
-    }
-
-    newElement() {
-        return Renders.PropertyRender.newInstance(true);
-    }
-}
-
-export {
-    CustomElement, EnhancedElement, TipsElement, ProgressRingElement, ProgressBarElement, ScoreElement, ResourceElement,
-    BannerElement, ButtonElement, PieChartElement, RoseChartElement, CircleChartElement, ColumnChartElement,
-    WaterfallChartElement, BarChartElement, KlineChartElement, AddressDetailsElement, MessageDetailsElement,
-    CorporateDetailsElement, MultiMenuElement, MenuElement, MessageListElement, CommentListElement, SocialGroupElement,
-    SlideElement, CalendarElement, FormItemElement, FormInfoElement, GroupItemElement, TabsItemElement, PropertyElement
-}
+export {CustomElement, EnhancedElement, TagRender, ring, randomColor}

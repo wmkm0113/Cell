@@ -197,7 +197,6 @@ export default class RSA extends Crypto {
         _array.forEach(str => {
             _debug += (", " + str);
         })
-        console.log(_debug.substring(1, _debug.length));
         let _position = 0, _result = [];
         while (_position < _array.length) {
             let _length = Math.min(_array.length - _position, this._blockSize),
@@ -276,7 +275,7 @@ export default class RSA extends Crypto {
         return _blockData;
     }
 
-    _oaepPadding(_block = []) {
+    async _oaepPadding(_block = []) {
         let _hash = this._oaep_hash_name();
         if (_hash.length === 0) {
             return _block;
@@ -303,13 +302,13 @@ export default class RSA extends Crypto {
         const _seed = new Array(_seedLength);
         new PRNG().getBytes(_seed);
 
-        const dbMask = this._oaep_mgf1(_seed, this._maxDigit - _seedLength - 1, _hash);
+        const dbMask = await this._oaep_mgf1(_seed, this._maxDigit - _seedLength - 1, _hash);
         console.log(dbMask.length);
         const maskedDB = [];
         for (let i = 0; i < dbMask.length; i++) {
             maskedDB[i] = _dataBlock[i] ^ dbMask[i];
         }
-        const seedMask = this._oaep_mgf1(maskedDB, _seedLength, _hash);
+        const seedMask = await this._oaep_mgf1(maskedDB, _seedLength, _hash);
         const _result = [];
         let position = 0;
         _result[position] = 0x00;
@@ -327,7 +326,7 @@ export default class RSA extends Crypto {
         return _result;
     }
 
-    _oaepRemove(_block = []) {
+    async _oaepRemove(_block = []) {
         let _hash = this._oaep_hash_name();
         if (_hash.length === 0) {
             return _block;
@@ -346,9 +345,9 @@ export default class RSA extends Crypto {
         bad |= Y !== 0x00;
 
         const lHash = Cell.digestData(_hash, "", false);
-        const seedMask = this._oaep_mgf1(maskedDB, _seedLength, _hash);
+        const seedMask = await this._oaep_mgf1(maskedDB, _seedLength, _hash);
         const seed = maskedSeed.XOR(seedMask);
-        const dbMask = this._oaep_mgf1(seed, maskedDB.length, _hash);
+        const dbMask = await this._oaep_mgf1(seed, maskedDB.length, _hash);
         const dataBlock = maskedDB.XOR(dbMask);
         for (let i = 0; i < _seedLength; i++) {
             bad |= dataBlock[i] ^ lHash[i];
@@ -426,12 +425,12 @@ export default class RSA extends Crypto {
         return _seedLength >> 3;  //hLen
     }
 
-    _oaep_mgf1(_seed, _length, _hash) {
+    async _oaep_mgf1(_seed, _length, _hash) {
         let _result = [], _hLen = this._seedLength(_hash);
         let offset = 0, counter = 0;
         while (offset < _length) {
             const length = Math.min(_hLen, _length - offset);
-            const _block = this._hashToBytes(Cell.digestBinary(_hash, _seed.concat(counter.toBytes()), false));
+            const _block = this._hashToBytes(await Cell.digestBinary(_hash, _seed.concat(counter.toBytes()), false));
             _result = _result.concat(_block.slice(0, length));
             offset += length;
             counter++;

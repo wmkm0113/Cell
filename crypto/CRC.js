@@ -297,9 +297,9 @@ export default class CRC extends Crypto {
         return new CRC(name);
     }
 
-    static test() {
-        for (const name of Object.keys(CRC_CONSTANT)) {
-            Cell.debug("CRC.Test", name, Cell.digestData(name, "123456"), CRC_TEST[name]);
+    static async test() {
+        for (const name of Object.keys(CRC_TEST)) {
+            Cell.debug("CRC.Test", name, await Cell.digestData(name, "123456"), CRC_TEST[name]);
         }
     }
 

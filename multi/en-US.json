@@ -18,6 +18,7 @@
     "Digest.Password.Data": "Using digest algorithm to protect password leakage of transfer in network",
     "Digest.Unknown.Algorithm": "Unknown digest algorithm name",
     "Link.Path.Data": "Send request url: {1}, request method: {2}, response code: {3}",
+    "Loading.Crypto": "Loading crypto name: {1}, path: {2}",
     "Names.Crypto": "Registered crypto name list: {1}",
     "Modify.Language.Code": "Modified language code: {1}",
     "Redirect.Path.Data": "Redirect request path: {1}",
@@ -117,5 +118,9 @@
     "Children.Identify": "Identify code",
     "Map.API": "The {1} Maps JavaScript API",
     "Map.Reload.Warning": "{1} only loads once. Ignoring: {2}",
-    "Map.Load.Error": "{1} could not load."
+    "Map.Load.Error": "{1} could not load.",
+    "open.k.title": "Open:",
+    "close.k.title": "Close:",
+    "high.k.title": "High:",
+    "low.k.title": "Low:"
 }

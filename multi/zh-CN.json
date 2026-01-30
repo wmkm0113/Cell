@@ -18,6 +18,7 @@
     "Digest.Password.Data": "建议使用摘要算法对密码信息进行处理，防止因网络传输造成的密码泄露",
     "Digest.Unknown.Algorithm": "未知的摘要算法",
     "Link.Path.Data": "发送的请求地址：{1}，请求方式：{2}，响应代码：{3}",
+    "Loading.Crypto": "加载加密方法：{1}，请求地址：{2}",
     "Names.Crypto": "已注册的加密方法：{1}",
     "Modify.Language.Code": "修改后的语言代码：{1}",
     "Redirect.Path.Data": "请求转发地址：{1}",
@@ -117,5 +118,9 @@
     "Children.Identify": "班级或教师姓名",
     "Map.API": "{1}地图JavaScript API接口",
     "Map.Reload.Warning": "{1}只需要加载一次，忽略：{2}",
-    "Map.Load.Error": "{1}加载失败"
+    "Map.Load.Error": "{1}加载失败",
+    "open.k.title": "开盘：",
+    "close.k.title": "收盘：",
+    "high.k.title": "最高：",
+    "low.k.title": "最低："
 }
